@@ -1,0 +1,13 @@
+{
+    "cSpell.words": [
+        "Blit",
+        "Objc",
+        "stdlib",
+        "Ultraviolence",
+        "Upscaler"
+    ],
+    "cSpell.enableFiletypes": [
+        "!jsonc",
+        "!swift"
+    ]
+}
