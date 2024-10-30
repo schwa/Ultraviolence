@@ -30,7 +30,7 @@ struct ContentView: View {
 
 ### Composable Render Passes
 
-Combining shaders in interesting ways will be a common task in 3D rendering. Taking inspiration from how easy it will be to compose views in SwiftUI, Ultraviolence will let you effortlessly combine render passes. You will be able to experiment with different passes and create reusable components that can be mixed and matched to achieve unique effects.
+Combining shaders in interesting ways is a common task in 3D rendering. Taking inspiration from how easy it is to compose views in SwiftUI, Ultraviolence will let you effortlessly combine render passes. You will be able to experiment with different passes and create reusable components that can be mixed and matched to achieve unique effects.
 
 ```swift
 struct MyRenderPass: RenderPass {
@@ -54,7 +54,7 @@ struct MyRenderPass: RenderPass {
 
 ### It’s the Shaders, Stupid
 
-In any Metal project, the real action will happen in the shaders. But even getting a simple shader up and running will require wading through a lot of setup code. SceneKit and RealityKit will often limit what you can do with shaders, and accessing them won’t be straightforward. Ultraviolence will make writing and managing your shaders easy, giving you full control over your rendering pipeline.
+In any Metal project, the real action happens in the shaders. But even getting a simple shader up and running requires wading through a lot of setup code. SceneKit and RealityKit often limit what you can do with shaders, and accessing them isn't straightforward. Ultraviolence will make writing and managing your shaders easy, giving you full control over your rendering pipeline.
 
 This example shows how to use shaders and shader parameters in Ultraviolence. Note that you should generally not define your shaders as strings in your code.
 
