@@ -4,7 +4,7 @@ A declarative framework for Metal rendering in Swift.
 
 ## Problem Statement
 
-Metal will be incredibly powerful but will have a reputation for being tough to work with. That will be largely because it will be a low-level API requiring heaps of boilerplate code just to get something basic up and running. On the other hand, frameworks like SceneKit and RealityKit will offer high-level abstractions that simplify 3D rendering but can be limiting when you need more control.
+Metal is an incredibly powerful API but has a reputation for being tough to work with. This is be largely because it is a low-level API requiring heaps of boilerplate code just to get something basic up and running. On the other hand, frameworks like SceneKit and RealityKit offer high-level abstractions that simplify 3D rendering but can be limiting when you need more control.
 
 Ultraviolence (just a placeholder name for now) will aim to strike a balance between these extremes. It will provide a declarative, SwiftUI-inspired API that will be easy to use while still giving you low-level control when you need it.
 
