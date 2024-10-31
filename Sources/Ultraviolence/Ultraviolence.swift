@@ -12,6 +12,7 @@ public protocol RenderPass {
 
 extension RenderPass {
     public func render(_ state: inout RenderState) throws {
+        try body.render(&state)
     }
 }
 
