@@ -1,172 +1,129 @@
+import Metal
 import simd
-import SwiftUI
 
-@resultBuilder
-struct RenderPassBuilder {
-    static func buildBlock() -> EmptyPass {
-        fatalError()
-    }
-
-    static func buildBlock<Content>(_ content: Content) -> Content where Content : RenderPass {
-        content
-    }
-
-    static func buildBlock<each Content>(_ content: repeat each Content) -> TuplePass<(repeat each Content)> where repeat each Content: RenderPass {
-        fatalError()
-    }
-}
-
-struct TuplePass <T>: RenderPass {
-    var body: some RenderPass {
-        fatalError()
-    }
-}
-
-protocol RenderPass {
+public protocol RenderPass {
     associatedtype Body: RenderPass
 
     @RenderPassBuilder
     var body: Body { get }
-}
 
-struct Geometry {
-}
-
-struct Texture {
-    init() {
-
-    }
-
-    init(size: SIMD2<Float>) {
-    }
-}
-
-struct EmptyPass: RenderPass {
-    var body: some RenderPass {
-        fatalError()
-    }
-}
-
-@propertyWrapper
-struct RenderState <Wrapped> {
-    public var wrappedValue: Wrapped {
-        get {
-            fatalError()
-        }
-        nonmutating set {
-            fatalError()
-        }
-    }
-}
-
-struct List_ <Content: RenderPass>: RenderPass where Content: RenderPass {
-    var content: Content
-
-    init(@RenderPassBuilder content: () -> Content) {
-        self.content = content()
-    }
-
-    var body: some RenderPass {
-        content
-    }
-}
-
-
-struct Draw <Content: RenderPass>: RenderPass where Content: RenderPass {
-    var geometry: Geometry
-    var content: Content
-
-    init(_ geometry: Geometry, @RenderPassBuilder content: () -> Content) {
-        self.geometry = geometry
-        self.content = content()
-    }
-
-    var body: some RenderPass {
-        content
-    }
+    func encode(encoder: MTLRenderCommandEncoder) throws
 }
 
 extension RenderPass {
-    func uniform(_ name: String, _ value: Any) -> some RenderPass {
-        return self
-    }
-
-    func renderTarget(_ texture: Texture) -> some RenderPass {
-        return self
+    public func encode(encoder: MTLRenderCommandEncoder) throws {
     }
 }
 
 extension Never: RenderPass {
 }
 
-struct VertexShader: RenderPass {
-    var name: String
+public struct EmptyPass: RenderPass {
+    public typealias Body = Never
+}
 
-    init(_ name: String) {
-        self.name = name
-    }
+extension Optional: RenderPass where Wrapped: RenderPass {
+    public typealias Body = Never
+}
 
-    var body: some RenderPass {
+extension RenderPass where Body == Never {
+    public var body: Never {
         fatalError()
     }
 }
 
-struct FragmentShader: RenderPass {
-    var name: String
-
-    init(_ name: String) {
-        self.name = name
+@resultBuilder
+public struct RenderPassBuilder {
+    public static func buildBlock() -> some RenderPass {
+        EmptyPass()
     }
 
-    var body: some RenderPass {
-        fatalError()
-    }
-}
-
-struct MetalFXUpscaler: RenderPass {
-    init(input: Texture) {
+    public static func buildBlock<Content>(_ content: Content) -> Content where Content: RenderPass {
+        content
     }
 
-    var body: some RenderPass {
-        fatalError()
+    public static func buildBlock<each Content>(_ content: repeat each Content) -> TuplePass<repeat each Content> where repeat each Content: RenderPass {
+        TuplePass(repeat each content)
+    }
+
+    public static func buildOptional<Content>(_ content: Content?) -> some RenderPass where Content: RenderPass {
+        content
     }
 }
 
-struct Blit: RenderPass {
-    init(input: Texture) {
+public struct TuplePass <each T: RenderPass>: RenderPass {
+    public typealias Body = Never
+    var value: (repeat each T)
+
+    public init(_ value: repeat each T) {
+        self.value = (repeat each value)
     }
 
-    var body: some RenderPass {
-        fatalError()
+    public func encode(encoder: MTLRenderCommandEncoder) throws {
+        for element in repeat (each value) {
+            try element.encode(encoder: encoder)
+        }
     }
 }
 
-struct RenderView <Content>: View where Content: RenderPass {
-    @RenderPassBuilder
+// MARK; -
+
+public struct Draw <Content: RenderPass>: RenderPass where Content: RenderPass {
+    public typealias Body = Never
+
+    var geometry: [Geometry]
     var content: Content
 
-    var body: some View {
-        EmptyView()
+    public init(_ geometry: [Geometry], @RenderPassBuilder content: () -> Content) {
+        self.geometry = geometry
+        self.content = content()
+    }
+
+    public func encode(encoder: MTLRenderCommandEncoder) throws {
+        try content.encode(encoder: encoder)
     }
 }
 
-extension View {
-    func onDrawableSizeChange(initial: Bool = false, _ body: (SIMD2<Float>) -> Void) -> some View {
-        return self
-    }
-}
+public struct VertexShader: RenderPass {
+    public typealias Body = Never
 
-struct ForEach_ <Data, Content>: RenderPass where Content: RenderPass {
+    var function: MTLFunction
 
-    var data: Data
-    var content: (Data) -> Content
-
-    init(_ data: Data, @RenderPassBuilder content: @escaping (Data) -> Content) {
-        self.data = data
-        self.content = content
-    }
-
-    var body: some RenderPass {
+    public init(_ name: String) {
         fatalError()
     }
+
+    public init(_ name: String, source: String) throws {
+        let device = MTLCreateSystemDefaultDevice()!
+        let library = try device.makeLibrary(source: source, options: nil)
+        function = library.makeFunction(name: name)!
+    }
+
+    public func encode(encoder: MTLRenderCommandEncoder) throws {
+        let device = encoder.device
+        let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
+        renderPipelineDescriptor.vertexFunction = function
+        renderPipelineDescriptor.colorAttachments[0].pixelFormat = .bgra8Unorm_srgb
+        let renderPipelineState = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor)
+        encoder.setRenderPipelineState(renderPipelineState)
+
+        print("Encode vertex shader")
+    }
 }
+
+public struct FragmentShader: RenderPass {
+    public typealias Body = Never
+
+    var function: MTLFunction
+
+    public init(_ name: String) {
+        fatalError()
+    }
+
+    public init(_ name: String, source: String) throws {
+        let device = MTLCreateSystemDefaultDevice()!
+        let library = try device.makeLibrary(source: source, options: nil)
+        function = library.makeFunction(name: name)!
+    }
+}
+
