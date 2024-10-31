@@ -46,9 +46,9 @@ extension Quad2D: Geometry {
 // TODO: Name conflict with SwiftUI.
 public struct ForEach <Data, Content>: RenderPass where Content: RenderPass {
     var data: Data
-    var content: (Data) -> Content
+    var content: (Data) throws -> Content
 
-    public init(_ data: Data, @RenderPassBuilder content: @escaping (Data) -> Content) {
+    public init(_ data: Data, @RenderPassBuilder content: @escaping (Data) throws -> Content) {
         self.data = data
         self.content = content
     }

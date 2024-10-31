@@ -8,7 +8,7 @@ struct UnlitRenderPass: RenderPass {
 
     var body: some RenderPass {
         ForEach(geometry) { geometry in
-            Draw([geometry]) {
+            try Draw([geometry]) {
                 VertexShader("Example::VertexShader")
                     .uniform("model", geometry /* .transform */)
                     .uniform("view", cameraMatrix)

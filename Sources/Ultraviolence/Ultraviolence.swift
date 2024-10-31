@@ -74,9 +74,9 @@ public struct Draw <Content: RenderPass>: RenderPass where Content: RenderPass {
     var geometry: [Geometry]
     var content: Content
 
-    public init(_ geometry: [Geometry], @RenderPassBuilder content: () -> Content) {
+    public init(_ geometry: [Geometry], @RenderPassBuilder content: () throws -> Content) throws {
         self.geometry = geometry
-        self.content = content()
+        self.content = try content()
     }
 
     public func render(_ state: inout RenderState) throws {

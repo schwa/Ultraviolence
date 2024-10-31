@@ -5,8 +5,8 @@ public struct Renderer <Content> where Content: RenderPass {
 
     let content: Content
 
-    public init(@RenderPassBuilder content: () -> Content) {
-        self.content = content()
+    public init(@RenderPassBuilder content: () throws -> Content) rethrows {
+        self.content = try content()
     }
 
     public struct Rendering {

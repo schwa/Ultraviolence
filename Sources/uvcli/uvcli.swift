@@ -31,10 +31,10 @@ struct UVCLI {
             }
         """
 
-        let renderer = Renderer {
-            Draw([Quad2D(origin: [-0.5, -0.5], size: [1, 1])]) {
-                try! VertexShader("vertex_main", source: source)
-                try! FragmentShader("fragment_main", source: source)
+        let renderer = try Renderer {
+            try Draw([Quad2D(origin: [-0.5, -0.5], size: [1, 1])]) {
+                try VertexShader("vertex_main", source: source)
+                try FragmentShader("fragment_main", source: source)
             }
         }
         let image = try renderer.render(size: CGSize(width: 1600, height: 1200)).cgImage
