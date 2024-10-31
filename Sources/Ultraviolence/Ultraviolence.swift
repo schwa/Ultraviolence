@@ -7,11 +7,11 @@ public protocol RenderPass {
     @RenderPassBuilder
     var body: Body { get }
 
-    func encode(encoder: MTLRenderCommandEncoder) throws
+    func render(_ state: inout RenderState) throws
 }
 
 extension RenderPass {
-    public func encode(encoder: MTLRenderCommandEncoder) throws {
+    public func render(_ state: inout RenderState) throws {
     }
 }
 
@@ -59,9 +59,9 @@ public struct TuplePass <each T: RenderPass>: RenderPass {
         self.value = (repeat each value)
     }
 
-    public func encode(encoder: MTLRenderCommandEncoder) throws {
+    public func render(_ state: inout RenderState) throws {
         for element in repeat (each value) {
-            try element.encode(encoder: encoder)
+            try element.render(&state)
         }
     }
 }
@@ -79,8 +79,22 @@ public struct Draw <Content: RenderPass>: RenderPass where Content: RenderPass {
         self.content = content()
     }
 
-    public func encode(encoder: MTLRenderCommandEncoder) throws {
-        try content.encode(encoder: encoder)
+    public func render(_ state: inout RenderState) throws {
+
+        let device = state.encoder.device
+
+        try content.render(&state)
+
+        let renderPipelineState = try device.makeRenderPipelineState(descriptor: state.pipelineDescriptor)
+        state.encoder.setRenderPipelineState(renderPipelineState)
+
+        for element in geometry {
+            let triangles = element.vertices(for: .triangle)
+            triangles.withUnsafeBytes { buffer in
+                state.encoder.setVertexBytes(buffer.baseAddress!, length: buffer.count, index: 0)
+            }
+            state.encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: triangles.count)
+        }
     }
 }
 
@@ -99,15 +113,8 @@ public struct VertexShader: RenderPass {
         function = library.makeFunction(name: name)!
     }
 
-    public func encode(encoder: MTLRenderCommandEncoder) throws {
-        let device = encoder.device
-        let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
-        renderPipelineDescriptor.vertexFunction = function
-        renderPipelineDescriptor.colorAttachments[0].pixelFormat = .bgra8Unorm_srgb
-        let renderPipelineState = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor)
-        encoder.setRenderPipelineState(renderPipelineState)
-
-        print("Encode vertex shader")
+    public func render(_ state: inout RenderState) throws {
+        state.pipelineDescriptor.vertexFunction = function
     }
 }
 
@@ -124,6 +131,10 @@ public struct FragmentShader: RenderPass {
         let device = MTLCreateSystemDefaultDevice()!
         let library = try device.makeLibrary(source: source, options: nil)
         function = library.makeFunction(name: name)!
+    }
+
+    public func render(_ state: inout RenderState) throws {
+        state.pipelineDescriptor.fragmentFunction = function
     }
 }
 

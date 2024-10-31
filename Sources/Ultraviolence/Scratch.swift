@@ -1,6 +1,8 @@
+import Metal
 import simd
 
 public protocol Geometry {
+    func vertices(for primitive: MTLPrimitiveType) -> [SIMD4<Float>]
 }
 
 public struct Texture {
@@ -22,9 +24,27 @@ public struct Quad2D {
 }
 
 extension Quad2D: Geometry {
+    public func vertices(for primitive: MTLPrimitiveType) -> [SIMD4<Float>] {
+        switch primitive {
+        case .triangle:
+            return [
+                // Two triangles (six vertices) forming a quad.
+                [origin.x, origin.y, 0, 1],
+                [origin.x + size.x, origin.y, 0, 1],
+                [origin.x, origin.y + size.y, 0, 1],
+                [origin.x + size.x, origin.y, 0, 1],
+                [origin.x + size.x, origin.y + size.y, 0, 1],
+                [origin.x, origin.y + size.y, 0, 1],
+            ]
+        default:
+            fatalError()
+        }
+    }
+
 }
 
-public struct ForEach_ <Data, Content>: RenderPass where Content: RenderPass {
+// TODO: Name conflict with SwiftUI.
+public struct ForEach <Data, Content>: RenderPass where Content: RenderPass {
     var data: Data
     var content: (Data) -> Content
 
@@ -38,8 +58,9 @@ public struct ForEach_ <Data, Content>: RenderPass where Content: RenderPass {
     }
 }
 
+// TODO: Name conflict with SwiftUI.
 @propertyWrapper
-public struct RenderState <Wrapped> {
+public struct State <Wrapped> {
 
     public init() {
     }
@@ -54,7 +75,7 @@ public struct RenderState <Wrapped> {
     }
 }
 
-public struct List_ <Content: RenderPass>: RenderPass where Content: RenderPass {
+public struct Chain <Content: RenderPass>: RenderPass where Content: RenderPass {
     var content: Content
 
     public init(@RenderPassBuilder content: () -> Content) {

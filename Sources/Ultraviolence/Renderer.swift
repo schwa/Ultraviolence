@@ -29,7 +29,19 @@ public struct Renderer <Content> where Content: RenderPass {
         let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
 
 
-        try content.encode(encoder: encoder)
+        let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
+        renderPipelineDescriptor.colorAttachments[0].pixelFormat = .bgra8Unorm_srgb
+
+        let vertexDescriptor = MTLVertexDescriptor()
+        vertexDescriptor.attributes[0].format = .float4
+        vertexDescriptor.attributes[0].bufferIndex = 0
+        vertexDescriptor.attributes[0].offset = 0
+        vertexDescriptor.layouts[0].stride = MemoryLayout<Float>.size * 4
+        renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
+
+
+        var renderState = RenderState(encoder: encoder, pipelineDescriptor: renderPipelineDescriptor)
+        try content.render(&renderState)
 
         encoder.endEncoding()
         commandBuffer.commit()
@@ -39,9 +51,17 @@ public struct Renderer <Content> where Content: RenderPass {
     }
 }
 
+public struct RenderState {
+    public var encoder: MTLRenderCommandEncoder
+    public var pipelineDescriptor: MTLRenderPipelineDescriptor
+}
+
 public extension Renderer.Rendering {
     var cgImage: CGImage {
-        let context = CGContext(data: nil, width: texture.width, height: texture.height, bitsPerComponent: 8, bytesPerRow: texture.width * 4, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
+
+        var bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue)
+        bitmapInfo.insert(.byteOrder32Little)
+        let context = CGContext(data: nil, width: texture.width, height: texture.height, bitsPerComponent: 8, bytesPerRow: texture.width * 4, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: bitmapInfo.rawValue)!
         texture.getBytes(context.data!, bytesPerRow: texture.width * 4, from: MTLRegionMake2D(0, 0, texture.width, texture.height), mipmapLevel: 0)
         return context.makeImage()!
     }
