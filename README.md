@@ -38,7 +38,7 @@ struct MyRenderPass: RenderPass {
     @RenderState var upscaled: Texture
 
     var body: some RenderPass {
-        List {
+        Chain {
             Draw([Teapot()]) {
                 BlinnPhongShader(SimpleMaterial(color: .pink))
             }
@@ -152,3 +152,5 @@ func render() {
 - Efficiency is going to be very very tough to make 100% solid.
 - SwiftUI View's can be composed arbitrarily and still produce valid (if weird) UI. Ultraviolence can't allow that - it doesn't make sense to make a Draw() node without shaders, or a Draw() node with multiple vertex shaders... Arbitrary composition isn't going to work everywhere. We may need a more expressive type system to enforce this.
 - The render command is really used to build a graph of commands. The graph can be inspected and reasoned with - for example Draw nodes need to make sure there is a vertex shader and a fragment shader and geometry. Is it possible to guarantee the graph is correct at compile time (goes with previous note
+- Wrap Metal types as much as possible. This allows us to get better type and concurrency safety (e.g. Buffer<Type>/RawBuffer vs MTLBuffer etc).
+- What do with types that overlap naming with SwiftUI State/ForEach etc.

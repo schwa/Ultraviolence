@@ -5,14 +5,6 @@ public protocol Geometry {
     func vertices(for primitive: MTLPrimitiveType) -> [SIMD4<Float>]
 }
 
-public struct Texture {
-    public init() {
-    }
-
-    public init(size: SIMD2<Float>) {
-    }
-}
-
 public struct Quad2D {
     public var origin: SIMD2<Float> = .zero
     public var size: SIMD2<Float> = .one
@@ -40,7 +32,16 @@ extension Quad2D: Geometry {
             fatalError()
         }
     }
+}
 
+// MARK: -
+
+public struct Texture {
+    public init() {
+    }
+
+    public init(size: SIMD2<Float>) {
+    }
 }
 
 // TODO: Name conflict with SwiftUI.
