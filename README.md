@@ -127,5 +127,20 @@ Ultraviolence should not be significantly slower than writing Metal code by hand
 * How do we detect state changes and detect if a graph has changed? Adopt ideas from SwiftUI and [ObjcIO](http://objc.io) folks.
 * How do we make sure inputs and outputs to shaders are compatible? Can we generate a vertex descriptor from a shader (or vice versa?).
 * Cross platform? Crazy idea: Ultraviolence is not necessarily intrinsically tied to Metal. Could we have a Vulkan backend?
-* Should Ultraviolence include a scene graph? _Maybe_. A ForEach() operator could be used as a bridge between a render pass and a scene graph. As long as the scene graph can generate an iterable collection of _things_ to draw, it can be passed into an Ultraviolence draw.
+* Should Ultraviolence include a scene graph? _Maybe_. A ForEach() operator could be used as a bridge between a render pass and a scene graph. As long as the scene graph can generate an iterable collection of _things_ to draw it can be passed into an Ultraviolence draw. It should be a lot less integrated than in RenderKit2.
 * Modern Swift - Metal is not very Swift Concurrency friendly.
+* It should be easy to capture debugging.
+* Offscreen rendering:
+
+```swift
+func render() {
+    let renderer = Renderer {
+          Draw([Teapot()]) {{
+              BlinnPhongShader(SimpleMaterial(color: .pink))
+          }
+          .camera(PerspectiveCamera())}
+    }
+    let image = try renderer.render(size: [1600, 1200]).cgImage
+    ...
+}
+```
