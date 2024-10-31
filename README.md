@@ -123,14 +123,18 @@ Ultraviolence should not be significantly slower than writing Metal code by hand
 
 ## Misc Notes/Questions/Problems
 
-* Is `RenderPass` the right name for a node in the graph here. Some nodes are definitely not render passes and it seems too specific. Maybe just `Node` (`RenderNode?`, `RenderElement`?).
-* How do we detect state changes and detect if a graph has changed? Adopt ideas from SwiftUI and [ObjcIO](http://objc.io) folks.
-* How do we make sure inputs and outputs to shaders are compatible? Can we generate a vertex descriptor from a shader (or vice versa?).
-* Cross platform? Crazy idea: Ultraviolence is not necessarily intrinsically tied to Metal. Could we have a Vulkan backend?
-* Should Ultraviolence include a scene graph? _Maybe_. A ForEach() operator could be used as a bridge between a render pass and a scene graph. As long as the scene graph can generate an iterable collection of _things_ to draw it can be passed into an Ultraviolence draw. It should be a lot less integrated than in RenderKit2.
-* Modern Swift - Metal is not very Swift Concurrency friendly.
-* It should be easy to capture debugging.
-* Offscreen rendering:
+- [ ] Get help (literally and metaphorically)
+- [ ] `render` could become be a more generic `visit`
+- [ ] Uniforms.
+- This is going to overlap with RenderKit. Is this RenderKit4 (are we really up to 4 semi-unreleased projects now?)
+- Is `RenderPass` the right name for a node in the graph here. Some nodes are definitely not render passes and it seems too specific. Maybe just `Node` (`RenderNode?`, `RenderElement`?).
+- How do we detect state changes and detect if a graph has changed? Adopt ideas from SwiftUI and [ObjcIO](http://objc.io) folks.
+- How do we make sure inputs and outputs to shaders are compatible? Can we generate a vertex descriptor from a shader (or vice versa?).
+- Cross platform? Crazy idea: Ultraviolence is not necessarily intrinsically tied to Metal. Could we have a Vulkan backend?
+- Should Ultraviolence include a scene graph? _Maybe_. A ForEach() operator could be used as a bridge between a render pass and a scene graph. As long as the scene graph can generate an iterable collection of _things_ to draw it can be passed into an Ultraviolence draw. It should be a lot less integrated than in RenderKit2.
+- Modern Swift - Metal is not very Swift Concurrency friendly.
+- It should be easy to capture debugging.
+- Offscreen rendering:
 
 ```swift
 func render() {
@@ -144,5 +148,7 @@ func render() {
     ...
 }
 ```
-* Efficiency is going to be very very tough to make 100% solid.
-* SwiftUI View's can be composed arbitrarily and still produce valid (if weird) UI. Ultraviolence can't allow that - it doesn't make sense to make a Draw() node without shaders, or a Draw() node with multiple vertex shaders... Arbitrary composition isn't going to work everywhere. We may need a more expressive type system to enforce this.
+
+- Efficiency is going to be very very tough to make 100% solid.
+- SwiftUI View's can be composed arbitrarily and still produce valid (if weird) UI. Ultraviolence can't allow that - it doesn't make sense to make a Draw() node without shaders, or a Draw() node with multiple vertex shaders... Arbitrary composition isn't going to work everywhere. We may need a more expressive type system to enforce this.
+- The render command is really used to build a graph of commands. The graph can be inspected and reasoned with - for example Draw nodes need to make sure there is a vertex shader and a fragment shader and geometry. Is it possible to guarantee the graph is correct at compile time (goes with previous note
