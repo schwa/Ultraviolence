@@ -1,13 +1,11 @@
 import UniformTypeIdentifiers
 import AppKit
 import CoreGraphics
-import simd
 import SwiftUI
 import Ultraviolence
 
 @main
 struct UVCLI {
-    
     static func main() async throws {
         let source = """
             #include <metal_stdlib>
