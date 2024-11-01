@@ -54,11 +54,15 @@ public struct Renderer <Content> where Content: RenderPass {
 public struct RenderState {
     public var encoder: MTLRenderCommandEncoder
     public var pipelineDescriptor: MTLRenderPipelineDescriptor
+
+    public init(encoder: MTLRenderCommandEncoder, pipelineDescriptor: MTLRenderPipelineDescriptor) {
+        self.encoder = encoder
+        self.pipelineDescriptor = pipelineDescriptor
+    }
 }
 
 public extension Renderer.Rendering {
     var cgImage: CGImage {
-
         var bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue)
         bitmapInfo.insert(.byteOrder32Little)
         let context = CGContext(data: nil, width: texture.width, height: texture.height, bitsPerComponent: 8, bytesPerRow: texture.width * 4, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: bitmapInfo.rawValue)!

@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:Ultraviolence}",
+            "name": "Debug uvcli",
+            "program": "${workspaceFolder:Ultraviolence}/.build/debug/uvcli",
+            "preLaunchTask": "swift: Build Debug uvcli"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:Ultraviolence}",
+            "name": "Release uvcli",
+            "program": "${workspaceFolder:Ultraviolence}/.build/release/uvcli",
+            "preLaunchTask": "swift: Build Release uvcli"
+        }
+    ]
+}
