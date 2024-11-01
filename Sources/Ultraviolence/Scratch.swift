@@ -2,7 +2,7 @@ import Metal
 import simd
 
 public protocol Geometry {
-    func vertices(for primitive: MTLPrimitiveType) -> [SIMD4<Float>]
+    func vertices(for primitive: MTLPrimitiveType) -> [SIMD3<Float>]
 }
 
 public struct Quad2D {
@@ -16,17 +16,17 @@ public struct Quad2D {
 }
 
 extension Quad2D: Geometry {
-    public func vertices(for primitive: MTLPrimitiveType) -> [SIMD4<Float>] {
+    public func vertices(for primitive: MTLPrimitiveType) -> [SIMD3<Float>] {
         switch primitive {
         case .triangle:
             return [
                 // Two triangles (six vertices) forming a quad.
-                [origin.x, origin.y, 0, 1],
-                [origin.x + size.x, origin.y, 0, 1],
-                [origin.x, origin.y + size.y, 0, 1],
-                [origin.x + size.x, origin.y, 0, 1],
-                [origin.x + size.x, origin.y + size.y, 0, 1],
-                [origin.x, origin.y + size.y, 0, 1],
+                [origin.x, origin.y, 0],
+                [origin.x + size.x, origin.y, 0],
+                [origin.x, origin.y + size.y, 0],
+                [origin.x + size.x, origin.y, 0],
+                [origin.x + size.x, origin.y + size.y, 0],
+                [origin.x, origin.y + size.y, 0],
             ]
         default:
             fatalError()
