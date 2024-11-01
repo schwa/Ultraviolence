@@ -46,13 +46,13 @@ struct ContentView: View {
 
     var body: some View {
         RenderView(MyRenderPass(color: color))
-        .overlay(alignment: .topTrailing) {
-            SIMDColorPicker(value: $color)
-            .padding()
-            .background(.thinMaterial)
-            .cornerRadius(8)
-            .padding()
-        }
+            .overlay(alignment: .topTrailing) {
+                SIMDColorPicker(value: $color)
+                    .padding()
+                    .background(.thinMaterial)
+                    .cornerRadius(8)
+                    .padding()
+            }
     }
 }
 

@@ -23,13 +23,13 @@ public struct RenderView <Content>: NSViewRepresentable where Content: RenderPas
         view.delegate = context.coordinator
         return view
     }
-        
+
     public func updateNSView(_ nsView: MTKView, context: Context) {
         context.coordinator.content = content
     }
 }
 
-public class RenderPassCoordinator <Content>: NSObject, MTKViewDelegate where Content: RenderPass{
+public class RenderPassCoordinator <Content>: NSObject, MTKViewDelegate where Content: RenderPass {
     var device: MTLDevice
     var commandQueue: MTLCommandQueue
     var content: Content

@@ -13,7 +13,6 @@ public struct VertexShader: RenderPass {
         let device = MTLCreateSystemDefaultDevice()!
         let library = try device.makeLibrary(source: source, options: nil)
         function = library.makeFunction(name: name)!
-
     }
 
     public func render(_ state: inout RenderState) throws {
@@ -22,10 +21,7 @@ public struct VertexShader: RenderPass {
             fatalError("Cannot get vertex attributes from vertex function")
         }
         let vertexDescriptor = MTLVertexDescriptor(vertexAttributes: vertexAttributes)
-        print(vertexDescriptor)
         state.pipelineDescriptor.vertexDescriptor = vertexDescriptor
-
-
         state.pipelineDescriptor.vertexFunction = function
     }
 }
