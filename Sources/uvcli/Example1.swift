@@ -24,7 +24,7 @@ struct UpscalingPass <Content>: RenderPass where Content: RenderPass {
     var content: Content
     var input: Texture
 
-    @Ultraviolence.State
+    @State_
     var fullSizeTexture: Texture
 
     init(factor: Float, input: Texture, @RenderPassBuilder content: () -> Content) {
@@ -49,7 +49,7 @@ struct MyRenderView: View {
     var geometry: Geometry
     var cameraMatrix: simd_float4x4
 
-    @Ultraviolence.State
+    @State_
     var downsizedTexture: Texture
 
     var body: some View {

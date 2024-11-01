@@ -30,7 +30,7 @@ extension MTLVertexFormat {
     func size(packed: Bool) -> Int {
         switch self {
         case .float3:
-            return packed ? 12 : MemoryLayout<SIMD3<Float>>.size
+            return packed ? MemoryLayout<Float>.stride * 3 : MemoryLayout<SIMD3<Float>>.size
         case .float2:
             return MemoryLayout<SIMD2<Float>>.size
         default:

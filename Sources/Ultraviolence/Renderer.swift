@@ -18,7 +18,6 @@ public struct Renderer <Content> where Content: RenderPass {
         let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm_srgb, width: Int(size.width), height: Int(size.height), mipmapped: false)
         textureDescriptor.usage = [.renderTarget]
         let texture = device.makeTexture(descriptor: textureDescriptor)!
-
         let commandQueue = device.makeCommandQueue()!
         let commandBuffer = commandQueue.makeCommandBuffer()!
         let renderPassDescriptor = MTLRenderPassDescriptor()
@@ -27,18 +26,13 @@ public struct Renderer <Content> where Content: RenderPass {
         renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColor(red: 0, green: 0, blue: 0, alpha: 1)
         renderPassDescriptor.colorAttachments[0].storeAction = .store
         let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
-
-
         let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
         renderPipelineDescriptor.colorAttachments[0].pixelFormat = .bgra8Unorm_srgb
-
         var renderState = RenderState(encoder: encoder, pipelineDescriptor: renderPipelineDescriptor, depthStencilDescriptor: MTLDepthStencilDescriptor())
         try content.render(&renderState)
-
         encoder.endEncoding()
         commandBuffer.commit()
         commandBuffer.waitUntilCompleted()
-
         return .init(texture: texture)
     }
 }

@@ -1,6 +1,7 @@
 import Metal
 import simd
 import MetalKit
+import SwiftUI
 
 public enum Mesh {
     case simple([SIMD3<Float>])
@@ -104,6 +105,12 @@ public extension RenderPass {
     }
 
     func renderTarget(_ texture: Texture) -> some RenderPass {
+        return self
+    }
+}
+
+public extension View {
+    func onDrawableSizeChange(initial: Bool = false, _ body: (SIMD2<Float>) -> Void) -> some View {
         return self
     }
 }
