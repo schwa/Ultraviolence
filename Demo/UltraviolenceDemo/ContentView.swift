@@ -9,6 +9,8 @@ struct MyRenderPass: RenderPass {
 
         struct VertexIn {
             float3 position [[attribute(0)]];
+            float3 normal [[attribute(1)]];
+            float2 textureCoordinate [[attribute(2)]];
         };
 
         struct VertexOut {
@@ -16,7 +18,7 @@ struct MyRenderPass: RenderPass {
         };
 
         [[vertex]] VertexOut vertex_main(const VertexIn in [[stage_in]]) {
-            return VertexOut { float4(in.position, 1.0) };
+            return VertexOut { float4(in.position / 10.0, 1.0) };
         }
 
         [[fragment]] float4 fragment_main(
@@ -29,7 +31,7 @@ struct MyRenderPass: RenderPass {
     let color: SIMD4<Float>
 
     var body: some RenderPass {
-        return try! Draw([Quad2D(origin: [-0.5, -0.5], size: [1, 1])]) {
+        return try! Draw([Teapot()]) {
             try VertexShader("vertex_main", source: source)
             try FragmentShader("fragment_main", source: source)
         }
@@ -40,7 +42,7 @@ struct MyRenderPass: RenderPass {
 struct ContentView: View {
 
     @SwiftUI.State
-    var color: SIMD4<Float> = [0, 0, 0, 1]
+    var color: SIMD4<Float> = [1, 0, 0, 1]
 
     var body: some View {
         RenderView(MyRenderPass(color: color))

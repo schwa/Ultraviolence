@@ -47,14 +47,14 @@ public struct Draw <Content: RenderPass>: RenderPass where Content: RenderPass {
                 }
                 state.encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: vertices.count)
             case .mtkMesh(let mtkMesh):
+                // TODO: Verify vertex shader vertex descriptor matches mesh vertex descriptor.
                 for submesh in mtkMesh.submeshes {
-                    // TODO: Hardcoded index = 0
-                    state.encoder.setVertexBuffer(mtkMesh.vertexBuffers[0].buffer, offset: 0, index: 0)
+                    for (index, vertexBuffer) in mtkMesh.vertexBuffers.enumerated() {
+                        state.encoder.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: index)
+                    }
                     state.encoder.drawIndexedPrimitives(type: submesh.primitiveType, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBuffer.buffer, indexBufferOffset: submesh.indexBuffer.offset)
                 }
             }
-
-
         }
     }
 }

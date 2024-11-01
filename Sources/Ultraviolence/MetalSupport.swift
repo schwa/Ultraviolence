@@ -9,7 +9,7 @@ extension MTLVertexDescriptor {
             attributes[index].format = format
             attributes[index].bufferIndex = 0
             attributes[index].offset = offset
-            offset += format.size
+            offset += format.size(packed: true)
         }
         layouts[0].stride = offset
     }
@@ -20,15 +20,19 @@ extension MTLVertexFormat {
         switch dataType {
         case .float3:
             self = .float3
+        case .float2:
+            self = .float2
         default:
             fatalError()
         }
     }
 
-    var size: Int {
+    func size(packed: Bool) -> Int {
         switch self {
         case .float3:
-            return MemoryLayout<SIMD3<Float>>.size
+            return packed ? 12 : MemoryLayout<SIMD3<Float>>.size
+        case .float2:
+            return MemoryLayout<SIMD2<Float>>.size
         default:
             fatalError()
         }
