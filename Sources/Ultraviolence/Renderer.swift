@@ -32,14 +32,6 @@ public struct Renderer <Content> where Content: RenderPass {
         let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
         renderPipelineDescriptor.colorAttachments[0].pixelFormat = .bgra8Unorm_srgb
 
-        let vertexDescriptor = MTLVertexDescriptor()
-        vertexDescriptor.attributes[0].format = .float4
-        vertexDescriptor.attributes[0].bufferIndex = 0
-        vertexDescriptor.attributes[0].offset = 0
-        vertexDescriptor.layouts[0].stride = MemoryLayout<Float>.size * 4
-        renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
-
-
         var renderState = RenderState(encoder: encoder, pipelineDescriptor: renderPipelineDescriptor)
         try content.render(&renderState)
 

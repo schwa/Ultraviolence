@@ -53,11 +53,9 @@ struct MyRenderView: View {
     var downsizedTexture: Texture
 
     var body: some View {
-        RenderView {
-            UpscalingPass(factor: 2, input: downsizedTexture) {
-                UnlitRenderPass(geometry: geometry, cameraMatrix: cameraMatrix)
-            }
-        }
+        RenderView(UpscalingPass(factor: 2, input: downsizedTexture) {
+            UnlitRenderPass(geometry: geometry, cameraMatrix: cameraMatrix)
+        })
         .onDrawableSizeChange(initial: true) { size in
             downsizedTexture = Texture(size: size)
         }

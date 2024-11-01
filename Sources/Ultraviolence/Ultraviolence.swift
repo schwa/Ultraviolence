@@ -86,7 +86,7 @@ public struct Draw <Content: RenderPass>: RenderPass where Content: RenderPass {
 
         try content.render(&state)
 
-        let renderPipelineState = try device.makeRenderPipelineState(descriptor: state.pipelineDescriptor)
+        let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: state.pipelineDescriptor, options: [.bindingInfo])
         state.encoder.setRenderPipelineState(renderPipelineState)
 
         for element in geometry {
