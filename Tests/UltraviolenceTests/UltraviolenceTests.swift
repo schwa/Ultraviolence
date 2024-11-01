@@ -13,7 +13,7 @@ struct RenderingTests {
                 using namespace metal;
 
                 struct VertexIn {
-                    float4 position [[attribute(0)]];
+                    float3 position [[attribute(0)]];
                 };
 
                 struct VertexOut {
@@ -21,7 +21,8 @@ struct RenderingTests {
                 };
 
                 [[vertex]] VertexOut vertex_main(const VertexIn in [[stage_in]]) {
-                    return VertexOut { in.position };
+                    float4 position = float4(in.position, 1.0);
+                    return VertexOut { position };
                 }
 
                 [[fragment]] float4 fragment_main() {
