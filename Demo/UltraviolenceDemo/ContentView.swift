@@ -1,8 +1,5 @@
 import SwiftUI
 import Ultraviolence
-import MetalKit
-import Metal
-
 
 struct MyRenderPass: RenderPass {
     let source = """
@@ -19,29 +16,73 @@ struct MyRenderPass: RenderPass {
         };
 
         [[vertex]] VertexOut vertex_main(const VertexIn in [[stage_in]]) {
-            float4 position = float4(in.position, 1.0);
-            return VertexOut { position };
+            return VertexOut { float4(in.position, 1.0) };
         }
 
-        [[fragment]] float4 fragment_main() {
-            return float4(1.0, 0.0, 0.0, 1.0);
+        [[fragment]] float4 fragment_main(
+            constant float4 &color [[buffer(1)]]
+        ) {
+            return color;
         }
     """
 
+    let color: SIMD4<Float>
+
     var body: some RenderPass {
-        try! Draw([Quad2D(origin: [-0.5, -0.5], size: [1, 1])]) {
+        return try! Draw([Quad2D(origin: [-0.5, -0.5], size: [1, 1])]) {
             try VertexShader("vertex_main", source: source)
             try FragmentShader("fragment_main", source: source)
         }
+        .argument(type: .fragment, name: "color", value: color)
     }
 }
 
 struct ContentView: View {
+
+    @SwiftUI.State
+    var color: SIMD4<Float> = [0, 0, 0, 1]
+
     var body: some View {
-        RenderView(MyRenderPass())
+        RenderView(MyRenderPass(color: color))
+        .overlay(alignment: .topTrailing) {
+            SIMDColorPicker(value: $color)
+            .padding()
+            .background(.thinMaterial)
+            .cornerRadius(8)
+            .padding()
+        }
     }
 }
 
 #Preview {
     ContentView()
+}
+
+struct SIMDColorPicker: View {
+    @Binding
+    var value: SIMD4<Float>
+
+    var body: some View {
+        Grid(alignment: .trailing) {
+            GridRow {
+                Text("Red")
+                Slider(value: $value.x)
+            }
+            GridRow {
+                Text("Green")
+                Slider(value: $value.y)
+            }
+            GridRow {
+                Text("Blue")
+                Slider(value: $value.z)
+            }
+            GridRow {
+                Text("Alpha")
+                Slider(value: $value.w)
+            }
+        }
+        .frame(maxWidth: 80)
+        .controlSize(.mini)
+    }
+
 }

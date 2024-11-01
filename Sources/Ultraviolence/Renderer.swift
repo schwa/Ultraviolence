@@ -43,16 +43,6 @@ public struct Renderer <Content> where Content: RenderPass {
     }
 }
 
-public struct RenderState {
-    public var encoder: MTLRenderCommandEncoder
-    public var pipelineDescriptor: MTLRenderPipelineDescriptor
-
-    public init(encoder: MTLRenderCommandEncoder, pipelineDescriptor: MTLRenderPipelineDescriptor) {
-        self.encoder = encoder
-        self.pipelineDescriptor = pipelineDescriptor
-    }
-}
-
 public extension Renderer.Rendering {
     var cgImage: CGImage {
         var bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue)
