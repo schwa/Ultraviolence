@@ -32,7 +32,7 @@ public struct Renderer <Content> where Content: RenderPass {
         let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
         renderPipelineDescriptor.colorAttachments[0].pixelFormat = .bgra8Unorm_srgb
 
-        var renderState = RenderState(encoder: encoder, pipelineDescriptor: renderPipelineDescriptor)
+        var renderState = RenderState(encoder: encoder, pipelineDescriptor: renderPipelineDescriptor, depthStencilDescriptor: MTLDepthStencilDescriptor())
         try content.render(&renderState)
 
         encoder.endEncoding()

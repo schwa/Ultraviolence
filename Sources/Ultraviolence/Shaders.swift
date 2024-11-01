@@ -26,7 +26,6 @@ public struct VertexShader: RenderPass {
     }
 }
 
-
 public struct FragmentShader: RenderPass {
     public typealias Body = Never
 

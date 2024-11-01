@@ -24,14 +24,25 @@ public struct Draw <Content: RenderPass>: RenderPass where Content: RenderPass {
             let arguments = state.argumentsStack.flatMap { $0 }
             for argument in arguments {
                 switch argument.functionType {
+                // TODO: Logic for .fragment and .vertex are almost identical.
                 case .fragment:
                     guard let binding = reflection.fragmentBindings.first(where: { $0.name == argument.name }) else {
                         fatalError("Could not find binding for \"\(argument.name)\".")
                     }
                     switch argument.value {
-                    case .float4(let value):
-                        withUnsafeBytes(of: value) { buffer in
+                    case .float3, .float4, .matrix4x4:
+                        withUnsafeBytes(of: argument.value) { buffer in
                             state.encoder.setFragmentBytes(buffer.baseAddress!, length: buffer.count, index: binding.index)
+                        }
+                    }
+                case .vertex:
+                    guard let binding = reflection.vertexBindings.first(where: { $0.name == argument.name }) else {
+                        fatalError("Could not find binding for \"\(argument.name)\".")
+                    }
+                    switch argument.value {
+                    case .float3, .float4, .matrix4x4:
+                        withUnsafeBytes(of: argument.value) { buffer in
+                            state.encoder.setVertexBytes(buffer.baseAddress!, length: buffer.count, index: binding.index)
                         }
                     }
                 default:

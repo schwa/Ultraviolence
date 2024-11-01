@@ -71,7 +71,7 @@ public struct ForEach <Data, Content>: RenderPass where Content: RenderPass {
 
 // TODO: Name conflict with SwiftUI.
 @propertyWrapper
-public struct State <Wrapped> {
+public struct State_ <Wrapped> {
 
     public init() {
     }

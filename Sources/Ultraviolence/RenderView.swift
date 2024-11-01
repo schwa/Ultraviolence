@@ -20,6 +20,8 @@ public struct RenderView <Content>: NSViewRepresentable where Content: RenderPas
         view.device = device
         view.clearColor = MTLClearColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)
         view.colorPixelFormat = .bgra8Unorm_srgb
+        view.depthStencilPixelFormat = .depth32Float
+
         view.delegate = context.coordinator
         return view
     }
@@ -48,7 +50,24 @@ public class RenderPassCoordinator <Content>: NSObject, MTKViewDelegate where Co
         let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: view.currentRenderPassDescriptor!)!
         let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
         renderPipelineDescriptor.colorAttachments[0].pixelFormat = .bgra8Unorm_srgb
-        var renderState = RenderState(encoder: encoder, pipelineDescriptor: renderPipelineDescriptor)
+        renderPipelineDescriptor.depthAttachmentPixelFormat = .depth32Float
+
+        // TODO: Hardcoded depthStencilDescriptor
+        let depthStencilDescriptor = MTLDepthStencilDescriptor()
+        depthStencilDescriptor.depthCompareFunction = .lessEqual
+        depthStencilDescriptor.isDepthWriteEnabled = true
+
+        var renderState = RenderState(encoder: encoder, pipelineDescriptor: renderPipelineDescriptor, depthStencilDescriptor: depthStencilDescriptor)
+
+
+
+        let depthStencilState = device.makeDepthStencilState(descriptor: renderState.depthStencilDescriptor)!
+        encoder.setDepthStencilState(depthStencilState)
+
+        encoder.setCullMode(.back)
+        encoder.setFrontFacing(.counterClockwise)
+
+
         try! content.render(&renderState)
         encoder.endEncoding()
         commandBuffer.commit()
