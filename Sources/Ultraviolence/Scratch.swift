@@ -1,8 +1,14 @@
 import Metal
 import simd
+import MetalKit
+
+public enum Mesh {
+    case simple([SIMD3<Float>])
+    case mtkMesh(MTKMesh)
+}
 
 public protocol Geometry {
-    func vertices(for primitive: MTLPrimitiveType) -> [SIMD3<Float>]
+    func mesh() throws -> Mesh
 }
 
 public struct Quad2D {
@@ -16,7 +22,11 @@ public struct Quad2D {
 }
 
 extension Quad2D: Geometry {
-    public func vertices(for primitive: MTLPrimitiveType) -> [SIMD3<Float>] {
+    public func mesh() throws -> Mesh {
+        .simple(vertices(for: .triangle))
+    }
+
+    func vertices(for primitive: MTLPrimitiveType) -> [SIMD3<Float>] {
         switch primitive {
         case .triangle:
             return [

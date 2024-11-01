@@ -1,4 +1,5 @@
 import Metal
+import MetalKit
 
 public struct Draw <Content: RenderPass>: RenderPass where Content: RenderPass {
     public typealias Body = Never
@@ -20,7 +21,6 @@ public struct Draw <Content: RenderPass>: RenderPass where Content: RenderPass {
         }
         state.encoder.setRenderPipelineState(renderPipelineState)
         for element in geometry {
-            let triangles = element.vertices(for: .triangle)
             let arguments = state.argumentsStack.flatMap { $0 }
             for argument in arguments {
                 switch argument.functionType {
@@ -39,11 +39,22 @@ public struct Draw <Content: RenderPass>: RenderPass where Content: RenderPass {
                 }
             }
 
-            triangles.withUnsafeBytes { buffer in
-                // TODO: Hardcoded index = 0
-                state.encoder.setVertexBytes(buffer.baseAddress!, length: buffer.count, index: 0)
+            switch try element.mesh() {
+            case .simple(let vertices):
+                vertices.withUnsafeBytes { buffer in
+                    // TODO: Hardcoded index = 0
+                    state.encoder.setVertexBytes(buffer.baseAddress!, length: buffer.count, index: 0)
+                }
+                state.encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: vertices.count)
+            case .mtkMesh(let mtkMesh):
+                for submesh in mtkMesh.submeshes {
+                    // TODO: Hardcoded index = 0
+                    state.encoder.setVertexBuffer(mtkMesh.vertexBuffers[0].buffer, offset: 0, index: 0)
+                    state.encoder.drawIndexedPrimitives(type: submesh.primitiveType, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBuffer.buffer, indexBufferOffset: submesh.indexBuffer.offset)
+                }
             }
-            state.encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: triangles.count)
+
+
         }
     }
 }

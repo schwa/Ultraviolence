@@ -58,31 +58,3 @@ struct ContentView: View {
     ContentView()
 }
 
-struct SIMDColorPicker: View {
-    @Binding
-    var value: SIMD4<Float>
-
-    var body: some View {
-        Grid(alignment: .trailing) {
-            GridRow {
-                Text("Red")
-                Slider(value: $value.x)
-            }
-            GridRow {
-                Text("Green")
-                Slider(value: $value.y)
-            }
-            GridRow {
-                Text("Blue")
-                Slider(value: $value.z)
-            }
-            GridRow {
-                Text("Alpha")
-                Slider(value: $value.w)
-            }
-        }
-        .frame(maxWidth: 80)
-        .controlSize(.mini)
-    }
-
-}
