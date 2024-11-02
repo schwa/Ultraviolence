@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		455C19452CD48474009A25A6 /* Ultraviolence in Frameworks */ = {isa = PBXBuildFile; productRef = 455C19442CD48474009A25A6 /* Ultraviolence */; };
+		4562E5252CD6A382006337E0 /* Examples in Frameworks */ = {isa = PBXBuildFile; productRef = 4562E5242CD6A382006337E0 /* Examples */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				455C19452CD48474009A25A6 /* Ultraviolence in Frameworks */,
+				4562E5252CD6A382006337E0 /* Examples in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -38,6 +40,7 @@
 			isa = PBXGroup;
 			children = (
 				455C19072CD483FC009A25A6 /* UltraviolenceDemo */,
+				4562E5172CD6A32E006337E0 /* Frameworks */,
 				455C19062CD483FC009A25A6 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -48,6 +51,13 @@
 				455C19052CD483FC009A25A6 /* UltraviolenceDemo.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		4562E5172CD6A32E006337E0 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -71,6 +81,7 @@
 			name = UltraviolenceDemo;
 			packageProductDependencies = (
 				455C19442CD48474009A25A6 /* Ultraviolence */,
+				4562E5242CD6A382006337E0 /* Examples */,
 			);
 			productName = UltraviolenceDemo;
 			productReference = 455C19052CD483FC009A25A6 /* UltraviolenceDemo.app */;
@@ -360,6 +371,11 @@
 		455C19442CD48474009A25A6 /* Ultraviolence */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Ultraviolence;
+		};
+		4562E5242CD6A382006337E0 /* Examples */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 455C19432CD48474009A25A6 /* XCLocalSwiftPackageReference "../../Ultraviolence" */;
+			productName = Examples;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
