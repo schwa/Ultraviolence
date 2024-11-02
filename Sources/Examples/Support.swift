@@ -1,3 +1,4 @@
+import Foundation
 import CoreGraphics
 import SwiftUI
 import Metal
@@ -10,7 +11,7 @@ public struct Teapot: Geometry {
     }
 
     public func mesh() throws -> Mesh {
-        let url = Bundle.main.url(forResource: "teapot", withExtension: "obj")!
+        let url = Bundle.module.url(forResource: "teapot", withExtension: "obj")!
         let mdlAsset = MDLAsset(url: url, vertexDescriptor: nil, bufferAllocator: MTKMeshBufferAllocator(device: MTLCreateSystemDefaultDevice()!))
         let mdlMesh = mdlAsset.object(at: 0) as! MDLMesh
         let mtkMesh = try MTKMesh(mesh: mdlMesh, device: MTLCreateSystemDefaultDevice()!)

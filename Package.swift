@@ -13,7 +13,7 @@ let package = Package(
     ],
     targets: [
         .target(name: "Ultraviolence", dependencies: ["BaseSupport"]),
-        .target(name: "Examples", dependencies: ["Ultraviolence", "BaseSupport"]),
+        .target(name: "Examples", dependencies: ["Ultraviolence", "BaseSupport"], resources: [.copy("teapot.obj")]),
         .testTarget(name: "UltraviolenceTests", dependencies: ["Ultraviolence", "Examples", "BaseSupport"]),
         .executableTarget(name: "uvcli", dependencies: ["Ultraviolence", "Examples", "BaseSupport"]),
         .target(name: "BaseSupport"),
