@@ -1,7 +1,7 @@
 import simd
 import SwiftUI
 import Ultraviolence
-import BaseSupport
+internal import BaseSupport
 
 public struct TeapotRenderPass: RenderPass {
     let source = """

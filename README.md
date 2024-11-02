@@ -154,7 +154,8 @@ Ultraviolence should not be significantly slower than writing Metal code by hand
 
 - [ ] Get help (literally and metaphorically)
 - [ ] `render` could become be a more generic `visit`
-- [ ] Uniforms.
+- [X] Uniforms.
+- [X] Use internal imports for own packages. https://github.com/swiftlang/swift-evolution/blob/main/proposals/0409-access-level-on-imports.md#declaring-the-access-level-of-an-imported-module
 - This is going to overlap with RenderKit. Is this RenderKit4 (are we really up to 4 semi-unreleased projects now?)
 - Is `RenderPass` the right name for a node in the graph here. Some nodes are definitely not render passes and it seems too specific. Maybe just `Node` (`RenderNode?`, `RenderElement`?).
 - How do we detect state changes and detect if a graph has changed? Adopt ideas from SwiftUI and [ObjcIO](http://objc.io) folks.
