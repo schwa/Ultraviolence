@@ -1,6 +1,6 @@
 import Metal
 
-extension MTLVertexDescriptor {
+public extension MTLVertexDescriptor {
     convenience init(vertexAttributes: [MTLVertexAttribute]) {
         self.init()
         var offset: Int = 0
@@ -15,7 +15,7 @@ extension MTLVertexDescriptor {
     }
 }
 
-extension MTLVertexFormat {
+public extension MTLVertexFormat {
     init(_ dataType: MTLDataType) {
         switch dataType {
         case .float3:

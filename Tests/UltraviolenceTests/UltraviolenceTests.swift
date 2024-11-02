@@ -1,46 +1,13 @@
 import Testing
 import CoreGraphics
 @testable import Ultraviolence
+import Examples
 
 struct RenderingTests {
-
     @Test
     func simpleRender() async throws {
-        struct MyRenderPass: RenderPass {
-            let source = """
-                #include <metal_stdlib>
-
-                using namespace metal;
-
-                struct VertexIn {
-                    float3 position [[attribute(0)]];
-                };
-
-                struct VertexOut {
-                    float4 position [[position]];
-                };
-
-                [[vertex]] VertexOut vertex_main(const VertexIn in [[stage_in]]) {
-                    float4 position = float4(in.position, 1.0);
-                    return VertexOut { position };
-                }
-
-                [[fragment]] float4 fragment_main() {
-                    return float4(1.0, 0.0, 0.0, 1.0);
-                }
-            """
-
-            var body: some RenderPass {
-                try! Draw([Quad2D(origin: [-0.5, -0.5], size: [1, 1])]) {
-                    try VertexShader("vertex_main", source: source)
-                    try FragmentShader("fragment_main", source: source)
-                }
-            }
-        }
-
-        let renderer = Renderer(MyRenderPass())
+        let renderer = Renderer(TeapotRenderPass(color: [1, 0, 0, 1], size: CGSize(width: 1600, height: 1200), model: .init(translation: [0, 0, 0]), view: .init(translation: [0, 0, 0]), cameraPosition: [0, 0, 0]))
         let image = try renderer.render(size: CGSize(width: 1600, height: 1200)).cgImage
         #expect(image != nil)
     }
-
 }

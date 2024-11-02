@@ -12,9 +12,11 @@ let package = Package(
         .library(name: "Examples", targets: ["Examples"]),
     ],
     targets: [
-        .target(name: "Ultraviolence"),
-        .target(name: "Examples", dependencies: ["Ultraviolence"]),
-        .testTarget(name: "UltraviolenceTests", dependencies: ["Ultraviolence"]),
-        .executableTarget(name: "uvcli", dependencies: ["Ultraviolence"])
-    ]
+        .target(name: "Ultraviolence", dependencies: ["BaseSupport"]),
+        .target(name: "Examples", dependencies: ["Ultraviolence", "BaseSupport"]),
+        .testTarget(name: "UltraviolenceTests", dependencies: ["Ultraviolence", "Examples", "BaseSupport"]),
+        .executableTarget(name: "uvcli", dependencies: ["Ultraviolence", "Examples", "BaseSupport"]),
+        .target(name: "BaseSupport"),
+    ],
+    swiftLanguageVersions: [.v6]
 )

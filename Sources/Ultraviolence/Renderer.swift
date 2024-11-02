@@ -6,7 +6,7 @@ public struct Renderer <Content> where Content: RenderPass {
     let content: Content
 
     public init(_ content: Content) {
-        self.content = try content
+        self.content = content
     }
 
     public struct Rendering {
