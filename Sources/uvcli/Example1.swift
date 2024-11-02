@@ -2,6 +2,7 @@ import Ultraviolence
 import SwiftUI
 import simd
 
+/*
 struct UnlitRenderPass: RenderPass {
     var geometry: Geometry
     var cameraMatrix: simd_float4x4
@@ -61,3 +62,4 @@ struct MyRenderView: View {
         }
     }
 }
+*/
