@@ -1,6 +1,7 @@
 import Metal
 import MetalFX
 
+// TODO: Placeholder.
 public struct MetalFXUpscaler: RenderPass {
     public init(input: Texture) {
 //        let spatialScalerDescriptor = MTLFXSpatialScalerDescriptor()

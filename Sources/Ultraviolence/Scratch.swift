@@ -3,50 +3,7 @@ import simd
 import MetalKit
 import SwiftUI
 
-public enum Mesh {
-    case simple([SIMD3<Float>])
-    case mtkMesh(MTKMesh)
-}
-
-public protocol Geometry {
-    func mesh() throws -> Mesh
-}
-
-public struct Quad2D {
-    public var origin: SIMD2<Float> = .zero
-    public var size: SIMD2<Float> = .one
-
-    public init(origin: SIMD2<Float>, size: SIMD2<Float>) {
-        self.origin = origin
-        self.size = size
-    }
-}
-
-extension Quad2D: Geometry {
-    public func mesh() throws -> Mesh {
-        .simple(vertices(for: .triangle))
-    }
-
-    func vertices(for primitive: MTLPrimitiveType) -> [SIMD3<Float>] {
-        switch primitive {
-        case .triangle:
-            return [
-                // Two triangles (six vertices) forming a quad.
-                [origin.x, origin.y, 0],
-                [origin.x + size.x, origin.y, 0],
-                [origin.x, origin.y + size.y, 0],
-                [origin.x + size.x, origin.y, 0],
-                [origin.x + size.x, origin.y + size.y, 0],
-                [origin.x, origin.y + size.y, 0],
-            ]
-        default:
-            fatalError()
-        }
-    }
-}
-
-// MARK: -
-
+// TODO: Placeholder.
 public struct Texture {
     public init() {
     }
@@ -56,7 +13,8 @@ public struct Texture {
 }
 
 // TODO: Name conflict with SwiftUI.
-public struct ForEach <Data, Content>: RenderPass where Content: RenderPass {
+// TODO: Placeholder.
+public struct ForEach_ <Data, Content>: RenderPass where Content: RenderPass {
     var data: Data
     var content: (Data) throws -> Content
 
@@ -70,8 +28,8 @@ public struct ForEach <Data, Content>: RenderPass where Content: RenderPass {
     }
 }
 
-// TODO: Name conflict with SwiftUI.
 @propertyWrapper
+// TODO: Placeholder.
 public struct State_ <Wrapped> {
 
     public init() {
@@ -87,6 +45,7 @@ public struct State_ <Wrapped> {
     }
 }
 
+// TODO: Placeholder.
 public struct Chain <Content: RenderPass>: RenderPass where Content: RenderPass {
     var content: Content
 
@@ -96,22 +55,6 @@ public struct Chain <Content: RenderPass>: RenderPass where Content: RenderPass 
 
     public var body: some RenderPass {
         content
-    }
-}
-
-public extension RenderPass {
-    func uniform(_ name: String, _ value: Any) -> some RenderPass {
-        return self
-    }
-
-    func renderTarget(_ texture: Texture) -> some RenderPass {
-        return self
-    }
-}
-
-public extension View {
-    func onDrawableSizeChange(initial: Bool = false, _ body: (SIMD2<Float>) -> Void) -> some View {
-        return self
     }
 }
 

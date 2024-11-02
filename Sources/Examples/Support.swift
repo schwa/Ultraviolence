@@ -5,8 +5,11 @@ import ModelIO
 import MetalKit
 import Ultraviolence
 
-struct Teapot: Geometry {
-    func mesh() throws -> Mesh {
+public struct Teapot: Geometry {
+    public init() {
+    }
+
+    public func mesh() throws -> Mesh {
         let url = Bundle.main.url(forResource: "teapot", withExtension: "obj")!
         let mdlAsset = MDLAsset(url: url, vertexDescriptor: nil, bufferAllocator: MTKMeshBufferAllocator(device: MTLCreateSystemDefaultDevice()!))
         let mdlMesh = mdlAsset.object(at: 0) as! MDLMesh
