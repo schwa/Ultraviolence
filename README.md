@@ -1,4 +1,4 @@
-# Ultraviolence
+# [Ultraviolence](https://github.com/schwa/Ultraviolence)
 
 A declarative framework for Metal rendering in Swift.
 
@@ -60,7 +60,6 @@ This example shows how to use shaders and shader parameters in Ultraviolence. No
 
 ```swift
 struct MyView: View {
-
     let source = """
         #include <metal_stdlib>
 
@@ -98,6 +97,36 @@ struct MyView: View {
 ```
 
 TODO: What the above example doesn't show is how to link the vertex descriptor of the geometry to the vertex shader.
+
+### Mixing Compute and Graphics
+
+The following example shows how to mix compute and graphics passes in Ultraviolence.
+
+```swift
+struct MyRenderPass: RenderPass {
+    var geometries: [Geometry]
+    var color: Texture
+    var depth: Texture
+
+    var body: some RenderPass {
+        Chain {
+            Draw(geometries) {
+                MyGraphicsShader()
+            }
+            .colorAttachment(color, index: 0)
+            .depthAttachment(depth)
+            .depthCompare(.less)
+
+            Compute {
+                EdgeDetectionKernel()
+            }
+            .arguments("color", color)
+            .arguments("depth", depth)
+            .output(color)
+        }
+    }
+}
+```
 
 ### Attachments
 
