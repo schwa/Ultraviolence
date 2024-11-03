@@ -16,14 +16,14 @@ public struct VertexShader: RenderPass {
         function = library.makeFunction(name: name)!
     }
 
-    public func render(_ state: inout RenderState) throws {
-        assert(state.pipelineDescriptor.vertexFunction == nil)
+    public func visit(_ visitor: inout Visitor) throws {
+        assert(visitor.renderPipelineDescriptor.vertexFunction == nil)
         guard let vertexAttributes = function.vertexAttributes else {
             fatalError("Cannot get vertex attributes from vertex function")
         }
         let vertexDescriptor = MTLVertexDescriptor(vertexAttributes: vertexAttributes)
-        state.pipelineDescriptor.vertexDescriptor = vertexDescriptor
-        state.pipelineDescriptor.vertexFunction = function
+        visitor.renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
+        visitor.renderPipelineDescriptor.vertexFunction = function
     }
 }
 
@@ -42,9 +42,29 @@ public struct FragmentShader: RenderPass {
         function = library.makeFunction(name: name)!
     }
 
-    public func render(_ state: inout RenderState) throws {
-        assert(state.pipelineDescriptor.fragmentFunction == nil)
-        state.pipelineDescriptor.fragmentFunction = function
+    public func visit(_ visitor: inout Visitor) throws {
+        assert(visitor.renderPipelineDescriptor.fragmentFunction == nil)
+        visitor.renderPipelineDescriptor.fragmentFunction = function
+    }
+}
+
+public struct ComputeShader: RenderPass {
+    public typealias Body = Never
+
+    var function: MTLFunction
+
+    public init(_ name: String) {
+        fatalError()
+    }
+
+    public init(_ name: String, source: String) throws {
+        let device = MTLCreateSystemDefaultDevice()!
+        let library = try device.makeLibrary(source: source, options: nil)
+        function = library.makeFunction(name: name)!
+    }
+
+    public func visit(_ visitor: inout Visitor) throws {
+        visitor.insert(.function(function))
     }
 }
 

@@ -1,21 +1,6 @@
 import Metal
 import simd
 
-public struct RenderState {
-    public var encoder: MTLRenderCommandEncoder
-    public var pipelineDescriptor: MTLRenderPipelineDescriptor
-    public var depthStencilDescriptor: MTLDepthStencilDescriptor
-
-    public var argumentsStack: [[Argument]] = []
-
-    public init(encoder: MTLRenderCommandEncoder, pipelineDescriptor: MTLRenderPipelineDescriptor, depthStencilDescriptor: MTLDepthStencilDescriptor) {
-        self.encoder = encoder
-        self.pipelineDescriptor = pipelineDescriptor
-        self.depthStencilDescriptor = depthStencilDescriptor
-
-    }
-}
-
 public struct Argument {
     public var functionType: MTLFunctionType
     public var name: String
@@ -27,6 +12,7 @@ public enum Value {
     case float3(SIMD3<Float>)
     case float4(SIMD4<Float>)
     case matrix4x4(simd_float4x4)
+    case texture(MTLTexture)
 }
 
 struct ArgumentsRenderPass <Content>: RenderPass where Content: RenderPass {
@@ -40,9 +26,9 @@ struct ArgumentsRenderPass <Content>: RenderPass where Content: RenderPass {
         self.arguments = arguments
     }
 
-    func render(_ state: inout RenderState) throws {
-        state.argumentsStack.append(arguments)
-        try content.render(&state)
+    func visit(_ visitor: inout Visitor) throws {
+        visitor.argumentsStack.append(arguments)
+        try content.visit(&visitor)
     }
 }
 
@@ -62,6 +48,10 @@ public extension RenderPass {
 
     func argument(type: MTLFunctionType, name: String, value: simd_float4x4) -> some RenderPass {
         argument(type: type, name: name, value: .matrix4x4(value))
+    }
+
+    func argument(type: MTLFunctionType, name: String, value: MTLTexture) -> some RenderPass {
+        argument(type: type, name: name, value: .texture(value))
     }
 }
 

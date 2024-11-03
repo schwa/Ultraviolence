@@ -1,7 +1,8 @@
 import simd
-import SwiftUI
 import Ultraviolence
 internal import BaseSupport
+import CoreGraphics
+import Metal
 
 public struct TeapotRenderPass: RenderPass {
     let source = """
@@ -88,6 +89,7 @@ public struct TeapotRenderPass: RenderPass {
             try VertexShader("vertex_main", source: source)
             try FragmentShader("fragment_main", source: source)
         }
+        .depthStencilDescriptor(MTLDepthStencilDescriptor(depthCompareFunction: .less, isDepthWriteEnabled: true))
         .argument(type: .vertex, name: "projection", value: PerspectiveProjection().projectionMatrix(for: [Float(size.width), Float(size.height)]))
         .argument(type: .vertex, name: "model", value: model)
         .argument(type: .vertex, name: "view", value: view)
@@ -97,48 +99,3 @@ public struct TeapotRenderPass: RenderPass {
     }
 }
 
-public struct SimpleTeapotExample: View {
-
-    @State
-    var color: SIMD4<Float> = [1, 0, 0, 1]
-
-    @State
-    var size: CGSize = .zero
-
-    @State
-    var angle: Angle = .zero
-
-    @State
-    var camera: SIMD3<Float> = [0, 2, 6]
-
-    public init() {
-    }
-
-    public var body: some View {
-        TimelineView(.animation) { timeline in
-            RenderView(TeapotRenderPass(
-                color: color,
-                size: size,
-                model: simd_float4x4(yRotation: angle),
-                view: simd_float4x4(translation: camera).inverse,
-                cameraPosition: camera)
-            )
-            .onGeometryChange(for: CGSize.self, of: \.size, action: { size = $0 })
-            .onChange(of: timeline.date, initial: true) {
-                angle = Angle(degrees: (timeline.date.timeIntervalSince1970 * 120).truncatingRemainder(dividingBy: 360))
-            }
-        }
-        .overlay(alignment: .topTrailing) {
-//            Form {
-//                SIMDColorPicker(value: $color)
-//                SliderField(label: "X", value: $camera.x, in: -100 ... 100)
-//                SliderField(label: "Y", value: $camera.y, in: -100 ... 100)
-//                SliderField(label: "Z", value: $camera.z, in: -100 ... 100)
-//            }
-//            .padding()
-//            .background(.thinMaterial)
-//            .cornerRadius(8)
-//            .padding()
-        }
-    }
-}

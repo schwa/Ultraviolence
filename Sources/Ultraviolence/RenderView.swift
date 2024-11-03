@@ -1,6 +1,7 @@
 import SwiftUI
 import MetalKit
 import Metal
+import os
 
 public struct RenderView <Content>: NSViewRepresentable where Content: RenderPass {
 
@@ -31,10 +32,14 @@ public struct RenderView <Content>: NSViewRepresentable where Content: RenderPas
     }
 }
 
+// MARK: -
+
 public class RenderPassCoordinator <Content>: NSObject, MTKViewDelegate where Content: RenderPass {
     var device: MTLDevice
     var commandQueue: MTLCommandQueue
     var content: Content
+    var lastError: Error?
+    var logger: Logger? = Logger()
 
     init(device: MTLDevice, content: Content) {
         self.device = device
@@ -49,18 +54,18 @@ public class RenderPassCoordinator <Content>: NSObject, MTKViewDelegate where Co
         let commandBuffer = commandQueue.makeCommandBuffer()!
         let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: view.currentRenderPassDescriptor!)!
         let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
-        renderPipelineDescriptor.colorAttachments[0].pixelFormat = .bgra8Unorm_srgb
-        renderPipelineDescriptor.depthAttachmentPixelFormat = .depth32Float
-        // TODO: Hardcoded depthStencilDescriptor
-        let depthStencilDescriptor = MTLDepthStencilDescriptor()
-        depthStencilDescriptor.depthCompareFunction = .lessEqual
-        depthStencilDescriptor.isDepthWriteEnabled = true
-        var renderState = RenderState(encoder: encoder, pipelineDescriptor: renderPipelineDescriptor, depthStencilDescriptor: depthStencilDescriptor)
-        let depthStencilState = device.makeDepthStencilState(descriptor: renderState.depthStencilDescriptor)!
-        encoder.setDepthStencilState(depthStencilState)
-        encoder.setCullMode(.back)
-        encoder.setFrontFacing(.counterClockwise)
-        try! content.render(&renderState)
+        renderPipelineDescriptor.colorAttachments[0].pixelFormat = view.colorPixelFormat
+        renderPipelineDescriptor.depthAttachmentPixelFormat = view.depthStencilPixelFormat
+        var visitor = Visitor(device: device)
+        do {
+            try visitor.with([.commandBuffer(commandBuffer), .renderEncoder(encoder), .renderPipelineDescriptor(renderPipelineDescriptor)]) { visitor in
+                try content.visit(&visitor)
+            }
+        }
+        catch {
+            logger?.error("Error when visiting render passes: \(error)")
+            lastError = error
+        }
         encoder.endEncoding()
         commandBuffer.commit()
         view.currentDrawable!.present()

@@ -35,6 +35,8 @@ public extension simd_float4x4 {
             [0, 0, 0, 1]
         ])
     }
+
+    static let identity = simd_float4x4(diagonal: [1, 1, 1, 1])
 }
 
 public struct SliderField: View {

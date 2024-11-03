@@ -38,3 +38,12 @@ public extension MTLVertexFormat {
         }
     }
 }
+
+public extension MTLDepthStencilDescriptor {
+    convenience init(depthCompareFunction: MTLCompareFunction, isDepthWriteEnabled: Bool = true) {
+        self.init()
+        self.depthCompareFunction = depthCompareFunction
+        self.isDepthWriteEnabled = isDepthWriteEnabled
+    }
+}
+

@@ -63,7 +63,7 @@ public struct LambertianShader: RenderPass {
         float combinedIntensity = lambertian * rimIntensity;
         
         // Apply combined intensity to color
-        float4 shadedColor = color * combinedIntensity;
+        float4 shadedColor = float4(color * combinedIntensity).xyz, 1.0);
         return shadedColor;
     }    
     """

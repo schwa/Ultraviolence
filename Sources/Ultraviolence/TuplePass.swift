@@ -6,9 +6,9 @@ public struct TuplePass <each T: RenderPass>: RenderPass {
         self.value = (repeat each value)
     }
 
-    public func render(_ state: inout RenderState) throws {
+    public func visit(_ visitor: inout Visitor) throws {
         for element in repeat (each value) {
-            try element.render(&state)
+            try element.visit(&visitor)
         }
     }
 }

@@ -7,12 +7,12 @@ public protocol RenderPass {
     @RenderPassBuilder
     var body: Body { get }
 
-    func render(_ state: inout RenderState) throws
+    func visit(_ visitor: inout Visitor) throws
 }
 
 extension RenderPass {
-    public func render(_ state: inout RenderState) throws {
-        try body.render(&state)
+    public func visit(_ visitor: inout Visitor) throws {
+        try body.visit(&visitor)
     }
 }
 
