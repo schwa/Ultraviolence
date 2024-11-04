@@ -45,9 +45,9 @@ public struct Renderer <Content> where Content: RenderPass {
         renderPassDescriptor.depthAttachment.clearDepth = 1
         renderPassDescriptor.depthAttachment.storeAction = .dontCare
         //
-        let commandQueue = try device.makeCommandQueue().orThrow(.resourceCreationFailure).labeled("Renderer Command Queue")
-        let commandBuffer = try commandQueue.makeCommandBuffer().orThrow(.resourceCreationFailure).labeled("Renderer Command Buffer")
-        let encoder = try commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor).orThrow(.resourceCreationFailure).labeled("Renderer Render Command Encoder")
+        let commandQueue = try device.makeCommandQueue().orThrow(.resourceCreationFailure).labeled("Renderer")
+        let commandBuffer = try commandQueue.makeCommandBuffer().orThrow(.resourceCreationFailure).labeled("Renderer")
+        let encoder = try commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor).orThrow(.resourceCreationFailure).labeled("Renderer")
 
         try commandBuffer.withDebugGroup(label: "Renderer") {
             let renderPipelineDescriptor = MTLRenderPipelineDescriptor()

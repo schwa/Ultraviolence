@@ -10,6 +10,10 @@ import UniformTypeIdentifiers
 
 @main
 public struct UVCLI {
+
+    // Get capture from environment
+    static let capture = ProcessInfo.processInfo.environment["CAPTURE"].isTrue
+
     public static func main() async throws {
         let camera = simd_float3([0, 2, 6])
         let model = simd_float4x4(yRotation: .degrees(0))
@@ -29,7 +33,7 @@ public struct UVCLI {
         //        let renderPass2 = MixedExample(size: size, geometries: [Teapot()], color: colorTexture, depth: depthTexture, camera: camera, model: model)
 
         let renderer = Renderer(size: size, content: renderPass)
-        let image = try MTLCaptureManager.shared().with(enabled: true) {
+        let image = try MTLCaptureManager.shared().with(enabled: capture) {
             try renderer.render().cgImage
         }
         let url = URL(fileURLWithPath: "output.png").absoluteURL
@@ -37,5 +41,14 @@ public struct UVCLI {
         CGImageDestinationAddImage(imageDestination, image, nil)
         CGImageDestinationFinalize(imageDestination)
         NSWorkspace.shared.activateFileViewerSelecting([url])
+    }
+}
+
+extension Optional where Wrapped == String {
+    var isTrue: Bool {
+        guard let value = self?.lowercased() else {
+            return false
+        }
+        return ["1", "true", "yes"].contains(value)
     }
 }
