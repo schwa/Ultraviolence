@@ -47,3 +47,19 @@ public extension MTLDepthStencilDescriptor {
     }
 }
 
+public extension MTLCaptureManager {
+    func with<R>(enabled: Bool = true, _ closure: () throws -> R) throws -> R {
+        guard enabled else {
+            return try closure()
+        }
+        let captureScope = makeCaptureScope(device: MTLCreateSystemDefaultDevice()!)
+        let captureDescriptor = MTLCaptureDescriptor()
+        captureDescriptor.captureObject = captureScope
+        try startCapture(with: captureDescriptor)
+        captureScope.begin()
+        defer {
+            captureScope.end()
+        }
+        return try closure()
+    }
+}
