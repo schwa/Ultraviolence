@@ -1,28 +1,36 @@
 import CoreGraphics
 import Metal
 
+// TODO: This is a very WIP API.
+// TODO: I'd like RenderView to be based on this.
 public struct Renderer <Content> where Content: RenderPass {
 
-    let content: Content
+    public var device: MTLDevice = MTLCreateSystemDefaultDevice()!
+    public var size: CGSize
+    public var content: Content
+    public var colorTexture: MTLTexture
+    public var depthTexture: MTLTexture
 
-    public init(_ content: Content) {
+    // TODO: Most of this belongs on a RenderSession type API. We should be able to render multiple times with the same setup.
+    public init(size: CGSize, content: Content) {
+        self.size = size
         self.content = content
+
+        let device = MTLCreateSystemDefaultDevice()!
+        let colorTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm_srgb, width: Int(size.width), height: Int(size.height), mipmapped: false)
+        colorTextureDescriptor.usage = [.renderTarget]
+        colorTexture = device.makeTexture(descriptor: colorTextureDescriptor)!
+
+        let depthTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: Int(size.width), height: Int(size.height), mipmapped: false)
+        depthTextureDescriptor.usage = [.renderTarget]
+        depthTexture = device.makeTexture(descriptor: depthTextureDescriptor)!
     }
 
     public struct Rendering {
         public var texture: MTLTexture
     }
 
-    public func render(size: CGSize) throws -> Rendering {
-        let device = MTLCreateSystemDefaultDevice()!
-        let colorTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm_srgb, width: Int(size.width), height: Int(size.height), mipmapped: false)
-        colorTextureDescriptor.usage = [.renderTarget]
-        let colorTexture = device.makeTexture(descriptor: colorTextureDescriptor)!
-
-        let depthTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: Int(size.width), height: Int(size.height), mipmapped: false)
-        depthTextureDescriptor.usage = [.renderTarget]
-        let depthTexture = device.makeTexture(descriptor: depthTextureDescriptor)!
-
+    public func render() throws -> Rendering {
         let renderPassDescriptor = MTLRenderPassDescriptor()
         renderPassDescriptor.colorAttachments[0].texture = colorTexture
         renderPassDescriptor.colorAttachments[0].loadAction = .clear
