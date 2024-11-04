@@ -2,7 +2,6 @@ import Metal
 import simd
 
 public struct Visitor {
-
     public var device: MTLDevice
     public var argumentsStack: [[Argument]] = []
 
@@ -20,7 +19,7 @@ public struct Visitor {
         environment.removeLast()
     }
 
-    public mutating func with<R>(_ state: [VisitorState], _ body: (inout Visitor) throws -> R) rethrows -> R{
+    public mutating func with<R>(_ state: [VisitorState], _ body: (inout Self) throws -> R) rethrows -> R {
         push(state)
         defer {
             pop()
@@ -31,7 +30,6 @@ public struct Visitor {
     public mutating func insert(_ state: VisitorState) {
         environment[environment.count - 1].append(state)
     }
-
 }
 
 public enum VisitorState {
@@ -39,9 +37,9 @@ public enum VisitorState {
     case renderEncoder(MTLRenderCommandEncoder)
     case renderPipelineDescriptor(MTLRenderPipelineDescriptor)
     case depthStencilDescriptor(MTLDepthStencilDescriptor)
-//    case arguments([Argument])
+    //    case arguments([Argument])
     case function(MTLFunction)
-//    case computePipelineDescriptor(MTLComputePipelineDescriptor)
+    //    case computePipelineDescriptor(MTLComputePipelineDescriptor)
     case depthAttachment(MTLTexture)
     case colorAttachment(MTLTexture, Int)
 }
@@ -106,27 +104,25 @@ public extension Visitor {
         return nil
     }
 
-//    var computePipelineDescriptor: MTLComputePipelineDescriptor {
-//        for elements in environment.reversed() {
-//            for element in elements {
-//                if case let .computePipelineDescriptor(value) = element {
-//                    return value
-//                }
-//            }
-//        }
-//        return nil
-//    }
+    //    var computePipelineDescriptor: MTLComputePipelineDescriptor {
+    //        for elements in environment.reversed() {
+    //            for element in elements {
+    //                if case let .computePipelineDescriptor(value) = element {
+    //                    return value
+    //                }
+    //            }
+    //        }
+    //        return nil
+    //    }
 
 }
 
 public extension RenderPass {
-
     func depthStencilDescriptor(_ descriptor: MTLDepthStencilDescriptor) -> some RenderPass {
         AnyRenderPassModifier(content: self) { visitor in
             visitor.insert(.depthStencilDescriptor(descriptor))
         }
     }
-
 
     func colorAttachment(_ texture: MTLTexture, index: Int) -> some RenderPass {
         AnyRenderPassModifier(content: self) { visitor in

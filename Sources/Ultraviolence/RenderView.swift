@@ -1,10 +1,9 @@
-import SwiftUI
-import MetalKit
 import Metal
+import MetalKit
 internal import os
+import SwiftUI
 
 public struct RenderView <Content>: NSViewRepresentable where Content: RenderPass {
-
     let device = MTLCreateSystemDefaultDevice()!
     let content: Content
 
@@ -47,6 +46,7 @@ public class RenderPassCoordinator <Content>: NSObject, MTKViewDelegate where Co
     }
 
     public func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
+        // This line intentionally left blank.
     }
 
     public func draw(in view: MTKView) {

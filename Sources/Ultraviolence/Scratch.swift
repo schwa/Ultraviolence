@@ -1,14 +1,16 @@
 import Metal
-import simd
 import MetalKit
+import simd
 import SwiftUI
 
 // TODO: Placeholder.
 public struct Texture {
     public init() {
+        fatalError("Not implemented")
     }
 
     public init(size: SIMD2<Float>) {
+        fatalError("Not implemented")
     }
 }
 
@@ -31,8 +33,8 @@ public struct ForEach_ <Data, Content>: RenderPass where Content: RenderPass {
 @propertyWrapper
 // TODO: Placeholder.
 public struct State_ <Wrapped> {
-
     public init() {
+        fatalError("Not implemented")
     }
 
     public var wrappedValue: Wrapped {
@@ -57,4 +59,3 @@ public struct Chain <Content: RenderPass>: RenderPass where Content: RenderPass 
         content
     }
 }
-

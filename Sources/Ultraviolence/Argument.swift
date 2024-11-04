@@ -15,7 +15,7 @@ public enum Value {
     case texture(MTLTexture)
 }
 
-struct ArgumentsRenderPass <Content>: RenderPass where Content: RenderPass {
+internal struct ArgumentsRenderPass <Content>: RenderPass where Content: RenderPass {
     typealias Body = Never
 
     var arguments: [Argument]
@@ -54,4 +54,3 @@ public extension RenderPass {
         argument(type: type, name: name, value: .texture(value))
     }
 }
-

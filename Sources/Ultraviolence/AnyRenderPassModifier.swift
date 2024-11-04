@@ -1,5 +1,6 @@
 public struct AnyRenderPassModifier <Content>: RenderPass where Content: RenderPass {
     public typealias Body = Never
+
     var content: Content
     var visit: (inout Visitor) throws -> Void
 

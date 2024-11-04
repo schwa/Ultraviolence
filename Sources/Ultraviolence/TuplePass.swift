@@ -1,5 +1,6 @@
 public struct TuplePass <each T: RenderPass>: RenderPass {
     public typealias Body = Never
+
     var value: (repeat each T)
 
     public init(_ value: repeat each T) {

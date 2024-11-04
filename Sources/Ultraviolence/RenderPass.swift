@@ -10,16 +10,16 @@ public protocol RenderPass {
     func visit(_ visitor: inout Visitor) throws
 }
 
-extension RenderPass {
-    public func visit(_ visitor: inout Visitor) throws {
+public extension RenderPass {
+    func visit(_ visitor: inout Visitor) throws {
         try body.visit(&visitor)
     }
 }
 
 // MARK: -
 
-extension RenderPass where Body == Never {
-    public var body: Never {
+public extension RenderPass where Body == Never {
+    var body: Never {
         fatalError("No body for \(type(of: self))")
     }
 }

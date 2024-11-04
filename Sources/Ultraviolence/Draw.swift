@@ -36,8 +36,9 @@ public struct Draw <Content: RenderPass>: RenderPass where Content: RenderPass {
                     }
                     switch argument.value {
                     case .float3, .float4, .matrix4x4:
-                        withUnsafeBytes(of: argument.value) { buffer in
-                            encoder.setFragmentBytes(buffer.baseAddress!, length: buffer.count, index: binding.index)
+                        try withUnsafeBytes(of: argument.value) { buffer in
+                            let baseAddress = try buffer.baseAddress.orThrow(.resourceCreationFailure)
+                            encoder.setFragmentBytes(baseAddress, length: buffer.count, index: binding.index)
                         }
                     case .texture(let texture):
                         encoder.setFragmentTexture(texture, index: binding.index)
@@ -48,8 +49,9 @@ public struct Draw <Content: RenderPass>: RenderPass where Content: RenderPass {
                     }
                     switch argument.value {
                     case .float3, .float4, .matrix4x4:
-                        withUnsafeBytes(of: argument.value) { buffer in
-                            encoder.setVertexBytes(buffer.baseAddress!, length: buffer.count, index: binding.index)
+                        try withUnsafeBytes(of: argument.value) { buffer in
+                            let baseAddress = try buffer.baseAddress.orThrow(.resourceCreationFailure)
+                            encoder.setVertexBytes(baseAddress, length: buffer.count, index: binding.index)
                         }
                     case .texture(let texture):
                         encoder.setVertexTexture(texture, index: binding.index)
@@ -85,4 +87,3 @@ public struct Draw <Content: RenderPass>: RenderPass where Content: RenderPass {
         }
     }
 }
-

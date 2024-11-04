@@ -27,14 +27,14 @@ public struct LambertianShader: RenderPass {
         constant float4x4 &view [[buffer(3)]]
     ) {
         VertexOut out;
-        
+
         // Transform position to clip space
         float4 objectSpace = float4(in.position, 1.0);
         out.position = projection * view * model * objectSpace;
-        
+
         // Transform position to world space for rim lighting
         out.worldPosition = (model * objectSpace).xyz;
-        
+
         // Transform normal to world space and invert it
         float3x3 normalMatrix = float3x3(model[0].xyz, model[1].xyz, model[2].xyz);
         out.worldNormal = normalize(-(normalMatrix * in.normal));
@@ -51,21 +51,21 @@ public struct LambertianShader: RenderPass {
         // Normalize light and view directions
         float3 lightDir = normalize(lightDirection);
         float3 viewDir = normalize(cameraPosition - in.worldPosition);
-        
+
         // Lambertian shading calculation
         float lambertian = max(dot(in.worldNormal, lightDir), 0.0);
-        
+
         // Rim lighting calculation
         float rim = pow(1.0 - dot(in.worldNormal, viewDir), 2.0);
         float rimIntensity = 0.25 * rim;  // Adjust the intensity of the rim light as needed
-        
+
         // Combine Lambertian shading and rim lighting
         float combinedIntensity = lambertian * rimIntensity;
-        
+
         // Apply combined intensity to color
         float4 shadedColor = float4(color * combinedIntensity).xyz, 1.0);
         return shadedColor;
-    }    
+    }
     """
 
     var geometry: [Geometry]
@@ -85,7 +85,7 @@ public struct LambertianShader: RenderPass {
     }
 
     public var body: some RenderPass {
-        return try! Draw(geometry) {
+        try! Draw(geometry) {
             try VertexShader("vertex_main", source: source)
             try FragmentShader("fragment_main", source: source)
         }
@@ -97,4 +97,3 @@ public struct LambertianShader: RenderPass {
         .argument(type: .fragment, name: "cameraPosition", value: cameraPosition)
     }
 }
-

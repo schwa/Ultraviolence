@@ -4,7 +4,6 @@ import Metal
 // TODO: This is a very WIP API.
 // TODO: I'd like RenderView to be based on this.
 public struct Renderer <Content> where Content: RenderPass {
-
     public var device: MTLDevice = MTLCreateSystemDefaultDevice()!
     public var size: CGSize
     public var content: Content
@@ -32,7 +31,6 @@ public struct Renderer <Content> where Content: RenderPass {
         self.init(size: size, content: content, colorTexture: colorTexture, depthTexture: depthTexture)
     }
 
-
     public struct Rendering {
         public var texture: MTLTexture
     }
@@ -56,8 +54,8 @@ public struct Renderer <Content> where Content: RenderPass {
             renderPipelineDescriptor.colorAttachments[0].pixelFormat = colorTexture.pixelFormat
             renderPipelineDescriptor.depthAttachmentPixelFormat = depthTexture.pixelFormat
             var visitor = Visitor(device: device)
-            visitor.with([.commandBuffer(commandBuffer), .renderEncoder(encoder), .renderPipelineDescriptor(renderPipelineDescriptor)]) { visitor in
-                try! content.visit(&visitor)
+            try visitor.with([.commandBuffer(commandBuffer), .renderEncoder(encoder), .renderPipelineDescriptor(renderPipelineDescriptor)]) { visitor in
+                try content.visit(&visitor)
             }
         }
         encoder.endEncoding()

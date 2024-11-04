@@ -64,8 +64,6 @@ public extension MTLCaptureManager {
     }
 }
 
-
-
 public extension MTLCommandBuffer {
     func withDebugGroup<R>(enabled: Bool = true, label: String, _ closure: () throws -> R) rethrows -> R {
         guard enabled else {

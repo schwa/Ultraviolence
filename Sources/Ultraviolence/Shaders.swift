@@ -17,7 +17,6 @@ public struct VertexShader: RenderPass {
     }
 
     public func visit(_ visitor: inout Visitor) throws {
-
         let renderPipelineDescriptor = try visitor.renderPipelineDescriptor.orThrow(.missingEnvironment)
 
         assert(renderPipelineDescriptor.vertexFunction == nil)
@@ -72,4 +71,3 @@ public struct ComputeShader: RenderPass {
         visitor.insert(.function(function))
     }
 }
-

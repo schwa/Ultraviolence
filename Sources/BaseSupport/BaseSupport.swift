@@ -1,5 +1,5 @@
-import MetalKit
 import Metal
+import MetalKit
 import SwiftUI
 
 public extension simd_float4x4 {
@@ -40,16 +40,15 @@ public extension simd_float4x4 {
 }
 
 public struct SliderField: View {
-
-    let label: String
+    private let label: String
 
     @Binding
-    var value: Float
+    private var value: Float
 
-    var range: ClosedRange<Float>
+    private var range: ClosedRange<Float>
 
-    @SwiftUI.State
-    var popupShown = false
+    @State
+    private var popupShown = false
 
     public init(label: String, value: Binding<Float>, in range: ClosedRange<Float>) {
         self.label = label
@@ -68,9 +67,9 @@ public struct SliderField: View {
         }
         .popover(isPresented: $popupShown) {
             Slider(value: $value, in: range)
-            .controlSize(.mini)
-            .frame(width: 200)
-            .padding()
+                .controlSize(.mini)
+                .frame(width: 200)
+                .padding()
         }
     }
 }
@@ -119,6 +118,4 @@ public struct SIMDColorPicker: View {
         .frame(maxWidth: 80)
         .controlSize(.mini)
     }
-
 }
-

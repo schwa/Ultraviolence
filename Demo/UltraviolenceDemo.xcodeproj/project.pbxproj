@@ -70,6 +70,7 @@
 				455C19012CD483FC009A25A6 /* Sources */,
 				455C19022CD483FC009A25A6 /* Frameworks */,
 				455C19032CD483FC009A25A6 /* Resources */,
+				45F58E2A2CD956C6006C2237 /* Run Script */,
 			);
 			buildRules = (
 			);
@@ -133,6 +134,29 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		45F58E2A2CD956C6006C2237 /* Run Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/bash\n\nswiftlint_paths=(\n    /opt/homebrew/bin/swiftlint\n    /usr/local/bin/swiftlint\n    /usr/bin/swiftlint\n)\n\ncd ..\nfor path in \"${swiftlint_paths[@]}\"\ndo\n    if [ -x \"$path\" ]; then\n        \"$path\" --quiet\n        exit 0\n    fi\ndone\n\necho \"WARNING: swiftlint not found in the specified locations.\"\nexit 0\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		455C19012CD483FC009A25A6 /* Sources */ = {

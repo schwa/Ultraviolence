@@ -15,7 +15,6 @@ public struct Compute <Content>: RenderPass where Content: RenderPass {
     }
 
     public func visit(_ visitor: inout Visitor) throws {
-
         logger?.log("\(#function)")
 
         let device = visitor.device
@@ -33,7 +32,7 @@ public struct Compute <Content>: RenderPass where Content: RenderPass {
         let arguments = visitor.argumentsStack.flatMap { $0 }
         for argument in arguments {
             assert(argument.functionType == .kernel)
-            let binding = try reflection.bindings.first(where: { $0.name == argument.name }).orThrow(.missingBinding)
+            let binding = try reflection.bindings.first { $0.name == argument.name }.orThrow(.missingBinding)
             switch argument.value {
             case .float3, .float4, .matrix4x4:
                 withUnsafeBytes(of: argument.value) { buffer in

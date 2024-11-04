@@ -1,8 +1,8 @@
-import Ultraviolence
+internal import BaseSupport
 import Metal
 import simd
-internal import BaseSupport
 import SwiftUI
+import Ultraviolence
 
 public struct MixedExample: RenderPass {
     var size: CGSize
@@ -39,4 +39,3 @@ public struct MixedExample: RenderPass {
         }
     }
 }
-
