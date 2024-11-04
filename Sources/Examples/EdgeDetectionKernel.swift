@@ -32,6 +32,8 @@ public struct EdgeDetectionKernel: RenderPass {
     }
 
     public var body: some RenderPass {
-        try! ComputeShader("EdgeDetectionKernel", source: source)
+        get throws {
+            try ComputeShader("EdgeDetectionKernel", source: source)
+        }
     }
 }

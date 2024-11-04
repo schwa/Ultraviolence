@@ -5,7 +5,7 @@ public protocol RenderPass {
     associatedtype Body: RenderPass
 
     @RenderPassBuilder
-    var body: Body { get }
+    var body: Body { get throws }
 
     func visit(_ visitor: inout Visitor) throws
 }
