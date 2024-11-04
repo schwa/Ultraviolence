@@ -33,6 +33,7 @@ public struct Visitor {
 }
 
 public enum VisitorState {
+    case commandQueue(MTLCommandQueue)
     case commandBuffer(MTLCommandBuffer)
     case renderEncoder(MTLRenderCommandEncoder)
     case renderPipelineDescriptor(MTLRenderPipelineDescriptor)
@@ -42,11 +43,24 @@ public enum VisitorState {
     //    case computePipelineDescriptor(MTLComputePipelineDescriptor)
     case depthAttachment(MTLTexture)
     case colorAttachment(MTLTexture, Int)
+    case renderPassDescriptor(MTLRenderPassDescriptor)
 }
 
 // TODO: This is a temporary solution.
 
 public extension Visitor {
+
+    var commandQueue: MTLCommandQueue? {
+        for elements in environment.reversed() {
+            for element in elements {
+                if case let .commandQueue(value) = element {
+                    return value
+                }
+            }
+        }
+        return nil
+    }
+
     var commandBuffer: MTLCommandBuffer? {
         for elements in environment.reversed() {
             for element in elements {
@@ -57,6 +71,18 @@ public extension Visitor {
         }
         return nil
     }
+
+    var renderPassDescriptor: MTLRenderPassDescriptor? {
+        for elements in environment.reversed() {
+            for element in elements {
+                if case let .renderPassDescriptor(value) = element {
+                    return value
+                }
+            }
+        }
+        return nil
+    }
+
 
     var renderCommandEncoder: MTLRenderCommandEncoder? {
         for elements in environment.reversed() {

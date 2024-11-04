@@ -47,6 +47,11 @@ public struct OffscreenRenderer <Content> where Content: RenderPass {
         renderPassDescriptor.depthAttachment.clearDepth = 1
         renderPassDescriptor.depthAttachment.storeAction = .dontCare
         //
+
+
+        
+
+
         return try device.withCommandQueue(label: "􀐛Renderer.commandQueue") { commandQueue in
             try commandQueue.withCommandBuffer(completion: .commitAndWaitUntilCompleted, label: "􀐛Renderer.commandBuffer", debugGroup: "􀯕Renderer.render()") { commandBuffer in
                 try commandBuffer.withRenderCommandEncoder(descriptor: renderPassDescriptor, label: "􀐛Renderer.encoder") { encoder in
@@ -74,3 +79,4 @@ public extension OffscreenRenderer.Rendering {
         return context.makeImage()!
     }
 }
+
