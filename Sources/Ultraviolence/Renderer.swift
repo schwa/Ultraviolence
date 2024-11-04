@@ -34,6 +34,7 @@ public struct Renderer <Content> where Content: RenderPass {
     public struct Rendering {
         public var texture: MTLTexture
     }
+
     public func render() throws -> Rendering {
         let renderPassDescriptor = MTLRenderPassDescriptor()
         renderPassDescriptor.colorAttachments[0].texture = colorTexture
@@ -45,24 +46,83 @@ public struct Renderer <Content> where Content: RenderPass {
         renderPassDescriptor.depthAttachment.clearDepth = 1
         renderPassDescriptor.depthAttachment.storeAction = .dontCare
         //
-        let commandQueue = try device.makeCommandQueue().orThrow(.resourceCreationFailure).labeled("Renderer")
-        let commandBuffer = try commandQueue.makeCommandBuffer().orThrow(.resourceCreationFailure).labeled("Renderer")
-        let encoder = try commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor).orThrow(.resourceCreationFailure).labeled("Renderer")
-
-        try commandBuffer.withDebugGroup(label: "Renderer") {
-            let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
-            renderPipelineDescriptor.colorAttachments[0].pixelFormat = colorTexture.pixelFormat
-            renderPipelineDescriptor.depthAttachmentPixelFormat = depthTexture.pixelFormat
-            var visitor = Visitor(device: device)
-            try visitor.with([.commandBuffer(commandBuffer), .renderEncoder(encoder), .renderPipelineDescriptor(renderPipelineDescriptor)]) { visitor in
-                try content.visit(&visitor)
+        return try device.withCommandQueue(label: "􀐛Renderer.commandQueue") { commandQueue in
+            try commandQueue.withCommandBuffer(completion: .commitAndWaitUntilCompleted, label: "􀐛Renderer.commandBuffer", debugGroup: "􀯕Renderer.render()") { commandBuffer in
+                try commandBuffer.withRenderCommandEncoder(descriptor: renderPassDescriptor, label: "􀐛Renderer.encoder") { encoder in
+                    let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
+                    renderPipelineDescriptor.colorAttachments[0].pixelFormat = colorTexture.pixelFormat
+                    renderPipelineDescriptor.depthAttachmentPixelFormat = depthTexture.pixelFormat
+                    var visitor = Visitor(device: device)
+                    try visitor.with([.commandBuffer(commandBuffer), .renderEncoder(encoder), .renderPipelineDescriptor(renderPipelineDescriptor)]) { visitor in
+                        try content.visit(&visitor)
+                    }
+                }
+                return .init(texture: colorTexture)
             }
         }
-        encoder.endEncoding()
-        commandBuffer.commit()
 
-        commandBuffer.waitUntilCompleted()
-        return .init(texture: colorTexture)
+    }
+}
+
+extension MTLDevice {
+    func withCommandQueue<R>(label: String? = nil, _ body: (MTLCommandQueue) throws -> R) throws -> R {
+        let commandQueue = try makeCommandQueue().orThrow(.resourceCreationFailure)
+        if let label = label {
+            commandQueue.label = label
+        }
+        return try body(commandQueue)
+    }
+}
+
+enum MTLCommandQueueCompletion {
+    case none
+    case commit
+    case commitAndWaitUntilCompleted
+}
+
+extension MTLCommandQueue {
+    func withCommandBuffer<R>(completion: MTLCommandQueueCompletion = .commit, label: String? = nil, debugGroup: String? = nil, _ body: (MTLCommandBuffer) throws -> R) throws -> R {
+        let commandBuffer = try makeCommandBuffer().orThrow(.resourceCreationFailure)
+        if let debugGroup {
+            commandBuffer.pushDebugGroup(debugGroup)
+        }
+        defer {
+            switch completion {
+            case .none:
+                break
+            case .commit:
+                commandBuffer.commit()
+            case .commitAndWaitUntilCompleted:
+                commandBuffer.commit()
+                commandBuffer.waitUntilCompleted()
+            }
+            if debugGroup != nil {
+                commandBuffer.popDebugGroup()
+            }
+        }
+        if let label = label {
+            commandBuffer.label = label
+        }
+        return try body(commandBuffer)
+    }
+}
+
+extension MTLCommandBuffer {
+    func withRenderCommandEncoder<R>(descriptor: MTLRenderPassDescriptor, label: String? = nil, debugGroup: String? = nil, _ body: (MTLRenderCommandEncoder) throws -> R) throws -> R {
+        let encoder = try makeRenderCommandEncoder(descriptor: descriptor).orThrow(.resourceCreationFailure)
+        if let debugGroup {
+            encoder.pushDebugGroup(debugGroup)
+        }
+        defer {
+            encoder.endEncoding()
+            if debugGroup != nil {
+                encoder.popDebugGroup()
+            }
+        }
+        if let label = label {
+            encoder.label = label
+        }
+        return try body(encoder)
     }
 }
 

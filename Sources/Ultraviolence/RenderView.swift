@@ -51,7 +51,7 @@ public class RenderPassCoordinator <Content>: NSObject, MTKViewDelegate where Co
 
     public func draw(in view: MTKView) {
         let commandBuffer = commandQueue.makeCommandBuffer()!
-        commandBuffer.withDebugGroup(label: "RenderPassView") {
+        commandBuffer.withDebugGroup(label: "􀯕RenderView.Coordinator.draw()") {
             let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: view.currentRenderPassDescriptor!)!
             let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
             renderPipelineDescriptor.colorAttachments[0].pixelFormat = view.colorPixelFormat

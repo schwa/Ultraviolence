@@ -59,7 +59,7 @@
          <EnvironmentVariable
             key = "CAPTURE"
             value = "1"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>
    </LaunchAction>

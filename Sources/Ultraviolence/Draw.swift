@@ -16,29 +16,30 @@ public struct Draw <Content: RenderPass>: RenderPass where Content: RenderPass {
         let device = visitor.device
         let encoder = try visitor.renderCommandEncoder.orThrow(.missingEnvironment)
 
-        try content.visit(&visitor)
-
-        let renderPipelineDescriptor = try visitor.renderPipelineDescriptor.orThrow(.missingEnvironment)
-        let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: [.bindingInfo])
-        guard let reflection else {
-            fatalError("No reflection.")
-        }
-        encoder.setRenderPipelineState(renderPipelineState)
-        encoder.setCullMode(.back)
-        encoder.setFrontFacing(.counterClockwise)
-        if let depthStencilDescriptor = visitor.depthStencilDescriptor {
-            let depthStencilState = device.makeDepthStencilState(descriptor: depthStencilDescriptor)!
-            encoder.setDepthStencilState(depthStencilState)
-        }
-
-        for element in geometry {
-            try encoder.withDebugGroup(label: "Draw element") {
-                let arguments = visitor.argumentsStack.flatMap { $0 }
-                for argument in arguments {
-                    try encoder.setArgument(argument, reflection: reflection)
+        try encoder.withDebugGroup(label: "􀯕Draw.visit()") {
+            try content.visit(&visitor)
+            let renderPipelineDescriptor = try visitor.renderPipelineDescriptor.orThrow(.missingEnvironment)
+            let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: [.bindingInfo])
+            guard let reflection else {
+                fatalError("No reflection.")
+            }
+            // TODO: Move all this into the environment.
+            encoder.setRenderPipelineState(renderPipelineState)
+            encoder.setCullMode(.back)
+            encoder.setFrontFacing(.counterClockwise)
+            if let depthStencilDescriptor = visitor.depthStencilDescriptor {
+                let depthStencilState = device.makeDepthStencilState(descriptor: depthStencilDescriptor)!
+                encoder.setDepthStencilState(depthStencilState)
+            }
+            for element in geometry {
+                try encoder.withDebugGroup(label: "􀯕Draw.visit() element") {
+                    let arguments = visitor.argumentsStack.flatMap { $0 }
+                    for argument in arguments {
+                        try encoder.setArgument(argument, reflection: reflection)
+                    }
+                    let mesh = try element.mesh()
+                    mesh.draw(encoder: encoder)
                 }
-                let mesh = try element.mesh()
-                mesh.draw(encoder: encoder)
             }
         }
     }
