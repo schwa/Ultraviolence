@@ -20,6 +20,6 @@ public struct MetalFXUpscaler: RenderPass {
     }
 
     public var body: some RenderPass {
-        fatalError()
+        fatalError("Not implemented")
     }
 }

@@ -5,6 +5,6 @@ public struct Blit: RenderPass {
     }
 
     public var body: some RenderPass {
-        fatalError()
+        fatalError("Not implemented")
     }
 }

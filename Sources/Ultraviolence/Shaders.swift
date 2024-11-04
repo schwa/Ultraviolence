@@ -7,7 +7,7 @@ public struct VertexShader: RenderPass {
     var function: MTLFunction
 
     public init(_ name: String) {
-        fatalError()
+        fatalError("Not implemented")
     }
 
     public init(_ name: String, source: String) throws {
@@ -17,13 +17,16 @@ public struct VertexShader: RenderPass {
     }
 
     public func visit(_ visitor: inout Visitor) throws {
-        assert(visitor.renderPipelineDescriptor.vertexFunction == nil)
+
+        let renderPipelineDescriptor = try visitor.renderPipelineDescriptor.orThrow(.missingEnvironment)
+
+        assert(renderPipelineDescriptor.vertexFunction == nil)
         guard let vertexAttributes = function.vertexAttributes else {
             fatalError("Cannot get vertex attributes from vertex function")
         }
         let vertexDescriptor = MTLVertexDescriptor(vertexAttributes: vertexAttributes)
-        visitor.renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
-        visitor.renderPipelineDescriptor.vertexFunction = function
+        renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
+        renderPipelineDescriptor.vertexFunction = function
     }
 }
 
@@ -33,7 +36,7 @@ public struct FragmentShader: RenderPass {
     var function: MTLFunction
 
     public init(_ name: String) {
-        fatalError()
+        fatalError("Not implemented")
     }
 
     public init(_ name: String, source: String) throws {
@@ -43,8 +46,9 @@ public struct FragmentShader: RenderPass {
     }
 
     public func visit(_ visitor: inout Visitor) throws {
-        assert(visitor.renderPipelineDescriptor.fragmentFunction == nil)
-        visitor.renderPipelineDescriptor.fragmentFunction = function
+        let renderPipelineDescriptor = try visitor.renderPipelineDescriptor.orThrow(.missingEnvironment)
+        assert(renderPipelineDescriptor.fragmentFunction == nil)
+        renderPipelineDescriptor.fragmentFunction = function
     }
 }
 
@@ -54,7 +58,7 @@ public struct ComputeShader: RenderPass {
     var function: MTLFunction
 
     public init(_ name: String) {
-        fatalError()
+        fatalError("Not implemented")
     }
 
     public init(_ name: String, source: String) throws {
@@ -64,6 +68,7 @@ public struct ComputeShader: RenderPass {
     }
 
     public func visit(_ visitor: inout Visitor) throws {
+        print("Insert")
         visitor.insert(.function(function))
     }
 }

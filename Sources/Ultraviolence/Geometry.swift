@@ -42,7 +42,7 @@ extension Quad2D: Geometry {
                 [origin.x, origin.y + size.y, 0],
             ]
         default:
-            fatalError()
+            fatalError("Not implemented")
         }
     }
 }

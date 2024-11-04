@@ -11,25 +11,31 @@ public struct Renderer <Content> where Content: RenderPass {
     public var colorTexture: MTLTexture
     public var depthTexture: MTLTexture
 
-    // TODO: Most of this belongs on a RenderSession type API. We should be able to render multiple times with the same setup.
-    public init(size: CGSize, content: Content) {
+    public init(size: CGSize, content: Content, colorTexture: MTLTexture, depthTexture: MTLTexture) {
         self.size = size
         self.content = content
+        self.colorTexture = colorTexture
+        self.depthTexture = depthTexture
+    }
 
+    // TODO: Most of this belongs on a RenderSession type API. We should be able to render multiple times with the same setup.
+    public init(size: CGSize, content: Content) {
         let device = MTLCreateSystemDefaultDevice()!
         let colorTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm_srgb, width: Int(size.width), height: Int(size.height), mipmapped: false)
         colorTextureDescriptor.usage = [.renderTarget]
-        colorTexture = device.makeTexture(descriptor: colorTextureDescriptor)!
+        let colorTexture = device.makeTexture(descriptor: colorTextureDescriptor)!
 
         let depthTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: Int(size.width), height: Int(size.height), mipmapped: false)
         depthTextureDescriptor.usage = [.renderTarget]
-        depthTexture = device.makeTexture(descriptor: depthTextureDescriptor)!
+        let depthTexture = device.makeTexture(descriptor: depthTextureDescriptor)!
+
+        self.init(size: size, content: content, colorTexture: colorTexture, depthTexture: depthTexture)
     }
+
 
     public struct Rendering {
         public var texture: MTLTexture
     }
-
     public func render() throws -> Rendering {
         let renderPassDescriptor = MTLRenderPassDescriptor()
         renderPassDescriptor.colorAttachments[0].texture = colorTexture

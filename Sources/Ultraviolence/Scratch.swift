@@ -24,7 +24,7 @@ public struct ForEach_ <Data, Content>: RenderPass where Content: RenderPass {
     }
 
     public var body: some RenderPass {
-        fatalError()
+        fatalError("Not implemented")
     }
 }
 
@@ -37,10 +37,10 @@ public struct State_ <Wrapped> {
 
     public var wrappedValue: Wrapped {
         get {
-            fatalError()
+            fatalError("Not implemented")
         }
         nonmutating set {
-            fatalError()
+            fatalError("Not implemented")
         }
     }
 }

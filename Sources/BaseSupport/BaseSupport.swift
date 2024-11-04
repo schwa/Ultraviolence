@@ -80,10 +80,10 @@ public extension Color {
         let cgColor = resolve(in: .init()).cgColor
         let colorSpace = CGColorSpace(name: CGColorSpace.linearSRGB)!
         guard let convertedColor = cgColor.converted(to: colorSpace, intent: .defaultIntent, options: nil) else {
-            fatalError()
+            fatalError("Cannot convert color")
         }
         guard let components = convertedColor.components?.map(Float.init) else {
-            fatalError()
+            fatalError("Cannot get components from color")
         }
         return SIMD4<Float>(components[0], components[1], components[2], components[3])
     }

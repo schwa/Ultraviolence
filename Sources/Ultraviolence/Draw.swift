@@ -14,10 +14,13 @@ public struct Draw <Content: RenderPass>: RenderPass where Content: RenderPass {
 
     public func visit(_ visitor: inout Visitor) throws {
         let device = visitor.device
-        let encoder = visitor.renderCommandEncoder
+        let encoder = try visitor.renderCommandEncoder.orThrow(.missingEnvironment)
 
         try content.visit(&visitor)
-        let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: visitor.renderPipelineDescriptor, options: [.bindingInfo])
+
+        let renderPipelineDescriptor = try visitor.renderPipelineDescriptor.orThrow(.missingEnvironment)
+
+        let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: [.bindingInfo])
         guard let reflection else {
             fatalError("No reflection.")
         }
@@ -52,7 +55,7 @@ public struct Draw <Content: RenderPass>: RenderPass where Content: RenderPass {
                         encoder.setVertexTexture(texture, index: binding.index)
                     }
                 default:
-                    fatalError()
+                    fatalError("Not implemented")
                 }
             }
 

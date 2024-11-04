@@ -2,7 +2,7 @@ import Foundation
 import CoreGraphics
 import SwiftUI
 import Metal
-import ModelIO
+internal import ModelIO
 import MetalKit
 import Ultraviolence
 

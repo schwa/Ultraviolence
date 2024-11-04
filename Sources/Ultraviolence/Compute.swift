@@ -1,3 +1,4 @@
+import BaseSupport
 import Metal
 
 public struct Compute <Content>: RenderPass where Content: RenderPass {
@@ -14,24 +15,25 @@ public struct Compute <Content>: RenderPass where Content: RenderPass {
     }
 
     public func visit(_ visitor: inout Visitor) throws {
+
+        logger?.log("\(#function)")
+
         let device = visitor.device
-        let commandBuffer = visitor.commandBuffer
+        let commandBuffer = try visitor.commandBuffer.orThrow(.missingEnvironment)
+        let encoder = try commandBuffer.makeComputeCommandEncoder().orThrow(.resourceCreationFailure)
 
         try content.visit(&visitor)
         let computePipelineDescriptor = MTLComputePipelineDescriptor()
-        computePipelineDescriptor.computeFunction = visitor.function(type: .kernel)
-
+        computePipelineDescriptor.computeFunction = try visitor.function(type: .kernel).orThrow(.missingEnvironment)
         let (pipelineState, reflection) = try device.makeComputePipelineState(descriptor: computePipelineDescriptor, options: .bindingInfo)
-        let encoder = commandBuffer.makeComputeCommandEncoder()!
         guard let reflection else {
             fatalError("No reflection.")
         }
+        encoder.setComputePipelineState(pipelineState)
         let arguments = visitor.argumentsStack.flatMap { $0 }
         for argument in arguments {
             assert(argument.functionType == .kernel)
-            guard let binding = reflection.bindings.first(where: { $0.name == argument.name }) else {
-                fatalError("Could not find binding for \"\(argument.name)\".")
-            }
+            let binding = try reflection.bindings.first(where: { $0.name == argument.name }).orThrow(.missingBinding)
             switch argument.value {
             case .float3, .float4, .matrix4x4:
                 withUnsafeBytes(of: argument.value) { buffer in

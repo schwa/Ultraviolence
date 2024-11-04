@@ -1,7 +1,7 @@
 import SwiftUI
 import MetalKit
 import Metal
-import os
+internal import os
 
 public struct RenderView <Content>: NSViewRepresentable where Content: RenderPass {
 

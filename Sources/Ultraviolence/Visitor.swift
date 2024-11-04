@@ -49,7 +49,7 @@ public enum VisitorState {
 // TODO: This is a temporary solution.
 
 public extension Visitor {
-    var commandBuffer: MTLCommandBuffer {
+    var commandBuffer: MTLCommandBuffer? {
         for elements in environment.reversed() {
             for element in elements {
                 if case let .commandBuffer(value) = element {
@@ -57,10 +57,10 @@ public extension Visitor {
                 }
             }
         }
-        fatalError()
+        return nil
     }
 
-    var renderCommandEncoder: MTLRenderCommandEncoder {
+    var renderCommandEncoder: MTLRenderCommandEncoder? {
         for elements in environment.reversed() {
             for element in elements {
                 if case let .renderEncoder(value) = element {
@@ -68,10 +68,10 @@ public extension Visitor {
                 }
             }
         }
-        fatalError()
+        return nil
     }
 
-    var renderPipelineDescriptor: MTLRenderPipelineDescriptor {
+    var renderPipelineDescriptor: MTLRenderPipelineDescriptor? {
         for elements in environment.reversed() {
             for element in elements {
                 if case let .renderPipelineDescriptor(value) = element {
@@ -79,7 +79,7 @@ public extension Visitor {
                 }
             }
         }
-        fatalError()
+        return nil
     }
 
     var depthStencilDescriptor: MTLDepthStencilDescriptor? {
@@ -93,7 +93,7 @@ public extension Visitor {
         return nil
     }
 
-    func function(type: MTLFunctionType) -> MTLFunction {
+    func function(type: MTLFunctionType) -> MTLFunction? {
         for elements in environment.reversed() {
             for element in elements {
                 if case let .function(value) = element {
@@ -103,7 +103,7 @@ public extension Visitor {
                 }
             }
         }
-        fatalError()
+        return nil
     }
 
 //    var computePipelineDescriptor: MTLComputePipelineDescriptor {
@@ -114,7 +114,7 @@ public extension Visitor {
 //                }
 //            }
 //        }
-//        fatalError()
+//        return nil
 //    }
 
 }

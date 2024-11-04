@@ -23,7 +23,7 @@ public extension MTLVertexFormat {
         case .float2:
             self = .float2
         default:
-            fatalError()
+            fatalError("Unsupported data type")
         }
     }
 
@@ -34,7 +34,7 @@ public extension MTLVertexFormat {
         case .float2:
             return MemoryLayout<SIMD2<Float>>.size
         default:
-            fatalError()
+            fatalError("Unsupported vertex format")
         }
     }
 }
