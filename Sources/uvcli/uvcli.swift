@@ -32,7 +32,7 @@ public struct UVCLI {
         //        let depthTexture = device.makeTexture(descriptor: depthTextureDescriptor)!
         //        let renderPass2 = MixedExample(size: size, geometries: [Teapot()], color: colorTexture, depth: depthTexture, camera: camera, model: model)
 
-        let renderer = Renderer(size: size, content: renderPass)
+        let renderer = OffscreenRenderer(size: size, content: renderPass)
         let image = try MTLCaptureManager.shared().with(enabled: capture) {
             try renderer.render().cgImage
         }

@@ -1,9 +1,10 @@
 import CoreGraphics
 import Metal
 
+// TODO: Make into a RenderPass called Render.
 // TODO: This is a very WIP API.
 // TODO: I'd like RenderView to be based on this.
-public struct Renderer <Content> where Content: RenderPass {
+public struct OffscreenRenderer <Content> where Content: RenderPass {
     public var device: MTLDevice = MTLCreateSystemDefaultDevice()!
     public var size: CGSize
     public var content: Content
@@ -64,95 +65,12 @@ public struct Renderer <Content> where Content: RenderPass {
     }
 }
 
-extension MTLDevice {
-    func withCommandQueue<R>(label: String? = nil, _ body: (MTLCommandQueue) throws -> R) throws -> R {
-        let commandQueue = try makeCommandQueue().orThrow(.resourceCreationFailure)
-        if let label = label {
-            commandQueue.label = label
-        }
-        return try body(commandQueue)
-    }
-}
-
-enum MTLCommandQueueCompletion {
-    case none
-    case commit
-    case commitAndWaitUntilCompleted
-}
-
-extension MTLCommandQueue {
-    func withCommandBuffer<R>(completion: MTLCommandQueueCompletion = .commit, label: String? = nil, debugGroup: String? = nil, _ body: (MTLCommandBuffer) throws -> R) throws -> R {
-        let commandBuffer = try makeCommandBuffer().orThrow(.resourceCreationFailure)
-        if let debugGroup {
-            commandBuffer.pushDebugGroup(debugGroup)
-        }
-        defer {
-            switch completion {
-            case .none:
-                break
-            case .commit:
-                commandBuffer.commit()
-            case .commitAndWaitUntilCompleted:
-                commandBuffer.commit()
-                commandBuffer.waitUntilCompleted()
-            }
-            if debugGroup != nil {
-                commandBuffer.popDebugGroup()
-            }
-        }
-        if let label = label {
-            commandBuffer.label = label
-        }
-        return try body(commandBuffer)
-    }
-}
-
-extension MTLCommandBuffer {
-    func withRenderCommandEncoder<R>(descriptor: MTLRenderPassDescriptor, label: String? = nil, debugGroup: String? = nil, _ body: (MTLRenderCommandEncoder) throws -> R) throws -> R {
-        let encoder = try makeRenderCommandEncoder(descriptor: descriptor).orThrow(.resourceCreationFailure)
-        if let debugGroup {
-            encoder.pushDebugGroup(debugGroup)
-        }
-        defer {
-            encoder.endEncoding()
-            if debugGroup != nil {
-                encoder.popDebugGroup()
-            }
-        }
-        if let label = label {
-            encoder.label = label
-        }
-        return try body(encoder)
-    }
-}
-
-public extension Renderer.Rendering {
+public extension OffscreenRenderer.Rendering {
     var cgImage: CGImage {
         var bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.noneSkipFirst.rawValue)
         bitmapInfo.insert(.byteOrder32Little)
         let context = CGContext(data: nil, width: texture.width, height: texture.height, bitsPerComponent: 8, bytesPerRow: texture.width * 4, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: bitmapInfo.rawValue)!
         texture.getBytes(context.data!, bytesPerRow: texture.width * 4, from: MTLRegionMake2D(0, 0, texture.width, texture.height), mipmapLevel: 0)
         return context.makeImage()!
-    }
-}
-
-extension MTLCommandQueue {
-    func labeled(_ label: String) -> Self {
-        self.label = label
-        return self
-    }
-}
-
-extension MTLCommandBuffer {
-    func labeled(_ label: String) -> Self {
-        self.label = label
-        return self
-    }
-}
-
-extension MTLRenderCommandEncoder {
-    func labeled(_ label: String) -> Self {
-        self.label = label
-        return self
     }
 }

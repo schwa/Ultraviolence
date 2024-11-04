@@ -1,6 +1,7 @@
 import Metal
 import simd
 
+// TODO: Rename. We have a `Compute: RenderPass` and that just doesn't make sense.
 public protocol RenderPass {
     associatedtype Body: RenderPass
 

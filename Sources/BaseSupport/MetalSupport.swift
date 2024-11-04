@@ -115,3 +115,86 @@ public extension MTLBlitCommandEncoder {
         return try closure()
     }
 }
+
+public extension MTLDevice {
+    func withCommandQueue<R>(label: String? = nil, _ body: (MTLCommandQueue) throws -> R) throws -> R {
+        let commandQueue = try makeCommandQueue().orThrow(.resourceCreationFailure)
+        if let label = label {
+            commandQueue.label = label
+        }
+        return try body(commandQueue)
+    }
+}
+
+public enum MTLCommandQueueCompletion {
+    case none
+    case commit
+    case commitAndWaitUntilCompleted
+}
+
+public extension MTLCommandQueue {
+    func withCommandBuffer<R>(completion: MTLCommandQueueCompletion = .commit, label: String? = nil, debugGroup: String? = nil, _ body: (MTLCommandBuffer) throws -> R) throws -> R {
+        let commandBuffer = try makeCommandBuffer().orThrow(.resourceCreationFailure)
+        if let debugGroup {
+            commandBuffer.pushDebugGroup(debugGroup)
+        }
+        defer {
+            switch completion {
+            case .none:
+                break
+            case .commit:
+                commandBuffer.commit()
+            case .commitAndWaitUntilCompleted:
+                commandBuffer.commit()
+                commandBuffer.waitUntilCompleted()
+            }
+            if debugGroup != nil {
+                commandBuffer.popDebugGroup()
+            }
+        }
+        if let label = label {
+            commandBuffer.label = label
+        }
+        return try body(commandBuffer)
+    }
+}
+
+public extension MTLCommandBuffer {
+    func withRenderCommandEncoder<R>(descriptor: MTLRenderPassDescriptor, label: String? = nil, debugGroup: String? = nil, _ body: (MTLRenderCommandEncoder) throws -> R) throws -> R {
+        let encoder = try makeRenderCommandEncoder(descriptor: descriptor).orThrow(.resourceCreationFailure)
+        if let debugGroup {
+            encoder.pushDebugGroup(debugGroup)
+        }
+        defer {
+            encoder.endEncoding()
+            if debugGroup != nil {
+                encoder.popDebugGroup()
+            }
+        }
+        if let label = label {
+            encoder.label = label
+        }
+        return try body(encoder)
+    }
+}
+
+public extension MTLCommandQueue {
+    func labeled(_ label: String) -> Self {
+        self.label = label
+        return self
+    }
+}
+
+public extension MTLCommandBuffer {
+    func labeled(_ label: String) -> Self {
+        self.label = label
+        return self
+    }
+}
+
+public extension MTLRenderCommandEncoder {
+    func labeled(_ label: String) -> Self {
+        self.label = label
+        return self
+    }
+}

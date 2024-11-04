@@ -1,5 +1,11 @@
+public enum UltraviolenceError: Error {
+    case missingEnvironment
+    case missingBinding
+    case resourceCreationFailure
+}
+
 public extension Optional {
-    func orThrow(_ error: @autoclosure () -> Error) throws -> Wrapped {
+    func orThrow(_ error: @autoclosure () -> UltraviolenceError) throws -> Wrapped {
         // swiftlint:disable:next self_binding
         guard let value = self else {
             throw error()
