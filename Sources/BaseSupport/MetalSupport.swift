@@ -63,3 +63,57 @@ public extension MTLCaptureManager {
         return try closure()
     }
 }
+
+
+
+public extension MTLCommandBuffer {
+    func withDebugGroup<R>(enabled: Bool = true, label: String, _ closure: () throws -> R) rethrows -> R {
+        guard enabled else {
+            return try closure()
+        }
+        pushDebugGroup(label)
+        defer {
+            popDebugGroup()
+        }
+        return try closure()
+    }
+}
+
+public extension MTLRenderCommandEncoder {
+    func withDebugGroup<R>(enabled: Bool = true, label: String, _ closure: () throws -> R) rethrows -> R {
+        guard enabled else {
+            return try closure()
+        }
+        pushDebugGroup(label)
+        defer {
+            popDebugGroup()
+        }
+        return try closure()
+    }
+}
+
+public extension MTLComputeCommandEncoder {
+    func withDebugGroup<R>(enabled: Bool = true, label: String, _ closure: () throws -> R) rethrows -> R {
+        guard enabled else {
+            return try closure()
+        }
+        pushDebugGroup(label)
+        defer {
+            popDebugGroup()
+        }
+        return try closure()
+    }
+}
+
+public extension MTLBlitCommandEncoder {
+    func withDebugGroup<R>(enabled: Bool = true, label: String, _ closure: () throws -> R) rethrows -> R {
+        guard enabled else {
+            return try closure()
+        }
+        pushDebugGroup(label)
+        defer {
+            popDebugGroup()
+        }
+        return try closure()
+    }
+}

@@ -5,7 +5,7 @@ import SwiftUI
 import Ultraviolence
 import Examples
 import simd
-import BaseSupport
+internal import BaseSupport
 import Metal
 
 @main
@@ -32,7 +32,7 @@ struct UVCLI {
 
 
         let renderer = Renderer(size: size, content: renderPass)
-        let image = try MTLCaptureManager.shared().with(enabled: false) {
+        let image = try MTLCaptureManager.shared().with(enabled: true) {
             try renderer.render().cgImage
         }
         let url = URL(fileURLWithPath: "output.png").absoluteURL

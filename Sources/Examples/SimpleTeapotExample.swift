@@ -1,6 +1,6 @@
 import simd
 import Ultraviolence
-import BaseSupport
+internal import BaseSupport
 import CoreGraphics
 import Metal
 

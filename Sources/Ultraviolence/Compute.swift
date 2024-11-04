@@ -1,4 +1,4 @@
-import BaseSupport
+internal import BaseSupport
 import Metal
 
 public struct Compute <Content>: RenderPass where Content: RenderPass {

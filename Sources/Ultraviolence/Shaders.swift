@@ -1,4 +1,4 @@
-import BaseSupport
+internal import BaseSupport
 import Metal
 
 public struct VertexShader: RenderPass {

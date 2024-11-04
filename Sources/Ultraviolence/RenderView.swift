@@ -22,7 +22,6 @@ public struct RenderView <Content>: NSViewRepresentable where Content: RenderPas
         view.clearColor = MTLClearColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)
         view.colorPixelFormat = .bgra8Unorm_srgb
         view.depthStencilPixelFormat = .depth32Float
-
         view.delegate = context.coordinator
         return view
     }
@@ -52,22 +51,24 @@ public class RenderPassCoordinator <Content>: NSObject, MTKViewDelegate where Co
 
     public func draw(in view: MTKView) {
         let commandBuffer = commandQueue.makeCommandBuffer()!
-        let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: view.currentRenderPassDescriptor!)!
-        let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
-        renderPipelineDescriptor.colorAttachments[0].pixelFormat = view.colorPixelFormat
-        renderPipelineDescriptor.depthAttachmentPixelFormat = view.depthStencilPixelFormat
-        var visitor = Visitor(device: device)
-        do {
-            try visitor.with([.commandBuffer(commandBuffer), .renderEncoder(encoder), .renderPipelineDescriptor(renderPipelineDescriptor)]) { visitor in
-                try content.visit(&visitor)
+        commandBuffer.withDebugGroup(label: "RenderPassView") {
+            let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: view.currentRenderPassDescriptor!)!
+            let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
+            renderPipelineDescriptor.colorAttachments[0].pixelFormat = view.colorPixelFormat
+            renderPipelineDescriptor.depthAttachmentPixelFormat = view.depthStencilPixelFormat
+            var visitor = Visitor(device: device)
+            do {
+                try visitor.with([.commandBuffer(commandBuffer), .renderEncoder(encoder), .renderPipelineDescriptor(renderPipelineDescriptor)]) { visitor in
+                    try content.visit(&visitor)
+                }
             }
+            catch {
+                logger?.error("Error when visiting render passes: \(error)")
+                lastError = error
+            }
+            encoder.endEncoding()
+            commandBuffer.commit()
+            view.currentDrawable!.present()
         }
-        catch {
-            logger?.error("Error when visiting render passes: \(error)")
-            lastError = error
-        }
-        encoder.endEncoding()
-        commandBuffer.commit()
-        view.currentDrawable!.present()
     }
 }

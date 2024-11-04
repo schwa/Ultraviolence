@@ -47,15 +47,18 @@ public struct Renderer <Content> where Content: RenderPass {
         renderPassDescriptor.depthAttachment.clearDepth = 1
         renderPassDescriptor.depthAttachment.storeAction = .dontCare
         //
-        let commandQueue = device.makeCommandQueue()!
-        let commandBuffer = commandQueue.makeCommandBuffer()!
-        let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
-        let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
-        renderPipelineDescriptor.colorAttachments[0].pixelFormat = colorTexture.pixelFormat
-        renderPipelineDescriptor.depthAttachmentPixelFormat = depthTexture.pixelFormat
-        var visitor = Visitor(device: device)
-        visitor.with([.commandBuffer(commandBuffer), .renderEncoder(encoder), .renderPipelineDescriptor(renderPipelineDescriptor)]) { visitor in
-            try! content.visit(&visitor)
+        let commandQueue = try device.makeCommandQueue().orThrow(.resourceCreationFailure).labeled("Renderer Command Queue")
+        let commandBuffer = try commandQueue.makeCommandBuffer().orThrow(.resourceCreationFailure).labeled("Renderer Command Buffer")
+        let encoder = try commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor).orThrow(.resourceCreationFailure).labeled("Renderer Render Command Encoder")
+
+        try commandBuffer.withDebugGroup(label: "Renderer") {
+            let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
+            renderPipelineDescriptor.colorAttachments[0].pixelFormat = colorTexture.pixelFormat
+            renderPipelineDescriptor.depthAttachmentPixelFormat = depthTexture.pixelFormat
+            var visitor = Visitor(device: device)
+            visitor.with([.commandBuffer(commandBuffer), .renderEncoder(encoder), .renderPipelineDescriptor(renderPipelineDescriptor)]) { visitor in
+                try! content.visit(&visitor)
+            }
         }
         encoder.endEncoding()
         commandBuffer.commit()
@@ -75,3 +78,23 @@ public extension Renderer.Rendering {
     }
 }
 
+extension MTLCommandQueue {
+    func labeled(_ label: String) -> Self {
+        self.label = label
+        return self
+    }
+}
+
+extension MTLCommandBuffer {
+    func labeled(_ label: String) -> Self {
+        self.label = label
+        return self
+    }
+}
+
+extension MTLRenderCommandEncoder {
+    func labeled(_ label: String) -> Self {
+        self.label = label
+        return self
+    }
+}

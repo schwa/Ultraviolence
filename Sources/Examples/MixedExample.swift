@@ -1,7 +1,7 @@
 import Ultraviolence
 import Metal
 import simd
-import BaseSupport
+internal import BaseSupport
 import SwiftUI
 
 public struct MixedExample: RenderPass {
