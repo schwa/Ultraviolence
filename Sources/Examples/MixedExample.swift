@@ -22,19 +22,21 @@ public struct MixedExample: RenderPass {
     }
 
     public var body: some RenderPass {
-        Chain {
-            Render {
-                let view = simd_float4x4(translation: camera).inverse
-                TeapotRenderPass(color: .red, size: size, model: model, view: view, cameraPosition: camera)
-                    .colorAttachment(colorTexture, index: 0)
-                    .depthAttachment(depthTexture)
-                    .depthCompare(.less)
-            }
+        get throws {
+            try Chain {
+                Render {
+                    let view = simd_float4x4(translation: camera).inverse
+                    TeapotRenderPass(color: .red, size: size, model: model, view: view, cameraPosition: camera)
+                        .colorAttachment(colorTexture, index: 0)
+                        .depthAttachment(depthTexture)
+                        .depthCompare(.less)
+                }
 
-            Compute(threads: .init(width: colorTexture.width, height: colorTexture.height, depth: 1), threadsPerThreadgroup: .init(width: 32, height: 32, depth: 1)) {
-                EdgeDetectionKernel()
-                    .argument(type: .kernel, name: "depth", value: depthTexture)
-                    .argument(type: .kernel, name: "color", value: colorTexture)
+                try Compute(threads: .init(width: colorTexture.width, height: colorTexture.height, depth: 1), threadsPerThreadgroup: .init(width: 32, height: 32, depth: 1)) {
+                    EdgeDetectionKernel()
+                        .argument(type: .kernel, name: "depth", value: depthTexture)
+                        .argument(type: .kernel, name: "color", value: colorTexture)
+                }
             }
         }
     }

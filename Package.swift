@@ -5,6 +5,7 @@ import PackageDescription
 public let package = Package(
     name: "Ultraviolence",
     platforms: [
+        .iOS(.v18),
         .macOS(.v15)
     ],
     products: [
