@@ -38,7 +38,7 @@ public struct UVCLI {
             try renderer.render().cgImage
         }
         let url = URL(fileURLWithPath: "output.png").absoluteURL
-        let imageDestination = CGImageDestinationCreateWithURL(url as CFURL, UTType.png.identifier as CFString, 1, nil).orThrow(.resourceCreationFailure)
+        let imageDestination = try CGImageDestinationCreateWithURL(url as CFURL, UTType.png.identifier as CFString, 1, nil).orThrow(.resourceCreationFailure)
         CGImageDestinationAddImage(imageDestination, image, nil)
         CGImageDestinationFinalize(imageDestination)
         NSWorkspace.shared.activateFileViewerSelecting([url])
