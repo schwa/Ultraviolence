@@ -66,8 +66,12 @@ public struct ComputeShader: RenderPass {
 
     public init(_ name: String, source: String) throws {
         let device = MTLCreateSystemDefaultDevice()!
-        let library = try device.makeLibrary(source: source, options: nil)
-        function = library.makeFunction(name: name)!
+
+        let options = MTLCompileOptions()
+        options.enableLogging = true
+
+        let library = try device.makeLibrary(source: source, options: options)
+        function = try library.makeFunction(name: name).orThrow(.resourceCreationFailure)
     }
 
     public func visit(_ visitor: inout Visitor) throws {

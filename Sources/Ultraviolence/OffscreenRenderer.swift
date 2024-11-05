@@ -39,6 +39,18 @@ public struct OffscreenRenderer <Content> where Content: RenderPass {
     public func render() throws -> Rendering {
         var visitor = Visitor(device: device)
         return try visitor.log(label: "OffscreenRenderer.\(#function)") { visitor in
+
+
+
+//            let logStateDescriptor = MTLLogStateDescriptor()
+//            logStateDescriptor.bufferSize = 1024 * 1024 * 1024
+//            let logState = try! device.makeLogState(descriptor: logStateDescriptor)
+//            logState.addLogHandler { _, _, _, message in
+//                logger?.log("\(message)")
+//            }
+//
+//            visitor.insert(.logState(logState))
+
             let renderPassDescriptor = MTLRenderPassDescriptor()
             renderPassDescriptor.colorAttachments[0].texture = colorTexture
             renderPassDescriptor.colorAttachments[0].loadAction = .clear

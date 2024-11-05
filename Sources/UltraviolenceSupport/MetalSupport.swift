@@ -133,8 +133,17 @@ public enum MTLCommandQueueCompletion {
 }
 
 public extension MTLCommandQueue {
-    func withCommandBuffer<R>(completion: MTLCommandQueueCompletion = .commit, label: String? = nil, debugGroup: String? = nil, _ body: (MTLCommandBuffer) throws -> R) throws -> R {
-        let commandBuffer = try makeCommandBuffer().orThrow(.resourceCreationFailure)
+    func withCommandBuffer<R>(logState: MTLLogState? = nil, completion: MTLCommandQueueCompletion = .commit, label: String? = nil, debugGroup: String? = nil, _ body: (MTLCommandBuffer) throws -> R) throws -> R {
+
+
+        let commandBufferDescriptor = MTLCommandBufferDescriptor()
+        if let logState = logState {
+            commandBufferDescriptor.logState = logState
+        }
+
+
+
+        let commandBuffer = try makeCommandBuffer(descriptor: commandBufferDescriptor).orThrow(.resourceCreationFailure)
         if let debugGroup {
             commandBuffer.pushDebugGroup(debugGroup)
         }
@@ -214,6 +223,20 @@ public extension MTLCommandBuffer {
 }
 
 public extension MTLRenderCommandEncoder {
+    func labeled(_ label: String) -> Self {
+        self.label = label
+        return self
+    }
+}
+
+public extension MTLTexture {
+    func labeled(_ label: String) -> Self {
+        self.label = label
+        return self
+    }
+}
+
+public extension MTLBuffer {
     func labeled(_ label: String) -> Self {
         self.label = label
         return self
