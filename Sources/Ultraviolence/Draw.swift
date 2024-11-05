@@ -5,12 +5,23 @@ internal import UltraviolenceSupport
 public struct Draw <Content: RenderPass>: RenderPass where Content: RenderPass {
     public typealias Body = Never
 
-    var geometry: [Geometry]
+    var encodeGeometry: (MTLRenderCommandEncoder) throws -> Void
     var content: Content
 
-    public init(_ geometry: [Geometry], @RenderPassBuilder content: () throws -> Content) throws {
-        self.geometry = geometry
+    public init(encodeGeometry: @escaping (MTLRenderCommandEncoder) throws -> Void, @RenderPassBuilder content: () throws -> Content) throws {
+        self.encodeGeometry = encodeGeometry
         self.content = try content()
+    }
+
+    public init(_ geometry: [Geometry], @RenderPassBuilder content: () throws -> Content) throws {
+        try self.init(encodeGeometry: { encoder in
+            for element in geometry {
+                try encoder.withDebugGroup(label: "􀯕Draw.visit() element") {
+                    let mesh = try element.mesh()
+                    try mesh.draw(encoder: encoder)
+                }
+            }
+        }, content: content)
     }
 
     public func visit(_ visitor: inout Visitor) throws {
@@ -33,16 +44,11 @@ public struct Draw <Content: RenderPass>: RenderPass where Content: RenderPass {
                     let depthStencilState = try device.makeDepthStencilState(descriptor: depthStencilDescriptor).orThrow(.resourceCreationFailure)
                     encoder.setDepthStencilState(depthStencilState)
                 }
-                for element in geometry {
-                    try encoder.withDebugGroup(label: "􀯕Draw.visit() element") {
-                        let arguments = visitor.argumentsStack.flatMap { $0 }
-                        for argument in arguments {
-                            try encoder.setArgument(argument, reflection: reflection)
-                        }
-                        let mesh = try element.mesh()
-                        try mesh.draw(encoder: encoder)
-                    }
+                let arguments = visitor.argumentsStack.flatMap { $0 }
+                for argument in arguments {
+                    try encoder.setArgument(argument, reflection: reflection)
                 }
+                try encodeGeometry(encoder)
             }
         }
     }
@@ -87,15 +93,9 @@ extension MTLRenderCommandEncoder {
 extension Mesh {
     func draw(encoder: MTLRenderCommandEncoder) throws {
         switch self {
-        case .simple(let vertices):
-            try vertices.withUnsafeBytes { buffer in
-                // TODO: Hardcoded index = 0
-                guard let baseAddress = buffer.baseAddress else {
-                    throw UltraviolenceError.resourceCreationFailure
-                }
-                encoder.setVertexBytes(baseAddress, length: buffer.count, index: 0)
-            }
-            encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: vertices.count)
+        case .simple(let simpleMesh):
+
+            try encoder.draw(simpleMesh: simpleMesh)
         case .mtkMesh(let mtkMesh):
             // TODO: Verify vertex shader vertex descriptor matches mesh vertex descriptor.
             for submesh in mtkMesh.submeshes {

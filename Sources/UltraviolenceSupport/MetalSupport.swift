@@ -45,6 +45,11 @@ public extension MTLDepthStencilDescriptor {
         self.depthCompareFunction = depthCompareFunction
         self.isDepthWriteEnabled = isDepthWriteEnabled
     }
+
+    convenience init(isDepthWriteEnabled: Bool = true) {
+        self.init()
+        self.isDepthWriteEnabled = isDepthWriteEnabled
+    }
 }
 
 public extension MTLCaptureManager {

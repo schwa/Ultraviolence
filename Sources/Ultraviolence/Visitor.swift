@@ -63,6 +63,7 @@ public enum VisitorState {
     case depthAttachment(MTLTexture)
     case colorAttachment(MTLTexture, Int)
     case logState(MTLLogState)
+    case vertexDescriptor(MTLVertexDescriptor)
 }
 
 // TODO: This is a temporary solution.
@@ -147,21 +148,21 @@ public extension Visitor {
         return nil
     }
 
-    //    var computePipelineDescriptor: MTLComputePipelineDescriptor {
-    //        for elements in environment.reversed() {
-    //            for element in elements {
-    //                if case let .computePipelineDescriptor(value) = element {
-    //                    return value
-    //                }
-    //            }
-    //        }
-    //        return nil
-    //    }
-
     var logState: MTLLogState? {
         for elements in environment.reversed() {
             for element in elements {
                 if case let .logState(value) = element {
+                    return value
+                }
+            }
+        }
+        return nil
+    }
+
+    var vertexDescriptor: MTLVertexDescriptor? {
+        for elements in environment.reversed() {
+            for element in elements {
+                if case let .vertexDescriptor(value) = element {
                     return value
                 }
             }
@@ -195,6 +196,12 @@ public extension RenderPass {
             depthStencilDescriptor.depthCompareFunction = compareFunction
             depthStencilDescriptor.isDepthWriteEnabled = true
             visitor.insert(.depthStencilDescriptor(depthStencilDescriptor))
+        }
+    }
+
+    func vertexDescriptor(_ descriptor: MTLVertexDescriptor) -> some RenderPass {
+        AnyRenderPassModifier(content: self) { visitor in
+            visitor.insert(.vertexDescriptor(descriptor))
         }
     }
 }

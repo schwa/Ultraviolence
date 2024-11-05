@@ -8,8 +8,19 @@ public protocol Geometry {
 
 // TOOD: Placeholder.
 public enum Mesh {
-    case simple([SIMD3<Float>])
+    case simple(SimpleMesh)
     case mtkMesh(MTKMesh)
+}
+
+public extension Mesh {
+    var vertexDescriptor: MTLVertexDescriptor {
+        switch self {
+        case let .simple(simpleMesh):
+            return simpleMesh.vertexDescriptor
+        case let .mtkMesh(mtkMesh):
+            fatalError("Unimplemented")
+        }
+    }
 }
 
 // MARK: -
@@ -26,7 +37,9 @@ public struct Quad2D {
 
 extension Quad2D: Geometry {
     public func mesh() throws -> Mesh {
-        .simple(vertices(for: .triangle))
+        let positions = vertices(for: .triangle)
+        let textureCoordinates = Quad2D(origin: [0, 0], size: [1, 1]).vertices(for: .triangle).map { SIMD2<Float>($0.x, $0.y) }
+        return .simple(SimpleMesh(positions: positions, textureCoordinates: textureCoordinates))
     }
 
     func vertices(for primitive: MTLPrimitiveType) -> [SIMD3<Float>] {
@@ -43,6 +56,77 @@ extension Quad2D: Geometry {
             ]
         default:
             fatalError("Not implemented")
+        }
+    }
+}
+
+public struct SimpleMesh {
+    public var positions: [SIMD3<Float>]
+    // swiftlint:disable:next discouraged_optional_collection
+    public var normals: [SIMD3<Float>]?
+    // swiftlint:disable:next discouraged_optional_collection
+    public var textureCoordinates: [SIMD2<Float>]?
+    // swiftlint:disable:next discouraged_optional_collection
+    public var indices: [UInt16]?
+}
+
+public extension SimpleMesh {
+    var vertexDescriptor: MTLVertexDescriptor {
+        let vertexDescriptor = MTLVertexDescriptor()
+        var index = 0
+        vertexDescriptor.attributes[0].format = .float3
+        vertexDescriptor.attributes[0].bufferIndex = index
+        vertexDescriptor.attributes[0].offset = 0
+        vertexDescriptor.layouts[0].stride = MemoryLayout<SIMD3<Float>>.size
+        index += 1
+        if normals != nil {
+            vertexDescriptor.attributes[index].format = .float3
+            vertexDescriptor.attributes[index].bufferIndex = index
+            vertexDescriptor.attributes[index].offset = 0
+            vertexDescriptor.layouts[index].stride = MemoryLayout<SIMD3<Float>>.size
+            index += 1
+        }
+        if textureCoordinates != nil {
+            vertexDescriptor.attributes[index].format = .float2
+            vertexDescriptor.attributes[index].bufferIndex = index
+            vertexDescriptor.attributes[index].offset = 0
+            vertexDescriptor.layouts[index].stride = MemoryLayout<SIMD2<Float>>.size
+            index += 1
+        }
+        return vertexDescriptor
+    }
+}
+
+extension MTLRenderCommandEncoder {
+    func draw(simpleMesh: SimpleMesh) throws {
+        var bufferIndex = 0
+        try simpleMesh.positions.withUnsafeBytes { buffer in
+            let baseAddress = try buffer.baseAddress.orThrow(.resourceCreationFailure)
+            self.setVertexBytes(baseAddress, length: buffer.count, index: bufferIndex)
+            bufferIndex += 1
+        }
+        if let normals = simpleMesh.normals {
+            assert(normals.count == simpleMesh.positions.count)
+            try normals.withUnsafeBytes { buffer in
+                let baseAddress = try buffer.baseAddress.orThrow(.resourceCreationFailure)
+                self.setVertexBytes(baseAddress, length: buffer.count, index: bufferIndex)
+            }
+            bufferIndex += 1
+        }
+        if let textureCoordinates = simpleMesh.textureCoordinates {
+            assert(textureCoordinates.count == simpleMesh.positions.count)
+            try textureCoordinates.withUnsafeBytes { buffer in
+                let baseAddress = try buffer.baseAddress.orThrow(.resourceCreationFailure)
+                self.setVertexBytes(baseAddress, length: buffer.count, index: bufferIndex)
+            }
+            bufferIndex += 1
+        }
+        if let indices = simpleMesh.indices {
+            // TODO: We can only draw with indices if indices is in a MTLBuffer already I think.
+            fatalError("Unimplemented.")
+        }
+        else {
+            self.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: simpleMesh.positions.count)
         }
     }
 }

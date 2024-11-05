@@ -36,7 +36,41 @@ public extension simd_float4x4 {
         ])
     }
 
+    var translation: SIMD3<Float> {
+        get {
+            self[3].xyz
+        }
+        set {
+            self[3].xyz = newValue
+        }
+    }
+
     static let identity = simd_float4x4(diagonal: [1, 1, 1, 1])
+}
+
+extension SIMD3 {
+    var xy: SIMD2<Scalar> {
+        get {
+            .init(x, y)
+        }
+        set {
+            x = newValue.x
+            y = newValue.y
+        }
+    }
+}
+
+extension SIMD4 {
+    var xyz: SIMD3<Scalar> {
+        get {
+            .init(x, y, z)
+        }
+        set {
+            x = newValue.x
+            y = newValue.y
+            z = newValue.z
+        }
+    }
 }
 
 public struct SliderField: View {
