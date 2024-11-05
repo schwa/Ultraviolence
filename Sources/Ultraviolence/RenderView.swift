@@ -50,25 +50,30 @@ public class RenderPassCoordinator <Content>: NSObject, MTKViewDelegate where Co
     }
 
     public func draw(in view: MTKView) {
-        let commandBuffer = commandQueue.makeCommandBuffer()!
-        commandBuffer.withDebugGroup(label: "􀯕RenderView.Coordinator.draw()") {
-            let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: view.currentRenderPassDescriptor!)!
-            let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
-            renderPipelineDescriptor.colorAttachments[0].pixelFormat = view.colorPixelFormat
-            renderPipelineDescriptor.depthAttachmentPixelFormat = view.depthStencilPixelFormat
-            var visitor = Visitor(device: device)
-            do {
-                try visitor.with([.commandBuffer(commandBuffer), .renderEncoder(encoder), .renderPipelineDescriptor(renderPipelineDescriptor)]) { visitor in
-                    try content.visit(&visitor)
+        do {
+            guard let currentDrawable = view.currentDrawable else {
+                logger?.warning("No current drawable")
+                return
+            }
+            defer {
+                currentDrawable.present()
+            }
+            try commandQueue.withCommandBuffer(label: "􀐛RenderView.Coordinator.commamdBuffer", debugGroup: "􀯕RenderView.Coordinator.draw()") { commandBuffer in
+                let currentRenderPassDescriptor = try view.currentRenderPassDescriptor.orThrow(.resourceCreationFailure)
+                var visitor = Visitor(device: device)
+                let render = Render { content }
+                try visitor.with([
+                    .renderPassDescriptor(currentRenderPassDescriptor),
+                    .commandBuffer(commandBuffer),
+                    .commandQueue(commandQueue)
+                ]) { visitor in
+                    try render.visit(&visitor)
                 }
             }
-            catch {
-                logger?.error("Error when visiting render passes: \(error)")
-                lastError = error
-            }
-            encoder.endEncoding()
-            commandBuffer.commit()
-            view.currentDrawable!.present()
+        }
+        catch {
+            logger?.error("Error when drawing: \(error)")
+            lastError = error
         }
     }
 }

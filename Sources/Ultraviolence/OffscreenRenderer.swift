@@ -57,8 +57,12 @@ public struct OffscreenRenderer <Content> where Content: RenderPass {
             renderPassDescriptor.depthAttachment.loadAction = .clear
             renderPassDescriptor.depthAttachment.clearDepth = 1
             renderPassDescriptor.depthAttachment.storeAction = .store
-            return try device.withCommandQueue(label: "􀐛Renderer.commandQueue") { commandQueue in
-                try visitor.with([.commandQueue(commandQueue), .renderPassDescriptor(renderPassDescriptor)]) { visitor in
+
+            visitor.insert(.renderPassDescriptor(renderPassDescriptor))
+
+            return try device.withCommandQueue(label: "􀐛OffscreenRenderer.commandQueue") { commandQueue in
+                try commandQueue.withCommandBuffer(completion: .commitAndWaitUntilCompleted, label: "􀐛OffscreenRenderer.commandBuffer", debugGroup: "􀯕OffscreenRenderer.render()") { commandBuffer in
+                    visitor.insert(.commandBuffer(commandBuffer))
                     try content.visit(&visitor)
                 }
                 return .init(texture: colorTexture)
