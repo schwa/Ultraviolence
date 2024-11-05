@@ -44,12 +44,3 @@ public struct UVCLI {
         NSWorkspace.shared.activateFileViewerSelecting([url])
     }
 }
-
-extension Optional where Wrapped == String {
-    var isTrue: Bool {
-        guard let value = self?.lowercased() else {
-            return false
-        }
-        return ["1", "true", "yes"].contains(value)
-    }
-}
