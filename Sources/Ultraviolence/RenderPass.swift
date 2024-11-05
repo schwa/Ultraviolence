@@ -34,4 +34,10 @@ extension Never: RenderPass {
 
 extension Optional: RenderPass where Wrapped: RenderPass {
     public typealias Body = Never
+
+    public func visit(_ visitor: inout Visitor) throws {
+        if let value = self {
+            try value.visit(&visitor)
+        }
+    }
 }

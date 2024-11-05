@@ -4,7 +4,7 @@ import SwiftUI
 import Ultraviolence
 internal import UltraviolenceSupport
 
-public struct SimpleTeapotExample: View {
+public struct MixedExampleView: View {
     @State
     private var color: SIMD4<Float> = [1, 0, 0, 1]
 
@@ -20,12 +20,15 @@ public struct SimpleTeapotExample: View {
     public init() {
     }
 
+
     public var body: some View {
         TimelineView(.animation) { timeline in
-            RenderView { _ in
-                Render {
-                    TeapotRenderPass(color: color, size: size, model: simd_float4x4(yRotation: angle), view: simd_float4x4(translation: camera).inverse, cameraPosition: camera)
-                }
+            RenderView { renderPassDescriptor in
+                // TODO: How do we get the color and depth textures? We need to get the currentRenderPassDescriptor from the RenderView
+
+                let colorTexture = renderPassDescriptor.colorAttachments[0].texture!
+                let depthTexture = renderPassDescriptor.depthAttachment!.texture!
+                return MixedExample(size: size, geometries: [Teapot()], colorTexture: colorTexture, depthTexture: depthTexture, camera: camera, model: simd_float4x4(yRotation: angle))
             }
             .onGeometryChange(for: CGSize.self, of: \.size) { size = $0 }
             .onChange(of: timeline.date, initial: true) {

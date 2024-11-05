@@ -1,9 +1,7 @@
 import CoreGraphics
 import Metal
 
-// TODO: Make into a RenderPass called Render.
-// TODO: This is a very WIP API.
-// TODO: I'd like RenderView to be based on this.
+// TODO: Rename.
 public struct OffscreenRenderer <Content> where Content: RenderPass {
     public var device: MTLDevice = MTLCreateSystemDefaultDevice()!
     public var size: CGSize
