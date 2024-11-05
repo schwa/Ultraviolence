@@ -34,12 +34,16 @@ public struct Visitor {
     }
 
     private var logDepth: Int = 0
+    static let logVisitor = ProcessInfo.processInfo.environment["LOG_VISITOR"].isTrue
 
     mutating func log<R>(label: String, body: (inout Self) throws -> R) rethrows -> R {
-        //        let prefix = String(repeating: "  ", count: logDepth)
-        //        logger?.log("\(prefix)ENTER \(label)")
+        if !Self.logVisitor {
+            return try body(&self)
+        }
+        let prefix = String(repeating: "  ", count: logDepth)
+        logger?.log("\(prefix)ENTER \(label)")
         defer {
-            //            logger?.log("\(prefix)EXIT \(label)")
+            logger?.log("\(prefix)EXIT \(label)")
             logDepth -= 1
         }
         logDepth += 1
