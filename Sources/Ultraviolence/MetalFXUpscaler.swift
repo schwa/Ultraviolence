@@ -1,3 +1,4 @@
+#if !targetEnvironment(simulator)
 import Metal
 import MetalFX
 
@@ -23,3 +24,4 @@ public struct MetalFXUpscaler: RenderPass {
         fatalError("Not implemented")
     }
 }
+#endif // !targetEnvironment(simulator)

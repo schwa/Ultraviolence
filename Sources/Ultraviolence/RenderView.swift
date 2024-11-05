@@ -3,6 +3,7 @@ import MetalKit
 internal import os
 import SwiftUI
 
+#if os(macOS)
 public struct RenderView <Content>: NSViewRepresentable where Content: RenderPass {
     let device = MTLCreateSystemDefaultDevice()!
     let content: (MTLRenderPassDescriptor) -> Content
@@ -32,6 +33,37 @@ public struct RenderView <Content>: NSViewRepresentable where Content: RenderPas
         context.coordinator.content = content
     }
 }
+#elseif os(iOS)
+public struct RenderView <Content>: UIViewRepresentable where Content: RenderPass {
+    let device = MTLCreateSystemDefaultDevice()!
+    let content: (MTLRenderPassDescriptor) -> Content
+
+    public init(@RenderPassBuilder _ content: @escaping (MTLRenderPassDescriptor) -> Content) {
+        self.content = content
+    }
+
+    public func makeCoordinator() -> RenderPassCoordinator<Content> {
+        .init(device: device, content: content)
+    }
+
+    public func makeUIView(context: Context) -> MTKView {
+        let view = MTKView()
+        view.device = device
+        view.delegate = context.coordinator
+        // TODO: To be honest all of these settings should be configurable.
+        view.clearColor = MTLClearColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)
+        view.colorPixelFormat = .bgra8Unorm_srgb
+        view.depthStencilPixelFormat = .depth32Float
+        view.depthStencilAttachmentTextureUsage = [.shaderRead, .renderTarget] // TODO
+        view.framebufferOnly = false
+        return view
+    }
+
+    public func updateUIView(_ nsView: MTKView, context: Context) {
+        context.coordinator.content = content
+    }
+}
+#endif
 
 // MARK: -
 

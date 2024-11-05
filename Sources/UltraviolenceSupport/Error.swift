@@ -2,6 +2,7 @@ public enum UltraviolenceError: Error {
     case missingEnvironment(String)
     case missingBinding(String)
     case resourceCreationFailure
+    case deviceCababilityFailure(String)
 }
 
 public extension Optional {
