@@ -18,15 +18,15 @@ public struct UVCLI {
         let camera = simd_float3([0, 2, 6])
         let model = simd_float4x4(yRotation: .degrees(0))
 
-        let size = CGSize(width: 1_600, height: 1_200)
+        let size = CGSize(width: 1600, height: 1200)
 
         let device = MTLCreateSystemDefaultDevice()!
         let colorTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm_srgb, width: Int(size.width), height: Int(size.height), mipmapped: false)
-        colorTextureDescriptor.usage = [.renderTarget, .shaderWrite]
-        let colorTexture = device.makeTexture(descriptor: colorTextureDescriptor)!
+        colorTextureDescriptor.usage = [.renderTarget, .shaderRead, .shaderWrite]
+        let colorTexture = try device.makeTexture(descriptor: colorTextureDescriptor).orThrow(.resourceCreationFailure).labeled("Color Texture")
         let depthTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: Int(size.width), height: Int(size.height), mipmapped: false)
         depthTextureDescriptor.usage = [.renderTarget, .shaderRead]
-        let depthTexture = device.makeTexture(descriptor: depthTextureDescriptor)!
+        let depthTexture = try device.makeTexture(descriptor: depthTextureDescriptor).orThrow(.resourceCreationFailure).labeled("Depth Texture")
 
 //        let renderPass = Render {
 //            TeapotRenderPass(color: [1, 0, 0, 1], size: size, model: model, view: view, cameraPosition: camera)
@@ -36,7 +36,7 @@ public struct UVCLI {
 
 
 
-        let renderer = OffscreenRenderer(size: size, content: renderPass)
+        let renderer = OffscreenRenderer(size: size, content: renderPass, colorTexture: colorTexture, depthTexture: depthTexture)
         let image = try MTLCaptureManager.shared().with(enabled: capture) {
             try renderer.render().cgImage
         }

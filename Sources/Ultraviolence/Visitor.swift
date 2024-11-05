@@ -3,12 +3,13 @@ import simd
 
 public struct Visitor {
     public var device: MTLDevice
-    public var argumentsStack: [[Argument]] = []
-
-    public var environment: [[VisitorState]] = []
+    public var argumentsStack: [[Argument]]
+    public var environment: [[VisitorState]]
 
     public init(device: MTLDevice) {
         self.device = device
+        self.argumentsStack = []
+        self.environment = [[]]
     }
 
     private mutating func push(_ state: [VisitorState]) {
@@ -34,10 +35,10 @@ public struct Visitor {
     private var logDepth: Int = 0
 
     mutating func log<R>(label: String, body: (inout Visitor) throws -> R) rethrows -> R{
-        let prefix = String(repeating: "  ", count: logDepth)
-        logger?.log("\(prefix)ENTER \(label)")
+//        let prefix = String(repeating: "  ", count: logDepth)
+//        logger?.log("\(prefix)ENTER \(label)")
         defer {
-            logger?.log("\(prefix)EXIT \(label)")
+//            logger?.log("\(prefix)EXIT \(label)")
             logDepth -= 1
         }
         logDepth += 1
@@ -57,6 +58,7 @@ public enum VisitorState {
     case depthAttachment(MTLTexture)
     case colorAttachment(MTLTexture, Int)
     case renderPassDescriptor(MTLRenderPassDescriptor)
+    case logState(MTLLogState)
 }
 
 // TODO: This is a temporary solution.
@@ -153,6 +155,17 @@ public extension Visitor {
     //        }
     //        return nil
     //    }
+
+    var logState: MTLLogState? {
+        for elements in environment.reversed() {
+            for element in elements {
+                if case let .logState(value) = element {
+                    return value
+                }
+            }
+        }
+        return nil
+    }
 
 }
 

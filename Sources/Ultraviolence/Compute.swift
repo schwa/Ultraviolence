@@ -4,12 +4,12 @@ import Metal
 public struct Compute <Content>: RenderPass where Content: RenderPass {
     public typealias Body = Never
 
-    var threadgroupsPerGrid: MTLSize
+    var threads: MTLSize
     var threadsPerThreadgroup: MTLSize
     var content: Content
 
-    public init(threadgroupsPerGrid: MTLSize, threadsPerThreadgroup: MTLSize, @RenderPassBuilder content: () -> Content) {
-        self.threadgroupsPerGrid = threadgroupsPerGrid
+    public init(threads: MTLSize, threadsPerThreadgroup: MTLSize, @RenderPassBuilder content: () -> Content) {
+        self.threads = threads
         self.threadsPerThreadgroup = threadsPerThreadgroup
         self.content = content()
     }
@@ -18,7 +18,11 @@ public struct Compute <Content>: RenderPass where Content: RenderPass {
         try visitor.log(label: "Compute.\(#function).") { visitor in
             let device = visitor.device
             let commandQueue = try visitor.commandQueue.orThrow(.missingEnvironment(".commandQueue"))
-            return try commandQueue.withCommandBuffer(completion: .commitAndWaitUntilCompleted, label: "􀐛Compute.commandBuffer", debugGroup: "􀯕Compute.visit()") { commandBuffer in
+
+            let logState = visitor.logState
+
+
+            return try commandQueue.withCommandBuffer(logState: logState, completion: .commitAndWaitUntilCompleted, label: "􀐛Compute.commandBuffer", debugGroup: "􀯕Compute.visit()") { commandBuffer in
                 try commandBuffer.withComputeCommandEncoder { encoder in
                     try content.visit(&visitor)
                     let computePipelineDescriptor = MTLComputePipelineDescriptor()
@@ -40,7 +44,7 @@ public struct Compute <Content>: RenderPass where Content: RenderPass {
                             encoder.setTexture(texture, index: binding.index)
                         }
                     }
-                    encoder.dispatchThreadgroups(threadgroupsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
+                    encoder.dispatchThreads(threads, threadsPerThreadgroup: threadsPerThreadgroup)
                 }
             }
         }

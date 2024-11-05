@@ -32,11 +32,11 @@ public struct MixedExample: RenderPass {
                     .depthCompare(.less)
                 }
                 
-                Compute(threadgroupsPerGrid: .init(width: Int(size.width), height: Int(size.height), depth: 1), threadsPerThreadgroup: .init(width: 32, height: 32, depth: 1)) {
+                Compute(threads: .init(width: Int(size.width), height: Int(size.height), depth: 1), threadsPerThreadgroup: .init(width: 32, height: 32, depth: 1)) {
                     EdgeDetectionKernel()
                 }
-                .argument(type: .kernel, name: "inTexture", value: depth)
-                .argument(type: .kernel, name: "outTexture", value: color)
+                .argument(type: .kernel, name: "depth", value: depth)
+                .argument(type: .kernel, name: "color", value: color)
             }
         }
     }
