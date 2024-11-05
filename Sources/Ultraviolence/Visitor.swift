@@ -28,6 +28,7 @@ public struct Visitor {
         return try body(&self)
     }
 
+    // TODO: Make sure all insert() usages are not better replaced with with().
     public mutating func insert(_ state: VisitorState) {
         environment[environment.count - 1].append(state)
     }
@@ -48,16 +49,19 @@ public struct Visitor {
 
 public enum VisitorState {
     case commandQueue(MTLCommandQueue)
-    case commandBuffer(MTLCommandBuffer) // TODO: Deprecate
-    case renderEncoder(MTLRenderCommandEncoder)  // TODO: Deprecate
+    case commandBuffer(MTLCommandBuffer)
+
+    case renderCommandEncoder(MTLRenderCommandEncoder)
+
     case renderPipelineDescriptor(MTLRenderPipelineDescriptor)
+    case renderPassDescriptor(MTLRenderPassDescriptor)
+
     case depthStencilDescriptor(MTLDepthStencilDescriptor)
     //    case arguments([Argument])
     case function(MTLFunction)
     //    case computePipelineDescriptor(MTLComputePipelineDescriptor)
     case depthAttachment(MTLTexture)
     case colorAttachment(MTLTexture, Int)
-    case renderPassDescriptor(MTLRenderPassDescriptor)
     case logState(MTLLogState)
 }
 
@@ -100,7 +104,7 @@ public extension Visitor {
     var renderCommandEncoder: MTLRenderCommandEncoder? {
         for elements in environment.reversed() {
             for element in elements {
-                if case let .renderEncoder(value) = element {
+                if case let .renderCommandEncoder(value) = element {
                     return value
                 }
             }
