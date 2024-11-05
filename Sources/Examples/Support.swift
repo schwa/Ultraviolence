@@ -24,6 +24,6 @@ public struct Teapot: Geometry {
     }
 }
 
-extension SIMD4 where Scalar == Float {
+public extension SIMD4 where Scalar == Float {
     static let red = SIMD4<Float>([1, 0, 0, 1])
 }
