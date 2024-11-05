@@ -3,12 +3,10 @@ import simd
 
 public struct Visitor {
     public var device: MTLDevice
-    public var argumentsStack: [[Argument]]
     public var environment: [[VisitorState]]
 
     public init(device: MTLDevice) {
         self.device = device
-        self.argumentsStack = []
         self.environment = [[]]
     }
 
@@ -61,13 +59,14 @@ public enum VisitorState {
     case renderPassDescriptor(MTLRenderPassDescriptor)
 
     case depthStencilDescriptor(MTLDepthStencilDescriptor)
-    //    case arguments([Argument])
     case function(MTLFunction)
     //    case computePipelineDescriptor(MTLComputePipelineDescriptor)
     case depthAttachment(MTLTexture)
     case colorAttachment(MTLTexture, Int)
     case logState(MTLLogState)
     case vertexDescriptor(MTLVertexDescriptor)
+
+    case arguments([Argument])
 }
 
 // TODO: This is a temporary solution.
@@ -172,6 +171,18 @@ public extension Visitor {
             }
         }
         return nil
+    }
+
+    var arguments: [Argument] {
+        var result: [Argument] = []
+        for elements in environment.reversed() {
+            for element in elements {
+                if case let .arguments(value) = element {
+                    result.append(contentsOf: value)
+                }
+            }
+        }
+        return result
     }
 }
 

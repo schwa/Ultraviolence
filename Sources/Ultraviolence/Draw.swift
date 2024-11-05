@@ -44,7 +44,7 @@ public struct Draw <Content: RenderPass>: RenderPass where Content: RenderPass {
                     let depthStencilState = try device.makeDepthStencilState(descriptor: depthStencilDescriptor).orThrow(.resourceCreationFailure)
                     encoder.setDepthStencilState(depthStencilState)
                 }
-                let arguments = visitor.argumentsStack.flatMap { $0 }
+                let arguments = visitor.arguments.flatMap { $0 }
                 for argument in arguments {
                     try encoder.setArgument(argument, reflection: reflection)
                 }

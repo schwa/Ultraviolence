@@ -29,7 +29,7 @@ internal struct ArgumentsRenderPass <Content>: RenderPass where Content: RenderP
 
     func visit(_ visitor: inout Visitor) throws {
         try visitor.log(label: "ArgumentsRenderPass.\(#function).") { visitor in
-            visitor.argumentsStack.append(arguments)
+            visitor.insert(.arguments(arguments))
             try content.visit(&visitor)
         }
     }
