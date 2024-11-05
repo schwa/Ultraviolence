@@ -75,14 +75,14 @@ public struct SliderField: View {
 }
 
 public extension Color {
-    func float4() -> SIMD4<Float> {
+    func float4() throws -> SIMD4<Float> {
         let cgColor = resolve(in: .init()).cgColor
-        let colorSpace = CGColorSpace(name: CGColorSpace.linearSRGB)!
+        let colorSpace = try CGColorSpace(name: CGColorSpace.linearSRGB).orThrow(.resourceCreationFailure)
         guard let convertedColor = cgColor.converted(to: colorSpace, intent: .defaultIntent, options: nil) else {
-            fatalError("Cannot convert color")
+            throw UltraviolenceError.resourceCreationFailure
         }
         guard let components = convertedColor.components?.map(Float.init) else {
-            fatalError("Cannot get components from color")
+            throw UltraviolenceError.resourceCreationFailure
         }
         return SIMD4<Float>(components[0], components[1], components[2], components[3])
     }
