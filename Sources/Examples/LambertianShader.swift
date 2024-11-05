@@ -85,15 +85,17 @@ public struct LambertianShader: RenderPass {
     }
 
     public var body: some RenderPass {
-        try! Draw(geometry) {
-            try VertexShader("vertex_main", source: source)
-            try FragmentShader("fragment_main", source: source)
+        get throws {
+            try Draw(geometry) {
+                try VertexShader("vertex_main", source: source)
+                try FragmentShader("fragment_main", source: source)
+            }
+            .argument(type: .vertex, name: "projection", value: PerspectiveProjection().projectionMatrix(for: [Float(size.width), Float(size.height)]))
+            .argument(type: .vertex, name: "model", value: model)
+            .argument(type: .vertex, name: "view", value: view)
+            .argument(type: .fragment, name: "color", value: color)
+            .argument(type: .fragment, name: "lightDirection", value: SIMD3<Float>([-1, -2, -1]))
+            .argument(type: .fragment, name: "cameraPosition", value: cameraPosition)
         }
-        .argument(type: .vertex, name: "projection", value: PerspectiveProjection().projectionMatrix(for: [Float(size.width), Float(size.height)]))
-        .argument(type: .vertex, name: "model", value: model)
-        .argument(type: .vertex, name: "view", value: view)
-        .argument(type: .fragment, name: "color", value: color)
-        .argument(type: .fragment, name: "lightDirection", value: SIMD3<Float>([-1, -2, -1]))
-        .argument(type: .fragment, name: "cameraPosition", value: cameraPosition)
     }
 }
