@@ -1,5 +1,8 @@
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
+default_install_hook_types:
+    - pre-commit
+    - pre-push
 repos:
     - repo: local
       hooks:
@@ -13,11 +16,13 @@ repos:
             entry: /opt/homebrew/bin/swiftlint lint --quiet --fix
             language: system
             types: [swift]
-        #   - id: swift-test
-        #     name: swift-test
-        #     entry: swift test
-        #     language: system
-        #     types: [swift]
+          - id: swift-test
+            name: swift-test
+            entry: swift test
+            language: system
+            types: [swift]
+            stages: [pre-push]
+            pass_filenames: false
     - repo: https://github.com/pre-commit/pre-commit-hooks
       rev: v5.0.0
       hooks:
