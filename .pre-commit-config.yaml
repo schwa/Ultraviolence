@@ -1,10 +1,34 @@
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
--   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
-    hooks:
-    -   id: trailing-whitespace
-    -   id: end-of-file-fixer
-    -   id: check-yaml
-    -   id: check-added-large-files
+    - repo: local
+      hooks:
+          - id: swiftlint
+            name: swiftlint lint
+            entry: /opt/homebrew/bin/swiftlint lint --quiet
+            language: system
+            types: [swift]
+          - id: swiftlint-fix
+            name: swiftlint lint --fix
+            entry: /opt/homebrew/bin/swiftlint lint --quiet --fix
+            language: system
+            types: [swift]
+          - id: swift-test
+            name: swift-test
+            entry: swift test
+            language: system
+            types: [swift]
+    - repo: https://github.com/pre-commit/pre-commit-hooks
+      rev: v5.0.0
+      hooks:
+          - id: check-case-conflict
+          - id: check-executables-have-shebangs
+          - id: check-json
+          - id: check-merge-conflict
+          - id: check-symlinks
+          - id: check-toml
+          - id: check-xml
+          - id: check-yaml
+          - id: end-of-file-fixer
+          - id: trailing-whitespace
+          # - id: check-shebang-scripts-are-executable
