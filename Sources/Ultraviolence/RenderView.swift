@@ -5,9 +5,9 @@ import SwiftUI
 
 public struct RenderView <Content>: NSViewRepresentable where Content: RenderPass {
     let device = MTLCreateSystemDefaultDevice()!
-    let content: Content
+    let content: (MTLRenderPassDescriptor) -> Content
 
-    public init(_ content: Content) {
+    public init(@RenderPassBuilder _ content: @escaping (MTLRenderPassDescriptor) -> Content) {
         self.content = content
     }
 
@@ -18,10 +18,13 @@ public struct RenderView <Content>: NSViewRepresentable where Content: RenderPas
     public func makeNSView(context: Context) -> MTKView {
         let view = MTKView()
         view.device = device
+        // TODO: To be honest all of these settings should be configurable.
         view.clearColor = MTLClearColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)
         view.colorPixelFormat = .bgra8Unorm_srgb
         view.depthStencilPixelFormat = .depth32Float
+        view.depthStencilAttachmentTextureUsage = [.shaderRead, .renderTarget] // TODO
         view.delegate = context.coordinator
+        view.framebufferOnly = false // TODO: This is a workaround.
         return view
     }
 
@@ -35,11 +38,11 @@ public struct RenderView <Content>: NSViewRepresentable where Content: RenderPas
 public class RenderPassCoordinator <Content>: NSObject, MTKViewDelegate where Content: RenderPass {
     var device: MTLDevice
     var commandQueue: MTLCommandQueue
-    var content: Content
+    var content: (MTLRenderPassDescriptor) -> Content
     var lastError: Error?
     var logger: Logger? = Logger()
 
-    init(device: MTLDevice, content: Content) {
+    init(device: MTLDevice, content: @escaping (MTLRenderPassDescriptor) -> Content) {
         self.device = device
         self.content = content
         self.commandQueue = device.makeCommandQueue()!
@@ -58,16 +61,18 @@ public class RenderPassCoordinator <Content>: NSObject, MTKViewDelegate where Co
             defer {
                 currentDrawable.present()
             }
-            try commandQueue.withCommandBuffer(label: "􀐛RenderView.Coordinator.commamdBuffer", debugGroup: "􀯕RenderView.Coordinator.draw()") { commandBuffer in
+            try commandQueue.withCommandBuffer(label: "􀐛RenderView.Coordinator.commandBuffer", debugGroup: "􀯕RenderView.Coordinator.draw()") { commandBuffer in
                 let currentRenderPassDescriptor = try view.currentRenderPassDescriptor.orThrow(.resourceCreationFailure)
+
+                currentRenderPassDescriptor.depthAttachment.storeAction = .store
+
                 var visitor = Visitor(device: device)
-                let render = Render { content }
                 try visitor.with([
                     .renderPassDescriptor(currentRenderPassDescriptor),
                     .commandBuffer(commandBuffer),
                     .commandQueue(commandQueue)
                 ]) { visitor in
-                    try render.visit(&visitor)
+                    try content(currentRenderPassDescriptor).visit(&visitor)
                 }
             }
         }
