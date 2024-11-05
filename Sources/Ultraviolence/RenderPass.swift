@@ -21,7 +21,7 @@ public extension RenderPass {
 
 public extension RenderPass where Body == Never {
     var body: Never {
-        get throws {
+        get throws {            
             fatalError("No body for \(type(of: self))")
         }
     }
@@ -36,6 +36,7 @@ extension Optional: RenderPass where Wrapped: RenderPass {
     public typealias Body = Never
 
     public func visit(_ visitor: inout Visitor) throws {
+        // swiftlint:disable:next self_binding
         if let value = self {
             try value.visit(&visitor)
         }

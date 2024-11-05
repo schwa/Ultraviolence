@@ -3,7 +3,6 @@ import Metal
 
 // TODO: Rename.
 public struct OffscreenRenderer <Content> where Content: RenderPass {
-    public var device: MTLDevice = MTLCreateSystemDefaultDevice()!
     public var size: CGSize
     public var content: Content
     public var colorTexture: MTLTexture
@@ -17,15 +16,15 @@ public struct OffscreenRenderer <Content> where Content: RenderPass {
     }
 
     // TODO: Most of this belongs on a RenderSession type API. We should be able to render multiple times with the same setup.
-    public init(size: CGSize, content: Content) {
-        let device = MTLCreateSystemDefaultDevice()!
+    public init(size: CGSize, content: Content) throws {
+        let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
         let colorTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm_srgb, width: Int(size.width), height: Int(size.height), mipmapped: false)
         colorTextureDescriptor.usage = [.renderTarget]
-        let colorTexture = device.makeTexture(descriptor: colorTextureDescriptor)!
+        let colorTexture = try device.makeTexture(descriptor: colorTextureDescriptor).orThrow(.resourceCreationFailure)
 
         let depthTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: Int(size.width), height: Int(size.height), mipmapped: false)
         depthTextureDescriptor.usage = [.renderTarget]
-        let depthTexture = device.makeTexture(descriptor: depthTextureDescriptor)!
+        let depthTexture = try device.makeTexture(descriptor: depthTextureDescriptor).orThrow(.resourceCreationFailure)
 
         self.init(size: size, content: content, colorTexture: colorTexture, depthTexture: depthTexture)
     }
@@ -35,6 +34,7 @@ public struct OffscreenRenderer <Content> where Content: RenderPass {
     }
 
     public func render() throws -> Rendering {
+        let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
         var visitor = Visitor(device: device)
         return try visitor.log(label: "OffscreenRenderer.\(#function)") { visitor in
             //            let logStateDescriptor = MTLLogStateDescriptor()
@@ -71,10 +71,13 @@ public struct OffscreenRenderer <Content> where Content: RenderPass {
 
 public extension OffscreenRenderer.Rendering {
     var cgImage: CGImage {
-        var bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.noneSkipFirst.rawValue)
-        bitmapInfo.insert(.byteOrder32Little)
-        let context = CGContext(data: nil, width: texture.width, height: texture.height, bitsPerComponent: 8, bytesPerRow: texture.width * 4, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: bitmapInfo.rawValue)!
-        texture.getBytes(context.data!, bytesPerRow: texture.width * 4, from: MTLRegionMake2D(0, 0, texture.width, texture.height), mipmapLevel: 0)
-        return context.makeImage()!
+        get throws {
+            var bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.noneSkipFirst.rawValue)
+            bitmapInfo.insert(.byteOrder32Little)
+            let context = try CGContext(data: nil, width: texture.width, height: texture.height, bitsPerComponent: 8, bytesPerRow: texture.width * 4, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: bitmapInfo.rawValue).orThrow(.resourceCreationFailure)
+            let data = try context.data.orThrow(.resourceCreationFailure)
+            texture.getBytes(data, bytesPerRow: texture.width * 4, from: MTLRegionMake2D(0, 0, texture.width, texture.height), mipmapLevel: 0)
+            return try context.makeImage().orThrow(.resourceCreationFailure)
+        }
     }
 }

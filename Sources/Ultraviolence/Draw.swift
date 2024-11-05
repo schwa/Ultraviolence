@@ -1,5 +1,6 @@
 import Metal
 import MetalKit
+internal import UltraviolenceSupport
 
 public struct Draw <Content: RenderPass>: RenderPass where Content: RenderPass {
     public typealias Body = Never
@@ -22,14 +23,14 @@ public struct Draw <Content: RenderPass>: RenderPass where Content: RenderPass {
                 let renderPipelineDescriptor = try visitor.renderPipelineDescriptor.orThrow(.missingEnvironment(".renderPipelineDescriptor"))
                 let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: [.bindingInfo])
                 guard let reflection else {
-                    fatalError("No reflection.")
+                    throw UltraviolenceError.resourceCreationFailure
                 }
                 // TODO: Move all this into the environment.
                 encoder.setRenderPipelineState(renderPipelineState)
                 encoder.setCullMode(.back)
                 encoder.setFrontFacing(.counterClockwise)
                 if let depthStencilDescriptor = visitor.depthStencilDescriptor {
-                    let depthStencilState = device.makeDepthStencilState(descriptor: depthStencilDescriptor)!
+                    let depthStencilState = try device.makeDepthStencilState(descriptor: depthStencilDescriptor).orThrow(.resourceCreationFailure)
                     encoder.setDepthStencilState(depthStencilState)
                 }
                 for element in geometry {
@@ -39,7 +40,7 @@ public struct Draw <Content: RenderPass>: RenderPass where Content: RenderPass {
                             try encoder.setArgument(argument, reflection: reflection)
                         }
                         let mesh = try element.mesh()
-                        mesh.draw(encoder: encoder)
+                        try mesh.draw(encoder: encoder)
                     }
                 }
             }
@@ -53,7 +54,7 @@ extension MTLRenderCommandEncoder {
         // TODO: Logic for .fragment and .vertex are almost identical.
         case .fragment:
             guard let binding = reflection.fragmentBindings.first(where: { $0.name == argument.name }) else {
-                fatalError("Could not find binding for \"\(argument.name)\".")
+                throw UltraviolenceError.missingBinding(argument.name)
             }
             switch argument.value {
             case .float3, .float4, .matrix4x4:
@@ -66,7 +67,7 @@ extension MTLRenderCommandEncoder {
             }
         case .vertex:
             guard let binding = reflection.vertexBindings.first(where: { $0.name == argument.name }) else {
-                fatalError("Could not find binding for \"\(argument.name)\".")
+                throw UltraviolenceError.missingBinding(argument.name)
             }
             switch argument.value {
             case .float3, .float4, .matrix4x4:
@@ -84,12 +85,15 @@ extension MTLRenderCommandEncoder {
 }
 
 extension Mesh {
-    func draw(encoder: MTLRenderCommandEncoder) {
+    func draw(encoder: MTLRenderCommandEncoder) throws {
         switch self {
         case .simple(let vertices):
             vertices.withUnsafeBytes { buffer in
                 // TODO: Hardcoded index = 0
-                encoder.setVertexBytes(buffer.baseAddress!, length: buffer.count, index: 0)
+                guard let baseAddress = buffer.baseAddress else {
+                    throw UltraviolenceError.resourceCreationFailure
+                }
+                encoder.setVertexBytes(baseAddress, length: buffer.count, index: 0)
             }
             encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: vertices.count)
         case .mtkMesh(let mtkMesh):

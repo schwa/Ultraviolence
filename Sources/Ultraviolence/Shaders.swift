@@ -11,9 +11,9 @@ public struct VertexShader: RenderPass {
     }
 
     public init(_ name: String, source: String) throws {
-        let device = MTLCreateSystemDefaultDevice()!
+        let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
         let library = try device.makeLibrary(source: source, options: nil)
-        function = library.makeFunction(name: name)!
+        function = try library.makeFunction(name: name).orThrow(.resourceCreationFailure)
     }
 
     public func visit(_ visitor: inout Visitor) throws {
@@ -41,9 +41,9 @@ public struct FragmentShader: RenderPass {
     }
 
     public init(_ name: String, source: String) throws {
-        let device = MTLCreateSystemDefaultDevice()!
+        let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
         let library = try device.makeLibrary(source: source, options: nil)
-        function = library.makeFunction(name: name)!
+        function = try library.makeFunction(name: name).orThrow(.resourceCreationFailure)
     }
 
     public func visit(_ visitor: inout Visitor) throws {
@@ -65,7 +65,7 @@ public struct ComputeShader: RenderPass {
     }
 
     public init(_ name: String, source: String) throws {
-        let device = MTLCreateSystemDefaultDevice()!
+        let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
 
         let options = MTLCompileOptions()
         options.enableLogging = true

@@ -6,6 +6,7 @@ internal import ModelIO
 import simd
 import SwiftUI
 import Ultraviolence
+internal import UltraviolenceSupport
 
 public struct Teapot: Geometry {
     public init() {
@@ -13,8 +14,8 @@ public struct Teapot: Geometry {
     }
 
     public func mesh() throws -> Mesh {
-        let device = MTLCreateSystemDefaultDevice()!
-        let url = Bundle.module.url(forResource: "teapot", withExtension: "obj")!
+        let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
+        let url = try Bundle.module.url(forResource: "teapot", withExtension: "obj").orThrow(.resourceCreationFailure)
         let mdlAsset = MDLAsset(url: url, vertexDescriptor: nil, bufferAllocator: MTKMeshBufferAllocator(device: device))
         // swiftlint:disable:next force_cast
         let mdlMesh = mdlAsset.object(at: 0) as! MDLMesh

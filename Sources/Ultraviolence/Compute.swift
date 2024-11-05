@@ -25,7 +25,7 @@ public struct Compute <Content>: RenderPass where Content: RenderPass {
                 computePipelineDescriptor.computeFunction = try visitor.function(type: .kernel).orThrow(.missingEnvironment("Function"))
                 let (pipelineState, reflection) = try device.makeComputePipelineState(descriptor: computePipelineDescriptor, options: .bindingInfo)
                 guard let reflection else {
-                    fatalError("No reflection.")
+                    throw UltraviolenceError.resourceCreationFailure
                 }
                 encoder.setComputePipelineState(pipelineState)
                 let arguments = visitor.argumentsStack.flatMap { $0 }
@@ -33,8 +33,11 @@ public struct Compute <Content>: RenderPass where Content: RenderPass {
                     let binding = try reflection.bindings.first { $0.name == argument.name }.orThrow(.missingBinding("\(argument.name)"))
                     switch argument.value {
                     case .float3, .float4, .matrix4x4:
-                        withUnsafeBytes(of: argument.value) { buffer in
-                            encoder.setBytes(buffer.baseAddress!, length: buffer.count, index: binding.index)
+                        try withUnsafeBytes(of: argument.value) { buffer in
+                            guard let baseAddress = buffer.baseAddress else {
+                                throw UltraviolenceError.resourceCreationFailure
+                            }
+                            encoder.setBytes(baseAddress, length: buffer.count, index: binding.index)
                         }
                     case .texture(let texture):
                         encoder.setTexture(texture, index: binding.index)

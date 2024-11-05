@@ -19,7 +19,7 @@ public struct UVCLI {
 
         let size = CGSize(width: 1_600, height: 1_200)
 
-        let device = MTLCreateSystemDefaultDevice()!
+        let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
         let colorTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm_srgb, width: Int(size.width), height: Int(size.height), mipmapped: false)
         colorTextureDescriptor.usage = [.renderTarget, .shaderRead, .shaderWrite]
         let colorTexture = try device.makeTexture(descriptor: colorTextureDescriptor).orThrow(.resourceCreationFailure).labeled("Color Texture")
@@ -38,7 +38,7 @@ public struct UVCLI {
             try renderer.render().cgImage
         }
         let url = URL(fileURLWithPath: "output.png").absoluteURL
-        let imageDestination = CGImageDestinationCreateWithURL(url as CFURL, UTType.png.identifier as CFString, 1, nil)!
+        let imageDestination = CGImageDestinationCreateWithURL(url as CFURL, UTType.png.identifier as CFString, 1, nil).orThrow(.resourceCreationFailure)
         CGImageDestinationAddImage(imageDestination, image, nil)
         CGImageDestinationFinalize(imageDestination)
         NSWorkspace.shared.activateFileViewerSelecting([url])

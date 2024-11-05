@@ -23,7 +23,7 @@ public extension MTLVertexFormat {
         case .float2:
             self = .float2
         default:
-            fatalError("Unsupported data type")
+            fatalError("Unimplemented")
         }
     }
 
@@ -34,7 +34,7 @@ public extension MTLVertexFormat {
         case .float2:
             return MemoryLayout<SIMD2<Float>>.size
         default:
-            fatalError("Unsupported vertex format")
+            fatalError("Unimplemented")
         }
     }
 }
@@ -52,7 +52,8 @@ public extension MTLCaptureManager {
         guard enabled else {
             return try body()
         }
-        let captureScope = makeCaptureScope(device: MTLCreateSystemDefaultDevice()!)
+        let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
+        let captureScope = makeCaptureScope(device: device)
         let captureDescriptor = MTLCaptureDescriptor()
         captureDescriptor.captureObject = captureScope
         try startCapture(with: captureDescriptor)

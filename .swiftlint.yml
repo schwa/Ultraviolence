@@ -37,7 +37,7 @@ only_rules:
   - discarded_notification_center_observer
   - discouraged_assert
   - discouraged_direct_init
-  - discouraged_none_name
+# - discouraged_none_name
   - discouraged_object_literal
   - discouraged_optional_boolean
   - discouraged_optional_collection
@@ -74,8 +74,8 @@ only_rules:
   - flatmap_over_map_reduce
   - for_where
   - force_cast # 1 violations
-  # - force_try # 5 violations
-  # - force_unwrapping # 29 violations
+  - force_try # 5 violations
+  - force_unwrapping # 29 violations
   - function_body_length # 1 violations
   # - function_default_parameter_at_end # 4 violations
   - function_parameter_count
