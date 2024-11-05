@@ -13,36 +13,34 @@ public struct Draw <Content: RenderPass>: RenderPass where Content: RenderPass {
     }
 
     public func visit(_ visitor: inout Visitor) throws {
-        logger?.log("ENTER: Draw.\(#function).")
-        defer {
-            logger?.log("EXIT:  Draw.\(#function).")
-        }
-        let device = visitor.device
-        let encoder = try visitor.renderCommandEncoder.orThrow(.missingEnvironment(".renderCommandEncoder"))
-
-        try encoder.withDebugGroup(label: "􀯕Draw.visit()") {
-            try content.visit(&visitor)
-            let renderPipelineDescriptor = try visitor.renderPipelineDescriptor.orThrow(.missingEnvironment(".renderPipelineDescriptor"))
-            let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: [.bindingInfo])
-            guard let reflection else {
-                fatalError("No reflection.")
-            }
-            // TODO: Move all this into the environment.
-            encoder.setRenderPipelineState(renderPipelineState)
-            encoder.setCullMode(.back)
-            encoder.setFrontFacing(.counterClockwise)
-            if let depthStencilDescriptor = visitor.depthStencilDescriptor {
-                let depthStencilState = device.makeDepthStencilState(descriptor: depthStencilDescriptor)!
-                encoder.setDepthStencilState(depthStencilState)
-            }
-            for element in geometry {
-                try encoder.withDebugGroup(label: "􀯕Draw.visit() element") {
-                    let arguments = visitor.argumentsStack.flatMap { $0 }
-                    for argument in arguments {
-                        try encoder.setArgument(argument, reflection: reflection)
+        try visitor.log(label: "Draw.\(#function).") { visitor in
+            let device = visitor.device
+            let encoder = try visitor.renderCommandEncoder.orThrow(.missingEnvironment(".renderCommandEncoder"))
+            
+            try encoder.withDebugGroup(label: "􀯕Draw.visit()") {
+                try content.visit(&visitor)
+                let renderPipelineDescriptor = try visitor.renderPipelineDescriptor.orThrow(.missingEnvironment(".renderPipelineDescriptor"))
+                let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: [.bindingInfo])
+                guard let reflection else {
+                    fatalError("No reflection.")
+                }
+                // TODO: Move all this into the environment.
+                encoder.setRenderPipelineState(renderPipelineState)
+                encoder.setCullMode(.back)
+                encoder.setFrontFacing(.counterClockwise)
+                if let depthStencilDescriptor = visitor.depthStencilDescriptor {
+                    let depthStencilState = device.makeDepthStencilState(descriptor: depthStencilDescriptor)!
+                    encoder.setDepthStencilState(depthStencilState)
+                }
+                for element in geometry {
+                    try encoder.withDebugGroup(label: "􀯕Draw.visit() element") {
+                        let arguments = visitor.argumentsStack.flatMap { $0 }
+                        for argument in arguments {
+                            try encoder.setArgument(argument, reflection: reflection)
+                        }
+                        let mesh = try element.mesh()
+                        mesh.draw(encoder: encoder)
                     }
-                    let mesh = try element.mesh()
-                    mesh.draw(encoder: encoder)
                 }
             }
         }

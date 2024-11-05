@@ -30,12 +30,25 @@ public struct Visitor {
     public mutating func insert(_ state: VisitorState) {
         environment[environment.count - 1].append(state)
     }
+
+    private var logDepth: Int = 0
+
+    mutating func log<R>(label: String, body: (inout Visitor) throws -> R) rethrows -> R{
+        let prefix = String(repeating: "  ", count: logDepth)
+        logger?.log("\(prefix)ENTER \(label)")
+        defer {
+            logger?.log("\(prefix)EXIT \(label)")
+            logDepth -= 1
+        }
+        logDepth += 1
+        return try body(&self)
+    }
 }
 
 public enum VisitorState {
     case commandQueue(MTLCommandQueue)
-    case commandBuffer(MTLCommandBuffer)
-    case renderEncoder(MTLRenderCommandEncoder)
+    case commandBuffer(MTLCommandBuffer) // TODO: Deprecate
+    case renderEncoder(MTLRenderCommandEncoder)  // TODO: Deprecate
     case renderPipelineDescriptor(MTLRenderPipelineDescriptor)
     case depthStencilDescriptor(MTLDepthStencilDescriptor)
     //    case arguments([Argument])

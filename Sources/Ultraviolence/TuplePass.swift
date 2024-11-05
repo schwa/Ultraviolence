@@ -8,12 +8,10 @@ public struct TuplePass <each T: RenderPass>: RenderPass {
     }
 
     public func visit(_ visitor: inout Visitor) throws {
-        logger?.log("ENTER: TuplePass.\(#function).")
-        defer {
-            logger?.log("EXIT:  TuplePass.\(#function).")
-        }
-        for element in repeat (each value) {
-            try element.visit(&visitor)
+        try visitor.log(label: "TuplePass.\(#function).") { visitor in
+            for element in repeat (each value) {
+                try element.visit(&visitor)
+            }
         }
     }
 }

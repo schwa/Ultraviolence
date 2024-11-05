@@ -17,19 +17,17 @@ public struct VertexShader: RenderPass {
     }
 
     public func visit(_ visitor: inout Visitor) throws {
-        logger?.log("ENTER: VertexShader.\(#function).")
-        defer {
-            logger?.log("EXIT:  VertexShader.\(#function).")
-        }
-        let renderPipelineDescriptor = try visitor.renderPipelineDescriptor.orThrow(.missingEnvironment(".renderPipelineDescriptor"))
+        try visitor.log(label: "VertexShader.\(#function).") { visitor in
+            let renderPipelineDescriptor = try visitor.renderPipelineDescriptor.orThrow(.missingEnvironment(".renderPipelineDescriptor"))
 
-        assert(renderPipelineDescriptor.vertexFunction == nil)
-        guard let vertexAttributes = function.vertexAttributes else {
-            fatalError("Cannot get vertex attributes from vertex function")
+            assert(renderPipelineDescriptor.vertexFunction == nil)
+            guard let vertexAttributes = function.vertexAttributes else {
+                fatalError("Cannot get vertex attributes from vertex function")
+            }
+            let vertexDescriptor = MTLVertexDescriptor(vertexAttributes: vertexAttributes)
+            renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
+            renderPipelineDescriptor.vertexFunction = function
         }
-        let vertexDescriptor = MTLVertexDescriptor(vertexAttributes: vertexAttributes)
-        renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
-        renderPipelineDescriptor.vertexFunction = function
     }
 }
 
@@ -49,13 +47,11 @@ public struct FragmentShader: RenderPass {
     }
 
     public func visit(_ visitor: inout Visitor) throws {
-        logger?.log("ENTER: FragmentShader.\(#function).")
-        defer {
-            logger?.log("EXIT:  FragmentShader.\(#function).")
+        try visitor.log(label: "FragmentShader.\(#function).") { visitor in
+            let renderPipelineDescriptor = try visitor.renderPipelineDescriptor.orThrow(.missingEnvironment(".renderPipelineDescriptor"))
+            assert(renderPipelineDescriptor.fragmentFunction == nil)
+            renderPipelineDescriptor.fragmentFunction = function
         }
-        let renderPipelineDescriptor = try visitor.renderPipelineDescriptor.orThrow(.missingEnvironment(".renderPipelineDescriptor"))
-        assert(renderPipelineDescriptor.fragmentFunction == nil)
-        renderPipelineDescriptor.fragmentFunction = function
     }
 }
 
@@ -75,10 +71,8 @@ public struct ComputeShader: RenderPass {
     }
 
     public func visit(_ visitor: inout Visitor) throws {
-        logger?.log("ENTER: ComputeShader.\(#function).")
-        defer {
-            logger?.log("EXIT:  ComputeShader.\(#function).")
+        try visitor.log(label: "ComputeShader.\(#function).") { visitor in
+            visitor.insert(.function(function))
         }
-        visitor.insert(.function(function))
     }
 }

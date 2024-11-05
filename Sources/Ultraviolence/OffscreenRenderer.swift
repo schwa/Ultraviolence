@@ -37,25 +37,23 @@ public struct OffscreenRenderer <Content> where Content: RenderPass {
     }
 
     public func render() throws -> Rendering {
-        logger?.log("ENTER: OffscreenRenderer.\(#function).")
-        defer {
-            logger?.log("EXIT:  OffscreenRenderer.\(#function).")
-        }
-        let renderPassDescriptor = MTLRenderPassDescriptor()
-        renderPassDescriptor.colorAttachments[0].texture = colorTexture
-        renderPassDescriptor.colorAttachments[0].loadAction = .clear
-        renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColor(red: 0, green: 0, blue: 0, alpha: 1)
-        renderPassDescriptor.colorAttachments[0].storeAction = .store
-        renderPassDescriptor.depthAttachment.texture = depthTexture
-        renderPassDescriptor.depthAttachment.loadAction = .clear
-        renderPassDescriptor.depthAttachment.clearDepth = 1
-        renderPassDescriptor.depthAttachment.storeAction = .store
-        return try device.withCommandQueue(label: "􀐛Renderer.commandQueue") { commandQueue in
-            var visitor = Visitor(device: device)
-            try visitor.with([.commandQueue(commandQueue), .renderPassDescriptor(renderPassDescriptor)]) { visitor in
-                try content.visit(&visitor)
+        var visitor = Visitor(device: device)
+        return try visitor.log(label: "OffscreenRenderer.\(#function)") { visitor in
+            let renderPassDescriptor = MTLRenderPassDescriptor()
+            renderPassDescriptor.colorAttachments[0].texture = colorTexture
+            renderPassDescriptor.colorAttachments[0].loadAction = .clear
+            renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColor(red: 0, green: 0, blue: 0, alpha: 1)
+            renderPassDescriptor.colorAttachments[0].storeAction = .store
+            renderPassDescriptor.depthAttachment.texture = depthTexture
+            renderPassDescriptor.depthAttachment.loadAction = .clear
+            renderPassDescriptor.depthAttachment.clearDepth = 1
+            renderPassDescriptor.depthAttachment.storeAction = .store
+            return try device.withCommandQueue(label: "􀐛Renderer.commandQueue") { commandQueue in
+                try visitor.with([.commandQueue(commandQueue), .renderPassDescriptor(renderPassDescriptor)]) { visitor in
+                    try content.visit(&visitor)
+                }
+                return .init(texture: colorTexture)
             }
-            return .init(texture: colorTexture)
         }
     }
 }

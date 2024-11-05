@@ -24,11 +24,9 @@ public struct MixedExample: RenderPass {
     public var body: some RenderPass {
         get throws {
             let view = simd_float4x4(translation: camera).inverse
-            return try Chain {
-                try Render {
-                    try Draw(geometries) {
-                        TeapotRenderPass(color: [1, 0, 0, 1], size: size, model: model, view: view, cameraPosition: camera)
-                    }
+            return Chain {
+                Render {
+                    TeapotRenderPass(color: [1, 0, 0, 1], size: size, model: model, view: view, cameraPosition: camera)
                     .colorAttachment(color, index: 0)
                     .depthAttachment(depth)
                     .depthCompare(.less)
