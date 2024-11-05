@@ -13,6 +13,10 @@ public struct Draw <Content: RenderPass>: RenderPass where Content: RenderPass {
     }
 
     public func visit(_ visitor: inout Visitor) throws {
+        logger?.log("ENTER: Draw.\(#function).")
+        defer {
+            logger?.log("EXIT:  Draw.\(#function).")
+        }
         let device = visitor.device
         let encoder = try visitor.renderCommandEncoder.orThrow(.missingEnvironment(".renderCommandEncoder"))
 

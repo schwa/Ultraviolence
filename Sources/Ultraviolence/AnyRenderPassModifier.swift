@@ -10,6 +10,10 @@ public struct AnyRenderPassModifier <Content>: RenderPass where Content: RenderP
     }
 
     public func visit(_ visitor: inout Visitor) throws {
+        logger?.log("ENTER: AnyRenderPassModifier.\(#function).")
+        defer {
+            logger?.log("EXIT:  AnyRenderPassModifier.\(#function).")
+        }
         try visit(&visitor)
         try content.visit(&visitor)
     }

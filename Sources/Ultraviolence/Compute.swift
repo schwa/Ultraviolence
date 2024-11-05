@@ -15,7 +15,10 @@ public struct Compute <Content>: RenderPass where Content: RenderPass {
     }
 
     public func visit(_ visitor: inout Visitor) throws {
-        logger?.log("\(#function)")
+        logger?.log("ENTER: Compute.\(#function).")
+        defer {
+            logger?.log("EXIT:  Compute.\(#function).")
+        }
 
         let device = visitor.device
         let commandQueue = try visitor.commandQueue.orThrow(.missingEnvironment(".commandQueue"))

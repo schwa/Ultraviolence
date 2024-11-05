@@ -17,6 +17,10 @@ public struct VertexShader: RenderPass {
     }
 
     public func visit(_ visitor: inout Visitor) throws {
+        logger?.log("ENTER: VertexShader.\(#function).")
+        defer {
+            logger?.log("EXIT:  VertexShader.\(#function).")
+        }
         let renderPipelineDescriptor = try visitor.renderPipelineDescriptor.orThrow(.missingEnvironment(".renderPipelineDescriptor"))
 
         assert(renderPipelineDescriptor.vertexFunction == nil)
@@ -45,6 +49,10 @@ public struct FragmentShader: RenderPass {
     }
 
     public func visit(_ visitor: inout Visitor) throws {
+        logger?.log("ENTER: FragmentShader.\(#function).")
+        defer {
+            logger?.log("EXIT:  FragmentShader.\(#function).")
+        }
         let renderPipelineDescriptor = try visitor.renderPipelineDescriptor.orThrow(.missingEnvironment(".renderPipelineDescriptor"))
         assert(renderPipelineDescriptor.fragmentFunction == nil)
         renderPipelineDescriptor.fragmentFunction = function
@@ -67,7 +75,10 @@ public struct ComputeShader: RenderPass {
     }
 
     public func visit(_ visitor: inout Visitor) throws {
-        print("Insert")
+        logger?.log("ENTER: ComputeShader.\(#function).")
+        defer {
+            logger?.log("EXIT:  ComputeShader.\(#function).")
+        }
         visitor.insert(.function(function))
     }
 }

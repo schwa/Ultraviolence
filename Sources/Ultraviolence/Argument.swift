@@ -15,6 +15,7 @@ public enum Value {
     case texture(MTLTexture)
 }
 
+// TODO: Replace with AnyRenderPassModifier
 internal struct ArgumentsRenderPass <Content>: RenderPass where Content: RenderPass {
     typealias Body = Never
 
@@ -27,6 +28,10 @@ internal struct ArgumentsRenderPass <Content>: RenderPass where Content: RenderP
     }
 
     func visit(_ visitor: inout Visitor) throws {
+        logger?.log("ENTER: ArgumentsRenderPass.\(#function).")
+        defer {
+            logger?.log("EXIT:  ArgumentsRenderPass.\(#function).")
+        }
         visitor.argumentsStack.append(arguments)
         try content.visit(&visitor)
     }

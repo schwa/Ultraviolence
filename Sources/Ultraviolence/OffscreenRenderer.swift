@@ -37,6 +37,10 @@ public struct OffscreenRenderer <Content> where Content: RenderPass {
     }
 
     public func render() throws -> Rendering {
+        logger?.log("ENTER: OffscreenRenderer.\(#function).")
+        defer {
+            logger?.log("EXIT:  OffscreenRenderer.\(#function).")
+        }
         let renderPassDescriptor = MTLRenderPassDescriptor()
         renderPassDescriptor.colorAttachments[0].texture = colorTexture
         renderPassDescriptor.colorAttachments[0].loadAction = .clear

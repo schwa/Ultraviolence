@@ -9,6 +9,10 @@ public struct AnyRenderPass: RenderPass {
     }
 
     public func visit(_ visitor: inout Visitor) throws {
+        logger?.log("ENTER: AnyRenderPass.\(#function).")
+        defer {
+            logger?.log("EXIT:  AnyRenderPass.\(#function).")
+        }
         try render(&visitor)
     }
 }

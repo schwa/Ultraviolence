@@ -10,6 +10,10 @@ public struct Render <Content>: RenderPass where Content: RenderPass {
     }
 
     public func visit(_ visitor: inout Visitor) throws {
+        logger?.log("ENTER: Render.\(#function).")
+        defer {
+            logger?.log("EXIT:  Render.\(#function).")
+        }
         let commandQueue = try visitor.commandQueue.orThrow(.missingEnvironment(".commandQueue"))
         return try commandQueue.withCommandBuffer(completion: .commitAndWaitUntilCompleted, label: "􀐛Renderer.commandBuffer", debugGroup: "􀯕Renderer.render()") { commandBuffer in
             let renderPassDescriptor = try visitor.renderPassDescriptor.orThrow(.missingEnvironment(".renderPassDescriptor"))
