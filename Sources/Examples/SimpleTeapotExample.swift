@@ -1,8 +1,8 @@
-internal import UltraviolenceSupport
 import CoreGraphics
 import Metal
 import simd
 import Ultraviolence
+internal import UltraviolenceSupport
 
 public struct TeapotRenderPass: RenderPass {
     let source = """
