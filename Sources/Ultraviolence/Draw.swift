@@ -88,7 +88,7 @@ extension Mesh {
     func draw(encoder: MTLRenderCommandEncoder) throws {
         switch self {
         case .simple(let vertices):
-            vertices.withUnsafeBytes { buffer in
+            try vertices.withUnsafeBytes { buffer in
                 // TODO: Hardcoded index = 0
                 guard let baseAddress = buffer.baseAddress else {
                     throw UltraviolenceError.resourceCreationFailure

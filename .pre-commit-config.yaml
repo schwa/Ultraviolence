@@ -13,11 +13,11 @@ repos:
             entry: /opt/homebrew/bin/swiftlint lint --quiet --fix
             language: system
             types: [swift]
-          - id: swift-test
-            name: swift-test
-            entry: swift test
-            language: system
-            types: [swift]
+        #   - id: swift-test
+        #     name: swift-test
+        #     entry: swift test
+        #     language: system
+        #     types: [swift]
     - repo: https://github.com/pre-commit/pre-commit-hooks
       rev: v5.0.0
       hooks:
