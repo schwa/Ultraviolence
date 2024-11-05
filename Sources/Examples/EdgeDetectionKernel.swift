@@ -24,6 +24,7 @@ public struct EdgeDetectionKernel: RenderPass {
         float3 gradient = sqrt(dx * dx + dy * dy);
 
         outTexture.write(float4(gradient, 1.0), gid);
+        outTexture.write(float4(0, 1, 0, 1.0), gid);
     }
     """
 
