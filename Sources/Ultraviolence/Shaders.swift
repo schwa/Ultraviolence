@@ -1,5 +1,5 @@
-internal import UltraviolenceSupport
 import Metal
+internal import UltraviolenceSupport
 
 public struct VertexShader: RenderPass {
     public typealias Body = Never

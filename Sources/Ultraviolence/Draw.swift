@@ -16,7 +16,7 @@ public struct Draw <Content: RenderPass>: RenderPass where Content: RenderPass {
         try visitor.log(label: "Draw.\(#function).") { visitor in
             let device = visitor.device
             let encoder = try visitor.renderCommandEncoder.orThrow(.missingEnvironment(".renderCommandEncoder"))
-            
+
             try encoder.withDebugGroup(label: "􀯕Draw.visit()") {
                 try content.visit(&visitor)
                 let renderPipelineDescriptor = try visitor.renderPipelineDescriptor.orThrow(.missingEnvironment(".renderPipelineDescriptor"))
@@ -48,7 +48,7 @@ public struct Draw <Content: RenderPass>: RenderPass where Content: RenderPass {
 }
 
 extension MTLRenderCommandEncoder {
-    func setArgument(_ argument: Argument, reflection:  MTLRenderPipelineReflection) throws {
+    func setArgument(_ argument: Argument, reflection: MTLRenderPipelineReflection) throws {
         switch argument.functionType {
         // TODO: Logic for .fragment and .vertex are almost identical.
         case .fragment:
@@ -101,6 +101,5 @@ extension Mesh {
                 encoder.drawIndexedPrimitives(type: submesh.primitiveType, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBuffer.buffer, indexBufferOffset: submesh.indexBuffer.offset)
             }
         }
-
     }
 }

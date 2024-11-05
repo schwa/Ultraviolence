@@ -4,7 +4,7 @@ public struct EdgeDetectionKernel: RenderPass {
     let source = """
     #import <metal_stdlib>
     #import <metal_logging>
-    
+
     using namespace metal;
 
     kernel void EdgeDetectionKernel(
@@ -12,14 +12,14 @@ public struct EdgeDetectionKernel: RenderPass {
         texture2d<float, access::read_write> color [[texture(1)]],
         uint2 gid [[thread_position_in_grid]]
     ) {
-    
+
         uint width = depth.get_width();
         uint height = depth.get_height();
 
         // Read current pixel and four neighbors
         float pixel00 = depth.read(gid).r;
         float4 pixel = depth.read(gid);
-    
+
         //os_log_default.log("(%d, %d): %f, %f, %f, %f", gid.x, gid.y, pixel.x, pixel.y, pixel.z, pixel.w);
 
         float pixelLeft = (gid.x > 0) ? depth.read(gid + uint2(-1, 0)).r : pixel00;
@@ -37,7 +37,7 @@ public struct EdgeDetectionKernel: RenderPass {
         float4 currentColor = color.read(gid);
 
         //        os_log_default.log("%f", gradient);
-    
+
         // Edge detection logic
         if (gradient * 800 > 1) {
             color.write(float4(1.0, 1.0, 1.0, 1.0), gid); // Draw edge in white

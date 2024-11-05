@@ -3,6 +3,7 @@ import Foundation
 import Metal
 import MetalKit
 internal import ModelIO
+import simd
 import SwiftUI
 import Ultraviolence
 
@@ -20,4 +21,8 @@ public struct Teapot: Geometry {
         let mtkMesh = try MTKMesh(mesh: mdlMesh, device: device)
         return .mtkMesh(mtkMesh)
     }
+}
+
+extension SIMD4 where Scalar == Float {
+    static let red = SIMD4<Float>([1, 0, 0, 1])
 }

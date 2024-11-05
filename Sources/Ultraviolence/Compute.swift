@@ -1,5 +1,5 @@
-internal import UltraviolenceSupport
 import Metal
+internal import UltraviolenceSupport
 
 public struct Compute <Content>: RenderPass where Content: RenderPass {
     public typealias Body = Never
@@ -20,7 +20,6 @@ public struct Compute <Content>: RenderPass where Content: RenderPass {
             let commandQueue = try visitor.commandQueue.orThrow(.missingEnvironment(".commandQueue"))
 
             let logState = visitor.logState
-
 
             return try commandQueue.withCommandBuffer(logState: logState, completion: .commitAndWaitUntilCompleted, label: "􀐛Compute.commandBuffer", debugGroup: "􀯕Compute.visit()") { commandBuffer in
                 try commandBuffer.withComputeCommandEncoder { encoder in
