@@ -31,7 +31,7 @@ public struct MixedExample: RenderPass {
                     .depthAttachment(depth)
                     .depthCompare(.less)
                 }
-
+                
                 Compute(threadgroupsPerGrid: .init(width: Int(size.width), height: Int(size.height), depth: 1), threadsPerThreadgroup: .init(width: 32, height: 32, depth: 1)) {
                     EdgeDetectionKernel()
                 }
