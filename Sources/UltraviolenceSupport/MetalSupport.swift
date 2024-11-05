@@ -48,9 +48,9 @@ public extension MTLDepthStencilDescriptor {
 }
 
 public extension MTLCaptureManager {
-    func with<R>(enabled: Bool = true, _ closure: () throws -> R) throws -> R {
+    func with<R>(enabled: Bool = true, _ body: () throws -> R) throws -> R {
         guard enabled else {
-            return try closure()
+            return try body()
         }
         let captureScope = makeCaptureScope(device: MTLCreateSystemDefaultDevice()!)
         let captureDescriptor = MTLCaptureDescriptor()
@@ -60,59 +60,59 @@ public extension MTLCaptureManager {
         defer {
             captureScope.end()
         }
-        return try closure()
+        return try body()
     }
 }
 
 public extension MTLCommandBuffer {
-    func withDebugGroup<R>(enabled: Bool = true, label: String, _ closure: () throws -> R) rethrows -> R {
+    func withDebugGroup<R>(enabled: Bool = true, label: String, _ body: () throws -> R) rethrows -> R {
         guard enabled else {
-            return try closure()
+            return try body()
         }
         pushDebugGroup(label)
         defer {
             popDebugGroup()
         }
-        return try closure()
+        return try body()
     }
 }
 
 public extension MTLRenderCommandEncoder {
-    func withDebugGroup<R>(enabled: Bool = true, label: String, _ closure: () throws -> R) rethrows -> R {
+    func withDebugGroup<R>(enabled: Bool = true, label: String, _ body: () throws -> R) rethrows -> R {
         guard enabled else {
-            return try closure()
+            return try body()
         }
         pushDebugGroup(label)
         defer {
             popDebugGroup()
         }
-        return try closure()
+        return try body()
     }
 }
 
 public extension MTLComputeCommandEncoder {
-    func withDebugGroup<R>(enabled: Bool = true, label: String, _ closure: () throws -> R) rethrows -> R {
+    func withDebugGroup<R>(enabled: Bool = true, label: String, _ body: () throws -> R) rethrows -> R {
         guard enabled else {
-            return try closure()
+            return try body()
         }
         pushDebugGroup(label)
         defer {
             popDebugGroup()
         }
-        return try closure()
+        return try body()
     }
 }
 
 public extension MTLBlitCommandEncoder {
-    func withDebugGroup<R>(enabled: Bool = true, label: String, _ closure: () throws -> R) rethrows -> R {
+    func withDebugGroup<R>(enabled: Bool = true, label: String, _ body: () throws -> R) rethrows -> R {
         guard enabled else {
-            return try closure()
+            return try body()
         }
         pushDebugGroup(label)
         defer {
             popDebugGroup()
         }
-        return try closure()
+        return try body()
     }
 }
 
