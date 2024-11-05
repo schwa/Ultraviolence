@@ -1,5 +1,5 @@
 import AppKit
-internal import BaseSupport
+internal import UltraviolenceSupport
 import CoreGraphics
 import Examples
 import Metal
@@ -17,7 +17,6 @@ public struct UVCLI {
     public static func main() async throws {
         let camera = simd_float3([0, 2, 6])
         let model = simd_float4x4(yRotation: .degrees(0))
-        let view = simd_float4x4(translation: camera).inverse
 
         let size = CGSize(width: 1_600, height: 1_200)
 
