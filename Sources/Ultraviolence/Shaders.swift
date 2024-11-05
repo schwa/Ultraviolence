@@ -17,7 +17,7 @@ public struct VertexShader: RenderPass {
     }
 
     public func visit(_ visitor: inout Visitor) throws {
-        let renderPipelineDescriptor = try visitor.renderPipelineDescriptor.orThrow(.missingEnvironment)
+        let renderPipelineDescriptor = try visitor.renderPipelineDescriptor.orThrow(.missingEnvironment(".renderPipelineDescriptor"))
 
         assert(renderPipelineDescriptor.vertexFunction == nil)
         guard let vertexAttributes = function.vertexAttributes else {
@@ -45,7 +45,7 @@ public struct FragmentShader: RenderPass {
     }
 
     public func visit(_ visitor: inout Visitor) throws {
-        let renderPipelineDescriptor = try visitor.renderPipelineDescriptor.orThrow(.missingEnvironment)
+        let renderPipelineDescriptor = try visitor.renderPipelineDescriptor.orThrow(.missingEnvironment(".renderPipelineDescriptor"))
         assert(renderPipelineDescriptor.fragmentFunction == nil)
         renderPipelineDescriptor.fragmentFunction = function
     }

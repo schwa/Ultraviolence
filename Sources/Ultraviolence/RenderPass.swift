@@ -6,7 +6,7 @@ public protocol RenderPass {
     associatedtype Body: RenderPass
 
     @RenderPassBuilder
-    var body: Body { get }
+    var body: Body { get throws }
 
     func visit(_ visitor: inout Visitor) throws
 }
@@ -21,7 +21,9 @@ public extension RenderPass {
 
 public extension RenderPass where Body == Never {
     var body: Never {
-        fatalError("No body for \(type(of: self))")
+        get throws {
+            fatalError("No body for \(type(of: self))")
+        }
     }
 }
 

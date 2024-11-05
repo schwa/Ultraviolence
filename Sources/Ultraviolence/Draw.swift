@@ -14,11 +14,11 @@ public struct Draw <Content: RenderPass>: RenderPass where Content: RenderPass {
 
     public func visit(_ visitor: inout Visitor) throws {
         let device = visitor.device
-        let encoder = try visitor.renderCommandEncoder.orThrow(.missingEnvironment)
+        let encoder = try visitor.renderCommandEncoder.orThrow(.missingEnvironment(".renderCommandEncoder"))
 
         try encoder.withDebugGroup(label: "􀯕Draw.visit()") {
             try content.visit(&visitor)
-            let renderPipelineDescriptor = try visitor.renderPipelineDescriptor.orThrow(.missingEnvironment)
+            let renderPipelineDescriptor = try visitor.renderPipelineDescriptor.orThrow(.missingEnvironment(".renderPipelineDescriptor"))
             let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: [.bindingInfo])
             guard let reflection else {
                 fatalError("No reflection.")

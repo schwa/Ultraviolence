@@ -178,6 +178,27 @@ public extension MTLCommandBuffer {
     }
 }
 
+public extension MTLCommandBuffer {
+    func withComputeCommandEncoder<R>(label: String? = nil, debugGroup: String? = nil, _ body: (MTLComputeCommandEncoder) throws -> R) throws -> R {
+        let encoder = try makeComputeCommandEncoder().orThrow(.resourceCreationFailure)
+        if let debugGroup {
+            encoder.pushDebugGroup(debugGroup)
+        }
+        defer {
+            encoder.endEncoding()
+            if debugGroup != nil {
+                encoder.popDebugGroup()
+            }
+        }
+        if let label = label {
+            encoder.label = label
+        }
+        return try body(encoder)
+    }
+}
+
+
+
 public extension MTLCommandQueue {
     func labeled(_ label: String) -> Self {
         self.label = label

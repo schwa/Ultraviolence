@@ -21,16 +21,21 @@ public struct UVCLI {
 
         let size = CGSize(width: 1_600, height: 1_200)
 
-        let renderPass = TeapotRenderPass(color: [1, 0, 0, 1], size: size, model: model, view: view, cameraPosition: camera)
+        let device = MTLCreateSystemDefaultDevice()!
+        let colorTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm_srgb, width: Int(size.width), height: Int(size.height), mipmapped: false)
+        colorTextureDescriptor.usage = [.renderTarget, .shaderWrite]
+        let colorTexture = device.makeTexture(descriptor: colorTextureDescriptor)!
+        let depthTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: Int(size.width), height: Int(size.height), mipmapped: false)
+        depthTextureDescriptor.usage = [.renderTarget, .shaderRead]
+        let depthTexture = device.makeTexture(descriptor: depthTextureDescriptor)!
 
-        //        let device = MTLCreateSystemDefaultDevice()!
-        //        let colorTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm_srgb, width: Int(size.width), height: Int(size.height), mipmapped: false)
-        //        colorTextureDescriptor.usage = [.renderTarget, .shaderRead]
-        //        let colorTexture = device.makeTexture(descriptor: colorTextureDescriptor)!
-        //        let depthTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: Int(size.width), height: Int(size.height), mipmapped: false)
-        //        depthTextureDescriptor.usage = [.renderTarget, .shaderWrite]
-        //        let depthTexture = device.makeTexture(descriptor: depthTextureDescriptor)!
-        //        let renderPass2 = MixedExample(size: size, geometries: [Teapot()], color: colorTexture, depth: depthTexture, camera: camera, model: model)
+//        let renderPass = Render {
+//            TeapotRenderPass(color: [1, 0, 0, 1], size: size, model: model, view: view, cameraPosition: camera)
+//        }
+
+        let renderPass = MixedExample(size: size, geometries: [Teapot()], color: colorTexture, depth: depthTexture, camera: camera, model: model)
+
+
 
         let renderer = OffscreenRenderer(size: size, content: renderPass)
         let image = try MTLCaptureManager.shared().with(enabled: capture) {

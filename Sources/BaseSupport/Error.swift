@@ -1,6 +1,6 @@
 public enum UltraviolenceError: Error {
-    case missingEnvironment
-    case missingBinding
+    case missingEnvironment(String)
+    case missingBinding(String)
     case resourceCreationFailure
 }
 

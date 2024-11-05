@@ -45,28 +45,14 @@ public struct OffscreenRenderer <Content> where Content: RenderPass {
         renderPassDescriptor.depthAttachment.texture = depthTexture
         renderPassDescriptor.depthAttachment.loadAction = .clear
         renderPassDescriptor.depthAttachment.clearDepth = 1
-        renderPassDescriptor.depthAttachment.storeAction = .dontCare
-        //
-
-
-        
-
-
+        renderPassDescriptor.depthAttachment.storeAction = .store
         return try device.withCommandQueue(label: "􀐛Renderer.commandQueue") { commandQueue in
-            try commandQueue.withCommandBuffer(completion: .commitAndWaitUntilCompleted, label: "􀐛Renderer.commandBuffer", debugGroup: "􀯕Renderer.render()") { commandBuffer in
-                try commandBuffer.withRenderCommandEncoder(descriptor: renderPassDescriptor, label: "􀐛Renderer.encoder") { encoder in
-                    let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
-                    renderPipelineDescriptor.colorAttachments[0].pixelFormat = colorTexture.pixelFormat
-                    renderPipelineDescriptor.depthAttachmentPixelFormat = depthTexture.pixelFormat
-                    var visitor = Visitor(device: device)
-                    try visitor.with([.commandBuffer(commandBuffer), .renderEncoder(encoder), .renderPipelineDescriptor(renderPipelineDescriptor)]) { visitor in
-                        try content.visit(&visitor)
-                    }
-                }
-                return .init(texture: colorTexture)
+            var visitor = Visitor(device: device)
+            try visitor.with([.commandQueue(commandQueue), .renderPassDescriptor(renderPassDescriptor)]) { visitor in
+                try content.visit(&visitor)
             }
+            return .init(texture: colorTexture)
         }
-
     }
 }
 
