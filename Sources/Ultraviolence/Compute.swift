@@ -47,18 +47,7 @@ public struct Compute <Content>: RenderPass where Content: RenderPass {
                 encoder.setComputePipelineState(pipelineState)
                 let arguments = visitor.arguments.compactMap { $0 }
                 for argument in arguments where argument.functionType == .kernel {
-                    let binding = try reflection.bindings.first { $0.name == argument.name }.orThrow(.missingBinding("\(argument.name)"))
-                    switch argument.value {
-                    case .float3, .float4, .matrix4x4:
-                        try withUnsafeBytes(of: argument.value) { buffer in
-                            guard let baseAddress = buffer.baseAddress else {
-                                throw UltraviolenceError.resourceCreationFailure
-                            }
-                            encoder.setBytes(baseAddress, length: buffer.count, index: binding.index)
-                        }
-                    case .texture(let texture):
-                        encoder.setTexture(texture, index: binding.index)
-                    }
+                    try encoder.setArgument(argument, reflection: reflection)
                 }
                 dispatch(encoder)
             }
