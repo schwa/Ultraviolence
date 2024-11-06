@@ -45,7 +45,7 @@ public struct Compute <Content>: RenderPass where Content: RenderPass {
                     throw UltraviolenceError.resourceCreationFailure
                 }
                 encoder.setComputePipelineState(pipelineState)
-                let arguments = visitor.arguments.flatMap { $0 }
+                let arguments = visitor.arguments.compactMap { $0 }
                 for argument in arguments where argument.functionType == .kernel {
                     let binding = try reflection.bindings.first { $0.name == argument.name }.orThrow(.missingBinding("\(argument.name)"))
                     switch argument.value {
