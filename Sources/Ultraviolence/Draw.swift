@@ -44,7 +44,9 @@ public struct Draw <Content: RenderPass>: RenderPass where Content: RenderPass {
                     renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
                 }
                 else {
-                    logger?.info("Falling back to getting vertex descriptor from vertex function. Which does not take into account non-packed layouts.")
+                    once(key: #uuidString()) {
+                        logger?.info("Falling back to getting vertex descriptor from vertex function. Which does not take into account non-packed layouts.")
+                    }
                     guard let vertexAttributes = try renderPipelineDescriptor.vertexFunction.orThrow(.resourceCreationFailure).vertexAttributes else {
                         fatalError("Cannot get vertex attributes from vertex function")
                     }
