@@ -106,8 +106,7 @@ public class RenderPassCoordinator <Content>: NSObject, MTKViewDelegate where Co
                 var visitor = Visitor(device: device)
                 try visitor.with([
                     .renderPassDescriptor(currentRenderPassDescriptor),
-                    .commandBuffer(commandBuffer),
-                    .commandQueue(commandQueue)
+                    .commandBuffer(commandBuffer)
                 ]) { visitor in
                     try content(currentRenderPassDescriptor).visit(&visitor)
                 }
