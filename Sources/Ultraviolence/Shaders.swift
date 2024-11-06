@@ -38,6 +38,8 @@ public struct VertexShader: RenderPass {
     }
 }
 
+// MARK: -
+
 public struct FragmentShader: RenderPass {
     public typealias Body = Never
 
@@ -64,6 +66,8 @@ public struct FragmentShader: RenderPass {
     }
 }
 
+// MARK: -
+
 public struct ComputeShader: RenderPass {
     public typealias Body = Never
 
@@ -75,10 +79,8 @@ public struct ComputeShader: RenderPass {
 
     public init(_ name: String, source: String) throws {
         let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
-
         let options = MTLCompileOptions()
         options.enableLogging = true
-
         let library = try device.makeLibrary(source: source, options: options)
         function = try library.makeFunction(name: name).orThrow(.resourceCreationFailure)
     }

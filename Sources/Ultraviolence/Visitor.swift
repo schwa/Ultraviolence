@@ -186,37 +186,39 @@ public extension Visitor {
     }
 }
 
+// MARK: -
+
 public extension RenderPass {
     func depthStencilDescriptor(_ descriptor: MTLDepthStencilDescriptor) -> some RenderPass {
-        AnyRenderPassModifier(content: self) { visitor in
-            visitor.insert(.depthStencilDescriptor(descriptor))
+        EnvironmentRenderPass(environment: [.depthStencilDescriptor(descriptor)]) {
+            self
         }
     }
 
     func colorAttachment(_ texture: MTLTexture, index: Int) -> some RenderPass {
-        AnyRenderPassModifier(content: self) { visitor in
-            visitor.insert(.colorAttachment(texture, index))
+        EnvironmentRenderPass(environment: [.colorAttachment(texture, index)]) {
+            self
         }
     }
 
     func depthAttachment(_ texture: MTLTexture) -> some RenderPass {
-        AnyRenderPassModifier(content: self) { visitor in
-            visitor.insert(.depthAttachment(texture))
+        EnvironmentRenderPass(environment: [.depthAttachment(texture)]) {
+            self
         }
     }
 
     func depthCompare(_ compareFunction: MTLCompareFunction) -> some RenderPass {
-        AnyRenderPassModifier(content: self) { visitor in
-            let depthStencilDescriptor = MTLDepthStencilDescriptor()
-            depthStencilDescriptor.depthCompareFunction = compareFunction
-            depthStencilDescriptor.isDepthWriteEnabled = true
-            visitor.insert(.depthStencilDescriptor(depthStencilDescriptor))
+        let depthStencilDescriptor = MTLDepthStencilDescriptor()
+        depthStencilDescriptor.depthCompareFunction = compareFunction
+        depthStencilDescriptor.isDepthWriteEnabled = true
+        return EnvironmentRenderPass(environment: [.depthStencilDescriptor(depthStencilDescriptor)]) {
+            self
         }
     }
 
-    func vertexDescriptor(_ descriptor: MTLVertexDescriptor) -> some RenderPass {
-        AnyRenderPassModifier(content: self) { visitor in
-            visitor.insert(.vertexDescriptor(descriptor))
+    func vertexDescriptor(_ vertexDescriptor: MTLVertexDescriptor) -> some RenderPass {
+        EnvironmentRenderPass(environment: [.vertexDescriptor(vertexDescriptor)]) {
+            self
         }
     }
 }
