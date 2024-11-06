@@ -20,7 +20,6 @@ public struct MixedExampleView: View {
     public init() {
     }
 
-
     public var body: some View {
         TimelineView(.animation) { timeline in
             RenderView { renderPassDescriptor in

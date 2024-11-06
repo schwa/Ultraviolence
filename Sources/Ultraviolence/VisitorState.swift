@@ -5,16 +5,20 @@ internal import UltraviolenceSupport
 // TODO: Rename
 @MetaEnum
 public enum VisitorState {
+    // Render time
     case commandBuffer(MTLCommandBuffer)
     case renderCommandEncoder(MTLRenderCommandEncoder)
+
+    case depthAttachment(MTLTexture)
+    case colorAttachment(MTLTexture, Int)
+    case vertexDescriptor(MTLVertexDescriptor)
+    case logState(MTLLogState)
+
+    // Setup time
     case renderPipelineDescriptor(MTLRenderPipelineDescriptor)
     case renderPassDescriptor(MTLRenderPassDescriptor)
     case depthStencilDescriptor(MTLDepthStencilDescriptor)
     case function(MTLFunction)
-    case depthAttachment(MTLTexture)
-    case colorAttachment(MTLTexture, Int)
-    case logState(MTLLogState)
-    case vertexDescriptor(MTLVertexDescriptor)
     case arguments([Argument])
 }
 

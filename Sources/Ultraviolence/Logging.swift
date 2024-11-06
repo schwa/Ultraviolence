@@ -1,3 +1,3 @@
 internal import os
 
-internal let logger: Logger? = Logger(subsystem: "com.ultraviolence", category: "Ultraviolence")
+internal let logger: Logger? = Logger(subsystem: "io.schwa.ultraviolence", category: "Ultraviolence")
