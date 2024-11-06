@@ -13,7 +13,12 @@ public struct RenderView <Content>: NSViewRepresentable where Content: RenderPas
     }
 
     public func makeCoordinator() -> RenderPassCoordinator<Content> {
-        .init(device: device, content: content)
+        do {
+            return try .init(device: device, content: content)
+        }
+        catch {
+            fatalError("Failed to create render pass coordinator: \(error)")
+        }
     }
 
     public func makeNSView(context: Context) -> MTKView {
@@ -74,10 +79,10 @@ public class RenderPassCoordinator <Content>: NSObject, MTKViewDelegate where Co
     var lastError: Error?
     var logger: Logger? = Logger()
 
-    init(device: MTLDevice, content: @escaping (MTLRenderPassDescriptor) -> Content) {
+    init(device: MTLDevice, content: @escaping (MTLRenderPassDescriptor) -> Content) throws {
         self.device = device
         self.content = content
-        self.commandQueue = device.makeCommandQueue()!
+        self.commandQueue = try device.makeCommandQueue().orThrow(.resourceCreationFailure)
     }
 
     public func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
