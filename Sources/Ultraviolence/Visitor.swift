@@ -6,6 +6,11 @@ public struct Visitor {
     public var device: MTLDevice
     public var environment: [[VisitorState]]
 
+    public enum Phase {
+        case setup
+        case workload
+    }
+
     public init(device: MTLDevice) {
         self.device = device
         self.environment = [[]]
@@ -39,10 +44,14 @@ public struct Visitor {
         if !Self.logVisitor {
             return try body(&self)
         }
+
         let prefix = String(repeating: "  ", count: logDepth)
-        logger?.log("\(prefix)ENTER \(type(of: node))")
+        let name = "\(type(of: node))"
+        let shortName = name.prefixMatch(of: #/[^<]*/#)!.output
+
+        logger?.log("\(prefix)ENTER \(shortName)")
         defer {
-            logger?.log("\(prefix)EXIT \(type(of: node))")
+            logger?.log("\(prefix)EXIT \(shortName)")
             logDepth -= 1
         }
         logDepth += 1

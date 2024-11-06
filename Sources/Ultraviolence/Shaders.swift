@@ -18,7 +18,7 @@ public struct VertexShader: RenderPass {
         function = try library.makeFunction(name: name).orThrow(.resourceCreationFailure)
     }
 
-    public func visit(_ visitor: inout Visitor) throws {
+    public func visit(visitor: inout Visitor) throws {
         visitor.log(node: self) { visitor in
             visitor.insert(.function(function))
         }
@@ -44,7 +44,7 @@ public struct FragmentShader: RenderPass {
         function = try library.makeFunction(name: name).orThrow(.resourceCreationFailure)
     }
 
-    public func visit(_ visitor: inout Visitor) throws {
+    public func visit(visitor: inout Visitor) throws {
         visitor.log(node: self) { visitor in
             visitor.insert(.function(function))
         }
@@ -72,7 +72,7 @@ public struct ComputeShader: RenderPass {
         function = try library.makeFunction(name: name).orThrow(.resourceCreationFailure)
     }
 
-    public func visit(_ visitor: inout Visitor) throws {
+    public func visit(visitor: inout Visitor) throws {
         visitor.log(node: self) { visitor in
             visitor.insert(.function(function))
         }

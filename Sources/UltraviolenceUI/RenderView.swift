@@ -2,6 +2,7 @@ import Metal
 import MetalKit
 internal import os
 import SwiftUI
+import Ultraviolence
 
 #if os(macOS)
 public struct RenderView <Content>: NSViewRepresentable where Content: RenderPass {
@@ -109,7 +110,7 @@ public class RenderPassCoordinator <Content>: NSObject, MTKViewDelegate where Co
                     .renderPassDescriptor(currentRenderPassDescriptor),
                     .commandBuffer(commandBuffer)
                 ]) { visitor in
-                    try content(currentRenderPassDescriptor).visit(&visitor)
+                    try content(currentRenderPassDescriptor).visit(visitor: &visitor)
                 }
             }
         }

@@ -8,7 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		455C19452CD48474009A25A6 /* Ultraviolence in Frameworks */ = {isa = PBXBuildFile; productRef = 455C19442CD48474009A25A6 /* Ultraviolence */; };
-		4562E5252CD6A382006337E0 /* Examples in Frameworks */ = {isa = PBXBuildFile; productRef = 4562E5242CD6A382006337E0 /* Examples */; };
+		45BD7F502CDC4866006A26E4 /* UltraviolenceExamples in Frameworks */ = {isa = PBXBuildFile; productRef = 45BD7F4F2CDC4866006A26E4 /* UltraviolenceExamples */; };
+		45BD7F522CDC4866006A26E4 /* UltraviolenceUI in Frameworks */ = {isa = PBXBuildFile; productRef = 45BD7F512CDC4866006A26E4 /* UltraviolenceUI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,8 +29,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45BD7F522CDC4866006A26E4 /* UltraviolenceUI in Frameworks */,
 				455C19452CD48474009A25A6 /* Ultraviolence in Frameworks */,
-				4562E5252CD6A382006337E0 /* Examples in Frameworks */,
+				45BD7F502CDC4866006A26E4 /* UltraviolenceExamples in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -82,7 +84,8 @@
 			name = UltraviolenceDemo;
 			packageProductDependencies = (
 				455C19442CD48474009A25A6 /* Ultraviolence */,
-				4562E5242CD6A382006337E0 /* Examples */,
+				45BD7F4F2CDC4866006A26E4 /* UltraviolenceExamples */,
+				45BD7F512CDC4866006A26E4 /* UltraviolenceUI */,
 			);
 			productName = UltraviolenceDemo;
 			productReference = 455C19052CD483FC009A25A6 /* UltraviolenceDemo.app */;
@@ -396,10 +399,15 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = Ultraviolence;
 		};
-		4562E5242CD6A382006337E0 /* Examples */ = {
+		45BD7F4F2CDC4866006A26E4 /* UltraviolenceExamples */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 455C19432CD48474009A25A6 /* XCLocalSwiftPackageReference "../../Ultraviolence" */;
-			productName = Examples;
+			productName = UltraviolenceExamples;
+		};
+		45BD7F512CDC4866006A26E4 /* UltraviolenceUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 455C19432CD48474009A25A6 /* XCLocalSwiftPackageReference "../../Ultraviolence" */;
+			productName = UltraviolenceUI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -10,10 +10,10 @@ public struct AnyRenderPassModifier <Content>: RenderPass where Content: RenderP
         self.content = content
     }
 
-    public func visit(_ visitor: inout Visitor) throws {
+    public func visit(visitor: inout Visitor) throws {
         try visitor.log(node: self) { visitor in
             try visit(&visitor)
-            try content.visit(&visitor)
+            try content.visit(visitor: &visitor)
         }
     }
 }

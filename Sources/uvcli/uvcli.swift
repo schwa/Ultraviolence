@@ -1,10 +1,10 @@
 import AppKit
 import CoreGraphics
-import Examples
 import Metal
 import simd
 import SwiftUI
 import Ultraviolence
+import UltraviolenceExamples
 internal import UltraviolenceSupport
 import UniformTypeIdentifiers
 

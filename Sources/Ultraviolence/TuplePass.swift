@@ -7,10 +7,10 @@ public struct TuplePass <each T: RenderPass>: RenderPass {
         self.value = (repeat each value)
     }
 
-    public func visit(_ visitor: inout Visitor) throws {
+    public func visit(visitor: inout Visitor) throws {
         try visitor.log(node: self) { visitor in
             for element in repeat (each value) {
-                try element.visit(&visitor)
+                try element.visit(visitor: &visitor)
             }
         }
     }

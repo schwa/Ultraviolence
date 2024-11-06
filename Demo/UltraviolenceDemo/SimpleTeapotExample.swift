@@ -1,8 +1,9 @@
-import Examples
 import simd
 import SwiftUI
 import Ultraviolence
+import UltraviolenceExamples
 internal import UltraviolenceSupport
+import UltraviolenceUI
 
 public struct SimpleTeapotExample: View {
     @State

@@ -60,7 +60,7 @@ public struct OffscreenRenderer <Content> where Content: RenderPass {
             return try device.withCommandQueue(label: "􀐛OffscreenRenderer.commandQueue") { commandQueue in
                 try commandQueue.withCommandBuffer(completion: .commitAndWaitUntilCompleted, label: "􀐛OffscreenRenderer.commandBuffer", debugGroup: "􀯕OffscreenRenderer.render()") { commandBuffer in
                     visitor.insert(.commandBuffer(commandBuffer))
-                    try content.visit(&visitor)
+                    try content.visit(visitor: &visitor)
                 }
                 return .init(texture: colorTexture)
             }

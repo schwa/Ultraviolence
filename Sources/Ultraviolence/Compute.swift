@@ -31,19 +31,22 @@ public struct Compute <Content>: RenderPass where Content: RenderPass {
         self.content = content()
     }
 
-    public func visit(_ visitor: inout Visitor) throws {
+    public func visit(visitor: inout Visitor) throws {
         try visitor.log(node: self) { visitor in
             let device = visitor.device
-            let commandBuffer = try visitor.commandBuffer.orThrow(.missingEnvironment(".commandBuffer"))
 
+            // TODO: Setup
+            try content.visit(visitor: &visitor)
+            let computePipelineDescriptor = MTLComputePipelineDescriptor()
+            computePipelineDescriptor.computeFunction = try visitor.function(type: .kernel).orThrow(.missingEnvironment("Function"))
+            let (pipelineState, reflection) = try device.makeComputePipelineState(descriptor: computePipelineDescriptor, options: .bindingInfo)
+            guard let reflection else {
+                throw UltraviolenceError.resourceCreationFailure
+            }
+
+            // TODO: Workload
+            let commandBuffer = try visitor.commandBuffer.orThrow(.missingEnvironment(".commandBuffer"))
             try commandBuffer.withComputeCommandEncoder(label: "􀐛Compute.computeCommandEncoder", debugGroup: "􀯕Compute.visit()") { encoder in
-                try content.visit(&visitor)
-                let computePipelineDescriptor = MTLComputePipelineDescriptor()
-                computePipelineDescriptor.computeFunction = try visitor.function(type: .kernel).orThrow(.missingEnvironment("Function"))
-                let (pipelineState, reflection) = try device.makeComputePipelineState(descriptor: computePipelineDescriptor, options: .bindingInfo)
-                guard let reflection else {
-                    throw UltraviolenceError.resourceCreationFailure
-                }
                 encoder.setComputePipelineState(pipelineState)
                 let arguments = visitor.arguments.compactMap { $0 }
                 for argument in arguments where argument.functionType == .kernel {

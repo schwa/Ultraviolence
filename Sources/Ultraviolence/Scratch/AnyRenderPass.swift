@@ -9,7 +9,7 @@ public struct AnyRenderPass: RenderPass {
         self.render = render
     }
 
-    public func visit(_ visitor: inout Visitor) throws {
+    public func visit(visitor: inout Visitor) throws {
         try visitor.log(node: self) { visitor in
             try render(&visitor)
         }

@@ -1,7 +1,7 @@
 import CoreGraphics
-import Examples
 import Testing
 @testable import Ultraviolence
+import UltraviolenceExamples
 
 public struct RenderingTests {
     @Test

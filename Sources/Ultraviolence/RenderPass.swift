@@ -8,12 +8,14 @@ public protocol RenderPass {
     @RenderPassBuilder
     var body: Body { get throws }
 
-    func visit(_ visitor: inout Visitor) throws
+    func visit(visitor: inout Visitor) throws
 }
 
 public extension RenderPass {
-    func visit(_ visitor: inout Visitor) throws {
-        try body.visit(&visitor)
+    func visit(visitor: inout Visitor) throws {
+        try visitor.log(node: self) { visitor in
+            try body.visit(visitor: &visitor)
+        }
     }
 }
 
@@ -35,10 +37,9 @@ extension Never: RenderPass {
 extension Optional: RenderPass where Wrapped: RenderPass {
     public typealias Body = Never
 
-    public func visit(_ visitor: inout Visitor) throws {
-        // swiftlint:disable:next self_binding
-        if let value = self {
-            try value.visit(&visitor)
+    public func visit(visitor: inout Visitor) throws {
+        try visitor.log(node: self) { visitor in
+            try self?.visit(visitor: &visitor)
         }
     }
 }
