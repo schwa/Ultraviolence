@@ -26,38 +26,41 @@ public struct Draw <Content: RenderPass>: RenderPass where Content: RenderPass {
         }, content: content)
     }
 
-    public func visit(_ visitor: inout Visitor) throws {
+    public func visit(visitor: inout Visitor) throws {
         try visitor.log(node: self) { visitor in
             let device = visitor.device
+
+            // TODO: Setup
+            try content.visit(visitor: &visitor)
+            let renderPipelineDescriptor = try visitor.renderPipelineDescriptor.orThrow(.missingEnvironment(".renderPipelineDescriptor"))
+            if renderPipelineDescriptor.vertexFunction == nil {
+                renderPipelineDescriptor.vertexFunction = try visitor.function(type: .vertex).orThrow(.missingEnvironment(".function(type: .vertex"))
+            }
+            if renderPipelineDescriptor.fragmentFunction == nil {
+                renderPipelineDescriptor.fragmentFunction = try visitor.function(type: .fragment).orThrow(.missingEnvironment(".function(type: .fragment"))
+            }
+            if let vertexDescriptor = visitor.vertexDescriptor {
+                renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
+            }
+            else {
+                once(key: #uuidString()) {
+                    logger?.info("Falling back to getting vertex descriptor from vertex function. Which does not take into account non-packed layouts.")
+                }
+                guard let vertexAttributes = try renderPipelineDescriptor.vertexFunction.orThrow(.resourceCreationFailure).vertexAttributes else {
+                    fatalError("Cannot get vertex attributes from vertex function")
+                }
+                let vertexDescriptor = MTLVertexDescriptor(vertexAttributes: vertexAttributes)
+                renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
+            }
+
+            let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: [.bindingInfo])
+            guard let reflection else {
+                throw UltraviolenceError.resourceCreationFailure
+            }
+
+            // TODO: Workload
             let encoder = try visitor.renderCommandEncoder.orThrow(.missingEnvironment(".renderCommandEncoder"))
-
             try encoder.withDebugGroup(label: "􀯕Draw.visit()") {
-                try content.visit(&visitor)
-                let renderPipelineDescriptor = try visitor.renderPipelineDescriptor.orThrow(.missingEnvironment(".renderPipelineDescriptor"))
-                if renderPipelineDescriptor.vertexFunction == nil {
-                    renderPipelineDescriptor.vertexFunction = try visitor.function(type: .vertex).orThrow(.missingEnvironment(".function(type: .vertex"))
-                }
-                if renderPipelineDescriptor.fragmentFunction == nil {
-                    renderPipelineDescriptor.fragmentFunction = try visitor.function(type: .fragment).orThrow(.missingEnvironment(".function(type: .fragment"))
-                }
-                if let vertexDescriptor = visitor.vertexDescriptor {
-                    renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
-                }
-                else {
-                    once(key: #uuidString()) {
-                        logger?.info("Falling back to getting vertex descriptor from vertex function. Which does not take into account non-packed layouts.")
-                    }
-                    guard let vertexAttributes = try renderPipelineDescriptor.vertexFunction.orThrow(.resourceCreationFailure).vertexAttributes else {
-                        fatalError("Cannot get vertex attributes from vertex function")
-                    }
-                    let vertexDescriptor = MTLVertexDescriptor(vertexAttributes: vertexAttributes)
-                    renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
-                }
-
-                let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: [.bindingInfo])
-                guard let reflection else {
-                    throw UltraviolenceError.resourceCreationFailure
-                }
                 encoder.setRenderPipelineState(renderPipelineState)
                 if let depthStencilDescriptor = visitor.depthStencilDescriptor {
                     let depthStencilState = try device.makeDepthStencilState(descriptor: depthStencilDescriptor).orThrow(.resourceCreationFailure)

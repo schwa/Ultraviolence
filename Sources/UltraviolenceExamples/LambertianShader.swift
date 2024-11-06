@@ -1,6 +1,7 @@
 import CoreGraphics
 import simd
 import Ultraviolence
+internal import UltraviolenceSupport
 
 public struct LambertianShader: RenderPass {
     let source = """

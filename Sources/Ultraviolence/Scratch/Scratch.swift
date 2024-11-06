@@ -1,7 +1,6 @@
 import Metal
 import MetalKit
 import simd
-import SwiftUI
 
 // TODO: Placeholder.
 @available(*, deprecated, message: "Dont use (yet?)")

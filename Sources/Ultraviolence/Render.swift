@@ -9,11 +9,10 @@ public struct Render <Content>: RenderPass where Content: RenderPass {
         self.content = try content()
     }
 
-    public func visit(_ visitor: inout Visitor) throws {
+    public func visit(visitor: inout Visitor) throws {
         try visitor.log(node: self) { visitor in
             let commandBuffer = try visitor.commandBuffer.orThrow(.missingEnvironment(".commandBuffer"))
             let renderPassDescriptor = try visitor.renderPassDescriptor.orThrow(.missingEnvironment(".renderPassDescriptor"))
-
             try commandBuffer.withRenderCommandEncoder(descriptor: renderPassDescriptor, label: "􀐛Render.encoder") { encoder in
                 visitor.insert(.renderCommandEncoder(encoder))
                 let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
@@ -24,7 +23,7 @@ public struct Render <Content>: RenderPass where Content: RenderPass {
                     renderPipelineDescriptor.depthAttachmentPixelFormat = depthTexture.pixelFormat
                 }
                 visitor.insert(.renderPipelineDescriptor(renderPipelineDescriptor))
-                try content.visit(&visitor)
+                try content.visit(visitor: &visitor)
             }
         }
     }
