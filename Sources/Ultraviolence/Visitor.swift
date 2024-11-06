@@ -26,7 +26,7 @@ public struct Visitor {
         return try body(&self)
     }
 
-    // TODO: Make sure all insert() usages are not better replaced with with().
+    // TODO: Make sure all `insert()` usages would not be better replaced with `with()`.
     public mutating func insert(_ state: VisitorState) {
         environment[environment.count - 1].append(state)
     }

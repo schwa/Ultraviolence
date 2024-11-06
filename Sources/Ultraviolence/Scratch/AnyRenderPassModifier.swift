@@ -1,3 +1,4 @@
+@available(*, deprecated, message: "Dont use (yet?)")
 public struct AnyRenderPassModifier <Content>: RenderPass where Content: RenderPass {
     public typealias Body = Never
 

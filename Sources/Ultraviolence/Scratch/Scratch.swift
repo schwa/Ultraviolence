@@ -4,6 +4,7 @@ import simd
 import SwiftUI
 
 // TODO: Placeholder.
+@available(*, deprecated, message: "Dont use (yet?)")
 public struct Texture {
     public init() {
         fatalError("Not implemented")
@@ -16,6 +17,7 @@ public struct Texture {
 
 // TODO: Name conflict with SwiftUI.
 // TODO: Placeholder.
+@available(*, deprecated, message: "Dont use (yet?)")
 public struct ForEach_ <Data, Content>: RenderPass where Content: RenderPass {
     var data: Data
     var content: (Data) throws -> Content
@@ -30,6 +32,7 @@ public struct ForEach_ <Data, Content>: RenderPass where Content: RenderPass {
     }
 }
 
+@available(*, deprecated, message: "Dont use (yet?)")
 @propertyWrapper
 // TODO: Placeholder.
 public struct State_ <Wrapped> {
@@ -44,18 +47,5 @@ public struct State_ <Wrapped> {
         nonmutating set {
             fatalError("Not implemented")
         }
-    }
-}
-
-// TODO: Placeholder.
-public struct Chain <Content: RenderPass>: RenderPass where Content: RenderPass {
-    var content: Content
-
-    public init(@RenderPassBuilder content: () throws -> Content) rethrows {
-        self.content = try content()
-    }
-
-    public var body: some RenderPass {
-        content
     }
 }

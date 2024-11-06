@@ -15,30 +15,12 @@ public enum Value {
     case texture(MTLTexture)
 }
 
-// TODO: Replace with AnyRenderPassModifier
-internal struct ArgumentsRenderPass <Content>: RenderPass where Content: RenderPass {
-    typealias Body = Never
-
-    var arguments: [Argument]
-    var content: Content
-
-    init(arguments: [Argument], @RenderPassBuilder content: () -> Content) {
-        self.content = content()
-        self.arguments = arguments
-    }
-
-    func visit(_ visitor: inout Visitor) throws {
-        try visitor.log(label: "ArgumentsRenderPass.\(#function).") { visitor in
-            visitor.insert(.arguments(arguments))
-            try content.visit(&visitor)
-        }
-    }
-}
-
 public extension RenderPass {
     func argument(type: MTLFunctionType, name: String, value: Value) -> some RenderPass {
         let argument = Argument(functionType: type, name: name, value: value)
-        return ArgumentsRenderPass(arguments: [argument]) { self }
+        return EnvironmentRenderPass(environment: [.arguments([argument])]) {
+            self
+        }
     }
 
     func argument(type: MTLFunctionType, name: String, value: SIMD4<Float>) -> some RenderPass {
