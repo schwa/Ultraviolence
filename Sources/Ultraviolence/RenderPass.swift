@@ -21,7 +21,7 @@ public extension RenderPass {
 
 public extension RenderPass where Body == Never {
     var body: Never {
-        get throws {            
+        get throws {
             fatalError("No body for \(type(of: self))")
         }
     }
