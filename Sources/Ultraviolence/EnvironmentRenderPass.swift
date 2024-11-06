@@ -10,7 +10,7 @@ public struct EnvironmentRenderPass <Content>: RenderPass where Content: RenderP
     }
 
     public func visit(_ visitor: inout Visitor) throws {
-        try visitor.log(label: "EnvironmentRenderPass.\(#function).") { visitor in
+        try visitor.log(node: self) { visitor in
             try visitor.with(environment) { visitor in
                 try content.visit(&visitor)
             }

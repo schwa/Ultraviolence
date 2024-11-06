@@ -8,7 +8,7 @@ public struct TuplePass <each T: RenderPass>: RenderPass {
     }
 
     public func visit(_ visitor: inout Visitor) throws {
-        try visitor.log(label: "TuplePass.\(#function).") { visitor in
+        try visitor.log(node: self) { visitor in
             for element in repeat (each value) {
                 try element.visit(&visitor)
             }

@@ -36,7 +36,6 @@ public struct OffscreenRenderer <Content> where Content: RenderPass {
     public func render() throws -> Rendering {
         let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
         var visitor = Visitor(device: device)
-        return try visitor.log(label: "OffscreenRenderer.\(#function)") { visitor in
             //            let logStateDescriptor = MTLLogStateDescriptor()
             //            logStateDescriptor.bufferSize = 1024 * 1024 * 1024
             //            let logState = try! device.makeLogState(descriptor: logStateDescriptor)
@@ -65,7 +64,6 @@ public struct OffscreenRenderer <Content> where Content: RenderPass {
                 }
                 return .init(texture: colorTexture)
             }
-        }
     }
 }
 

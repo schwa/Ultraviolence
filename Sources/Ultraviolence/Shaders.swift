@@ -19,7 +19,7 @@ public struct VertexShader: RenderPass {
     }
 
     public func visit(_ visitor: inout Visitor) throws {
-        visitor.log(label: "VertexShader.\(#function).") { visitor in
+        visitor.log(node: self) { visitor in
             visitor.insert(.function(function))
         }
     }
@@ -45,7 +45,7 @@ public struct FragmentShader: RenderPass {
     }
 
     public func visit(_ visitor: inout Visitor) throws {
-        visitor.log(label: "FragmentShader.\(#function).") { visitor in
+        visitor.log(node: self) { visitor in
             visitor.insert(.function(function))
         }
     }
@@ -73,7 +73,7 @@ public struct ComputeShader: RenderPass {
     }
 
     public func visit(_ visitor: inout Visitor) throws {
-        visitor.log(label: "ComputeShader.\(#function).") { visitor in
+        visitor.log(node: self) { visitor in
             visitor.insert(.function(function))
         }
     }
