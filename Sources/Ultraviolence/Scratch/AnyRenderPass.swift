@@ -1,4 +1,5 @@
 // TODO: This seems useless.
+@available(*, deprecated, message: "Dont use (yet?)")
 public struct AnyRenderPass: RenderPass {
     public typealias Body = Never
 
