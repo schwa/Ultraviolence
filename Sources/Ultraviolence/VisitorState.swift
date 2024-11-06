@@ -5,7 +5,6 @@ internal import UltraviolenceSupport
 // TODO: Rename
 @MetaEnum
 public enum VisitorState {
-    case commandQueue(MTLCommandQueue)
     case commandBuffer(MTLCommandBuffer)
     case renderCommandEncoder(MTLRenderCommandEncoder)
     case renderPipelineDescriptor(MTLRenderPipelineDescriptor)
@@ -24,17 +23,6 @@ public enum VisitorState {
 // TODO: This is a temporary solution.
 
 public extension Visitor {
-    var commandQueue: MTLCommandQueue? {
-        for elements in environment.reversed() {
-            for element in elements {
-                if case let .commandQueue(value) = element {
-                    return value
-                }
-            }
-        }
-        return nil
-    }
-
     var commandBuffer: MTLCommandBuffer? {
         for elements in environment.reversed() {
             for element in elements {
