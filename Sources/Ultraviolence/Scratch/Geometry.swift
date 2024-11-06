@@ -130,3 +130,21 @@ extension MTLRenderCommandEncoder {
         }
     }
 }
+
+extension Mesh {
+    func draw(encoder: MTLRenderCommandEncoder) throws {
+        switch self {
+        case .simple(let simpleMesh):
+
+            try encoder.draw(simpleMesh: simpleMesh)
+        case .mtkMesh(let mtkMesh):
+            // TODO: Verify vertex shader vertex descriptor matches mesh vertex descriptor.
+            for submesh in mtkMesh.submeshes {
+                for (index, vertexBuffer) in mtkMesh.vertexBuffers.enumerated() {
+                    encoder.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: index)
+                }
+                encoder.drawIndexedPrimitives(type: submesh.primitiveType, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBuffer.buffer, indexBufferOffset: submesh.indexBuffer.offset)
+            }
+        }
+    }
+}
