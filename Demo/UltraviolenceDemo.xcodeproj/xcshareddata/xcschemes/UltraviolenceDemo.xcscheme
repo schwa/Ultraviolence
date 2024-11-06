@@ -69,7 +69,7 @@
          <EnvironmentVariable
             key = "LOG_VISITOR"
             value = "1"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>
    </LaunchAction>

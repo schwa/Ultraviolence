@@ -10,7 +10,7 @@ public struct AnyRenderPass: RenderPass {
     }
 
     public func visit(_ visitor: inout Visitor) throws {
-        try visitor.log(label: "AnyRenderPass.\(#function).") { visitor in
+        try visitor.log(node: self) { visitor in
             try render(&visitor)
         }
     }

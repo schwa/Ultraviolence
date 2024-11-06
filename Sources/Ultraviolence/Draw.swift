@@ -2,6 +2,8 @@ import Metal
 import MetalKit
 internal import UltraviolenceSupport
 
+// swiftlint:disable closure_body_length
+
 public struct Draw <Content: RenderPass>: RenderPass where Content: RenderPass {
     public typealias Body = Never
 
@@ -25,21 +27,19 @@ public struct Draw <Content: RenderPass>: RenderPass where Content: RenderPass {
     }
 
     public func visit(_ visitor: inout Visitor) throws {
-        try visitor.log(label: "Draw.\(#function).") { visitor in
+        try visitor.log(node: self) { visitor in
             let device = visitor.device
             let encoder = try visitor.renderCommandEncoder.orThrow(.missingEnvironment(".renderCommandEncoder"))
 
             try encoder.withDebugGroup(label: "􀯕Draw.visit()") {
                 try content.visit(&visitor)
                 let renderPipelineDescriptor = try visitor.renderPipelineDescriptor.orThrow(.missingEnvironment(".renderPipelineDescriptor"))
-
                 if renderPipelineDescriptor.vertexFunction == nil {
                     renderPipelineDescriptor.vertexFunction = try visitor.function(type: .vertex).orThrow(.missingEnvironment(".function(type: .vertex"))
                 }
                 if renderPipelineDescriptor.fragmentFunction == nil {
                     renderPipelineDescriptor.fragmentFunction = try visitor.function(type: .fragment).orThrow(.missingEnvironment(".function(type: .fragment"))
                 }
-
                 if let vertexDescriptor = visitor.vertexDescriptor {
                     renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
                 }
@@ -58,10 +58,7 @@ public struct Draw <Content: RenderPass>: RenderPass where Content: RenderPass {
                 guard let reflection else {
                     throw UltraviolenceError.resourceCreationFailure
                 }
-                // TODO: Move all this into the environment.
                 encoder.setRenderPipelineState(renderPipelineState)
-                encoder.setCullMode(.back)
-                encoder.setFrontFacing(.counterClockwise)
                 if let depthStencilDescriptor = visitor.depthStencilDescriptor {
                     let depthStencilState = try device.makeDepthStencilState(descriptor: depthStencilDescriptor).orThrow(.resourceCreationFailure)
                     encoder.setDepthStencilState(depthStencilState)

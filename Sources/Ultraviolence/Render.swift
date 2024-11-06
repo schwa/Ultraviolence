@@ -10,7 +10,7 @@ public struct Render <Content>: RenderPass where Content: RenderPass {
     }
 
     public func visit(_ visitor: inout Visitor) throws {
-        try visitor.log(label: "Render.\(#function).") { visitor in
+        try visitor.log(node: self) { visitor in
             let commandBuffer = try visitor.commandBuffer.orThrow(.missingEnvironment(".commandBuffer"))
             let renderPassDescriptor = try visitor.renderPassDescriptor.orThrow(.missingEnvironment(".renderPassDescriptor"))
 

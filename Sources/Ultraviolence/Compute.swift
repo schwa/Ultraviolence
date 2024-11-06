@@ -32,7 +32,7 @@ public struct Compute <Content>: RenderPass where Content: RenderPass {
     }
 
     public func visit(_ visitor: inout Visitor) throws {
-        try visitor.log(label: "Compute.\(#function).") { visitor in
+        try visitor.log(node: self) { visitor in
             let device = visitor.device
             let commandBuffer = try visitor.commandBuffer.orThrow(.missingEnvironment(".commandBuffer"))
 

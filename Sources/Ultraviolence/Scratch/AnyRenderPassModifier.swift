@@ -11,7 +11,7 @@ public struct AnyRenderPassModifier <Content>: RenderPass where Content: RenderP
     }
 
     public func visit(_ visitor: inout Visitor) throws {
-        try visitor.log(label: "AnyRenderPassModifier.\(#function).") { visitor in
+        try visitor.log(node: self) { visitor in
             try visit(&visitor)
             try content.visit(&visitor)
         }
