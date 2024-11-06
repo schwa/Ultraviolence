@@ -1,5 +1,6 @@
 import Metal
 import simd
+internal import UltraviolenceSupport
 
 public struct Visitor {
     public var device: MTLDevice
@@ -49,23 +50,31 @@ public struct Visitor {
     }
 }
 
+public extension Visitor {
+    func dump() {
+        for environment in self.environment {
+            for state in environment {
+                let meta = VisitorState.Meta(state)
+                print(meta)
+            }
+        }
+    }
+}
+
+// TODO: Rename
+@MetaEnum
 public enum VisitorState {
     case commandQueue(MTLCommandQueue)
     case commandBuffer(MTLCommandBuffer)
-
     case renderCommandEncoder(MTLRenderCommandEncoder)
-
     case renderPipelineDescriptor(MTLRenderPipelineDescriptor)
     case renderPassDescriptor(MTLRenderPassDescriptor)
-
     case depthStencilDescriptor(MTLDepthStencilDescriptor)
     case function(MTLFunction)
-    //    case computePipelineDescriptor(MTLComputePipelineDescriptor)
     case depthAttachment(MTLTexture)
     case colorAttachment(MTLTexture, Int)
     case logState(MTLLogState)
     case vertexDescriptor(MTLVertexDescriptor)
-
     case arguments([Argument])
 }
 

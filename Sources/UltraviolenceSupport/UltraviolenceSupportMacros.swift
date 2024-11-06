@@ -9,3 +9,6 @@ public macro stringify<T>(_ value: T) -> (T, String) = #externalMacro(module: "U
 
 @freestanding(expression)
 public macro uuidString() -> (String) = #externalMacro(module: "UltraviolenceMacros", type: "UUIDMacro")
+
+@attached(member, names: named(Meta))
+public macro MetaEnum() = #externalMacro(module: "UltraviolenceMacros", type: "MetaEnumMacro")

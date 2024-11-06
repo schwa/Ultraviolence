@@ -7,7 +7,8 @@ import SwiftSyntaxMacros
 public struct UltraviolenceMacros: CompilerPlugin {
     public let providingMacros: [Macro.Type] = [
         StringifyMacro.self,
-        UUIDMacro.self
+        UUIDMacro.self,
+        MetaEnumMacro.self
     ]
 
     public init() {
