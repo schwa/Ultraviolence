@@ -29,7 +29,7 @@ public struct RenderView <Content>: NSViewRepresentable where Content: RenderPas
         view.clearColor = MTLClearColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)
         view.colorPixelFormat = .bgra8Unorm_srgb
         view.depthStencilPixelFormat = .depth32Float
-        view.depthStencilAttachmentTextureUsage = [.shaderRead, .renderTarget] // TODO
+        view.depthStencilAttachmentTextureUsage = [.shaderRead, .renderTarget]
         view.framebufferOnly = false
         return view
     }
@@ -103,6 +103,7 @@ public class RenderPassCoordinator <Content>: NSObject, MTKViewDelegate where Co
 
                 currentRenderPassDescriptor.depthAttachment.storeAction = .store
 
+                logger?.log("#####################################################")
                 var visitor = Visitor(device: device)
                 try visitor.with([
                     .renderPassDescriptor(currentRenderPassDescriptor),
