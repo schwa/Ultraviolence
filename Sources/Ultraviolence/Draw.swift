@@ -32,6 +32,26 @@ public struct Draw <Content: RenderPass>: RenderPass where Content: RenderPass {
             try encoder.withDebugGroup(label: "􀯕Draw.visit()") {
                 try content.visit(&visitor)
                 let renderPipelineDescriptor = try visitor.renderPipelineDescriptor.orThrow(.missingEnvironment(".renderPipelineDescriptor"))
+
+                if renderPipelineDescriptor.vertexFunction == nil {
+                    renderPipelineDescriptor.vertexFunction = try visitor.function(type: .vertex).orThrow(.missingEnvironment(".function(type: .vertex"))
+                }
+                if renderPipelineDescriptor.fragmentFunction == nil {
+                    renderPipelineDescriptor.fragmentFunction = try visitor.function(type: .fragment).orThrow(.missingEnvironment(".function(type: .fragment"))
+                }
+
+                if let vertexDescriptor = visitor.vertexDescriptor {
+                    renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
+                }
+                else {
+                    logger?.info("Falling back to getting vertex descriptor from vertex function. Which does not take into account non-packed layouts.")
+                    guard let vertexAttributes = try renderPipelineDescriptor.vertexFunction.orThrow(.resourceCreationFailure).vertexAttributes else {
+                        fatalError("Cannot get vertex attributes from vertex function")
+                    }
+                    let vertexDescriptor = MTLVertexDescriptor(vertexAttributes: vertexAttributes)
+                    renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
+                }
+
                 let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: [.bindingInfo])
                 guard let reflection else {
                     throw UltraviolenceError.resourceCreationFailure
