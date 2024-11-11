@@ -69,7 +69,23 @@ public let package = Package(
                 "UltraviolenceExamples",
                 "UltraviolenceSupport"
             ]
-        )
+        ),
+
+        .target(
+            name: "UltraviolenceRedux",
+            dependencies: [
+            ]
+        ),
+        .testTarget(
+            name: "UltraviolenceReduxTests",
+            dependencies: [
+                "UltraviolenceRedux",
+                "UltraviolenceSupport",
+                .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax")
+            ]
+        ),
+
+
     ],
     swiftLanguageModes: [.v6]
 )

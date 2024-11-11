@@ -1,4 +1,4 @@
 @MainActor
-internal protocol BuiltinView {
+internal protocol BuiltinRenderPass {
     func _buildNodeTree(_ node: Node)
 }
