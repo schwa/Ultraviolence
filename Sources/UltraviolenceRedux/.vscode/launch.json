@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:NotSwiftUI}",
+            "name": "Debug NotSwiftUIClient",
+            "program": "${workspaceFolder:NotSwiftUI}/.build/debug/NotSwiftUIClient",
+            "preLaunchTask": "swift: Build Debug NotSwiftUIClient"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:NotSwiftUI}",
+            "name": "Release NotSwiftUIClient",
+            "program": "${workspaceFolder:NotSwiftUI}/.build/release/NotSwiftUIClient",
+            "preLaunchTask": "swift: Build Release NotSwiftUIClient"
+        }
+    ]
+}
