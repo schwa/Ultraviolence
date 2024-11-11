@@ -1,4 +1,4 @@
-public struct TupleRenderPass <each T: RenderPass>: RenderPass {
+public struct TuplePass <each T: RenderPass>: RenderPass {
     public typealias Body = Never
 
     private let children: (repeat each T)
@@ -8,7 +8,7 @@ public struct TupleRenderPass <each T: RenderPass>: RenderPass {
     }
 }
 
-extension TupleRenderPass: BuiltinRenderPass {
+extension TuplePass: BuiltinRenderPass {
     func _buildNodeTree(_ node: Node) {
         var idx = 0
         for child in repeat (each children) {
