@@ -1,4 +1,4 @@
-public struct EmptyView: View {
+public struct EmptyRenderPass: RenderPass {
     public typealias Body = Never
 
     public init() {
@@ -6,7 +6,7 @@ public struct EmptyView: View {
     }
 }
 
-extension EmptyView: BuiltinView {
+extension EmptyRenderPass: BuiltinRenderPass {
     func _buildNodeTree(_ node: Node) {
         // This line intentionally left blank.
     }

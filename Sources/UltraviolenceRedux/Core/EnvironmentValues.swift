@@ -21,25 +21,25 @@ public extension EnvironmentValues {
     }
 }
 
-struct EnvironmentWritingModifier<Content: View>: View, BuiltinView {
+struct EnvironmentWritingModifier<Content: RenderPass>: RenderPass, BuiltinRenderPass {
     var content: Content
     var modify: (inout EnvironmentValues) -> ()
 
     func _buildNodeTree(_ node: Node) {
         modify(&node.environmentValues)
-        AnyBuiltinView(content)._buildNodeTree(node)
+        AnyBuiltinRenderPass(content)._buildNodeTree(node)
     }
 }
 
-public extension View {
-    func environment<Value>(_ keyPath: WritableKeyPath<EnvironmentValues, Value>, _ value: Value) -> some View {
+public extension RenderPass {
+    func environment<Value>(_ keyPath: WritableKeyPath<EnvironmentValues, Value>, _ value: Value) -> some RenderPass {
         EnvironmentWritingModifier(content: self) { environmentValues in
             environmentValues[keyPath: keyPath] = value
         }
     }
 }
 
-public struct EnvironmentReader<Value, Content: View>: View, BuiltinView {
+public struct EnvironmentReader<Value, Content: RenderPass>: RenderPass, BuiltinRenderPass {
     var keyPath: KeyPath<EnvironmentValues, Value>
     var content: (Value) -> Content
 
@@ -50,7 +50,7 @@ public struct EnvironmentReader<Value, Content: View>: View, BuiltinView {
 
     func _buildNodeTree(_ node: Node) {
         let value = node.environmentValues[keyPath: keyPath]
-        AnyBuiltinView(content(value))._buildNodeTree(node)
+        AnyBuiltinRenderPass(content(value))._buildNodeTree(node)
     }
 }
 

@@ -1,24 +1,24 @@
 @MainActor
-public protocol View {
-    associatedtype Body: View
-    @MainActor @ViewBuilder var body: Body { get }
+public protocol RenderPass {
+    associatedtype Body: RenderPass
+    @MainActor @RenderPassBuilder var body: Body { get }
 }
 
-extension Never: View {
+extension Never: RenderPass {
     public typealias Body = Never
 }
 
-public extension View where Body == Never {
+public extension RenderPass where Body == Never {
     var body: Never {
         fatalError("`body` is not implemented for `Never` types.")
     }
 }
 
-internal extension View {
+internal extension RenderPass {
     func buildNodeTree(_ node: Node) {
-        if let builtInView = self as? BuiltinView {
-            node.view = builtInView
-            builtInView._buildNodeTree(node)
+        if let builtInRenderPass = self as? BuiltinRenderPass {
+            node.renderPass = builtInRenderPass
+            builtInRenderPass._buildNodeTree(node)
             return
         }
 
@@ -38,7 +38,7 @@ internal extension View {
             return
         }
 
-        node.view = AnyBuiltinView(self)
+        node.renderPass = AnyBuiltinRenderPass(self)
 
         observeObjects(node)
         restoreStateProperties(node)
@@ -49,12 +49,12 @@ internal extension View {
         body.buildNodeTree(node.children[0])
 
         storeStateProperties(node)
-        node.previousView = self
+        node.previousRenderPass = self
         node.needsRebuild = false
     }
 
     private func equalToPrevious(_ node: Node) -> Bool {
-        guard let previous = node.previousView as? Self else { return false }
+        guard let previous = node.previousRenderPass as? Self else { return false }
         let lhs = Mirror(reflecting: self).children
         let rhs = Mirror(reflecting: previous).children
         return zip(lhs, rhs).allSatisfy { lhs, rhs in

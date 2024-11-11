@@ -1,6 +1,5 @@
 import Metal
 import MetalKit
-import SwiftUI
 
 public extension simd_float4x4 {
     init(translation: SIMD3<Float>) {
@@ -73,86 +72,86 @@ extension SIMD4 {
     }
 }
 
-public struct SliderField: View {
-    private let label: String
-
-    @Binding
-    private var value: Float
-
-    private var range: ClosedRange<Float>
-
-    @State
-    private var popupShown = false
-
-    public init(label: String, value: Binding<Float>, in range: ClosedRange<Float>) {
-        self.label = label
-        self._value = value
-        self.range = range
-        self.popupShown = popupShown
-    }
-
-    public var body: some View {
-        HStack {
-            Text("\(label)")
-            Text("\(value)")
-            Button("-") {
-                popupShown = true
-            }
-        }
-        .popover(isPresented: $popupShown) {
-            Slider(value: $value, in: range)
-                .controlSize(.mini)
-                .frame(width: 200)
-                .padding()
-        }
-    }
-}
-
-public extension Color {
-    func float4() throws -> SIMD4<Float> {
-        let cgColor = resolve(in: .init()).cgColor
-        let colorSpace = try CGColorSpace(name: CGColorSpace.linearSRGB).orThrow(.resourceCreationFailure)
-        guard let convertedColor = cgColor.converted(to: colorSpace, intent: .defaultIntent, options: nil) else {
-            throw UltraviolenceError.resourceCreationFailure
-        }
-        guard let components = convertedColor.components?.map(Float.init) else {
-            throw UltraviolenceError.resourceCreationFailure
-        }
-        return SIMD4<Float>(components[0], components[1], components[2], components[3])
-    }
-}
-
-public struct SIMDColorPicker: View {
-    @Binding
-    var value: SIMD4<Float>
-
-    public init(value: Binding<SIMD4<Float>>) {
-        self._value = value
-    }
-
-    public var body: some View {
-        Grid(alignment: .trailing) {
-            GridRow {
-                Text("Red")
-                Slider(value: $value.x)
-            }
-            GridRow {
-                Text("Green")
-                Slider(value: $value.y)
-            }
-            GridRow {
-                Text("Blue")
-                Slider(value: $value.z)
-            }
-            GridRow {
-                Text("Alpha")
-                Slider(value: $value.w)
-            }
-        }
-        .frame(maxWidth: 80)
-        .controlSize(.mini)
-    }
-}
+//public struct SliderField: View {
+//    private let label: String
+//
+//    @Binding
+//    private var value: Float
+//
+//    private var range: ClosedRange<Float>
+//
+//    @State
+//    private var popupShown = false
+//
+//    public init(label: String, value: Binding<Float>, in range: ClosedRange<Float>) {
+//        self.label = label
+//        self._value = value
+//        self.range = range
+//        self.popupShown = popupShown
+//    }
+//
+//    public var body: some View {
+//        HStack {
+//            Text("\(label)")
+//            Text("\(value)")
+//            Button("-") {
+//                popupShown = true
+//            }
+//        }
+//        .popover(isPresented: $popupShown) {
+//            Slider(value: $value, in: range)
+//                .controlSize(.mini)
+//                .frame(width: 200)
+//                .padding()
+//        }
+//    }
+//}
+//
+//public extension Color {
+//    func float4() throws -> SIMD4<Float> {
+//        let cgColor = resolve(in: .init()).cgColor
+//        let colorSpace = try CGColorSpace(name: CGColorSpace.linearSRGB).orThrow(.resourceCreationFailure)
+//        guard let convertedColor = cgColor.converted(to: colorSpace, intent: .defaultIntent, options: nil) else {
+//            throw UltraviolenceError.resourceCreationFailure
+//        }
+//        guard let components = convertedColor.components?.map(Float.init) else {
+//            throw UltraviolenceError.resourceCreationFailure
+//        }
+//        return SIMD4<Float>(components[0], components[1], components[2], components[3])
+//    }
+//}
+//
+//public struct SIMDColorPicker: View {
+//    @Binding
+//    var value: SIMD4<Float>
+//
+//    public init(value: Binding<SIMD4<Float>>) {
+//        self._value = value
+//    }
+//
+//    public var body: some View {
+//        Grid(alignment: .trailing) {
+//            GridRow {
+//                Text("Red")
+//                Slider(value: $value.x)
+//            }
+//            GridRow {
+//                Text("Green")
+//                Slider(value: $value.y)
+//            }
+//            GridRow {
+//                Text("Blue")
+//                Slider(value: $value.z)
+//            }
+//            GridRow {
+//                Text("Alpha")
+//                Slider(value: $value.w)
+//            }
+//        }
+//        .frame(maxWidth: 80)
+//        .controlSize(.mini)
+//    }
+//}
 
 public extension Optional where Wrapped == String {
     var isTrue: Bool {

@@ -5,8 +5,8 @@ import SwiftSyntaxMacrosTestSupport
 import XCTest
 
 // Macro implementations build for the host, so the corresponding module is not available when cross-compiling. Cross-compiled tests may still make use of the macro itself in end-to-end tests.
-#if canImport(NotSwiftUIMacros)
-import NotSwiftUIMacros
+#if canImport(UltraviolenceMacros)
+import UltraviolenceMacros
 
 let testMacros: [String: Macro.Type] = [
     "Entry": EntryMacro.self
@@ -15,7 +15,7 @@ let testMacros: [String: Macro.Type] = [
 
 final class EntryMacroTests: XCTestCase {
     func testBasicType() throws {
-        #if canImport(NotSwiftUIMacros)
+        #if canImport(UltraviolenceMacros)
         assertMacroExpansion(
             """
             extension EnvironmentValues {

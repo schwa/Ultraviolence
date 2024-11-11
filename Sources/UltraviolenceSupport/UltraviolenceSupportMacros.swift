@@ -12,3 +12,7 @@ public macro uuidString() -> (String) = #externalMacro(module: "UltraviolenceMac
 
 @attached(member, names: named(Meta))
 public macro MetaEnum() = #externalMacro(module: "UltraviolenceMacros", type: "MetaEnumMacro")
+
+@attached(accessor)
+@attached(peer, names: prefixed(__Key_))
+public macro Entry() = #externalMacro(module: "UltraviolenceMacros", type: "EntryMacro")
