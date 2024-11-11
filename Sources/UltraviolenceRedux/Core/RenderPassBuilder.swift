@@ -5,8 +5,8 @@ public struct RenderPassBuilder {
         content
     }
 
-    public static func buildBlock<each Content>(_ content: repeat each Content) -> TupleRenderPass<repeat each Content> where repeat each Content: RenderPass {
-        TupleRenderPass(repeat each content)
+    public static func buildBlock<each Content>(_ content: repeat each Content) -> TuplePass<repeat each Content> where repeat each Content: RenderPass {
+        TuplePass(repeat each content)
     }
 
     public static func buildOptional<Content>(_ content: Content?) -> some RenderPass where Content: RenderPass {
