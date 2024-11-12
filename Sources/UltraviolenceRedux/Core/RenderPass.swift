@@ -1,35 +1,35 @@
 @MainActor
-public protocol RenderPass {
-    associatedtype Body: RenderPass
-    @MainActor @RenderPassBuilder var body: Body { get }
+public protocol View {
+    associatedtype Body: View
+    @MainActor @ViewBuilder var body: Body { get }
 }
 
-extension Never: RenderPass {
+extension Never: View {
     public typealias Body = Never
 }
 
-public extension RenderPass where Body == Never {
+public extension View where Body == Never {
     var body: Never {
         fatalError("`body` is not implemented for `Never` types.")
     }
 }
 
-internal extension RenderPass {
-    func buildNodeTree(_ node: Node) {
+internal extension View {
+    func expandNode(_ node: Node) {
+        // TODO: Refactor this to make expandion of the node tree distinct from handling observable and state properties.
         guard let graph = Graph.current else {
             fatalError("No graph is currently active.")
         }
         graph.activeNodeStack.append(node)
-
-
-        if let builtInRenderPass = self as? BuiltinRenderPass {
-            node.renderPass = builtInRenderPass
-            builtInRenderPass._buildNodeTree(node)
-            return
-        }
-
         defer {
             _ = graph.activeNodeStack.removeLast()
+        }
+
+        node.view = self
+
+        if let builtInView = self as? BodylessView {
+            builtInView._expandNode(node)
+            return
         }
 
         let shouldRunBody = node.needsRebuild || !equalToPrevious(node)
@@ -40,23 +40,21 @@ internal extension RenderPass {
             return
         }
 
-        node.renderPass = AnyBuiltinRenderPass(self)
-
         observeObjects(node)
         restoreStateProperties(node)
 
         if node.children.isEmpty {
-            node.children = [Node(graph: node.graph)]
+            node.children = [graph.makeNode()]
         }
-        body.buildNodeTree(node.children[0])
+        body.expandNode(node.children[0])
 
         storeStateProperties(node)
-        node.previousRenderPass = self
+        node.previousView = self
         node.needsRebuild = false
     }
 
     private func equalToPrevious(_ node: Node) -> Bool {
-        guard let previous = node.previousRenderPass as? Self else { return false }
+        guard let previous = node.previousView as? Self else { return false }
         let lhs = Mirror(reflecting: self).children
         let rhs = Mirror(reflecting: previous).children
         return zip(lhs, rhs).allSatisfy { lhs, rhs in

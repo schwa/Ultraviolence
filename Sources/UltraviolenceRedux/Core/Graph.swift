@@ -1,16 +1,16 @@
 internal import os
 
-internal class Graph {
+public class Graph {
     var activeNodeStack: [Node] = []
 
     private(set) var root: Node
 
     @MainActor
-    init<Content>(content: Content) where Content: RenderPass {
+    public init<Content>(content: Content) where Content: View {
         root = Node()
         root.graph = self
         Self.current = self
-        content.buildNodeTree(root)
+        content.expandNode(root)
         Self.current = nil
     }
 
@@ -21,10 +21,10 @@ internal class Graph {
         defer {
             Self.current = saved
         }
-        guard let rootRenderPass = root.renderPass else {
-            fatalError("Root renderPass is missing.")
+        guard let rootView = root.view else {
+            fatalError("Root view is missing.")
         }
-        rootRenderPass._buildNodeTree(root)
+        rootView.expandNode(root)
     }
 
     static let _current = OSAllocatedUnfairLock<Graph?>(uncheckedState: nil)
@@ -37,9 +37,13 @@ internal class Graph {
             _current.withLockUnchecked { $0 = newValue }
         }
     }
+
+    func makeNode() -> Node {
+        Node(graph: self)
+    }
 }
 
-extension Graph {
+public extension Graph {
     @MainActor
     func dump() {
         root.dump()

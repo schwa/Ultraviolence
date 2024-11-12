@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/schwa/NotSwiftUI
 	branch = main
-	commit = a8076bd4cbfeff8ec6499fc077559c5623eb5b2d
+	commit = 28df1fa8886790c7f0d70af3661441ea24db7c62
 	parent = 2b15aa2b30d49e0bbc42aa490161f10b4ed12793
 	method = merge
 	cmdver = 0.4.9
