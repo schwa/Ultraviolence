@@ -16,16 +16,18 @@ public extension RenderPass where Body == Never {
 
 internal extension RenderPass {
     func buildNodeTree(_ node: Node) {
+        guard let graph = Graph.current else {
+            fatalError("No graph is currently active.")
+        }
+        graph.activeNodeStack.append(node)
+
+
         if let builtInRenderPass = self as? BuiltinRenderPass {
             node.renderPass = builtInRenderPass
             builtInRenderPass._buildNodeTree(node)
             return
         }
 
-        guard let graph = Graph.current else {
-            fatalError("No graph is currently active.")
-        }
-        graph.activeNodeStack.append(node)
         defer {
             _ = graph.activeNodeStack.removeLast()
         }

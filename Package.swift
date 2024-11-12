@@ -74,6 +74,14 @@ public let package = Package(
         .target(
             name: "UltraviolenceRedux",
             dependencies: [
+                "UltraviolenceSupport"
+            ]
+        ),
+        .executableTarget(
+            name: "uvreduxcli",
+            dependencies: [
+                "UltraviolenceRedux",
+                "UltraviolenceSupport"
             ]
         ),
         .testTarget(
