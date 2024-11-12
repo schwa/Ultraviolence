@@ -21,25 +21,25 @@ public extension EnvironmentValues {
     }
 }
 
-struct EnvironmentWritingModifier<Content: RenderPass>: RenderPass, BuiltinRenderPass {
+struct EnvironmentWritingModifier<Content: View>: View, BodylessView {
     var content: Content
     var modify: (inout EnvironmentValues) -> ()
 
-    func _buildNodeTree(_ parent: Node) {
-        modify(&parent.environmentValues)
-        AnyBuiltinRenderPass(content)._buildNodeTree(parent)
+    func _expandNode(_ node: Node) {
+        modify(&node.environmentValues)
+        content.expandNode(node)
     }
 }
 
-public extension RenderPass {
-    func environment<Value>(_ keyPath: WritableKeyPath<EnvironmentValues, Value>, _ value: Value) -> some RenderPass {
+public extension View {
+    func environment<Value>(_ keyPath: WritableKeyPath<EnvironmentValues, Value>, _ value: Value) -> some View {
         EnvironmentWritingModifier(content: self) { environmentValues in
             environmentValues[keyPath: keyPath] = value
         }
     }
 }
 
-public struct EnvironmentReader<Value, Content: RenderPass>: RenderPass, BuiltinRenderPass {
+public struct EnvironmentReader<Value, Content: View>: View, BodylessView {
     var keyPath: KeyPath<EnvironmentValues, Value>
     var content: (Value) -> Content
 
@@ -48,9 +48,9 @@ public struct EnvironmentReader<Value, Content: RenderPass>: RenderPass, Builtin
         self.content = content
     }
 
-    func _buildNodeTree(_ parent: Node) {
-        let value = parent.environmentValues[keyPath: keyPath]
-        AnyBuiltinRenderPass(content(value))._buildNodeTree(parent)
+    func _expandNode(_ node: Node) {
+        let value = node.environmentValues[keyPath: keyPath]
+        content(value).expandNode(node)
     }
 }
 
