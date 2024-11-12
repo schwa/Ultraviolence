@@ -14,7 +14,7 @@ struct Button: RenderPass, BuiltinRenderPass {
         self.action = action
     }
 
-    func _buildNodeTree(_ node: Node) {
+    func _buildNodeTree(_ parent: Node) {
         // todo create a UIButton
     }
 }
@@ -407,7 +407,7 @@ struct NotSwiftUIStateTests {
         struct Example2: RenderPass, BuiltinRenderPass {
             typealias Body = Never
             var value: String
-            func _buildNodeTree(_ node: Node) {
+            func _buildNodeTree(_ parent: Node) {
             }
         }
 
@@ -435,7 +435,7 @@ struct NotSwiftUIStateTests {
         struct Example3: RenderPass, BuiltinRenderPass {
             typealias Body = Never
             var value: String
-            func _buildNodeTree(_ node: Node) {
+            func _buildNodeTree(_ parent: Node) {
             }
         }
 

@@ -7,7 +7,7 @@ public struct EmptyRenderPass: RenderPass {
 }
 
 extension EmptyRenderPass: BuiltinRenderPass {
-    func _buildNodeTree(_ node: Node) {
+    func _buildNodeTree(_ parent: Node) {
         // This line intentionally left blank.
     }
 }

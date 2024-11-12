@@ -25,9 +25,9 @@ struct EnvironmentWritingModifier<Content: RenderPass>: RenderPass, BuiltinRende
     var content: Content
     var modify: (inout EnvironmentValues) -> ()
 
-    func _buildNodeTree(_ node: Node) {
-        modify(&node.environmentValues)
-        AnyBuiltinRenderPass(content)._buildNodeTree(node)
+    func _buildNodeTree(_ parent: Node) {
+        modify(&parent.environmentValues)
+        AnyBuiltinRenderPass(content)._buildNodeTree(parent)
     }
 }
 
@@ -48,9 +48,9 @@ public struct EnvironmentReader<Value, Content: RenderPass>: RenderPass, Builtin
         self.content = content
     }
 
-    func _buildNodeTree(_ node: Node) {
-        let value = node.environmentValues[keyPath: keyPath]
-        AnyBuiltinRenderPass(content(value))._buildNodeTree(node)
+    func _buildNodeTree(_ parent: Node) {
+        let value = parent.environmentValues[keyPath: keyPath]
+        AnyBuiltinRenderPass(content(value))._buildNodeTree(parent)
     }
 }
 

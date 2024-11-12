@@ -9,14 +9,14 @@ public struct TuplePass <each T: RenderPass>: RenderPass {
 }
 
 extension TuplePass: BuiltinRenderPass {
-    func _buildNodeTree(_ node: Node) {
+    func _buildNodeTree(_ parent: Node) {
         var idx = 0
         for child in repeat (each children) {
             let child = AnyBuiltinRenderPass(child)
-            if node.children.count <= idx {
-                node.children.append(Node(graph: node.graph))
+            if parent.children.count <= idx {
+                parent.children.append(Node(graph: parent.graph))
             }
-            child._buildNodeTree(node.children[idx])
+            child._buildNodeTree(parent.children[idx])
             idx += 1
         }
     }
