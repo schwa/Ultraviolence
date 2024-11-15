@@ -1,4 +1,4 @@
-public struct Button: View, BodylessView {
+public struct Button: RenderPass, BodylessRenderPass {
     public typealias Body = Never
 
     public private(set) var title: String

@@ -2,6 +2,7 @@ import CoreGraphics
 import UltraviolenceRedux
 import UltraviolenceSupport
 import simd
+import Metal
 
 @main
 struct UVReduxCLI {
@@ -12,7 +13,7 @@ struct UVReduxCLI {
         using namespace metal;
 
         struct VertexIn {
-            float3 position [[attribute(0)]];
+            float2 position [[attribute(0)]];
         };
 
         struct VertexOut {
@@ -23,7 +24,7 @@ struct UVReduxCLI {
             const VertexIn in [[stage_in]]
         ) {
             VertexOut out;
-            out.position = float4(in.position, 1.0);
+            out.position = float4(in.position, 0.0, 1.0);
             return out;
         }
 
@@ -37,6 +38,12 @@ struct UVReduxCLI {
 
         let vertexShader = try VertexShader(source: source)
         let fragmentShader = try FragmentShader(source: source)
+        // TODO: For basic use cases we can compute the MTLVertexDescriptor from the vertex shader function.
+        let vertexDescriptor = MTLVertexDescriptor()
+        vertexDescriptor.attributes[0].format = .float2
+        vertexDescriptor.attributes[0].bufferIndex = 0
+        vertexDescriptor.attributes[0].offset = 0
+        vertexDescriptor.layouts[0].stride = MemoryLayout<SIMD2<Float>>.size
 
         let renderPass = Render {
             RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
@@ -45,6 +52,7 @@ struct UVReduxCLI {
                     encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
                 }
             }
+            .environment(\.vertexDescriptor, vertexDescriptor)
         }
         let offscreenRenderer = try OffscreenRenderer(size: CGSize(width: 1_600, height: 1_200), content: renderPass)
         let image = try offscreenRenderer.render().cgImage

@@ -56,43 +56,27 @@ public struct OffscreenRenderer<Content> where Content: RenderPass {
         let renderPassDescriptor = MTLRenderPassDescriptor()
         renderPassDescriptor.colorAttachments[0].texture = colorTexture
         renderPassDescriptor.colorAttachments[0].loadAction = .clear
-        renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColor(
-            red: 0, green: 0, blue: 0, alpha: 1)
+        renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColor(red: 0, green: 0, blue: 0, alpha: 1)
         renderPassDescriptor.colorAttachments[0].storeAction = .store
         renderPassDescriptor.depthAttachment.texture = depthTexture
         renderPassDescriptor.depthAttachment.loadAction = .clear
         renderPassDescriptor.depthAttachment.clearDepth = 1
-        renderPassDescriptor.depthAttachment.storeAction = .store
+        renderPassDescriptor.depthAttachment.storeAction = .dontCare
 
-
-
-
-        let root = content.environment(
-            \.renderPassDescriptor, renderPassDescriptor)
-//        print(content)
-//        print(root)
+        let root = content
+            .environment(\.renderPassDescriptor, renderPassDescriptor)
+            .environment(\.device, device)
+            .environment(\.commandQueue, device.makeCommandQueue()!)
 
         let graph = Graph(content: root)
-        graph.rebuildIfNeeded()
-        graph.dump()
 
-        graph.root.visit { node in
-            node.renderPass?._setup(node)
+        graph.visit { depth, node in
+            if let renderPass = node.renderPass as? BodylessRenderPass {
+                renderPass._setup(node)
+            }
         }
 
-        //        var visitor = Visitor(device: device)
-        //
-        //            visitor.insert(.renderPassDescriptor(renderPassDescriptor))
-        //
-        //            return try device.withCommandQueue(label: "􀐛OffscreenRenderer.commandQueue") { commandQueue in
-        //                try commandQueue.withCommandBuffer(completion: .commitAndWaitUntilCompleted, label: "􀐛OffscreenRenderer.commandBuffer", debugGroup: "􀯕OffscreenRenderer.render()") { commandBuffer in
-        //                    visitor.insert(.commandBuffer(commandBuffer))
-        //                    try content.visit(visitor: &visitor)
-        //                }
-        //                return .init(texture: colorTexture)
-        //            }
-
-        fatalError()
+        fatalError("Not implemented.")
     }
 }
 
@@ -118,26 +102,43 @@ extension OffscreenRenderer.Rendering {
     }
 }
 
-extension EnvironmentValues {
-    @Entry
-    var renderPassDescriptor: MTLRenderPassDescriptor?
-}
-
-struct EnvironmentDumper: RenderPass, BuiltinRenderPass {
+struct EnvironmentDumper: RenderPass, BodylessRenderPass {
     @Environment(\.self)
     var environment
 
-    func _buildNodeTree(_ parent: Node) {
+    func _expandNode(_ node: Node) {
         print(environment)
     }
+}
 
+extension Graph {
+    @MainActor
+    func visit(visitor: (Int, Node) throws -> Void) rethrows {
+        let saved = Graph.current
+        Graph.current = self
+        defer {
+            Graph.current = saved
+        }
+
+        root.rebuildIfNeeded()
+
+        assert(activeNodeStack.isEmpty)
+
+        try root.visit { depth, node in
+            activeNodeStack.append(node)
+            defer {
+                activeNodeStack.removeLast()
+            }
+            try visitor(depth, node)
+        }
+    }
 }
 
 extension Node {
-    func visit(visitor: (Node) throws -> Void) rethrows {
-        try visitor(self)
+    func visit(depth: Int = 0, visitor: (Int, Node) throws -> Void) rethrows {
+        try visitor(depth, self)
         try children.forEach { child in
-            try child.visit(visitor: visitor)
+            try child.visit(depth: depth + 1, visitor: visitor)
         }
     }
 }

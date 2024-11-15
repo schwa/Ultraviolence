@@ -12,7 +12,8 @@ public let package = Package(
     products: [
         .library(name: "Ultraviolence", targets: ["Ultraviolence"]),
         .library(name: "UltraviolenceExamples", targets: ["UltraviolenceExamples"]),
-        .library(name: "UltraviolenceUI", targets: ["UltraviolenceUI"])
+        .library(name: "UltraviolenceUI", targets: ["UltraviolenceUI"]),
+        .library(name: "UltraviolenceRedux", targets: ["UltraviolenceRedux"]),
     ],
     dependencies: [
         .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.0-latest")

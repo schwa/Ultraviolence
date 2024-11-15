@@ -1,21 +1,22 @@
 import Combine
-@testable import NotSwiftUI
+@testable import UltraviolenceRedux
+@testable import UltraviolenceSupport
 import Testing
 
 final class Model: ObservableObject {
     @Published var counter: Int = 0
 }
 
-extension View {
-    func debug(_ f: () -> ()) -> some View {
+extension RenderPass {
+    func debug(_ f: () -> ()) -> some RenderPass {
         f()
         return self
     }
 }
 
-struct ContentView: View {
+struct ContentRenderPass: RenderPass {
     @ObservedObject var model = Model()
-    var body: some View {
+    var body: some RenderPass {
         Button("\(model.counter)") {
             model.counter += 1
         }
@@ -29,7 +30,7 @@ var nestedModel = Model()
 var nestedBodyCount = 0
 
 @MainActor
-var contentViewBodyCount = 0
+var contentRenderPassBodyCount = 0
 
 @MainActor
 var sampleBodyCount = 0
@@ -39,7 +40,7 @@ var sampleBodyCount = 0
 struct NotSwiftUIStateTests {
     init() {
         nestedBodyCount = 0
-        contentViewBodyCount = 0
+        contentRenderPassBodyCount = 0
         nestedModel.counter = 0
         sampleBodyCount = 0
     }
@@ -47,11 +48,11 @@ struct NotSwiftUIStateTests {
     // Test that a button can self update its title
     @Test
     func simpleUpdate() {
-        let v = ContentView()
+        let v = ContentRenderPass()
 
         let graph = Graph(content: v)
         var button: Button {
-            try! #require(graph.view(at: [0], type: Button.self))
+            try! #require(graph.renderPass(at: [0], type: Button.self))
         }
         #expect(button.title == "0")
         button.action()
@@ -63,215 +64,215 @@ struct NotSwiftUIStateTests {
 
     @Test
     func constantNested() {
-        @MainActor struct Nested: View {
-            var body: some View {
+        @MainActor struct Nested: RenderPass {
+            var body: some RenderPass {
                 nestedBodyCount += 1
                 return Button("Nested Button") {}
             }
         }
 
-        struct ContentView: View {
+        struct ContentRenderPass: RenderPass {
             @ObservedObject var model = Model()
-            var body: some View {
+            var body: some RenderPass {
                 Button("\(model.counter)") {
                     model.counter += 1
                 }
                 Nested()
                     .debug {
-                        contentViewBodyCount += 1
+                        contentRenderPassBodyCount += 1
                     }
             }
         }
 
-        let v = ContentView()
+        let v = ContentRenderPass()
         let graph = Graph(content: v)
         graph.dump()
-        #expect(contentViewBodyCount == 1)
+        #expect(contentRenderPassBodyCount == 1)
         #expect(nestedBodyCount == 1)
         var button: Button {
-            try! #require(graph.view(at: [0, 0], type: Button.self))
+            try! #require(graph.renderPass(at: [0, 0], type: Button.self))
         }
         button.action()
         graph.rebuildIfNeeded()
-        #expect(contentViewBodyCount == 2)
+        #expect(contentRenderPassBodyCount == 2)
         #expect(nestedBodyCount == 1)
     }
 
     @Test
     func changedNested() {
-        struct Nested: View {
+        struct Nested: RenderPass {
             var counter: Int
-            var body: some View {
+            var body: some RenderPass {
                 nestedBodyCount += 1
                 return Button("Nested Button") {}
             }
         }
 
-        struct ContentView: View {
+        struct ContentRenderPass: RenderPass {
             @ObservedObject var model = Model()
-            var body: some View {
+            var body: some RenderPass {
                 Button("\(model.counter)") {
                     model.counter += 1
                 }
                 Nested(counter: model.counter)
                     .debug {
-                        contentViewBodyCount += 1
+                        contentRenderPassBodyCount += 1
                     }
             }
         }
 
-        let v = ContentView()
+        let v = ContentRenderPass()
         let graph = Graph(content: v)
-        #expect(contentViewBodyCount == 1)
+        #expect(contentRenderPassBodyCount == 1)
         #expect(nestedBodyCount == 1)
         var button: Button {
-            try! #require(graph.view(at: [0, 0], type: Button.self))
+            try! #require(graph.renderPass(at: [0, 0], type: Button.self))
         }
         button.action()
         graph.rebuildIfNeeded()
-        #expect(contentViewBodyCount == 2)
+        #expect(contentRenderPassBodyCount == 2)
         #expect(nestedBodyCount == 2)
     }
 
     @Test
     func unchangedNested() {
-        struct Nested: View {
+        struct Nested: RenderPass {
             var isLarge: Bool = false
-            var body: some View {
+            var body: some RenderPass {
                 nestedBodyCount += 1
                 return Button("Nested Button") {}
             }
         }
 
-        struct ContentView: View {
+        struct ContentRenderPass: RenderPass {
             @ObservedObject var model = Model()
-            var body: some View {
+            var body: some RenderPass {
                 Button("\(model.counter)") {
                     model.counter += 1
                 }
                 Nested(isLarge: model.counter > 10)
                     .debug {
-                        contentViewBodyCount += 1
+                        contentRenderPassBodyCount += 1
                     }
             }
         }
 
-        let v = ContentView()
+        let v = ContentRenderPass()
         let graph = Graph(content: v)
-        #expect(contentViewBodyCount == 1)
+        #expect(contentRenderPassBodyCount == 1)
         #expect(nestedBodyCount == 1)
         var button: Button {
-            try! #require(graph.view(at: [0, 0], type: Button.self))
+            try! #require(graph.renderPass(at: [0, 0], type: Button.self))
         }
         button.action()
         graph.rebuildIfNeeded()
-        #expect(contentViewBodyCount == 2)
+        #expect(contentRenderPassBodyCount == 2)
         #expect(nestedBodyCount == 1)
     }
 
     @Test
     func unchangedNestedWithObservedObject() {
-        struct Nested: View {
+        struct Nested: RenderPass {
             @ObservedObject var model = nestedModel
-            var body: some View {
+            var body: some RenderPass {
                 nestedBodyCount += 1
                 return Button("Nested Button") {}
             }
         }
 
-        struct ContentView: View {
+        struct ContentRenderPass: RenderPass {
             @ObservedObject var model = Model()
-            var body: some View {
+            var body: some RenderPass {
                 Button("\(model.counter)") {
                     model.counter += 1
                 }
                 Nested()
                     .debug {
-                        contentViewBodyCount += 1
+                        contentRenderPassBodyCount += 1
                     }
             }
         }
 
-        let v = ContentView()
+        let v = ContentRenderPass()
         let graph = Graph(content: v)
-        #expect(contentViewBodyCount == 1)
+        #expect(contentRenderPassBodyCount == 1)
         #expect(nestedBodyCount == 1)
         var button: Button {
-            try! #require(graph.view(at: [0, 0], type: Button.self))
+            try! #require(graph.renderPass(at: [0, 0], type: Button.self))
         }
         button.action()
         graph.rebuildIfNeeded()
-        #expect(contentViewBodyCount == 2)
+        #expect(contentRenderPassBodyCount == 2)
         #expect(nestedBodyCount == 1)
     }
 
     @Test
     func binding1() {
-        struct Nested: View {
+        struct Nested: RenderPass {
             @Binding var counter: Int
-            var body: some View {
+            var body: some RenderPass {
                 nestedBodyCount += 1
                 return Button("Nested Button") {}
             }
         }
 
-        struct ContentView: View {
+        struct ContentRenderPass: RenderPass {
             @ObservedObject var model = Model()
-            var body: some View {
+            var body: some RenderPass {
                 Button("\(model.counter)") {
                     model.counter += 1
                 }
                 Nested(counter: $model.counter)
                     .debug {
-                        contentViewBodyCount += 1
+                        contentRenderPassBodyCount += 1
                     }
             }
         }
 
-        let v = ContentView()
+        let v = ContentRenderPass()
         let graph = Graph(content: v)
-        #expect(contentViewBodyCount == 1)
+        #expect(contentRenderPassBodyCount == 1)
         #expect(nestedBodyCount == 1)
         var button: Button {
-            try! #require(graph.view(at: [0, 0], type: Button.self))
+            try! #require(graph.renderPass(at: [0, 0], type: Button.self))
         }
         button.action()
         graph.rebuildIfNeeded()
-        #expect(contentViewBodyCount == 2)
+        #expect(contentRenderPassBodyCount == 2)
         #expect(nestedBodyCount == 2)
     }
 
     @Test
     func binding2() {
-        struct Nested: View {
+        struct Nested: RenderPass {
             @Binding var counter: Int
-            var body: some View {
+            var body: some RenderPass {
                 nestedBodyCount += 1
                 return Button("\(counter)") { counter += 1 }
             }
         }
 
-        struct ContentView: View {
+        struct ContentRenderPass: RenderPass {
             @ObservedObject var model = Model()
-            var body: some View {
+            var body: some RenderPass {
                 Nested(counter: $model.counter)
                     .debug {
-                        contentViewBodyCount += 1
+                        contentRenderPassBodyCount += 1
                     }
             }
         }
 
-        let v = ContentView()
+        let v = ContentRenderPass()
         let graph = Graph(content: v)
         var button: Button {
-            try! #require(graph.view(at: [0, 0], type: Button.self))
+            try! #require(graph.renderPass(at: [0, 0], type: Button.self))
         }
-        #expect(contentViewBodyCount == 1)
+        #expect(contentRenderPassBodyCount == 1)
         #expect(nestedBodyCount == 1)
         #expect(button.title == "0")
         button.action()
         graph.rebuildIfNeeded()
-        #expect(contentViewBodyCount == 2)
+        #expect(contentRenderPassBodyCount == 2)
         #expect(nestedBodyCount == 2)
         #expect(button.title == "1")
     }
@@ -280,18 +281,18 @@ struct NotSwiftUIStateTests {
 
     @Test
     func simpleState() {
-        struct Nested: View {
+        struct Nested: RenderPass {
             @State private var counter = 0
-            var body: some View {
+            var body: some RenderPass {
                 Button("\(counter)") {
                     counter += 1
                 }
             }
         }
 
-        struct Sample: View {
+        struct Sample: RenderPass {
             @State private var counter = 0
-            var body: some View {
+            var body: some RenderPass {
                 Button("\(counter)") {
                     counter += 1
                 }
@@ -302,10 +303,10 @@ struct NotSwiftUIStateTests {
         let s = Sample()
         let graph = Graph(content: s)
         var button: Button {
-            try! #require(graph.view(at: [0, 0], type: Button.self))
+            try! #require(graph.renderPass(at: [0, 0], type: Button.self))
         }
         var nestedButton: Button {
-            try! #require(graph.view(at: [0, 1, 0], type: Button.self))
+            try! #require(graph.renderPass(at: [0, 1, 0], type: Button.self))
         }
         #expect(button.title == "0")
         #expect(nestedButton.title == "0")
@@ -325,18 +326,18 @@ struct NotSwiftUIStateTests {
 
     @Test
     func statePlusBindings() {
-        struct Nested: View {
+        struct Nested: RenderPass {
             @Binding var counter: Int
-            var body: some View {
+            var body: some RenderPass {
                 Button("\(counter)") {
                     counter += 1
                 }
             }
         }
 
-        struct Sample: View {
+        struct Sample: RenderPass {
             @State private var counter = 0
-            var body: some View {
+            var body: some RenderPass {
                 Nested(counter: $counter)
             }
         }
@@ -344,7 +345,7 @@ struct NotSwiftUIStateTests {
         let s = Sample()
         let graph = Graph(content: s)
         var nestedButton: Button {
-            try! #require(graph.view(at: [0, 0], type: Button.self))
+            try! #require(graph.renderPass(at: [0, 0], type: Button.self))
         }
         #expect(nestedButton.title == "0")
 
@@ -355,9 +356,9 @@ struct NotSwiftUIStateTests {
 
     @Test
     func unusedBinding() {
-        struct Nested: View {
+        struct Nested: RenderPass {
             @Binding var counter: Int
-            var body: some View {
+            var body: some RenderPass {
                 Button("") {
                     counter += 1
                 }
@@ -365,9 +366,9 @@ struct NotSwiftUIStateTests {
             }
         }
 
-        struct Sample: View {
+        struct Sample: RenderPass {
             @State private var counter = 0
-            var body: some View {
+            var body: some RenderPass {
                 Button("\(counter)") {}
                 Nested(counter: $counter)
                     .debug { sampleBodyCount += 1 }
@@ -377,7 +378,7 @@ struct NotSwiftUIStateTests {
         let s = Sample()
         let graph = Graph(content: s)
         var nestedButton: Button {
-            try! #require(graph.view(at: [0, 1, 0], type: Button.self))
+            try! #require(graph.renderPass(at: [0, 1, 0], type: Button.self))
         }
         #expect(sampleBodyCount == 1)
         #expect(nestedBodyCount == 1)
@@ -393,14 +394,14 @@ struct NotSwiftUIStateTests {
 
     @Test
     func environment1() throws {
-        struct Example1: View {
-            var body: some View {
+        struct Example1: RenderPass {
+            var body: some RenderPass {
                 EnvironmentReader(keyPath: \.exampleValue) { Example2(value: $0) }
                     .environment(\.exampleValue, "Hello world")
             }
         }
 
-        struct Example2: View, BodylessView {
+        struct Example2: RenderPass, BodylessRenderPass {
             typealias Body = Never
             var value: String
             func _expandNode(_ node: Node) {
@@ -409,27 +410,27 @@ struct NotSwiftUIStateTests {
 
         let s = Example1()
         let graph = Graph(content: s)
-        try #expect(#require(graph.view(at: [0], type: Example2.self)).value == "Hello world")
+        try #expect(#require(graph.renderPass(at: [0], type: Example2.self)).value == "Hello world")
     }
 
     @Test
     func environment2() throws {
-        struct Example1: View {
-            var body: some View {
+        struct Example1: RenderPass {
+            var body: some RenderPass {
                 Example2()
                     .environment(\.exampleValue, "Hello world")
             }
         }
 
-        struct Example2: View {
+        struct Example2: RenderPass {
             @Environment(\.exampleValue)
             var value
-            var body: some View {
+            var body: some RenderPass {
                 Example3(value: value)
             }
         }
 
-        struct Example3: View, BodylessView {
+        struct Example3: RenderPass, BodylessRenderPass {
             typealias Body = Never
             var value: String
             func _expandNode(_ node: Node) {
@@ -438,7 +439,7 @@ struct NotSwiftUIStateTests {
 
         let s = Example1()
         let graph = Graph(content: s)
-        try #expect(#require(graph.view(at: [0, 0], type: Example3.self)).value == "Hello world")
+        try #expect(#require(graph.renderPass(at: [0, 0], type: Example3.self)).value == "Hello world")
     }
 
     // MARK: Optional tests
@@ -451,7 +452,7 @@ struct NotSwiftUIStateTests {
             }
         }
         let graph = Graph(content: stack)
-        #expect(graph.view(at: [0], type: Button.self) == nil)
+        #expect(graph.renderPass(at: [0], type: Button.self) == nil)
     }
 
     @Test func optionalSome() {
@@ -462,7 +463,7 @@ struct NotSwiftUIStateTests {
             }
         }
         let graph = Graph(content: stack)
-        #expect(try! #require(graph.view(at: [0], type: Button.self)).title == "Button")
+        #expect(try! #require(graph.renderPass(at: [0], type: Button.self)).title == "Button")
     }
 }
 
@@ -474,31 +475,31 @@ extension EnvironmentValues {
 }
 
 extension Graph {
-    func view(at path: [Int]) -> (any View)? {
+    func renderPass(at path: [Int]) -> (any RenderPass)? {
         var node: Node = root
         for index in path {
             node = node.children[index]
         }
-        return node.view
+        return node.renderPass
     }
 
-    func view<V>(at path: [Int], type: V.Type) -> V? {
+    func renderPass<V>(at path: [Int], type: V.Type) -> V? {
         var node: Node = root
         for index in path {
             node = node.children[index]
         }
-        return node.view as? V
+        return node.renderPass as? V
     }
 }
 
-struct Stack <Content>: View where Content: View {
+struct Stack <Content>: RenderPass where Content: RenderPass {
     var content: Content
 
-    init(@ViewBuilder content: () -> Content) {
+    init(@RenderPassBuilder content: () -> Content) {
         self.content = content()
     }
 
-    var body: some View {
+    var body: some RenderPass {
         content
     }
 }
