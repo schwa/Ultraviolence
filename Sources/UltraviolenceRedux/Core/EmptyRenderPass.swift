@@ -6,8 +6,8 @@ public struct EmptyRenderPass: RenderPass {
     }
 }
 
-extension EmptyRenderPass: BuiltinRenderPass {
-    func _buildNodeTree(_ parent: Node) {
+extension EmptyRenderPass: BodylessRenderPass {
+    func _expandNode(_ node: Node) {
         // This line intentionally left blank.
     }
 }

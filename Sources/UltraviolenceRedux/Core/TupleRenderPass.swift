@@ -1,4 +1,4 @@
-public struct TuplePass <each T: RenderPass>: RenderPass {
+public struct TupleRenderPass <each T: RenderPass>: RenderPass {
     public typealias Body = Never
 
     private let children: (repeat each T)
@@ -8,16 +8,18 @@ public struct TuplePass <each T: RenderPass>: RenderPass {
     }
 }
 
-extension TuplePass: BuiltinRenderPass {
-    func _buildNodeTree(_ parent: Node) {
-        var idx = 0
+extension TupleRenderPass: BodylessRenderPass {
+    func _expandNode(_ node: Node) {
+        guard let graph = node.graph else {
+            fatalError("Cannot build node tree without a graph.")
+        }
+        var index = 0
         for child in repeat (each children) {
-            let child = AnyBuiltinRenderPass(child)
-            if parent.children.count <= idx {
-                parent.children.append(Node(graph: parent.graph))
+            if node.children.count <= index {
+                node.children.append(graph.makeNode())
             }
-            child._buildNodeTree(parent.children[idx])
-            idx += 1
+            child.expandNode(node.children[index])
+            index += 1
         }
     }
 }

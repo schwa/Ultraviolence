@@ -6,7 +6,7 @@ public class Graph {
     private(set) var root: Node
 
     @MainActor
-    public init<Content>(content: Content) where Content: View {
+    public init<Content>(content: Content) where Content: RenderPass {
         root = Node()
         root.graph = self
         Self.current = self
@@ -21,10 +21,10 @@ public class Graph {
         defer {
             Self.current = saved
         }
-        guard let rootView = root.view else {
-            fatalError("Root view is missing.")
+        guard let rootRenderPass = root.renderPass else {
+            fatalError("Root renderPass is missing.")
         }
-        rootView.expandNode(root)
+        rootRenderPass.expandNode(root)
     }
 
     static let _current = OSAllocatedUnfairLock<Graph?>(uncheckedState: nil)
@@ -46,6 +46,18 @@ public class Graph {
 public extension Graph {
     @MainActor
     func dump() {
-        root.dump()
+        visit { depth, node in
+            let renderPass = node.renderPass
+            let indent = String(repeating: "  ", count: depth)
+            if let renderPass {
+                let typeName = String(describing: type(of: renderPass))
+                print("\(indent)\(typeName)", terminator: "")
+                print(" [Env: \(node.environmentValues.values.count)]", terminator: "")
+                print("")
+            }
+            else {
+                print("\(indent)<no renderPass!>")
+            }
+        }
     }
 }

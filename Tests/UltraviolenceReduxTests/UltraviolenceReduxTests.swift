@@ -3,7 +3,7 @@ import Combine
 import UltraviolenceSupport
 import Testing
 
-struct Button: RenderPass, BuiltinRenderPass {
+struct Button: RenderPass, BodylessRenderPass {
     typealias Body = Never
 
     var title: String
@@ -14,7 +14,7 @@ struct Button: RenderPass, BuiltinRenderPass {
         self.action = action
     }
 
-    func _buildNodeTree(_ parent: Node) {
+    func _expandNode(_ node: Node) {
         // todo create a UIButton
     }
 }
@@ -404,10 +404,10 @@ struct NotSwiftUIStateTests {
             }
         }
 
-        struct Example2: RenderPass, BuiltinRenderPass {
+        struct Example2: RenderPass, BodylessRenderPass {
             typealias Body = Never
             var value: String
-            func _buildNodeTree(_ parent: Node) {
+            func _expandNode(_ node: Node) {
             }
         }
 
@@ -432,10 +432,10 @@ struct NotSwiftUIStateTests {
             }
         }
 
-        struct Example3: RenderPass, BuiltinRenderPass {
+        struct Example3: RenderPass, BodylessRenderPass {
             typealias Body = Never
             var value: String
-            func _buildNodeTree(_ parent: Node) {
+            func _expandNode(_ node: Node) {
             }
         }
 
@@ -451,7 +451,7 @@ extension EnvironmentValues {
 }
 
 extension Graph {
-    func renderPass(at path: [Int]) -> (any BuiltinRenderPass)? {
+    func renderPass(at path: [Int]) -> (any BodylessRenderPass)? {
         var node: Node = root
         for index in path {
             node = node.children[index]

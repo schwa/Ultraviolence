@@ -1,5 +1,5 @@
 public struct EnvironmentValues {
-    private var values: [ObjectIdentifier: Any] = [:]
+    internal var values: [ObjectIdentifier: Any] = [:]
 }
 
 public protocol EnvironmentKey {
@@ -21,7 +21,7 @@ public extension EnvironmentValues {
     }
 }
 
-struct EnvironmentWritingModifier<Content: View>: View, BodylessView {
+struct EnvironmentWritingModifier<Content: RenderPass>: RenderPass, BodylessRenderPass {
     var content: Content
     var modify: (inout EnvironmentValues) -> ()
 
@@ -31,15 +31,15 @@ struct EnvironmentWritingModifier<Content: View>: View, BodylessView {
     }
 }
 
-public extension View {
-    func environment<Value>(_ keyPath: WritableKeyPath<EnvironmentValues, Value>, _ value: Value) -> some View {
+public extension RenderPass {
+    func environment<Value>(_ keyPath: WritableKeyPath<EnvironmentValues, Value>, _ value: Value) -> some RenderPass {
         EnvironmentWritingModifier(content: self) { environmentValues in
             environmentValues[keyPath: keyPath] = value
         }
     }
 }
 
-public struct EnvironmentReader<Value, Content: View>: View, BodylessView {
+public struct EnvironmentReader<Value, Content: RenderPass>: RenderPass, BodylessRenderPass {
     var keyPath: KeyPath<EnvironmentValues, Value>
     var content: (Value) -> Content
 

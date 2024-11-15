@@ -1,7 +1,7 @@
-extension Optional: RenderPass, BuiltinRenderPass where Wrapped: RenderPass {
+extension Optional: RenderPass, BodylessRenderPass where Wrapped: RenderPass {
     public typealias Body = Never
 
-    func _buildNodeTree(_ parent: Node) {
-        map(AnyBuiltinRenderPass.init)?._buildNodeTree(parent)
+    func _expandNode(_ node: Node) {
+        self?.expandNode(node)
     }
 }

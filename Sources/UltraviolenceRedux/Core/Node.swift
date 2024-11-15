@@ -2,8 +2,8 @@ internal final class Node {
     weak var graph: Graph?
     var children: [Node] = []
     var needsRebuild = true
-    var view: (any View)?
-    var previousView: (any View)?
+    var renderPass: (any RenderPass)?
+    var previousRenderPass: (any RenderPass)?
     var stateProperties: [String: Any] = [:]
     var environmentValues = EnvironmentValues()
 
@@ -17,30 +17,10 @@ internal final class Node {
 
     @MainActor
     func rebuildIfNeeded() {
-        view?.expandNode(self)
+        renderPass?.expandNode(self)
     }
 
     func setNeedsRebuild() {
         needsRebuild = true
-    }
-}
-
-// MARK: -
-
-internal extension Node {
-    @MainActor
-    func dump(depth: Int = 0) {
-        let indent = String(repeating: "  ", count: depth)
-
-        if let view {
-            print("\(indent)\(String(describing: view))")
-        }
-        else {
-            print("\(indent)<no view!>")
-        }
-
-        for child in children {
-            child.dump(depth: depth + 1)
-        }
     }
 }
