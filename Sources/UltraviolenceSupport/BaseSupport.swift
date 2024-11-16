@@ -72,7 +72,7 @@ extension SIMD4 {
     }
 }
 
-//public struct SliderField: View {
+// public struct SliderField: View {
 //    private let label: String
 //
 //    @Binding
@@ -105,9 +105,9 @@ extension SIMD4 {
 //                .padding()
 //        }
 //    }
-//}
+// }
 //
-//public extension Color {
+// public extension Color {
 //    func float4() throws -> SIMD4<Float> {
 //        let cgColor = resolve(in: .init()).cgColor
 //        let colorSpace = try CGColorSpace(name: CGColorSpace.linearSRGB).orThrow(.resourceCreationFailure)
@@ -119,9 +119,9 @@ extension SIMD4 {
 //        }
 //        return SIMD4<Float>(components[0], components[1], components[2], components[3])
 //    }
-//}
+// }
 //
-//public struct SIMDColorPicker: View {
+// public struct SIMDColorPicker: View {
 //    @Binding
 //    var value: SIMD4<Float>
 //
@@ -151,7 +151,7 @@ extension SIMD4 {
 //        .frame(maxWidth: 80)
 //        .controlSize(.mini)
 //    }
-//}
+// }
 
 public extension Optional where Wrapped == String {
     var isTrue: Bool {

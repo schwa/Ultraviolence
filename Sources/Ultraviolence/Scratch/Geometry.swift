@@ -124,8 +124,7 @@ extension MTLRenderCommandEncoder {
         if let indices = simpleMesh.indices {
             // TODO: We can only draw with indices if indices is in a MTLBuffer already I think.
             fatalError("Unimplemented.")
-        }
-        else {
+        } else {
             self.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: simpleMesh.positions.count)
         }
     }

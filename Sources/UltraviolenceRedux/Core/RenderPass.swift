@@ -31,7 +31,6 @@ internal extension RenderPass {
         node.renderPass = self
 
         if let parentEnvironmentValues = parent?.environmentValues {
-
             node.environmentValues.values.merge(parentEnvironmentValues.values) { old, _ in old }
         }
 
@@ -50,7 +49,6 @@ internal extension RenderPass {
 
         observeObjects(node)
         restoreStateProperties(node)
-
 
         if node.children.isEmpty {
             node.children = [graph.makeNode()]

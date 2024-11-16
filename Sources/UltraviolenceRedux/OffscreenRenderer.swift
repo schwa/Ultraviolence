@@ -70,7 +70,7 @@ public struct OffscreenRenderer<Content> where Content: RenderPass {
 
         let graph = Graph(content: root)
 
-        graph.visit { depth, node in
+        graph.visit { _, node in
             if let renderPass = node.renderPass as? BodylessRenderPass {
                 renderPass._setup(node)
             }

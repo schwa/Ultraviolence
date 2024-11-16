@@ -16,8 +16,7 @@ public struct RenderView <Content>: NSViewRepresentable where Content: RenderPas
     public func makeCoordinator() -> RenderPassCoordinator<Content> {
         do {
             return try .init(device: device, content: content)
-        }
-        catch {
+        } catch {
             fatalError("Failed to create render pass coordinator: \(error)")
         }
     }
@@ -113,8 +112,7 @@ public class RenderPassCoordinator <Content>: NSObject, MTKViewDelegate where Co
                     try content(currentRenderPassDescriptor).visit(visitor: &visitor)
                 }
             }
-        }
-        catch {
+        } catch {
             logger?.error("Error when drawing: \(error)")
             lastError = error
         }

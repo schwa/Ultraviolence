@@ -19,7 +19,7 @@ public struct VertexShader {
     public init(source: String) throws {
         let device = MTLCreateSystemDefaultDevice()!
         let library = try device.makeLibrary(source: source, options: nil)
-        function = library.functionNames.compactMap { library.makeFunction(name: $0)  }.first(where: { $0.functionType == .vertex })!
+        function = library.functionNames.compactMap { library.makeFunction(name: $0)   }.first { $0.functionType == .vertex }!
     }
 }
 
@@ -29,7 +29,7 @@ public struct FragmentShader {
     public init(source: String) throws {
         let device = MTLCreateSystemDefaultDevice()!
         let library = try device.makeLibrary(source: source, options: nil)
-        function = library.functionNames.compactMap { library.makeFunction(name: $0)  }.first(where: { $0.functionType == .fragment })!
+        function = library.functionNames.compactMap { library.makeFunction(name: $0)   }.first { $0.functionType == .fragment }!
     }
 }
 
@@ -38,7 +38,7 @@ public struct FragmentShader {
 public extension RenderPass {
     func argument(type: MTLFunctionType, name: String, value: Any) -> some RenderPass {
         // TODO: Implement this.
-        return self
+        self
     }
 }
 
@@ -104,6 +104,4 @@ public struct Draw: RenderPass, BodylessRenderPass {
     func _setup(_ node: Node) {
         print("DRAW SETUP")
     }
-
 }
-

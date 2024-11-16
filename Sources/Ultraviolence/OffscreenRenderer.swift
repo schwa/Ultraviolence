@@ -36,34 +36,34 @@ public struct OffscreenRenderer <Content> where Content: RenderPass {
     public func render() throws -> Rendering {
         let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
         var visitor = Visitor(device: device)
-            //            let logStateDescriptor = MTLLogStateDescriptor()
-            //            logStateDescriptor.bufferSize = 1024 * 1024 * 1024
-            //            let logState = try! device.makeLogState(descriptor: logStateDescriptor)
-            //            logState.addLogHandler { _, _, _, message in
-            //                logger?.log("\(message)")
-            //            }
-            //
-            //            visitor.insert(.logState(logState))
+        //            let logStateDescriptor = MTLLogStateDescriptor()
+        //            logStateDescriptor.bufferSize = 1024 * 1024 * 1024
+        //            let logState = try! device.makeLogState(descriptor: logStateDescriptor)
+        //            logState.addLogHandler { _, _, _, message in
+        //                logger?.log("\(message)")
+        //            }
+        //
+        //            visitor.insert(.logState(logState))
 
-            let renderPassDescriptor = MTLRenderPassDescriptor()
-            renderPassDescriptor.colorAttachments[0].texture = colorTexture
-            renderPassDescriptor.colorAttachments[0].loadAction = .clear
-            renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColor(red: 0, green: 0, blue: 0, alpha: 1)
-            renderPassDescriptor.colorAttachments[0].storeAction = .store
-            renderPassDescriptor.depthAttachment.texture = depthTexture
-            renderPassDescriptor.depthAttachment.loadAction = .clear
-            renderPassDescriptor.depthAttachment.clearDepth = 1
-            renderPassDescriptor.depthAttachment.storeAction = .store
+        let renderPassDescriptor = MTLRenderPassDescriptor()
+        renderPassDescriptor.colorAttachments[0].texture = colorTexture
+        renderPassDescriptor.colorAttachments[0].loadAction = .clear
+        renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColor(red: 0, green: 0, blue: 0, alpha: 1)
+        renderPassDescriptor.colorAttachments[0].storeAction = .store
+        renderPassDescriptor.depthAttachment.texture = depthTexture
+        renderPassDescriptor.depthAttachment.loadAction = .clear
+        renderPassDescriptor.depthAttachment.clearDepth = 1
+        renderPassDescriptor.depthAttachment.storeAction = .store
 
-            visitor.insert(.renderPassDescriptor(renderPassDescriptor))
+        visitor.insert(.renderPassDescriptor(renderPassDescriptor))
 
-            return try device.withCommandQueue(label: "􀐛OffscreenRenderer.commandQueue") { commandQueue in
-                try commandQueue.withCommandBuffer(completion: .commitAndWaitUntilCompleted, label: "􀐛OffscreenRenderer.commandBuffer", debugGroup: "􀯕OffscreenRenderer.render()") { commandBuffer in
-                    visitor.insert(.commandBuffer(commandBuffer))
-                    try content.visit(visitor: &visitor)
-                }
-                return .init(texture: colorTexture)
+        return try device.withCommandQueue(label: "􀐛OffscreenRenderer.commandQueue") { commandQueue in
+            try commandQueue.withCommandBuffer(completion: .commitAndWaitUntilCompleted, label: "􀐛OffscreenRenderer.commandBuffer", debugGroup: "􀯕OffscreenRenderer.render()") { commandBuffer in
+                visitor.insert(.commandBuffer(commandBuffer))
+                try content.visit(visitor: &visitor)
             }
+            return .init(texture: colorTexture)
+        }
     }
 }
 
