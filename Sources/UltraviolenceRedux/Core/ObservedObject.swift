@@ -40,7 +40,7 @@ extension ObservedObject: AnyObservedObject {
 // MARK: -
 
 @propertyWrapper
-fileprivate final class ObservedObjectBox<Wrapped: ObservableObject> {
+private final class ObservedObjectBox<Wrapped: ObservableObject> {
     fileprivate let wrappedValue: Wrapped
     private var cancellable: AnyCancellable?
     private weak var node: Node?

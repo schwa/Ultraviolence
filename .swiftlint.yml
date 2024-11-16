@@ -105,7 +105,7 @@ only_rules:
   - legacy_nsgeometry_functions
   - legacy_objc_type
   - legacy_random
-  - let_var_whitespace # 2 violations
+#  - let_var_whitespace # 2 violations
 #  - line_length # 28 violations
   - literal_expression_end_indentation
   - local_doc_comment

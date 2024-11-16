@@ -1,7 +1,7 @@
 public struct Angle: Equatable, Sendable {
     public var radians: Float
 
-    static func radians(_ radians: Float) -> Angle {
+    static func radians(_ radians: Float) -> Self {
         .init(radians: radians)
     }
 

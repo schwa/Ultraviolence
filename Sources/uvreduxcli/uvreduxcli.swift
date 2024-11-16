@@ -1,13 +1,12 @@
 import CoreGraphics
+import Metal
+import simd
 import UltraviolenceRedux
 import UltraviolenceSupport
-import simd
-import Metal
 
 @main
 struct UVReduxCLI {
     static func main() throws {
-
         let source = """
         #include <metal_stdlib>
         using namespace metal;

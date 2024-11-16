@@ -13,7 +13,7 @@ public let package = Package(
         .library(name: "Ultraviolence", targets: ["Ultraviolence"]),
         .library(name: "UltraviolenceExamples", targets: ["UltraviolenceExamples"]),
         .library(name: "UltraviolenceUI", targets: ["UltraviolenceUI"]),
-        .library(name: "UltraviolenceRedux", targets: ["UltraviolenceRedux"]),
+        .library(name: "UltraviolenceRedux", targets: ["UltraviolenceRedux"])
     ],
     dependencies: [
         .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.0-latest")
@@ -92,9 +92,7 @@ public let package = Package(
                 "UltraviolenceSupport",
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax")
             ]
-        ),
-
-
+        )
     ],
     swiftLanguageModes: [.v6]
 )
