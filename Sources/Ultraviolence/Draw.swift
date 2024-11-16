@@ -41,8 +41,7 @@ public struct Draw <Content: RenderPass>: RenderPass where Content: RenderPass {
             }
             if let vertexDescriptor = visitor.vertexDescriptor {
                 renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
-            }
-            else {
+            } else {
                 once(key: #uuidString()) {
                     logger?.info("Falling back to getting vertex descriptor from vertex function. Which does not take into account non-packed layouts.")
                 }

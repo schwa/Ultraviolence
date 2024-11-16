@@ -59,4 +59,3 @@ struct UVReduxCLI {
         print(image)
     }
 }
-
