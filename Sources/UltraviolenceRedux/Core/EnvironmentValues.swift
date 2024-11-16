@@ -23,7 +23,7 @@ public extension EnvironmentValues {
 
 struct EnvironmentWritingModifier<Content: RenderPass>: RenderPass, BodylessRenderPass {
     var content: Content
-    var modify: (inout EnvironmentValues) -> ()
+    var modify: (inout EnvironmentValues) -> Void
 
     func _expandNode(_ node: Node) {
         modify(&node.environmentValues)

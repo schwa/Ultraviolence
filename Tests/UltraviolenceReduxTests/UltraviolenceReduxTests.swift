@@ -1,15 +1,15 @@
 import Combine
+import Testing
 @testable import UltraviolenceRedux
 import UltraviolenceSupport
-import Testing
 
 struct Button: RenderPass, BodylessRenderPass {
     typealias Body = Never
 
     var title: String
-    var action: () -> ()
+    var action: () -> Void
 
-    init(_ title: String, action: @escaping () -> ()) {
+    init(_ title: String, action: @escaping () -> Void) {
         self.title = title
         self.action = action
     }
@@ -24,7 +24,7 @@ final class Model: ObservableObject {
 }
 
 extension RenderPass {
-    func debug(_ f: () -> ()) -> some RenderPass {
+    func debug(_ f: () -> Void) -> some RenderPass {
         f()
         return self
     }
