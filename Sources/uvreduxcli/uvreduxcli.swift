@@ -1,8 +1,10 @@
 import CoreGraphics
+import ImageIO
 import Metal
 import simd
 import UltraviolenceRedux
 import UltraviolenceSupport
+import UniformTypeIdentifiers
 
 @main
 struct UVReduxCLI {
@@ -34,22 +36,16 @@ struct UVReduxCLI {
             return color;
         }
         """
-
-        try BasicRedTriangle.main()
-
         let vertexShader = try VertexShader(source: source)
         let fragmentShader = try FragmentShader(source: source)
-        // TODO: For basic use cases we can compute the MTLVertexDescriptor from the vertex shader function.
         let vertexDescriptor = MTLVertexDescriptor()
         vertexDescriptor.attributes[0].format = .float2
-        vertexDescriptor.attributes[0].bufferIndex = 0
-        vertexDescriptor.attributes[0].offset = 0
-        vertexDescriptor.layouts[0].stride = MemoryLayout<SIMD2<Float>>.size
-
+        vertexDescriptor.layouts[0].stride = MemoryLayout<SIMD2<Float>>.stride
         let renderPass = Render {
             RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                 Draw { encoder in
-                    encoder.setVertexBytes([float3(0, 0.5, 0), float3(-0.5, -0.5, 0), float3(0.5, -0.5, 0)], length: MemoryLayout<float3>.stride * 3, index: 0)
+                    let vertices: [SIMD2<Float>] = [[0, 0.75], [-0.75, -0.75], [0.75, -0.75]]
+                    encoder.setVertexBytes(vertices, length: MemoryLayout<SIMD2<Float>>.stride * 3, index: 0)
                     encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
                 }
             }
@@ -57,6 +53,8 @@ struct UVReduxCLI {
         }
         let offscreenRenderer = try OffscreenRenderer(size: CGSize(width: 1_600, height: 1_200), content: renderPass)
         let image = try offscreenRenderer.render().cgImage
-        print(image)
+        let imageDestination = CGImageDestinationCreateWithURL(URL(fileURLWithPath: "output.png") as CFURL, UTType.png.identifier as CFString, 1, nil)!
+        CGImageDestinationAddImage(imageDestination, image, nil)
+        CGImageDestinationFinalize(imageDestination)
     }
 }

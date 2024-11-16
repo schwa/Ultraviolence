@@ -1,4 +1,5 @@
 @MainActor
+// TODO: This _cannot_ be called a RenderPass. It's a lower-level building block object. We can't call it Node because nodes exist.
 public protocol RenderPass {
     associatedtype Body: RenderPass
     @MainActor @RenderPassBuilder var body: Body { get }
