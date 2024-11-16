@@ -451,14 +451,6 @@ extension EnvironmentValues {
 }
 
 extension Graph {
-    func renderPass(at path: [Int]) -> (any BodylessRenderPass)? {
-        var node: Node = root
-        for index in path {
-            node = node.children[index]
-        }
-        return node.renderPass
-    }
-
     func renderPass<V>(at path: [Int], type: V.Type) -> V {
         var node: Node = root
         for index in path {
