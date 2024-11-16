@@ -35,6 +35,8 @@ struct UVReduxCLI {
         }
         """
 
+        try BasicRedTriangle.main()
+
         let vertexShader = try VertexShader(source: source)
         let fragmentShader = try FragmentShader(source: source)
         // TODO: For basic use cases we can compute the MTLVertexDescriptor from the vertex shader function.
