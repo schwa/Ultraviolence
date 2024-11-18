@@ -19,3 +19,5 @@ jobs:
         run: swift build -v
       - name: Run tests
         run: swift test -v
+      - name: Build Demo
+        run: cd Demo && xcode build
