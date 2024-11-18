@@ -20,4 +20,4 @@ jobs:
       - name: Run tests
         run: swift test -v
       - name: Build Demo
-        run: cd Demo && xcode build
+        run: cd Demo && xcodebuild
