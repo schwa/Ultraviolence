@@ -13,7 +13,7 @@ public struct MixedExampleView: View {
     private var size: CGSize = .zero
 
     @State
-    private var angle: Angle = .zero
+    private var angle: UltraviolenceSupport.Angle = .zero
 
     @State
     private var camera: SIMD3<Float> = [0, 2, 6]
@@ -32,7 +32,7 @@ public struct MixedExampleView: View {
             }
             .onGeometryChange(for: CGSize.self, of: \.size) { size = $0 }
             .onChange(of: timeline.date, initial: true) {
-                angle = Angle(degrees: (timeline.date.timeIntervalSince1970 * 120).truncatingRemainder(dividingBy: 360))
+                angle = UltraviolenceSupport.Angle(degrees: Float((timeline.date.timeIntervalSince1970 * 120).truncatingRemainder(dividingBy: 360)))
             }
         }
     }
