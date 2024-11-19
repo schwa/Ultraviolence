@@ -30,6 +30,7 @@ public extension RenderPass where Body == Never {
 }
 
 extension Never: RenderPass {
+    public typealias Body = Never
 }
 
 // MARK: -

@@ -48,7 +48,8 @@ public struct RenderView <Content>: UIViewRepresentable where Content: RenderPas
     }
 
     public func makeCoordinator() -> RenderPassCoordinator<Content> {
-        .init(device: device, content: content)
+        // swiftlint:disable:next force_try
+        try! .init(device: device, content: content)
     }
 
     public func makeUIView(context: Context) -> MTKView {
