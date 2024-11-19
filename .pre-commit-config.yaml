@@ -23,6 +23,13 @@ repos:
             types: [swift]
             stages: [pre-push]
             pass_filenames: false
+          - id: xcodebuild
+            name: xcodebuild
+            entry: cd Demo && xcodebuild -scheme Ultraviolet
+            language: system
+            types: [swift]
+            stages: [pre-push]
+            pass_filenames: false
     - repo: https://github.com/pre-commit/pre-commit-hooks
       rev: v5.0.0
       hooks:
