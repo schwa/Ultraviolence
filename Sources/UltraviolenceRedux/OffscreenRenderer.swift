@@ -69,12 +69,13 @@ public struct OffscreenRenderer<Content> where Content: RenderPass {
             .environment(\.commandQueue, device.makeCommandQueue()!)
 
         let graph = Graph(content: root)
+        graph.dump()
 
-        graph.visit { _, node in
-            if let renderPass = node.renderPass as? BodylessRenderPass {
-                renderPass._setup(node)
-            }
-        }
+//        graph.visit { _, node in
+//            if let renderPass = node.renderPass as? any BodylessRenderPass {
+//                renderPass._setup(node)
+//            }
+//        }
 
         fatalError("Not implemented.")
     }

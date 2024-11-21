@@ -35,9 +35,11 @@ internal extension RenderPass {
             node.environmentValues.values.merge(parentEnvironmentValues.values) { old, _ in old }
         }
 
-        if let builtInRenderPass = self as? BodylessRenderPass {
+        observeObjects(node)
+        restoreStateProperties(node)
+
+        if let builtInRenderPass = self as? any BodylessRenderPass {
             builtInRenderPass._expandNode(node)
-            return
         }
 
         let shouldRunBody = node.needsRebuild || !equalToPrevious(node)
@@ -48,13 +50,12 @@ internal extension RenderPass {
             return
         }
 
-        observeObjects(node)
-        restoreStateProperties(node)
-
-        if node.children.isEmpty {
-            node.children = [graph.makeNode()]
+        if Body.self != Never.self {
+            if node.children.isEmpty {
+                node.children = [graph.makeNode()]
+            }
+            body.expandNode(node.children[0])
         }
-        body.expandNode(node.children[0])
 
         storeStateProperties(node)
         node.previousRenderPass = self

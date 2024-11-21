@@ -1,5 +1,5 @@
 @MainActor
-internal protocol BodylessRenderPass {
+internal protocol BodylessRenderPass: RenderPass where Body == Never {
     // TODO: This should be renamed. And it should be differently named than Node.buildNodeTree.
     func _expandNode(_ node: Node)
 
