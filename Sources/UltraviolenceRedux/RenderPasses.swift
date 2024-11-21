@@ -70,7 +70,7 @@ public struct RenderPipeline <Content>: RenderPass where Content: RenderPass {
     var fragmentShader: FragmentShader
     var content: Content
 
-    public init(vertexShader: VertexShader, fragmentShader: FragmentShader, content: () -> Content) {
+    public init(vertexShader: VertexShader, fragmentShader: FragmentShader, @RenderPassBuilder content: () -> Content) {
         self.vertexShader = vertexShader
         self.fragmentShader = fragmentShader
         self.content = content()
