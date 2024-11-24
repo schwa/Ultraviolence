@@ -35,24 +35,34 @@ public struct FragmentShader {
 
 // MARK: -
 
-public extension RenderPass {
-    func argument(type: MTLFunctionType, name: String, value: Any) -> some RenderPass {
-        // TODO: Implement this.
-        self
-    }
-}
-
-// MARK: -
-
-public struct Render <Content>: RenderPass where Content: RenderPass {
+// TODO: this should really be called renderpass
+public struct Render <Content>: RenderPass, BodylessRenderPass where Content: RenderPass {
     var content: Content
+
+    @Environment(\.commandBuffer)
+    var commandBuffer
 
     public init(content: () -> Content) {
         self.content = content()
     }
 
-    public var body: some RenderPass {
-        content
+    func _expandNode(_ node: Node) {
+        // TODO: Move into BodylessRenderPass
+        guard let graph = node.graph else {
+            fatalError("Cannot build node tree without a graph.")
+        }
+        if node.children.isEmpty {
+            node.children.append(graph.makeNode())
+        }
+        content.expandNode(node.children[0])
+    }
+
+    func drawEnter() {
+        print("RENDER: drawEnter")
+    }
+
+    func drawExit() {
+        print("RENDER: drawExit")
     }
 }
 
@@ -92,6 +102,9 @@ public struct RenderPipeline <Content>: RenderPass where Content: RenderPass {
 public struct Draw: RenderPass, BodylessRenderPass {
     public typealias Body = Never
 
+    @Environment(\.commandBuffer)
+    var commandBuffer
+
     var encodeGeometry: (MTLRenderCommandEncoder) throws -> Void
 
     public init(encodeGeometry: @escaping (MTLRenderCommandEncoder) throws -> Void) {
@@ -101,7 +114,12 @@ public struct Draw: RenderPass, BodylessRenderPass {
     func _expandNode(_ node: Node) {
     }
 
-    func _setup(_ node: Node) {
-        print("DRAW SETUP")
+    func drawEnter() {
+        print("drawEnter")
+        print(commandBuffer)
+    }
+
+    func drawExit() {
+        print("drawExit")
     }
 }
