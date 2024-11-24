@@ -63,19 +63,35 @@ public struct OffscreenRenderer<Content> where Content: RenderPass {
         renderPassDescriptor.depthAttachment.clearDepth = 1
         renderPassDescriptor.depthAttachment.storeAction = .dontCare
 
+        let commandQueue = device.makeCommandQueue()!
+        let commandBuffer = commandQueue.makeCommandBuffer()!
+
         let root = content
             .environment(\.renderPassDescriptor, renderPassDescriptor)
             .environment(\.device, device)
-            .environment(\.commandQueue, device.makeCommandQueue()!)
+            .environment(\.commandQueue, commandQueue)
+            .environment(\.commandBuffer, commandBuffer)
 
         let graph = Graph(content: root)
-        graph.dump()
+//        graph.dump()
 
-//        graph.visit { _, node in
-//            if let renderPass = node.renderPass as? any BodylessRenderPass {
-//                renderPass._setup(node)
-//            }
-//        }
+        graph.visit { _, node in
+            if let renderPass = node.renderPass as? any BodylessRenderPass {
+                renderPass._setup(node)
+            }
+        }
+        enter: { node in
+            if let body = node.renderPass as? any BodylessRenderPass {
+                body.drawEnter()
+            }
+            print(">")
+        }
+        exit: { node in
+            print("<")
+            if let body = node.renderPass as? any BodylessRenderPass {
+                body.drawExit()
+            }
+        }
 
         fatalError("Not implemented.")
     }
@@ -114,7 +130,7 @@ struct EnvironmentDumper: RenderPass, BodylessRenderPass {
 
 extension Graph {
     @MainActor
-    func visit(visitor: (Int, Node) throws -> Void) rethrows {
+    func visit(_ visitor: (Int, Node) throws -> Void, enter: (Node) -> Void = { _ in }, exit: (Node) -> Void = { _ in }) rethrows {
         let saved = Graph.current
         Graph.current = self
         defer {
@@ -125,21 +141,30 @@ extension Graph {
 
         assert(activeNodeStack.isEmpty)
 
-        try root.visit { depth, node in
+//        { depth, node in
+//            activeNodeStack.append(node)
+//            defer {
+//                activeNodeStack.removeLast()
+//            }
+//            try visitor(depth, node)
+
+        try root.visit(visitor, enter: { node in
             activeNodeStack.append(node)
-            defer {
-                activeNodeStack.removeLast()
-            }
-            try visitor(depth, node)
-        }
+            enter(node)
+        }, exit: { node in
+            exit(node)
+            activeNodeStack.removeLast()
+        })
     }
 }
 
 extension Node {
-    func visit(depth: Int = 0, visitor: (Int, Node) throws -> Void) rethrows {
+    func visit(depth: Int = 0, _ visitor: (Int, Node) throws -> Void, enter: (Node) -> Void = { _ in }, exit: (Node) -> Void = { _ in }) rethrows {
+        enter(self)
         try visitor(depth, self)
         try children.forEach { child in
-            try child.visit(depth: depth + 1, visitor: visitor)
+            try child.visit(depth: depth + 1, visitor, enter: enter, exit: exit)
         }
+        exit(self)
     }
 }

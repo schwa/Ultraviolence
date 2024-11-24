@@ -48,11 +48,6 @@ struct UVReduxCLI {
                     encoder.setVertexBytes(vertices, length: MemoryLayout<SIMD2<Float>>.stride * 3, index: 0)
                     encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
                 }
-                Draw { encoder in
-                    let vertices: [SIMD2<Float>] = [[0, 0.75], [-0.75, -0.75], [0.75, -0.75]]
-                    encoder.setVertexBytes(vertices, length: MemoryLayout<SIMD2<Float>>.stride * 3, index: 0)
-                    encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
-                }
             }
             .environment(\.vertexDescriptor, vertexDescriptor)
         }
