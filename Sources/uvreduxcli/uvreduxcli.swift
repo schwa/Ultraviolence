@@ -9,6 +9,11 @@ import UniformTypeIdentifiers
 @main
 struct UVReduxCLI {
     static func main() throws {
+        try ImprovedRedTriangle.main()
+    }
+
+    @MainActor
+    static func x() throws {
         let source = """
         #include <metal_stdlib>
         using namespace metal;

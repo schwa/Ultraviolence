@@ -4,15 +4,32 @@ import UltraviolenceSupport
 
 // TODO: Rename.
 public struct OffscreenRenderer {
+    public var device: MTLDevice
     public var size: CGSize
     public var colorTexture: MTLTexture
     public var depthTexture: MTLTexture
+    public var renderPassDescriptor: MTLRenderPassDescriptor
+    public var commandQueue: MTLCommandQueue
 
     public init(size: CGSize, colorTexture: MTLTexture, depthTexture: MTLTexture
     ) {
+        self.device = colorTexture.device
         self.size = size
         self.colorTexture = colorTexture
         self.depthTexture = depthTexture
+
+        let renderPassDescriptor = MTLRenderPassDescriptor()
+        renderPassDescriptor.colorAttachments[0].texture = colorTexture
+        renderPassDescriptor.colorAttachments[0].loadAction = .clear
+        renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColor(red: 0, green: 0, blue: 0, alpha: 1)
+        renderPassDescriptor.colorAttachments[0].storeAction = .store
+        renderPassDescriptor.depthAttachment.texture = depthTexture
+        renderPassDescriptor.depthAttachment.loadAction = .clear
+        renderPassDescriptor.depthAttachment.clearDepth = 1
+        renderPassDescriptor.depthAttachment.storeAction = .dontCare
+        self.renderPassDescriptor = renderPassDescriptor
+
+        commandQueue = device.makeCommandQueue()!
     }
 
     // TODO: Most of this belongs on a RenderSession type API. We should be able to render multiple times with the same setup.
@@ -41,23 +58,26 @@ public struct OffscreenRenderer {
     public struct Rendering {
         public var texture: MTLTexture
     }
+}
 
+extension OffscreenRenderer {
+    public func render(_ body: (MTLRenderCommandEncoder) -> Void) throws -> Rendering {
+        let commandBuffer = commandQueue.makeCommandBuffer()!
+        let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
+
+        body(renderEncoder)
+
+        renderEncoder.endEncoding()
+        commandBuffer.commit()
+        commandBuffer.waitUntilCompleted()
+
+        return .init(texture: colorTexture)
+    }
+}
+
+extension OffscreenRenderer {
     @MainActor
     public func render<Content>(_ content: Content) throws -> Rendering where Content: RenderPass {
-        let device = try MTLCreateSystemDefaultDevice().orThrow(
-            .resourceCreationFailure)
-
-        let renderPassDescriptor = MTLRenderPassDescriptor()
-        renderPassDescriptor.colorAttachments[0].texture = colorTexture
-        renderPassDescriptor.colorAttachments[0].loadAction = .clear
-        renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColor(red: 0, green: 0, blue: 0, alpha: 1)
-        renderPassDescriptor.colorAttachments[0].storeAction = .store
-        renderPassDescriptor.depthAttachment.texture = depthTexture
-        renderPassDescriptor.depthAttachment.loadAction = .clear
-        renderPassDescriptor.depthAttachment.clearDepth = 1
-        renderPassDescriptor.depthAttachment.storeAction = .dontCare
-
-        let commandQueue = device.makeCommandQueue()!
         let commandBuffer = commandQueue.makeCommandBuffer()!
 
         let root = content
@@ -87,7 +107,12 @@ public struct OffscreenRenderer {
             }
         }
 
-        fatalError("Not implemented.")
+//        fatalError("Not implemented.")
+
+        commandBuffer.commit()
+        commandBuffer.waitUntilCompleted()
+
+        return .init(texture: colorTexture)
     }
 }
 
