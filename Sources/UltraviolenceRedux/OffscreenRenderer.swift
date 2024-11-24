@@ -3,24 +3,20 @@ import Metal
 import UltraviolenceSupport
 
 // TODO: Rename.
-public struct OffscreenRenderer<Content> where Content: RenderPass {
+public struct OffscreenRenderer {
     public var size: CGSize
-    public var content: Content
     public var colorTexture: MTLTexture
     public var depthTexture: MTLTexture
 
-    public init(
-        size: CGSize, content: Content, colorTexture: MTLTexture,
-        depthTexture: MTLTexture
+    public init(size: CGSize, colorTexture: MTLTexture, depthTexture: MTLTexture
     ) {
         self.size = size
-        self.content = content
         self.colorTexture = colorTexture
         self.depthTexture = depthTexture
     }
 
     // TODO: Most of this belongs on a RenderSession type API. We should be able to render multiple times with the same setup.
-    public init(size: CGSize, content: Content) throws {
+    public init(size: CGSize) throws {
         let device = try MTLCreateSystemDefaultDevice().orThrow(
             .resourceCreationFailure)
         let colorTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(
@@ -39,9 +35,7 @@ public struct OffscreenRenderer<Content> where Content: RenderPass {
             descriptor: depthTextureDescriptor
         ).orThrow(.resourceCreationFailure)
 
-        self.init(
-            size: size, content: content, colorTexture: colorTexture,
-            depthTexture: depthTexture)
+        self.init(size: size, colorTexture: colorTexture, depthTexture: depthTexture)
     }
 
     public struct Rendering {
@@ -49,7 +43,7 @@ public struct OffscreenRenderer<Content> where Content: RenderPass {
     }
 
     @MainActor
-    public func render() throws -> Rendering {
+    public func render<Content>(_ content: Content) throws -> Rendering where Content: RenderPass {
         let device = try MTLCreateSystemDefaultDevice().orThrow(
             .resourceCreationFailure)
 
