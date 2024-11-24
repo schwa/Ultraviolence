@@ -51,8 +51,8 @@ struct UVReduxCLI {
             }
             .environment(\.vertexDescriptor, vertexDescriptor)
         }
-        let offscreenRenderer = try OffscreenRenderer(size: CGSize(width: 1_600, height: 1_200), content: renderPass)
-        let image = try offscreenRenderer.render().cgImage
+        let offscreenRenderer = try OffscreenRenderer(size: CGSize(width: 1_600, height: 1_200))
+        let image = try offscreenRenderer.render(renderPass).cgImage
         let imageDestination = CGImageDestinationCreateWithURL(URL(fileURLWithPath: "output.png") as CFURL, UTType.png.identifier as CFString, 1, nil)!
         CGImageDestinationAddImage(imageDestination, image, nil)
         CGImageDestinationFinalize(imageDestination)
