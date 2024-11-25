@@ -1,3 +1,4 @@
+import AppKit
 import CoreGraphics
 import ImageIO
 import Metal
@@ -8,12 +9,8 @@ import UniformTypeIdentifiers
 
 @main
 struct UVReduxCLI {
-    static func main() throws {
-        try ImprovedRedTriangle.main()
-    }
-
     @MainActor
-    static func x() throws {
+    static func main() throws {
         let source = """
         #include <metal_stdlib>
         using namespace metal;
@@ -43,9 +40,7 @@ struct UVReduxCLI {
         """
         let vertexShader = try VertexShader(source: source)
         let fragmentShader = try FragmentShader(source: source)
-        let vertexDescriptor = MTLVertexDescriptor()
-        vertexDescriptor.attributes[0].format = .float2
-        vertexDescriptor.layouts[0].stride = MemoryLayout<SIMD2<Float>>.stride
+
         let renderPass = Render {
             RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                 Draw { encoder in
@@ -53,13 +48,29 @@ struct UVReduxCLI {
                     encoder.setVertexBytes(vertices, length: MemoryLayout<SIMD2<Float>>.stride * 3, index: 0)
                     encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
                 }
+                .parameter("color", SIMD4<Float>([1, 0, 0, 1]))
             }
-            .environment(\.vertexDescriptor, vertexDescriptor)
         }
-        let offscreenRenderer = try OffscreenRenderer(size: CGSize(width: 1_600, height: 1_200))
-        let image = try offscreenRenderer.render(renderPass).cgImage
-        let imageDestination = CGImageDestinationCreateWithURL(URL(fileURLWithPath: "output.png") as CFURL, UTType.png.identifier as CFString, 1, nil)!
-        CGImageDestinationAddImage(imageDestination, image, nil)
-        CGImageDestinationFinalize(imageDestination)
+
+        try MTLCaptureManager.shared().with {
+            let offscreenRenderer = try OffscreenRenderer(size: CGSize(width: 1_600, height: 1_200))
+            let image = try offscreenRenderer.render(renderPass).cgImage
+            let url = URL(fileURLWithPath: "output.png")
+            let imageDestination = CGImageDestinationCreateWithURL(url as CFURL, UTType.png.identifier as CFString, 1, nil)!
+            CGImageDestinationAddImage(imageDestination, image, nil)
+            CGImageDestinationFinalize(imageDestination)
+            NSWorkspace.shared.activateFileViewerSelecting([url])
+        }
     }
 }
+
+// open var name: String { get }
+// open var attributeIndex: Int { get }
+// open var attributeType: MTLDataType { get }
+// open var isActive: Bool { get }
+//
+// @available(macOS 10.12, *)
+// open var isPatchData: Bool { get }
+//
+// @available(macOS 10.12, *)
+// open var isPatchControlPointData: Bool { get }
