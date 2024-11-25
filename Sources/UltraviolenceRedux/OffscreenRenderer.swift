@@ -78,41 +78,32 @@ extension OffscreenRenderer {
 extension OffscreenRenderer {
     @MainActor
     public func render<Content>(_ content: Content) throws -> Rendering where Content: RenderPass {
-        let commandBuffer = commandQueue.makeCommandBuffer()!
+        try render { encoder in
+            let root = content
+                .environment(\.renderPassDescriptor, renderPassDescriptor)
+                .environment(\.device, device)
+                .environment(\.commandQueue, commandQueue)
+                .environment(\.renderCommandEncoder, encoder)
 
-        let root = content
-            .environment(\.renderPassDescriptor, renderPassDescriptor)
-            .environment(\.device, device)
-            .environment(\.commandQueue, commandQueue)
-            .environment(\.commandBuffer, commandBuffer)
+            let graph = Graph(content: root)
+    //        graph.dump()
 
-        let graph = Graph(content: root)
-//        graph.dump()
-
-        graph.visit { _, node in
-            if let renderPass = node.renderPass as? any BodylessRenderPass {
-                renderPass._setup(node)
+            graph.visit { _, node in
+                if let renderPass = node.renderPass as? any BodylessRenderPass {
+                    renderPass._setup(node)
+                }
+            }
+            enter: { node in
+                if let body = node.renderPass as? any BodylessRenderPass {
+                    body.drawEnter()
+                }
+            }
+            exit: { node in
+                if let body = node.renderPass as? any BodylessRenderPass {
+                    body.drawExit()
+                }
             }
         }
-        enter: { node in
-            if let body = node.renderPass as? any BodylessRenderPass {
-                body.drawEnter()
-            }
-            print(">")
-        }
-        exit: { node in
-            print("<")
-            if let body = node.renderPass as? any BodylessRenderPass {
-                body.drawExit()
-            }
-        }
-
-//        fatalError("Not implemented.")
-
-        commandBuffer.commit()
-        commandBuffer.waitUntilCompleted()
-
-        return .init(texture: colorTexture)
     }
 }
 
@@ -185,5 +176,11 @@ extension Node {
             try child.visit(depth: depth + 1, visitor, enter: enter, exit: exit)
         }
         exit(self)
+    }
+}
+
+extension RenderPass {
+    var shortDescription: String {
+        "\(type(of: self))"
     }
 }
