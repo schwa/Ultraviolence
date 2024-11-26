@@ -63,14 +63,3 @@ struct UVReduxCLI {
         }
     }
 }
-
-// open var name: String { get }
-// open var attributeIndex: Int { get }
-// open var attributeType: MTLDataType { get }
-// open var isActive: Bool { get }
-//
-// @available(macOS 10.12, *)
-// open var isPatchData: Bool { get }
-//
-// @available(macOS 10.12, *)
-// open var isPatchControlPointData: Bool { get }
