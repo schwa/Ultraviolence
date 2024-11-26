@@ -3,12 +3,14 @@ import MetalKit
 internal import os
 import SwiftUI
 
+// swiftlint:disable force_unwrapping
+
 #if os(macOS)
 public struct RenderView <Content>: NSViewRepresentable where Content: RenderPass {
     let device = MTLCreateSystemDefaultDevice()!
-    let content: (MTLRenderPassDescriptor) -> Content
+    let content: Content
 
-    public init(@RenderPassBuilder _ content: @escaping (MTLRenderPassDescriptor) -> Content) {
+    public init(_ content: Content) {
         self.content = content
     }
 
@@ -98,7 +100,7 @@ public class RenderPassCoordinator <Content>: NSObject, MTKViewDelegate where Co
             defer {
                 currentDrawable.present()
             }
-            try commandQueue.withCommandBuffer(label: "􀐛RenderView.Coordinator.commandBuffer", debugGroup: "􀯕RenderView.Coordinator.draw()") { commandBuffer in
+            try commandQueue.withCommandBuffer(completion: .none, label: "􀐛RenderView.Coordinator.commandBuffer", debugGroup: "􀯕RenderView.Coordinator.draw()") { commandBuffer in
                 let renderPassDescriptor = view.currentRenderPassDescriptor!
 
                 let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
