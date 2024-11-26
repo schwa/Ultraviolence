@@ -1,7 +1,6 @@
 import simd
 import SwiftUI
 import UltraviolenceRedux
-// import UltraviolenceExamples
 
 // swiftlint:disable force_try
 
@@ -16,7 +15,10 @@ struct ContentView: View {
 }
 
 struct MyRenderPass: RenderPass {
-    var body: some RenderPass {
+    @UltraviolenceRedux.State var vertexShader: VertexShader
+    @UltraviolenceRedux.State var fragmentShader: FragmentShader
+
+    init() {
         let source = """
         #include <metal_stdlib>
         using namespace metal;
@@ -44,17 +46,19 @@ struct MyRenderPass: RenderPass {
             return color;
         }
         """
-        let vertexShader = try! VertexShader(source: source)
-        let fragmentShader = try! FragmentShader(source: source)
+        vertexShader = try! VertexShader(source: source)
+        fragmentShader = try! FragmentShader(source: source)
+    }
 
-        return Render {
+    var body: some RenderPass {
+        Render {
             RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                 Draw { encoder in
                     let vertices: [SIMD2<Float>] = [[0, 0.75], [-0.75, -0.75], [0.75, -0.75]]
                     encoder.setVertexBytes(vertices, length: MemoryLayout<SIMD2<Float>>.stride * 3, index: 0)
                     encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
                 }
-                .parameter("color", SIMD4<Float>([1, 0, 0, 1]))
+                .parameter("color", Color.blue)
             }
         }
     }

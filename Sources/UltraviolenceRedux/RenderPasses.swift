@@ -181,48 +181,6 @@ public struct Draw: RenderPass, BodylessRenderPass {
     }
 }
 
-public extension RenderPass {
-    func parameter<T>(_ name: String, _ value: T) -> some RenderPass {
-        ParameterRenderPass(name: name, value: value, content: self)
-    }
-}
-
-struct ParameterRenderPass<Content, Value>: BodylessRenderPass where Content: RenderPass {
-    var name: String
-    var value: Value
-    var content: Content
-
-    @Environment(\.renderPipelineReflection)
-    var reflection
-
-    @Environment(\.renderCommandEncoder)
-    var renderCommandEncoder
-
-    func _expandNode(_ node: Node) {
-        // TODO: Move into BodylessRenderPass
-        guard let graph = node.graph else {
-            fatalError("Cannot build node tree without a graph.")
-        }
-        if node.children.isEmpty {
-            node.children.append(graph.makeNode())
-        }
-        content.expandNode(node.children[0])
-    }
-
-    func drawEnter() {
-        print("HERE")
-
-        let index = reflection!.binding(for: name)
-
-        withUnsafeBytes(of: value) { buffer in
-            renderCommandEncoder!.setFragmentBytes(buffer.baseAddress!, length: buffer.count, index: index)
-        }
-    }
-
-    func drawExit() {
-    }
-}
-
 // struct ModifiedRenderPass<Content, Modifier>: RenderPass where Content: RenderPass, Modifier: RenderPassModifier, Modifier.Content == Content {
 //    var content: Content
 //    var modifier: Modifier
