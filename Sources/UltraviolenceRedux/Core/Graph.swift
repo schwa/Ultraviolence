@@ -46,7 +46,8 @@ public class Graph {
 public extension Graph {
     @MainActor
     func dump() {
-        visit { depth, node in
+        // swiftlint:disable:next force_try
+        try! visit { depth, node in
             let renderPass = node.renderPass
             let indent = String(repeating: "  ", count: depth)
             if let renderPass {

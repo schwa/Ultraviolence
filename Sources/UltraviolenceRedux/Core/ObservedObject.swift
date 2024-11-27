@@ -41,7 +41,7 @@ extension ObservedObject: AnyObservedObject {
 
 @propertyWrapper
 private final class ObservedObjectBox<Wrapped: ObservableObject> {
-    fileprivate let wrappedValue: Wrapped
+    private let wrappedValue: Wrapped
     private var cancellable: AnyCancellable?
     private weak var node: Node?
 
@@ -51,7 +51,9 @@ private final class ObservedObjectBox<Wrapped: ObservableObject> {
 
     @MainActor
     func addDependency(_ node: Node) {
-        if node === self.node { return }
+        guard node !== self.node else {
+            return
+        }
         self.node = node
         cancellable = wrappedValue.objectWillChange.sink { _ in
             node.setNeedsRebuild()
@@ -65,15 +67,15 @@ private final class ObservedObjectBox<Wrapped: ObservableObject> {
 public struct ProjectedValue <ObjectType: ObservableObject> {
     private var observedObject: ObservedObject<ObjectType>
 
-    fileprivate init(_ observedObject: ObservedObject<ObjectType>) {
+    internal init(_ observedObject: ObservedObject<ObjectType>) {
         self.observedObject = observedObject
     }
 
     public subscript<Value>(dynamicMember keyPath: ReferenceWritableKeyPath<ObjectType, Value>) -> Binding<Value> {
         Binding(get: {
             observedObject.wrappedValue[keyPath: keyPath]
-        }, set: {
-            observedObject.wrappedValue[keyPath: keyPath] = $0
+        }, set: { newValue in
+            observedObject.wrappedValue[keyPath: keyPath] = newValue
         })
     }
 }

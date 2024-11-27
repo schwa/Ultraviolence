@@ -18,9 +18,9 @@ public struct VertexShader {
     let function: MTLFunction
 
     public init(source: String) throws {
-        let device = MTLCreateSystemDefaultDevice()!
+        let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
         let library = try device.makeLibrary(source: source, options: nil)
-        function = library.functionNames.compactMap { library.makeFunction(name: $0) }.first { $0.functionType == .vertex }!
+        function = try library.functionNames.compactMap { library.makeFunction(name: $0) }.first { $0.functionType == .vertex }.orThrow(.resourceCreationFailure)
     }
 }
 
@@ -28,9 +28,9 @@ public struct FragmentShader {
     let function: MTLFunction
 
     public init(source: String) throws {
-        let device = MTLCreateSystemDefaultDevice()!
+        let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
         let library = try device.makeLibrary(source: source, options: nil)
-        function = library.functionNames.compactMap { library.makeFunction(name: $0) }.first { $0.functionType == .fragment }!
+        function = try library.functionNames.compactMap { library.makeFunction(name: $0) }.first { $0.functionType == .fragment }.orThrow(.resourceCreationFailure)
     }
 }
 
@@ -55,7 +55,7 @@ extension MTLFunction {
                 vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<SIMD2<Float>>.stride
                 totalStride += MemoryLayout<SIMD2<Float>>.stride
             default:
-                fatalError()
+                fatalError("Unimplemented")
             }
         }
         vertexDescriptor.layouts[0].stride = totalStride
@@ -85,12 +85,6 @@ public struct Render <Content>: RenderPass, BodylessRenderPass where Content: Re
             node.children.append(graph.makeNode())
         }
         content.expandNode(node.children[0])
-    }
-
-    func drawEnter() {
-    }
-
-    func drawExit() {
     }
 }
 
@@ -124,7 +118,7 @@ public struct RenderPipeline <Content>: BodylessRenderPass where Content: Render
         self.content = content()
     }
 
-    func _expandNode(_ node: Node) {
+    func _expandNode(_ node: Node) throws {
         // TODO: Move into BodylessRenderPass
         guard let graph = node.graph else {
             fatalError("Cannot build node tree without a graph.")
@@ -134,13 +128,20 @@ public struct RenderPipeline <Content>: BodylessRenderPass where Content: Render
         }
         content.expandNode(node.children[0])
 
+        let renderPassDescriptor = try renderPassDescriptor.orThrow(.missingEnvironment("renderPassDescriptor"))
         let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
         renderPipelineDescriptor.vertexFunction = vertexShader.function
         renderPipelineDescriptor.fragmentFunction = fragmentShader.function
-        renderPipelineDescriptor.vertexDescriptor = vertexDescriptor ?? vertexShader.vertexDescriptor!
-        renderPipelineDescriptor.colorAttachments[0].pixelFormat = renderPassDescriptor!.colorAttachments[0].texture!.pixelFormat
-        renderPipelineDescriptor.depthAttachmentPixelFormat = renderPassDescriptor!.depthAttachment!.texture!.pixelFormat
-        let (renderPipelineState, reflection) = try! device!.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: .bindingInfo)
+        guard let vertexDescriptor = vertexDescriptor ?? vertexShader.vertexDescriptor else {
+            throw UltraviolenceError.undefined
+        }
+        renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
+        let colorAttachment0Texture = try renderPassDescriptor.colorAttachments[0].texture.orThrow(.undefined)
+        renderPipelineDescriptor.colorAttachments[0].pixelFormat = colorAttachment0Texture.pixelFormat
+        let depthAttachmentTexture = try renderPassDescriptor.depthAttachment.orThrow(.undefined).texture.orThrow(.undefined)
+        renderPipelineDescriptor.depthAttachmentPixelFormat = depthAttachmentTexture.pixelFormat
+        let device = try device.orThrow(.missingEnvironment("device"))
+        let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: .bindingInfo)
         self.renderPipelineState = renderPipelineState
         self.reflection = reflection
 
@@ -148,11 +149,10 @@ public struct RenderPipeline <Content>: BodylessRenderPass where Content: Render
         node.environmentValues[keyPath: \.renderPipelineReflection] = reflection
     }
 
-    func drawEnter() {
-        renderCommandEncoder!.setRenderPipelineState(renderPipelineState!)
-    }
-
-    func drawExit() {
+    func drawEnter() throws {
+        let renderCommandEncoder = try renderCommandEncoder.orThrow(.missingEnvironment("renderCommandEncoder"))
+        let renderPipelineState = try renderPipelineState.orThrow(.missingEnvironment("renderPipelineState"))
+        renderCommandEncoder.setRenderPipelineState(renderPipelineState)
     }
 }
 
@@ -197,20 +197,34 @@ public struct Draw: RenderPass, BodylessRenderPass {
 // }
 //
 
+// TODO: Repalce with real MTL enum
+enum ShaderType {
+    case vertex
+    case fragment
+    case tile
+    case object
+    case mesh
+//    case compute
+}
+
 extension MTLRenderPipelineReflection {
-    func binding(for name: String) -> Int {
-        let indices = [vertexBindings.first { $0.name == name }?.index,
-        fragmentBindings.first { $0.name == name }?.index,
-        tileBindings.first { $0.name == name }?.index,
-        objectBindings.first { $0.name == name }?.index,
-        meshBindings.first { $0.name == name }?.index]
-        .compactMap { $0 }
-        if indices.isEmpty {
+    func binding(for name: String) throws -> (ShaderType, Int) {
+        let typeAndindices: [(ShaderType, Int?)] = [
+            (ShaderType.vertex, vertexBindings.first { $0.name == name }?.index),
+            (ShaderType.fragment, fragmentBindings.first { $0.name == name }?.index),
+            (ShaderType.tile, tileBindings.first { $0.name == name }?.index),
+            (ShaderType.object, objectBindings.first { $0.name == name }?.index),
+            (ShaderType.mesh, meshBindings.first { $0.name == name }?.index)
+        ]
+        let matches = typeAndindices.compactMap { type, index in
+            index.map { (type, $0) }
+        }
+        if matches.isEmpty {
             fatalError("No binding for \(name)")
         }
-        else if indices.count > 1 {
+        else if matches.count > 1 {
             fatalError("Ambiguous binding for \(name)")
         }
-        return indices.first!
+        return matches.first!
     }
 }

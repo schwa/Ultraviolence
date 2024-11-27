@@ -38,8 +38,8 @@ internal final class StateBox<Wrapped> {
         self._value = wrappedValue
         self.binding = Binding(get: { [unowned self] in
             self.wrappedValue
-        }, set: { [unowned self] in
-            self.wrappedValue = $0
+        }, set: { [unowned self] newValue in
+            self.wrappedValue = newValue
         })
     }
 

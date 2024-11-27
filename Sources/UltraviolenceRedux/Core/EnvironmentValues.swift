@@ -21,7 +21,7 @@ public extension EnvironmentValues {
     }
 }
 
-struct EnvironmentWritingModifier<Content: RenderPass>: RenderPass, BodylessRenderPass {
+internal struct EnvironmentWritingModifier<Content: RenderPass>: RenderPass, BodylessRenderPass {
     var content: Content
     var modify: (inout EnvironmentValues) -> Void
 
@@ -66,15 +66,13 @@ public struct EnvironmentReader<Value, Content: RenderPass>: RenderPass, Bodyles
 @propertyWrapper
 public struct Environment <Value> {
     public var wrappedValue: Value {
-        get {
-            guard let graph = Graph.current else {
-                fatalError("Environment must be used within a Graph.")
-            }
-            guard let currentNode = graph.activeNodeStack.last else {
-                fatalError("Environment must be used within a Node.")
-            }
-            return currentNode.environmentValues[keyPath: keyPath]
+        guard let graph = Graph.current else {
+            fatalError("Environment must be used within a Graph.")
         }
+        guard let currentNode = graph.activeNodeStack.last else {
+            fatalError("Environment must be used within a Node.")
+        }
+        return currentNode.environmentValues[keyPath: keyPath]
     }
 
     var keyPath: KeyPath<EnvironmentValues, Value>

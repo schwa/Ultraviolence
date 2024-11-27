@@ -1,4 +1,6 @@
 public enum UltraviolenceError: Error {
+    case undefined
+    case generic(String)
     case missingEnvironment(String)
     case missingBinding(String)
     case resourceCreationFailure

@@ -37,11 +37,13 @@ public struct EntryMacro: AccessorMacro, PeerMacro {
         }
         let type = typeAnnotation.type
         let defaultValue = binding.initializer?.value ?? "nil"
-        return ["""
-        private struct __Key_\(raw: name): EnvironmentKey {
-            typealias Value = \(raw: type)
-            static var defaultValue: Value { \(raw: defaultValue) }
-        }
-        """]
+        return [
+            """
+            private struct __Key_\(raw: name): EnvironmentKey {
+                typealias Value = \(raw: type)
+                static var defaultValue: Value { \(raw: defaultValue) }
+            }
+            """
+        ]
     }
 }

@@ -39,7 +39,7 @@ internal extension RenderPass {
         restoreStateProperties(node)
 
         if let builtInRenderPass = self as? any BodylessRenderPass {
-            builtInRenderPass._expandNode(node)
+            try! builtInRenderPass._expandNode(node)
         }
 
         let shouldRunBody = node.needsRebuild || !equalToPrevious(node)
@@ -63,13 +63,21 @@ internal extension RenderPass {
     }
 
     private func equalToPrevious(_ node: Node) -> Bool {
-        guard let previous = node.previousRenderPass as? Self else { return false }
+        guard let previous = node.previousRenderPass as? Self else {
+            return false
+        }
         let lhs = Mirror(reflecting: self).children
         let rhs = Mirror(reflecting: previous).children
         return zip(lhs, rhs).allSatisfy { lhs, rhs in
-            guard lhs.label == rhs.label else { return false }
-            if lhs.value is StateProperty { return true }
-            if !isEqual(lhs.value, rhs.value) { return false }
+            guard lhs.label == rhs.label else {
+                return false
+            }
+            if lhs.value is StateProperty {
+                return true
+            }
+            if !isEqual(lhs.value, rhs.value) {
+                return false
+            }
             return true
         }
     }
@@ -77,7 +85,9 @@ internal extension RenderPass {
     private func observeObjects(_ node: Node) {
         let mirror = Mirror(reflecting: self)
         for child in mirror.children {
-            guard let observedObject = child.value as? AnyObservedObject else { return }
+            guard let observedObject = child.value as? AnyObservedObject else {
+                return
+            }
             observedObject.addDependency(node)
         }
     }

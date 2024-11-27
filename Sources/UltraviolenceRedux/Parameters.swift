@@ -1,7 +1,8 @@
 import struct SwiftUI.Color
 import CoreGraphics
+import UltraviolenceSupport
 
-struct ParameterRenderPass<Content, Value>: BodylessRenderPass where Content: RenderPass {
+internal struct ParameterRenderPass<Content, Value>: BodylessRenderPass where Content: RenderPass {
     var name: String
     var value: Value
     var content: Content
@@ -23,17 +24,21 @@ struct ParameterRenderPass<Content, Value>: BodylessRenderPass where Content: Re
         content.expandNode(node.children[0])
     }
 
-    func drawEnter() {
-        print("HERE")
+    func drawEnter() throws {
+        let (type, index) = try reflection.orThrow(.missingBinding(name)).binding(for: name)
 
-        let index = reflection!.binding(for: name)
-
-        withUnsafeBytes(of: value) { buffer in
-            renderCommandEncoder!.setFragmentBytes(buffer.baseAddress!, length: buffer.count, index: index)
+        try withUnsafeBytes(of: value) { buffer in
+            let renderCommandEncoder = try renderCommandEncoder.orThrow(.missingEnvironment("renderCommandEncoder"))
+            let baseAddress = try buffer.baseAddress.orThrow(.resourceCreationFailure)
+            switch type {
+            case .fragment:
+                renderCommandEncoder.setFragmentBytes(baseAddress, length: buffer.count, index: index)
+            case .vertex:
+                renderCommandEncoder.setVertexBytes(baseAddress, length: buffer.count, index: index)
+            default:
+                fatalError("Unimplemented.")
+            }
         }
-    }
-
-    func drawExit() {
     }
 }
 
@@ -44,8 +49,12 @@ public extension RenderPass {
 
     func parameter(_ name: String, _ value: Color) -> some RenderPass {
         let colorspace = CGColorSpaceCreateDeviceRGB()
-        let color = value.resolve(in: .init()).cgColor.converted(to: colorspace, intent: .defaultIntent, options: nil)!
-        let components = color.components!.map { Float($0) }
+        guard let color = value.resolve(in: .init()).cgColor.converted(to: colorspace, intent: .defaultIntent, options: nil) else {
+            fatalError("Unimplemented.")
+        }
+        guard let components = color.components?.map({ Float($0) }) else {
+            fatalError("Unimplemented.")
+        }
         let value = SIMD4<Float>(components[0], components[1], components[2], components[3])
         return ParameterRenderPass(name: name, value: value, content: self)
     }

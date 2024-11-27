@@ -11,8 +11,7 @@ public struct OffscreenRenderer {
     public var renderPassDescriptor: MTLRenderPassDescriptor
     public var commandQueue: MTLCommandQueue
 
-    public init(size: CGSize, colorTexture: MTLTexture, depthTexture: MTLTexture
-    ) {
+    public init(size: CGSize, colorTexture: MTLTexture, depthTexture: MTLTexture) throws {
         self.device = colorTexture.device
         self.size = size
         self.colorTexture = colorTexture
@@ -29,30 +28,21 @@ public struct OffscreenRenderer {
         renderPassDescriptor.depthAttachment.storeAction = .dontCare
         self.renderPassDescriptor = renderPassDescriptor
 
-        commandQueue = device.makeCommandQueue()!
+        commandQueue = try device.makeCommandQueue().orThrow(.resourceCreationFailure)
     }
 
     // TODO: Most of this belongs on a RenderSession type API. We should be able to render multiple times with the same setup.
     public init(size: CGSize) throws {
-        let device = try MTLCreateSystemDefaultDevice().orThrow(
-            .resourceCreationFailure)
-        let colorTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(
-            pixelFormat: .bgra8Unorm_srgb, width: Int(size.width),
-            height: Int(size.height), mipmapped: false)
+        let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
+        let colorTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm_srgb, width: Int(size.width), height: Int(size.height), mipmapped: false)
         colorTextureDescriptor.usage = [.renderTarget]
-        let colorTexture = try device.makeTexture(
-            descriptor: colorTextureDescriptor
-        ).orThrow(.resourceCreationFailure)
+        let colorTexture = try device.makeTexture(descriptor: colorTextureDescriptor).orThrow(.resourceCreationFailure)
 
-        let depthTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(
-            pixelFormat: .depth32Float, width: Int(size.width),
-            height: Int(size.height), mipmapped: false)
+        let depthTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: Int(size.width), height: Int(size.height), mipmapped: false)
         depthTextureDescriptor.usage = [.renderTarget]
-        let depthTexture = try device.makeTexture(
-            descriptor: depthTextureDescriptor
-        ).orThrow(.resourceCreationFailure)
+        let depthTexture = try device.makeTexture(descriptor: depthTextureDescriptor).orThrow(.resourceCreationFailure)
 
-        self.init(size: size, colorTexture: colorTexture, depthTexture: depthTexture)
+        try self.init(size: size, colorTexture: colorTexture, depthTexture: depthTexture)
     }
 
     public struct Rendering {
@@ -60,24 +50,23 @@ public struct OffscreenRenderer {
     }
 }
 
-extension OffscreenRenderer {
-    public func render(_ body: (MTLRenderCommandEncoder) -> Void) throws -> Rendering {
-        let commandBuffer = commandQueue.makeCommandBuffer()!
-        let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
-
-        body(renderEncoder)
-
-        renderEncoder.endEncoding()
-        commandBuffer.commit()
-        commandBuffer.waitUntilCompleted()
-
+internal extension OffscreenRenderer {
+    func render(_ body: (MTLRenderCommandEncoder) throws -> Void) throws -> Rendering {
+        let commandBuffer = try commandQueue.makeCommandBuffer().orThrow(.resourceCreationFailure)
+        let renderEncoder = try commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor).orThrow(.resourceCreationFailure)
+        defer {
+            renderEncoder.endEncoding()
+            commandBuffer.commit()
+            commandBuffer.waitUntilCompleted()
+        }
+        try body(renderEncoder)
         return .init(texture: colorTexture)
     }
 }
 
-extension OffscreenRenderer {
+public extension OffscreenRenderer {
     @MainActor
-    public func render<Content>(_ content: Content) throws -> Rendering where Content: RenderPass {
+    func render<Content>(_ content: Content) throws -> Rendering where Content: RenderPass {
         try render { encoder in
             let root = content
                 .environment(\.renderPassDescriptor, renderPassDescriptor)
@@ -88,48 +77,39 @@ extension OffscreenRenderer {
             let graph = Graph(content: root)
     //        graph.dump()
 
-            graph.visit { _, node in
+            try graph.visit { _, node in
                 if let renderPass = node.renderPass as? any BodylessRenderPass {
                     renderPass._setup(node)
                 }
             }
             enter: { node in
                 if let body = node.renderPass as? any BodylessRenderPass {
-                    body.drawEnter()
+                    try body.drawEnter()
                 }
             }
             exit: { node in
                 if let body = node.renderPass as? any BodylessRenderPass {
-                    body.drawExit()
+                    try body.drawExit()
                 }
             }
         }
     }
 }
 
-extension OffscreenRenderer.Rendering {
-    public var cgImage: CGImage {
+public extension OffscreenRenderer.Rendering {
+    var cgImage: CGImage {
         get throws {
-            var bitmapInfo = CGBitmapInfo(
-                rawValue: CGImageAlphaInfo.noneSkipFirst.rawValue)
+            var bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.noneSkipFirst.rawValue)
             bitmapInfo.insert(.byteOrder32Little)
-            let context = try CGContext(
-                data: nil, width: texture.width, height: texture.height,
-                bitsPerComponent: 8, bytesPerRow: texture.width * 4,
-                space: CGColorSpaceCreateDeviceRGB(),
-                bitmapInfo: bitmapInfo.rawValue
-            ).orThrow(.resourceCreationFailure)
+            let context = try CGContext(data: nil, width: texture.width, height: texture.height, bitsPerComponent: 8, bytesPerRow: texture.width * 4, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: bitmapInfo.rawValue).orThrow(.resourceCreationFailure)
             let data = try context.data.orThrow(.resourceCreationFailure)
-            texture.getBytes(
-                data, bytesPerRow: texture.width * 4,
-                from: MTLRegionMake2D(0, 0, texture.width, texture.height),
-                mipmapLevel: 0)
+            texture.getBytes(data, bytesPerRow: texture.width * 4, from: MTLRegionMake2D(0, 0, texture.width, texture.height), mipmapLevel: 0)
             return try context.makeImage().orThrow(.resourceCreationFailure)
         }
     }
 }
 
-struct EnvironmentDumper: RenderPass, BodylessRenderPass {
+public struct EnvironmentDumper: RenderPass, BodylessRenderPass {
     @Environment(\.self)
     var environment
 
@@ -140,7 +120,7 @@ struct EnvironmentDumper: RenderPass, BodylessRenderPass {
 
 extension Graph {
     @MainActor
-    func visit(_ visitor: (Int, Node) throws -> Void, enter: (Node) -> Void = { _ in }, exit: (Node) -> Void = { _ in }) rethrows {
+    func visit(_ visitor: (Int, Node) throws -> Void, enter: (Node) throws -> Void = { _ in }, exit: (Node) throws -> Void = { _ in }) rethrows {
         let saved = Graph.current
         Graph.current = self
         defer {
@@ -160,22 +140,22 @@ extension Graph {
 
         try root.visit(visitor, enter: { node in
             activeNodeStack.append(node)
-            enter(node)
+            try enter(node)
         }, exit: { node in
-            exit(node)
+            try exit(node)
             activeNodeStack.removeLast()
         })
     }
 }
 
 extension Node {
-    func visit(depth: Int = 0, _ visitor: (Int, Node) throws -> Void, enter: (Node) -> Void = { _ in }, exit: (Node) -> Void = { _ in }) rethrows {
-        enter(self)
+    func visit(depth: Int = 0, _ visitor: (Int, Node) throws -> Void, enter: (Node) throws -> Void = { _ in }, exit: (Node) throws -> Void = { _ in }) rethrows {
+        try enter(self)
         try visitor(depth, self)
         try children.forEach { child in
             try child.visit(depth: depth + 1, visitor, enter: enter, exit: exit)
         }
-        exit(self)
+        try exit(self)
     }
 }
 

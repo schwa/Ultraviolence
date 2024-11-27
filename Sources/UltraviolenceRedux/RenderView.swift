@@ -114,19 +114,19 @@ public class RenderPassCoordinator <Content>: NSObject, MTKViewDelegate where Co
                 let graph = Graph(content: root)
         //        graph.dump()
 
-                graph.visit { _, node in
+                try graph.visit { _, node in
                     if let renderPass = node.renderPass as? any BodylessRenderPass {
                         renderPass._setup(node)
                     }
                 }
                 enter: { node in
                     if let body = node.renderPass as? any BodylessRenderPass {
-                        body.drawEnter()
+                        try body.drawEnter()
                     }
                 }
                 exit: { node in
                     if let body = node.renderPass as? any BodylessRenderPass {
-                        body.drawExit()
+                        try body.drawExit()
                     }
                 }
                 renderEncoder.endEncoding()

@@ -8,6 +8,7 @@ internal final class Node {
     var environmentValues = EnvironmentValues()
 
     init() {
+        // This line intentionally left blank.
     }
 
     init(graph: Graph?) {
