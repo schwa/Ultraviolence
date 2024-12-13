@@ -1,5 +1,6 @@
 import struct SwiftUI.Color
 import CoreGraphics
+import simd
 import UltraviolenceSupport
 
 internal struct ParameterRenderPass<Content, Value>: BodylessRenderPass where Content: RenderPass {
@@ -44,6 +45,10 @@ internal struct ParameterRenderPass<Content, Value>: BodylessRenderPass where Co
 
 public extension RenderPass {
     func parameter(_ name: String, _ value: SIMD4<Float>) -> some RenderPass {
+        ParameterRenderPass(name: name, value: value, content: self)
+    }
+
+    func parameter(_ name: String, _ value: simd_float4x4) -> some RenderPass {
         ParameterRenderPass(name: name, value: value, content: self)
     }
 

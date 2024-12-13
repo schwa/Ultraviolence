@@ -1,4 +1,6 @@
 import Metal
+import MetalKit
+import ModelIO
 
 public extension MTLVertexDescriptor {
     convenience init(vertexAttributes: [MTLVertexAttribute]) {
@@ -240,5 +242,52 @@ public extension MTLBuffer {
     func labeled(_ label: String) -> Self {
         self.label = label
         return self
+    }
+}
+
+public extension MTLRenderCommandEncoder {
+    func draw(_ mesh: MTKMesh) {
+        for (index, vertexBuffer) in mesh.vertexBuffers.enumerated() {
+            setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: index)
+        }
+
+        for submesh in mesh.submeshes {
+            draw(submesh)
+        }
+    }
+
+    func draw(_ submesh: MTKSubmesh) {
+        drawIndexedPrimitives(type: submesh.primitiveType, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBuffer.buffer, indexBufferOffset: submesh.indexBuffer.offset)
+    }
+}
+
+public extension MTLVertexDescriptor {
+    convenience init(_ vertexDescriptor: MDLVertexDescriptor) {
+        self.init()
+        // swiftlint:disable:next force_cast
+        for (index, attribute) in vertexDescriptor.attributes.map({ $0 as! MDLVertexAttribute }).enumerated() {
+            self.attributes[index].format = MTLVertexFormat(attribute.format)
+            self.attributes[index].offset = attribute.offset
+            self.attributes[index].bufferIndex = attribute.bufferIndex
+        }
+        // swiftlint:disable:next force_cast
+        for (index, layout) in vertexDescriptor.layouts.map({ $0 as! MDLVertexBufferLayout }).enumerated() {
+            self.layouts[index].stride = layout.stride
+        }
+    }
+}
+
+public extension MTLVertexFormat {
+    init(_ dataType: MDLVertexFormat) {
+        switch dataType {
+        case .invalid:
+            self = .invalid
+        case .float3:
+            self = .float3
+        case .float2:
+            self = .float2
+        default:
+            fatalError("Unimplemented: \(dataType)")
+        }
     }
 }

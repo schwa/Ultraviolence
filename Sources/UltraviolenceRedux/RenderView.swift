@@ -77,7 +77,11 @@ public struct RenderView <Content>: UIViewRepresentable where Content: RenderPas
 public class RenderPassCoordinator <Content>: NSObject, MTKViewDelegate where Content: RenderPass {
     var device: MTLDevice
     var commandQueue: MTLCommandQueue
-    var content: Content
+    var content: Content {
+        didSet {
+            print("Content did change")
+        }
+    }
     var lastError: Error?
     var logger: Logger? = Logger()
 
@@ -105,6 +109,7 @@ public class RenderPassCoordinator <Content>: NSObject, MTKViewDelegate where Co
 
                 let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
 
+                // TODO: Move to init().
                 let root = content
                     .environment(\.renderPassDescriptor, renderPassDescriptor)
                     .environment(\.device, device)
@@ -112,7 +117,7 @@ public class RenderPassCoordinator <Content>: NSObject, MTKViewDelegate where Co
                     .environment(\.renderCommandEncoder, renderEncoder)
 
                 let graph = Graph(content: root)
-        //        graph.dump()
+                graph.rebuildIfNeeded()
 
                 try graph.visit { _, node in
                     if let renderPass = node.renderPass as? any BodylessRenderPass {
