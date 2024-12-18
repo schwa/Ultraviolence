@@ -111,17 +111,7 @@ struct MyRenderPass: RenderPass {
     var body: some RenderPass {
         Render {
             RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
-                //                Draw { encoder in
-                //                    let vertices: [SIMD2<Float>] = [[0, -0.75], [-0.75, 0.75], [0.75, 0.75]]
-                //                    encoder.setVertexBytes(vertices, length: MemoryLayout<SIMD2<Float>>.stride * 3, index: 0)
-                //                    encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
-                //                }
-                //                .parameter("color", Color.blue)
-
                 Draw { encoder in
-                    //                    let vertices: [SIMD2<Float>] = [[0, -0.75], [-0.75, 0.75], [0.75, 0.75]]
-                    //                    encoder.setVertexBytes(vertices, length: MemoryLayout<SIMD2<Float>>.stride * 3, index: 0)
-                    //                    encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
                     encoder.draw(mesh)
                 }
                 .parameter("color", Color.green)
@@ -130,8 +120,6 @@ struct MyRenderPass: RenderPass {
                 .parameter("view", view)
                 .parameter("lightDirection", SIMD3<Float>([-1, -2, -1]))
                 .parameter("cameraPosition", cameraPosition)
-
-                //                .parameter("projection", PerspectiveProjection().projectionMatrix(for: [Float(size.width), Float(size.height)]))
             }
             .environment(\.vertexDescriptor, MTLVertexDescriptor(mesh.vertexDescriptor))
         }
