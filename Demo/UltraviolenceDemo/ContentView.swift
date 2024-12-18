@@ -45,7 +45,7 @@ struct MyRenderPass: RenderPass {
     var viewMatrix: simd_float4x4 {
         float4x4(translation: cameraPosition).inverse
     }
-    let cameraPosition: SIMD3<Float> = [1, 2, 6]
+    let cameraPosition: SIMD3<Float> = [0, 2, 6]
 
     init(size: CGSize, modelMatrix: simd_float4x4) throws {
         // TODO: Currently everything will be recompiled.

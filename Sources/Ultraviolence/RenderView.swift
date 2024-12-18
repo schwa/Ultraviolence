@@ -42,9 +42,9 @@ public struct RenderView <Content>: NSViewRepresentable where Content: RenderPas
 #elseif os(iOS)
 public struct RenderView <Content>: UIViewRepresentable where Content: RenderPass {
     let device = MTLCreateSystemDefaultDevice()!
-    let content: (MTLRenderPassDescriptor) -> Content
+    let content: Content
 
-    public init(@RenderPassBuilder _ content: @escaping (MTLRenderPassDescriptor) -> Content) {
+    public init(_ content: Content) {
         self.content = content
     }
 
