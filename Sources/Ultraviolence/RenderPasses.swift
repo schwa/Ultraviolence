@@ -10,6 +10,22 @@ public extension EnvironmentValues {
     @Entry var renderPipelineState: MTLRenderPipelineState?
     @Entry var vertexDescriptor: MTLVertexDescriptor?
     @Entry var renderPipelineReflection: MTLRenderPipelineReflection?
+    @Entry var depthStencilDescriptor: MTLDepthStencilDescriptor?
+    @Entry var depthStencilState: MTLDepthStencilState?
+}
+
+public extension RenderPass {
+    func vertexDescriptor(_ vertexDescriptor: MTLVertexDescriptor) -> some RenderPass {
+        environment(\.vertexDescriptor, vertexDescriptor)
+    }
+
+    func depthStencilDescriptor(_ depthStencilDescriptor: MTLDepthStencilDescriptor) -> some RenderPass {
+        environment(\.depthStencilDescriptor, depthStencilDescriptor)
+    }
+
+    func depthCompare(function: MTLCompareFunction, enabled: Bool) -> some RenderPass {
+        depthStencilDescriptor(.init(depthCompareFunction: function, isDepthWriteEnabled: enabled))
+    }
 }
 
 // MARK: -
@@ -40,6 +56,7 @@ public extension VertexShader {
     }
 }
 
+// TODO: Move.
 extension MTLFunction {
     var vertexDescriptor: MTLVertexDescriptor? {
         guard let vertexAttributes else {
@@ -99,6 +116,12 @@ public struct RenderPipeline <Content>: BodylessRenderPass where Content: Render
     @Environment(\.vertexDescriptor)
     var vertexDescriptor
 
+    @Environment(\.depthStencilDescriptor)
+    var depthStencilDescriptor
+
+    @Environment(\.depthStencilState)
+    var depthStencilState
+
     @Environment(\.renderCommandEncoder)
     var renderCommandEncoder
 
@@ -145,6 +168,11 @@ public struct RenderPipeline <Content>: BodylessRenderPass where Content: Render
         self.renderPipelineState = renderPipelineState
         self.reflection = reflection
 
+        if node.environmentValues[keyPath: \.depthStencilState] == nil, let depthStencilDescriptor {
+            let depthStencilState = try device.makeDepthStencilState(descriptor: depthStencilDescriptor)
+            node.environmentValues[keyPath: \.depthStencilState] = depthStencilState
+        }
+
         node.environmentValues[keyPath: \.renderPipelineState] = renderPipelineState
         node.environmentValues[keyPath: \.renderPipelineReflection] = reflection
     }
@@ -152,6 +180,11 @@ public struct RenderPipeline <Content>: BodylessRenderPass where Content: Render
     func drawEnter() throws {
         let renderCommandEncoder = try renderCommandEncoder.orThrow(.missingEnvironment("renderCommandEncoder"))
         let renderPipelineState = try renderPipelineState.orThrow(.missingEnvironment("renderPipelineState"))
+
+        if let depthStencilState {
+            renderCommandEncoder.setDepthStencilState(depthStencilState)
+        }
+
         renderCommandEncoder.setRenderPipelineState(renderPipelineState)
     }
 }
@@ -172,12 +205,12 @@ public struct Draw: RenderPass, BodylessRenderPass {
     }
 
     func drawEnter() {
-        print("drawEnter")
+//        print("drawEnter")
         try! encodeGeometry(renderCommandEncoder!)
     }
 
     func drawExit() {
-        print("drawExit")
+//        print("drawExit")
     }
 }
 
