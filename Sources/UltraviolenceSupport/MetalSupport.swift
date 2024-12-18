@@ -287,7 +287,32 @@ public extension MTLVertexFormat {
         case .float2:
             self = .float2
         default:
+            // TODO: Flesh this out.
             fatalError("Unimplemented: \(dataType)")
         }
+    }
+}
+
+public extension MTLFunction {
+    var vertexDescriptor: MTLVertexDescriptor? {
+        guard let vertexAttributes else {
+            return nil
+        }
+        let vertexDescriptor = MTLVertexDescriptor()
+
+        var totalStride: Int = 0
+        for attribute in vertexAttributes {
+            switch attribute.attributeType {
+            case .float2:
+                vertexDescriptor.attributes[attribute.attributeIndex].format = .float2
+                vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<SIMD2<Float>>.stride
+                totalStride += MemoryLayout<SIMD2<Float>>.stride
+            default:
+                // TODO: Flesh this out.
+                fatalError("Unimplemented")
+            }
+        }
+        vertexDescriptor.layouts[0].stride = totalStride
+        return vertexDescriptor
     }
 }

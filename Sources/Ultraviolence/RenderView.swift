@@ -114,7 +114,7 @@ public class RenderPassCoordinator <Content>: NSObject, MTKViewDelegate where Co
                     .environment(\.renderPassDescriptor, renderPassDescriptor)
                     .environment(\.device, device)
                     .environment(\.commandQueue, commandQueue)
-                    .environment(\.renderCommandEncoder, renderEncoder)
+                    .environment(\.renderCommandEncoder, renderEncoder) // TODO: Move to Render() render pass.
 
                 let graph = Graph(content: root)
                 graph.rebuildIfNeeded()

@@ -12,6 +12,8 @@ public extension EnvironmentValues {
     @Entry var renderPipelineReflection: MTLRenderPipelineReflection?
     @Entry var depthStencilDescriptor: MTLDepthStencilDescriptor?
     @Entry var depthStencilState: MTLDepthStencilState?
+    @Entry var computeCommandEncoder: MTLComputeCommandEncoder?
+    @Entry var computePipelineState: MTLComputePipelineState?
 }
 
 public extension RenderPass {
@@ -53,30 +55,6 @@ public struct FragmentShader {
 public extension VertexShader {
     var vertexDescriptor: MTLVertexDescriptor? {
         function.vertexDescriptor
-    }
-}
-
-// TODO: Move.
-extension MTLFunction {
-    var vertexDescriptor: MTLVertexDescriptor? {
-        guard let vertexAttributes else {
-            return nil
-        }
-        let vertexDescriptor = MTLVertexDescriptor()
-
-        var totalStride: Int = 0
-        for attribute in vertexAttributes {
-            switch attribute.attributeType {
-            case .float2:
-                vertexDescriptor.attributes[attribute.attributeIndex].format = .float2
-                vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<SIMD2<Float>>.stride
-                totalStride += MemoryLayout<SIMD2<Float>>.stride
-            default:
-                fatalError("Unimplemented")
-            }
-        }
-        vertexDescriptor.layouts[0].stride = totalStride
-        return vertexDescriptor
     }
 }
 

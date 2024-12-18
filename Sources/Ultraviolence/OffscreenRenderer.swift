@@ -72,7 +72,7 @@ public extension OffscreenRenderer {
                 .environment(\.renderPassDescriptor, renderPassDescriptor)
                 .environment(\.device, device)
                 .environment(\.commandQueue, commandQueue)
-                .environment(\.renderCommandEncoder, encoder)
+                .environment(\.renderCommandEncoder, encoder) // TODO: Move to render
 
             let graph = Graph(content: root)
     //        graph.dump()
@@ -130,13 +130,6 @@ extension Graph {
         root.rebuildIfNeeded()
 
         assert(activeNodeStack.isEmpty)
-
-//        { depth, node in
-//            activeNodeStack.append(node)
-//            defer {
-//                activeNodeStack.removeLast()
-//            }
-//            try visitor(depth, node)
 
         try root.visit(visitor, enter: { node in
             activeNodeStack.append(node)
