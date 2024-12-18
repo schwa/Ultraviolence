@@ -4,7 +4,8 @@ import Metal
 import simd
 import UniformTypeIdentifiers
 
-enum BasicRedTriangle {
+// Render a red triangle using Metal _without_ using any external libraries.
+enum TraditionalRedTriangle {
     static func main() throws {
         // Normally you'd keep the shader in a .metal file, but for the purposes of this example. The shader code is written in Metal Shading Language, which is a subset of C++. This code runs directly on the GPU.
         let source = """
