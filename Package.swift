@@ -17,12 +17,20 @@ public let package = Package(
         .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.0-latest")
     ],
     targets: [
-//        .target(
-//            name: "Ultraviolence",
-//            dependencies: [
-//                "UltraviolenceSupport"
-//            ]
-//        ),
+        .target(
+            name: "Ultraviolence",
+            dependencies: [
+                "UltraviolenceSupport"
+            ]
+        ),
+        .executableTarget(
+            name: "uvreduxcli",
+            dependencies: [
+                "Ultraviolence",
+                "UltraviolenceSupport"
+            ]
+        ),
+
 //        .target(
 //            name: "UltraviolenceExamples",
 //            dependencies: [
@@ -39,14 +47,6 @@ public let package = Package(
                 "UltraviolenceMacros"
             ]
         ),
-//        .executableTarget(
-//            name: "uvcli",
-//            dependencies: [
-//                "Ultraviolence",
-//                "UltraviolenceExamples",
-//                "UltraviolenceSupport"
-//            ]
-//        ),
         .macro(
             name: "UltraviolenceMacros",
             dependencies: [
@@ -63,19 +63,6 @@ public let package = Package(
 //            ]
 //        ),
 
-        .target(
-            name: "Ultraviolence",
-            dependencies: [
-                "UltraviolenceSupport"
-            ]
-        ),
-        .executableTarget(
-            name: "uvreduxcli",
-            dependencies: [
-                "Ultraviolence",
-                "UltraviolenceSupport"
-            ]
-        ),
         .testTarget(
             name: "UltraviolenceReduxTests",
             dependencies: [
