@@ -24,7 +24,7 @@ public let package = Package(
             ]
         ),
         .executableTarget(
-            name: "uvreduxcli",
+            name: "uvcli",
             dependencies: [
                 "Ultraviolence",
                 "UltraviolenceSupport"
@@ -54,17 +54,8 @@ public let package = Package(
                 .product(name: "SwiftCompilerPlugin", package: "swift-syntax")
             ]
         ),
-//        .testTarget(
-//            name: "UltraviolenceTests",
-//            dependencies: [
-//                "Ultraviolence",
-//                "UltraviolenceExamples",
-//                "UltraviolenceSupport"
-//            ]
-//        ),
-
         .testTarget(
-            name: "UltraviolenceReduxTests",
+            name: "UltraviolenceTests",
             dependencies: [
                 "Ultraviolence",
                 "UltraviolenceSupport",
