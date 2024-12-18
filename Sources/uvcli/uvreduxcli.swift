@@ -8,7 +8,7 @@ import UltraviolenceSupport
 import UniformTypeIdentifiers
 
 @main
-struct UVReduxCLI {
+struct UVCLI {
     @MainActor
     static func main() throws {
         let source = """
