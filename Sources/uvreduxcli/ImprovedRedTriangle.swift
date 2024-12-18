@@ -60,27 +60,29 @@ enum ImprovedRedTriangle {
 
         let offscreenRenderer = try OffscreenRenderer(size: CGSize(width: 1_600, height: 1_200))
 
-        let rendering = try offscreenRenderer.render { renderEncoder in
-            // Now we have a render encoder we can tell it about our pipeline that we created earlier.
-            renderEncoder.setRenderPipelineState(pipelineState)
-            // Now we need to encode what we're going to be drawing. We're drawing a triangle, so we need to provide the vertices of the triangle.
-            let vertices: [SIMD2<Float>] = [[0, 0.75], [-0.75, -0.75], [0.75, -0.75]]
-            // Note: We're showing how find bindings by name here, but you could hard code the binding indices if you wanted.
-            let verticesIndex = reflection!.vertexBindings.first { $0.name == "vertexBuffer.0" }!.index
-            renderEncoder.setVertexBytes(vertices, length: MemoryLayout<SIMD2<Float>>.stride * 3, index: verticesIndex)
-            // We also need to provide the color of the triangle. This gets passed directly to the fragment shader as a "uniform" value (it's uniform for every pixel we're rendering)
-            var color: SIMD4<Float> = [1, 0, 0, 1]
-            // Again look up the binding index by name. This is the color parameter of the fragment shader shown above.
-            let colorIndex = reflection!.fragmentBindings.first { $0.name == "color" }!.index
-            renderEncoder.setFragmentBytes(&color, length: MemoryLayout<SIMD4<Float>>.stride, index: colorIndex)
-            // And now we encode the actual drawing of the triangle - using the vertex data we set earlier.
-            renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
-            // That's it for our encoding. You'll like have more complex scenes, with multiple draw calls per encoder, and multiple encoders per command buffer.
-        }
+        fatalError("Unimplemented")
 
-        let image = try rendering.cgImage
-        let imageDestination = CGImageDestinationCreateWithURL(URL(fileURLWithPath: "output.png") as CFURL, UTType.png.identifier as CFString, 1, nil)!
-        CGImageDestinationAddImage(imageDestination, image, nil)
-        CGImageDestinationFinalize(imageDestination)
+//        let rendering = try offscreenRenderer.render { renderEncoder in
+//            // Now we have a render encoder we can tell it about our pipeline that we created earlier.
+//            renderEncoder.setRenderPipelineState(pipelineState)
+//            // Now we need to encode what we're going to be drawing. We're drawing a triangle, so we need to provide the vertices of the triangle.
+//            let vertices: [SIMD2<Float>] = [[0, 0.75], [-0.75, -0.75], [0.75, -0.75]]
+//            // Note: We're showing how find bindings by name here, but you could hard code the binding indices if you wanted.
+//            let verticesIndex = reflection!.vertexBindings.first { $0.name == "vertexBuffer.0" }!.index
+//            renderEncoder.setVertexBytes(vertices, length: MemoryLayout<SIMD2<Float>>.stride * 3, index: verticesIndex)
+//            // We also need to provide the color of the triangle. This gets passed directly to the fragment shader as a "uniform" value (it's uniform for every pixel we're rendering)
+//            var color: SIMD4<Float> = [1, 0, 0, 1]
+//            // Again look up the binding index by name. This is the color parameter of the fragment shader shown above.
+//            let colorIndex = reflection!.fragmentBindings.first { $0.name == "color" }!.index
+//            renderEncoder.setFragmentBytes(&color, length: MemoryLayout<SIMD4<Float>>.stride, index: colorIndex)
+//            // And now we encode the actual drawing of the triangle - using the vertex data we set earlier.
+//            renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
+//            // That's it for our encoding. You'll like have more complex scenes, with multiple draw calls per encoder, and multiple encoders per command buffer.
+//        }
+//
+//        let image = try rendering.cgImage
+//        let imageDestination = CGImageDestinationCreateWithURL(URL(fileURLWithPath: "output.png") as CFURL, UTType.png.identifier as CFString, 1, nil)!
+//        CGImageDestinationAddImage(imageDestination, image, nil)
+//        CGImageDestinationFinalize(imageDestination)
     }
 }
