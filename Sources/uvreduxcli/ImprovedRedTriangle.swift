@@ -2,7 +2,7 @@ import CoreGraphics
 import ImageIO
 import Metal
 import simd
-import UltraviolenceRedux
+import Ultraviolence
 import UniformTypeIdentifiers
 
 enum ImprovedRedTriangle {

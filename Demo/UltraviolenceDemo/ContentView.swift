@@ -1,7 +1,7 @@
 import MetalKit
 import simd
 import SwiftUI
-import UltraviolenceRedux
+import Ultraviolence
 import UltraviolenceSupport
 
 // swiftlint:disable force_try
@@ -21,10 +21,10 @@ struct ContentView: View {
 }
 
 struct MyRenderPass: RenderPass {
-    @UltraviolenceRedux.State var vertexShader: VertexShader
-    @UltraviolenceRedux.State var fragmentShader: FragmentShader
-    @UltraviolenceRedux.State var mesh: MTKMesh
-    @UltraviolenceRedux.State var size: CGSize
+    @Ultraviolence.State var vertexShader: VertexShader
+    @Ultraviolence.State var fragmentShader: FragmentShader
+    @Ultraviolence.State var mesh: MTKMesh
+    @Ultraviolence.State var size: CGSize
     let model: simd_float4x4 = .identity
     var view: simd_float4x4 {
         float4x4(translation: cameraPosition).inverse

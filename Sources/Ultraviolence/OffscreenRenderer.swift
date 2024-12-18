@@ -1,49 +1,21 @@
 import CoreGraphics
 import Metal
+import UltraviolenceSupport
 
 // TODO: Rename.
-public struct OffscreenRenderer <Content> where Content: RenderPass {
+public struct OffscreenRenderer {
+    public var device: MTLDevice
     public var size: CGSize
-    public var content: Content
     public var colorTexture: MTLTexture
     public var depthTexture: MTLTexture
+    public var renderPassDescriptor: MTLRenderPassDescriptor
+    public var commandQueue: MTLCommandQueue
 
-    public init(size: CGSize, content: Content, colorTexture: MTLTexture, depthTexture: MTLTexture) {
+    public init(size: CGSize, colorTexture: MTLTexture, depthTexture: MTLTexture) throws {
+        self.device = colorTexture.device
         self.size = size
-        self.content = content
         self.colorTexture = colorTexture
         self.depthTexture = depthTexture
-    }
-
-    // TODO: Most of this belongs on a RenderSession type API. We should be able to render multiple times with the same setup.
-    public init(size: CGSize, content: Content) throws {
-        let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
-        let colorTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm_srgb, width: Int(size.width), height: Int(size.height), mipmapped: false)
-        colorTextureDescriptor.usage = [.renderTarget]
-        let colorTexture = try device.makeTexture(descriptor: colorTextureDescriptor).orThrow(.resourceCreationFailure)
-
-        let depthTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: Int(size.width), height: Int(size.height), mipmapped: false)
-        depthTextureDescriptor.usage = [.renderTarget]
-        let depthTexture = try device.makeTexture(descriptor: depthTextureDescriptor).orThrow(.resourceCreationFailure)
-
-        self.init(size: size, content: content, colorTexture: colorTexture, depthTexture: depthTexture)
-    }
-
-    public struct Rendering {
-        public var texture: MTLTexture
-    }
-
-    public func render() throws -> Rendering {
-        let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
-        var visitor = Visitor(device: device)
-        //            let logStateDescriptor = MTLLogStateDescriptor()
-        //            logStateDescriptor.bufferSize = 1024 * 1024 * 1024
-        //            let logState = try! device.makeLogState(descriptor: logStateDescriptor)
-        //            logState.addLogHandler { _, _, _, message in
-        //                logger?.log("\(message)")
-        //            }
-        //
-        //            visitor.insert(.logState(logState))
 
         let renderPassDescriptor = MTLRenderPassDescriptor()
         renderPassDescriptor.colorAttachments[0].texture = colorTexture
@@ -53,16 +25,73 @@ public struct OffscreenRenderer <Content> where Content: RenderPass {
         renderPassDescriptor.depthAttachment.texture = depthTexture
         renderPassDescriptor.depthAttachment.loadAction = .clear
         renderPassDescriptor.depthAttachment.clearDepth = 1
-        renderPassDescriptor.depthAttachment.storeAction = .store
+        renderPassDescriptor.depthAttachment.storeAction = .dontCare
+        self.renderPassDescriptor = renderPassDescriptor
 
-        visitor.insert(.renderPassDescriptor(renderPassDescriptor))
+        commandQueue = try device.makeCommandQueue().orThrow(.resourceCreationFailure)
+    }
 
-        return try device.withCommandQueue(label: "􀐛OffscreenRenderer.commandQueue") { commandQueue in
-            try commandQueue.withCommandBuffer(completion: .commitAndWaitUntilCompleted, label: "􀐛OffscreenRenderer.commandBuffer", debugGroup: "􀯕OffscreenRenderer.render()") { commandBuffer in
-                visitor.insert(.commandBuffer(commandBuffer))
-                try content.visit(visitor: &visitor)
+    // TODO: Most of this belongs on a RenderSession type API. We should be able to render multiple times with the same setup.
+    public init(size: CGSize) throws {
+        let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
+        let colorTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm_srgb, width: Int(size.width), height: Int(size.height), mipmapped: false)
+        colorTextureDescriptor.usage = [.renderTarget]
+        let colorTexture = try device.makeTexture(descriptor: colorTextureDescriptor).orThrow(.resourceCreationFailure)
+
+        let depthTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: Int(size.width), height: Int(size.height), mipmapped: false)
+        depthTextureDescriptor.usage = [.renderTarget]
+        let depthTexture = try device.makeTexture(descriptor: depthTextureDescriptor).orThrow(.resourceCreationFailure)
+
+        try self.init(size: size, colorTexture: colorTexture, depthTexture: depthTexture)
+    }
+
+    public struct Rendering {
+        public var texture: MTLTexture
+    }
+}
+
+internal extension OffscreenRenderer {
+    func render(_ body: (MTLRenderCommandEncoder) throws -> Void) throws -> Rendering {
+        let commandBuffer = try commandQueue.makeCommandBuffer().orThrow(.resourceCreationFailure)
+        let renderEncoder = try commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor).orThrow(.resourceCreationFailure)
+        defer {
+            renderEncoder.endEncoding()
+            commandBuffer.commit()
+            commandBuffer.waitUntilCompleted()
+        }
+        try body(renderEncoder)
+        return .init(texture: colorTexture)
+    }
+}
+
+public extension OffscreenRenderer {
+    @MainActor
+    func render<Content>(_ content: Content) throws -> Rendering where Content: RenderPass {
+        try render { encoder in
+            let root = content
+                .environment(\.renderPassDescriptor, renderPassDescriptor)
+                .environment(\.device, device)
+                .environment(\.commandQueue, commandQueue)
+                .environment(\.renderCommandEncoder, encoder)
+
+            let graph = Graph(content: root)
+    //        graph.dump()
+
+            try graph.visit { _, node in
+                if let renderPass = node.renderPass as? any BodylessRenderPass {
+                    renderPass._setup(node)
+                }
             }
-            return .init(texture: colorTexture)
+            enter: { node in
+                if let body = node.renderPass as? any BodylessRenderPass {
+                    try body.drawEnter()
+                }
+            }
+            exit: { node in
+                if let body = node.renderPass as? any BodylessRenderPass {
+                    try body.drawExit()
+                }
+            }
         }
     }
 }
@@ -77,5 +106,61 @@ public extension OffscreenRenderer.Rendering {
             texture.getBytes(data, bytesPerRow: texture.width * 4, from: MTLRegionMake2D(0, 0, texture.width, texture.height), mipmapLevel: 0)
             return try context.makeImage().orThrow(.resourceCreationFailure)
         }
+    }
+}
+
+public struct EnvironmentDumper: RenderPass, BodylessRenderPass {
+    @Environment(\.self)
+    var environment
+
+    func _expandNode(_ node: Node) {
+        print(environment)
+    }
+}
+
+extension Graph {
+    @MainActor
+    func visit(_ visitor: (Int, Node) throws -> Void, enter: (Node) throws -> Void = { _ in }, exit: (Node) throws -> Void = { _ in }) rethrows {
+        let saved = Graph.current
+        Graph.current = self
+        defer {
+            Graph.current = saved
+        }
+
+        root.rebuildIfNeeded()
+
+        assert(activeNodeStack.isEmpty)
+
+//        { depth, node in
+//            activeNodeStack.append(node)
+//            defer {
+//                activeNodeStack.removeLast()
+//            }
+//            try visitor(depth, node)
+
+        try root.visit(visitor, enter: { node in
+            activeNodeStack.append(node)
+            try enter(node)
+        }, exit: { node in
+            try exit(node)
+            activeNodeStack.removeLast()
+        })
+    }
+}
+
+extension Node {
+    func visit(depth: Int = 0, _ visitor: (Int, Node) throws -> Void, enter: (Node) throws -> Void = { _ in }, exit: (Node) throws -> Void = { _ in }) rethrows {
+        try enter(self)
+        try visitor(depth, self)
+        try children.forEach { child in
+            try child.visit(depth: depth + 1, visitor, enter: enter, exit: exit)
+        }
+        try exit(self)
+    }
+}
+
+extension RenderPass {
+    var shortDescription: String {
+        "\(type(of: self))"
     }
 }

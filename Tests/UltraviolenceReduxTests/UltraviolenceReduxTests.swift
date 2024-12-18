@@ -1,6 +1,6 @@
 import Combine
 import Testing
-@testable import UltraviolenceRedux
+@testable import Ultraviolence
 import UltraviolenceSupport
 
 struct Button: RenderPass, BodylessRenderPass {

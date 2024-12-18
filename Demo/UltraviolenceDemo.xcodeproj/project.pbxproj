@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4541088A2CF55D560090015D /* UltraviolenceRedux in Frameworks */ = {isa = PBXBuildFile; productRef = 454108892CF55D560090015D /* UltraviolenceRedux */; };
+		459D02CE2D13490D002CDC87 /* Ultraviolence in Frameworks */ = {isa = PBXBuildFile; productRef = 459D02CD2D13490D002CDC87 /* Ultraviolence */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,7 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4541088A2CF55D560090015D /* UltraviolenceRedux in Frameworks */,
+				459D02CE2D13490D002CDC87 /* Ultraviolence in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -79,7 +79,7 @@
 			);
 			name = UltraviolenceDemo;
 			packageProductDependencies = (
-				454108892CF55D560090015D /* UltraviolenceRedux */,
+				459D02CD2D13490D002CDC87 /* Ultraviolence */,
 			);
 			productName = UltraviolenceDemo;
 			productReference = 455C19052CD483FC009A25A6 /* UltraviolenceDemo.app */;
@@ -389,10 +389,10 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		454108892CF55D560090015D /* UltraviolenceRedux */ = {
+		459D02CD2D13490D002CDC87 /* Ultraviolence */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 455C19432CD48474009A25A6 /* XCLocalSwiftPackageReference "../../Ultraviolence" */;
-			productName = UltraviolenceRedux;
+			productName = Ultraviolence;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

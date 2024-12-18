@@ -10,52 +10,51 @@ public let package = Package(
         .macOS(.v15)
     ],
     products: [
-        .library(name: "Ultraviolence", targets: ["Ultraviolence"]),
-        .library(name: "UltraviolenceExamples", targets: ["UltraviolenceExamples"]),
-        .library(name: "UltraviolenceUI", targets: ["UltraviolenceUI"]),
-        .library(name: "UltraviolenceRedux", targets: ["UltraviolenceRedux"])
+        .library(name: "Ultraviolence", targets: ["Ultraviolence"])
+//        .library(name: "UltraviolenceExamples", targets: ["UltraviolenceExamples"]),
+//        .library(name: "UltraviolenceUI", targets: ["UltraviolenceUI"]),
     ],
     dependencies: [
         .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.0-latest")
     ],
     targets: [
-        .target(
-            name: "Ultraviolence",
-            dependencies: [
-                "UltraviolenceSupport"
-            ]
-        ),
-        .target(
-            name: "UltraviolenceExamples",
-            dependencies: [
-                "Ultraviolence",
-                "UltraviolenceSupport"
-            ],
-            resources: [
-                .copy("teapot.obj")
-            ]
-        ),
+//        .target(
+//            name: "Ultraviolence",
+//            dependencies: [
+//                "UltraviolenceSupport"
+//            ]
+//        ),
+//        .target(
+//            name: "UltraviolenceExamples",
+//            dependencies: [
+//                "Ultraviolence",
+//                "UltraviolenceSupport"
+//            ],
+//            resources: [
+//                .copy("teapot.obj")
+//            ]
+//        ),
         .target(
             name: "UltraviolenceSupport",
             dependencies: [
                 "UltraviolenceMacros"
             ]
         ),
-        .target(
-            name: "UltraviolenceUI",
-            dependencies: [
-                "Ultraviolence",
-                "UltraviolenceSupport"
-            ]
-        ),
-        .executableTarget(
-            name: "uvcli",
-            dependencies: [
-                "Ultraviolence",
-                "UltraviolenceExamples",
-                "UltraviolenceSupport"
-            ]
-        ),
+//        .target(
+//            name: "UltraviolenceUI",
+//            dependencies: [
+//                "Ultraviolence",
+//                "UltraviolenceSupport"
+//            ]
+//        ),
+//        .executableTarget(
+//            name: "uvcli",
+//            dependencies: [
+//                "Ultraviolence",
+//                "UltraviolenceExamples",
+//                "UltraviolenceSupport"
+//            ]
+//        ),
         .macro(
             name: "UltraviolenceMacros",
             dependencies: [
@@ -63,17 +62,17 @@ public let package = Package(
                 .product(name: "SwiftCompilerPlugin", package: "swift-syntax")
             ]
         ),
-        .testTarget(
-            name: "UltraviolenceTests",
-            dependencies: [
-                "Ultraviolence",
-                "UltraviolenceExamples",
-                "UltraviolenceSupport"
-            ]
-        ),
+//        .testTarget(
+//            name: "UltraviolenceTests",
+//            dependencies: [
+//                "Ultraviolence",
+//                "UltraviolenceExamples",
+//                "UltraviolenceSupport"
+//            ]
+//        ),
 
         .target(
-            name: "UltraviolenceRedux",
+            name: "Ultraviolence",
             dependencies: [
                 "UltraviolenceSupport"
             ]
@@ -81,14 +80,14 @@ public let package = Package(
         .executableTarget(
             name: "uvreduxcli",
             dependencies: [
-                "UltraviolenceRedux",
+                "Ultraviolence",
                 "UltraviolenceSupport"
             ]
         ),
         .testTarget(
             name: "UltraviolenceReduxTests",
             dependencies: [
-                "UltraviolenceRedux",
+                "Ultraviolence",
                 "UltraviolenceSupport",
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax")
             ]
