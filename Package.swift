@@ -12,7 +12,6 @@ public let package = Package(
     products: [
         .library(name: "Ultraviolence", targets: ["Ultraviolence"])
 //        .library(name: "UltraviolenceExamples", targets: ["UltraviolenceExamples"]),
-//        .library(name: "UltraviolenceUI", targets: ["UltraviolenceUI"]),
     ],
     dependencies: [
         .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.0-latest")
@@ -40,13 +39,6 @@ public let package = Package(
                 "UltraviolenceMacros"
             ]
         ),
-//        .target(
-//            name: "UltraviolenceUI",
-//            dependencies: [
-//                "Ultraviolence",
-//                "UltraviolenceSupport"
-//            ]
-//        ),
 //        .executableTarget(
 //            name: "uvcli",
 //            dependencies: [
