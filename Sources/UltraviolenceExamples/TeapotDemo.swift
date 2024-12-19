@@ -21,7 +21,6 @@ public struct TeapotDemo: RenderPass {
         let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
         let teapotURL = try Bundle.module.url(forResource: "teapot", withExtension: "obj").orThrow(.resourceCreationFailure)
         let mdlAsset = MDLAsset(url: teapotURL, vertexDescriptor: nil, bufferAllocator: MTKMeshBufferAllocator(device: device))
-        // swiftlint:disable:next force_cast
         let mdlMesh = try (mdlAsset.object(at: 0) as? MDLMesh).orThrow(.resourceCreationFailure)
         mesh = try MTKMesh(mesh: mdlMesh, device: device)
         self.modelMatrix = modelMatrix
@@ -33,7 +32,6 @@ public struct TeapotDemo: RenderPass {
         let viewMatrix = cameraMatrix.inverse
         let cameraPosition = cameraMatrix.translation
         Render {
-            // TODO: Size is hardcoded
             // swiftlint:disable:next force_try
             try! LambertianShader(color: [1, 0, 0, 1], size: size, modelMatrix: modelMatrix, viewMatrix: viewMatrix, cameraPosition: cameraPosition) {
                 Draw { encoder in

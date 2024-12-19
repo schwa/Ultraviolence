@@ -146,7 +146,7 @@ only_rules:
   - orphaned_doc_comment
   - overridden_super_call
   - override_in_extension
-  - pattern_matching_keywords
+#  - pattern_matching_keywords
   - period_spacing
   - prefer_key_path
   - prefer_nimble

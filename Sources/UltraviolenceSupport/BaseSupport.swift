@@ -162,14 +162,14 @@ public extension Optional where Wrapped == String {
     }
 }
 
-func isPOD<T>(_ type: T.Type) -> Bool {
+public func isPOD<T>(_ type: T.Type) -> Bool {
     _isPOD(type)
 }
 
-func isPOD<T>(_ value: T) -> Bool {
+public func isPOD<T>(_ value: T) -> Bool {
     _isPOD(T.self)
 }
 
-func isPODArray<T>(_ value: [T]) -> Bool {
+public func isPODArray<T>(_ value: [T]) -> Bool {
     _isPOD(T.self)
 }

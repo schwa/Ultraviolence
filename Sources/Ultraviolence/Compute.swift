@@ -140,13 +140,18 @@ public struct ComputeDispatch: RenderPass, BodylessRenderPass {
     }
 
     func _expandNode(_ node: Node) {
+        // This line intentionally left blank.
     }
 
     func drawEnter() {
-        computeCommandEncoder!.setComputePipelineState(computePipelineState!)
-        computeCommandEncoder!.dispatchThreads(threads, threadsPerThreadgroup: threadsPerThreadgroup)
+        guard let computeCommandEncoder, let computePipelineState else {
+            fatalError("No compute command encoder/compute pipeline state found.")
+        }
+        computeCommandEncoder.setComputePipelineState(computePipelineState)
+        computeCommandEncoder.dispatchThreads(threads, threadsPerThreadgroup: threadsPerThreadgroup)
     }
 
     func drawExit() {
+        // This line intentionally left blank.
     }
 }
