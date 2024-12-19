@@ -1,8 +1,8 @@
 import Metal
 import Ultraviolence
 
-@MainActor
 enum ComputeDemo {
+    @MainActor
     static func main() throws {
         let source = """
         #import <metal_stdlib>
