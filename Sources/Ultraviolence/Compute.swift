@@ -42,7 +42,7 @@ public extension Compute {
             let root = content
                 .environment(\.device, device)
                 .environment(\.commandQueue, commandQueue)
-                .environment(\.computeCommandEncoder, encoder) // TODO: Move to render
+                .environment(\.computeCommandEncoder, encoder)
 
             let graph = try Graph(content: root)
             //        graph.dump()

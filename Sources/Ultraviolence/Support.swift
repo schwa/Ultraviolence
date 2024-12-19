@@ -42,7 +42,6 @@ extension Node {
     }
 }
 
-// TODO: Move
 extension RenderPass {
     var shortDescription: String {
         "\(type(of: self))"

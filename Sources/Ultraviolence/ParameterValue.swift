@@ -20,7 +20,7 @@ internal extension MTLRenderCommandEncoder {
         case .texture(let texture):
             setTexture(texture, index: index, functionType: functionType)
         case .buffer(let buffer, let offset):
-            setBuffer(buffer, offset: offset, index: index, functionType: functionType) // TODO: OFFSET
+            setBuffer(buffer, offset: offset, index: index, functionType: functionType)
         case .array(let array):
             setUnsafeBytes(of: array, index: index, functionType: functionType)
         case .value(let value):

@@ -17,7 +17,7 @@ public extension RenderPass where Body == Never {
 
 internal extension RenderPass {
     func expandNode(_ node: Node) throws {
-        // TODO: Refactor this to make expandion of the node tree distinct from handling observable and state properties.
+        // TODO: Refactor this to make expansion of the node tree distinct from handling observable and state properties.
         guard let graph = Graph.current else {
             fatalError("No graph is currently active.")
         }

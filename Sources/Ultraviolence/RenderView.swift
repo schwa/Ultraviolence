@@ -24,12 +24,12 @@ public struct RenderView <Content>: NSViewRepresentable where Content: RenderPas
         let view = MTKView()
         view.device = device
         view.delegate = context.coordinator
-        // TODO: To be honest all of these settings should be configurable.
+        // TODO: All of these settings should be configurable.
         view.clearColor = MTLClearColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)
         view.colorPixelFormat = .bgra8Unorm_srgb
         view.depthStencilPixelFormat = .depth32Float
-        view.depthStencilAttachmentTextureUsage = [.shaderRead, .renderTarget]
-        view.framebufferOnly = false
+        view.depthStencilAttachmentTextureUsage = [.shaderRead, .renderTarget] // TODO: Assumed
+        view.framebufferOnly = false  // TODO: Assumed
         return view
     }
 
@@ -55,11 +55,11 @@ public struct RenderView <Content>: UIViewRepresentable where Content: RenderPas
         let view = MTKView()
         view.device = device
         view.delegate = context.coordinator
-        // TODO: To be honest all of these settings should be configurable.
+        // TODO: All of these settings should be configurable.
         view.clearColor = MTLClearColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)
         view.colorPixelFormat = .bgra8Unorm_srgb
         view.depthStencilPixelFormat = .depth32Float
-        view.depthStencilAttachmentTextureUsage = [.shaderRead, .renderTarget] // TODO
+        view.depthStencilAttachmentTextureUsage = [.shaderRead, .renderTarget] // TODO: Assumed
         view.framebufferOnly = false
         return view
     }
