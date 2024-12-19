@@ -1,3 +1,5 @@
+// swiftlint:disable file_length
+
 import Metal
 import MetalKit
 import ModelIO

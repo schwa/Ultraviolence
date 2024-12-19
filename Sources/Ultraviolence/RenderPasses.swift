@@ -182,15 +182,11 @@ public struct Draw: RenderPass, BodylessRenderPass {
     }
 
     func _expandNode(_ node: Node) {
+        // This line intentionally left blank.
     }
 
-    func drawEnter() {
-        //        print("drawEnter")
-        try! encodeGeometry(renderCommandEncoder!)
-    }
-
-    func drawExit() {
-        //        print("drawExit")
+    func drawEnter() throws {
+        try encodeGeometry(renderCommandEncoder.orThrow(.missingEnvironment("renderCommandEncoder")))
     }
 }
 
@@ -209,35 +205,3 @@ public struct Draw: RenderPass, BodylessRenderPass {
 //    associatedtype Content
 // }
 //
-
-// TODO: Repalce with real MTL enum
-enum ShaderType {
-    case vertex
-    case fragment
-    case tile
-    case object
-    case mesh
-    //    case compute
-}
-
-extension MTLRenderPipelineReflection {
-    func binding(for name: String) throws -> (ShaderType, Int) {
-        let typeAndindices: [(ShaderType, Int?)] = [
-            (ShaderType.vertex, vertexBindings.first { $0.name == name }?.index),
-            (ShaderType.fragment, fragmentBindings.first { $0.name == name }?.index),
-            (ShaderType.tile, tileBindings.first { $0.name == name }?.index),
-            (ShaderType.object, objectBindings.first { $0.name == name }?.index),
-            (ShaderType.mesh, meshBindings.first { $0.name == name }?.index)
-        ]
-        let matches = typeAndindices.compactMap { type, index in
-            index.map { (type, $0) }
-        }
-        if matches.isEmpty {
-            fatalError("No binding for \(name)")
-        }
-        else if matches.count > 1 {
-            fatalError("Ambiguous binding for \(name)")
-        }
-        return matches.first!
-    }
-}

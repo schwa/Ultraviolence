@@ -36,8 +36,10 @@ internal final class StateBox<Wrapped> {
 
     init(_ wrappedValue: Wrapped) {
         self._value = wrappedValue
+        // swiftlint:disable:next unowned_variable_capture
         self.binding = Binding(get: { [unowned self] in
             self.wrappedValue
+        // swiftlint:disable:next unowned_variable_capture
         }, set: { [unowned self] newValue in
             self.wrappedValue = newValue
         })

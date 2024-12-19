@@ -1,3 +1,5 @@
+// swiftlint:disable no_empty_block
+
 import CoreGraphics
 import Metal
 import UltraviolenceSupport

@@ -3,11 +3,9 @@ import MetalKit
 internal import os
 import SwiftUI
 
-// swiftlint:disable force_unwrapping
-
 #if os(macOS)
 public struct RenderView <Content>: NSViewRepresentable where Content: RenderPass {
-    let device = MTLCreateSystemDefaultDevice()!
+    let device = MTLCreateSystemDefaultDevice().orFatalError(.resourceCreationFailure)
     let content: Content
 
     public init(_ content: Content) {
@@ -41,7 +39,7 @@ public struct RenderView <Content>: NSViewRepresentable where Content: RenderPas
 }
 #elseif os(iOS)
 public struct RenderView <Content>: UIViewRepresentable where Content: RenderPass {
-    let device = MTLCreateSystemDefaultDevice()!
+    let device = MTLCreateSystemDefaultDevice().orFatalError(.resourceCreationFailure)
     let content: Content
 
     public init(_ content: Content) {
@@ -105,9 +103,9 @@ public class RenderPassCoordinator <Content>: NSObject, MTKViewDelegate where Co
                 currentDrawable.present()
             }
             try commandQueue.withCommandBuffer(completion: .none, label: "􀐛RenderView.Coordinator.commandBuffer", debugGroup: "􀯕RenderView.Coordinator.draw()") { commandBuffer in
-                let renderPassDescriptor = view.currentRenderPassDescriptor!
+                let renderPassDescriptor = try view.currentRenderPassDescriptor.orThrow(.undefined)
 
-                let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
+                let renderEncoder = try commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor).orThrow(.resourceCreationFailure)
 
                 // TODO: Move to init().
                 let root = content
