@@ -1,3 +1,6 @@
+#if canImport(AppKit)
+import AppKit
+#endif
 import CoreGraphics
 import ImageIO
 import Metal
@@ -45,11 +48,10 @@ public struct TeapotDemo: RenderPass {
 
 public extension TeapotDemo {
     @MainActor
-    // TODO: Make generic?
+    // TODO: Make generic for any RenderPass
     static func main() throws {
         let size = CGSize(width: 1_600, height: 1_200)
         let renderPass = try Self(size: size, modelMatrix: .identity)
-        //        try MTLCaptureManager.shared().with {
         let offscreenRenderer = try OffscreenRenderer(size: size)
         let image = try offscreenRenderer.render(renderPass).cgImage
         let url = URL(fileURLWithPath: "output.png")
@@ -57,7 +59,8 @@ public extension TeapotDemo {
         let imageDestination = CGImageDestinationCreateWithURL(url as CFURL, UTType.png.identifier as CFString, 1, nil)!
         CGImageDestinationAddImage(imageDestination, image, nil)
         CGImageDestinationFinalize(imageDestination)
+        #if canImport(AppKit)
         NSWorkspace.shared.activateFileViewerSelecting([url.absoluteURL])
-        //        }
+        #endif
     }
 }
