@@ -7,7 +7,7 @@ public struct EmptyRenderPass: RenderPass {
 }
 
 extension EmptyRenderPass: BodylessRenderPass {
-    func _expandNode(_ node: Node) {
+    func _expandNode(_ node: Node) throws {
         // This line intentionally left blank.
     }
 }

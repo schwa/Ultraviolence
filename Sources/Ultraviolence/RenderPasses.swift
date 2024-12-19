@@ -73,7 +73,7 @@ public struct Render <Content>: RenderPass, BodylessRenderPass where Content: Re
         self.content = content()
     }
 
-    func _expandNode(_ node: Node) {
+    func _expandNode(_ node: Node) throws {
         // TODO: Move into BodylessRenderPass
         guard let graph = node.graph else {
             fatalError("Cannot build node tree without a graph.")
@@ -81,7 +81,7 @@ public struct Render <Content>: RenderPass, BodylessRenderPass where Content: Re
         if node.children.isEmpty {
             node.children.append(graph.makeNode())
         }
-        content.expandNode(node.children[0])
+        try content.expandNode(node.children[0])
     }
 }
 
@@ -129,7 +129,7 @@ public struct RenderPipeline <Content>: BodylessRenderPass where Content: Render
         if node.children.isEmpty {
             node.children.append(graph.makeNode())
         }
-        content.expandNode(node.children[0])
+        try content.expandNode(node.children[0])
 
         let renderPassDescriptor = try renderPassDescriptor.orThrow(.missingEnvironment("renderPassDescriptor"))
         let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
@@ -181,7 +181,7 @@ public struct Draw: RenderPass, BodylessRenderPass {
         self.encodeGeometry = encodeGeometry
     }
 
-    func _expandNode(_ node: Node) {
+    func _expandNode(_ node: Node) throws {
         // This line intentionally left blank.
     }
 

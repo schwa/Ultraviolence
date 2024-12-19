@@ -27,7 +27,7 @@ internal struct ParameterRenderPass<Content, T>: BodylessRenderPass where Conten
         self.content = content
     }
 
-    func _expandNode(_ node: Node) {
+    func _expandNode(_ node: Node) throws {
         // TODO: Move into BodylessRenderPass
         guard let graph = node.graph else {
             fatalError("Cannot build node tree without a graph.")
@@ -35,7 +35,7 @@ internal struct ParameterRenderPass<Content, T>: BodylessRenderPass where Conten
         if node.children.isEmpty {
             node.children.append(graph.makeNode())
         }
-        content.expandNode(node.children[0])
+        try content.expandNode(node.children[0])
     }
 
     func drawEnter() throws {

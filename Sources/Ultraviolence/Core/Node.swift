@@ -17,8 +17,8 @@ internal final class Node {
     }
 
     @MainActor
-    func rebuildIfNeeded() {
-        renderPass?.expandNode(self)
+    func rebuildIfNeeded() throws {
+        try renderPass?.expandNode(self)
     }
 
     func setNeedsRebuild() {

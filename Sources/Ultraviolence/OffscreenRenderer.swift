@@ -76,7 +76,7 @@ public extension OffscreenRenderer {
                 .environment(\.commandQueue, commandQueue)
                 .environment(\.renderCommandEncoder, encoder) // TODO: Move to render
 
-            let graph = Graph(content: root)
+            let graph = try Graph(content: root)
             //        graph.dump()
 
             try graph.visit { _, node in
@@ -115,21 +115,21 @@ public struct EnvironmentDumper: RenderPass, BodylessRenderPass {
     @Environment(\.self)
     var environment
 
-    func _expandNode(_ node: Node) {
+    func _expandNode(_ node: Node) throws {
         print(environment)
     }
 }
 
 extension Graph {
     @MainActor
-    func visit(_ visitor: (Int, Node) throws -> Void, enter: (Node) throws -> Void = { _ in }, exit: (Node) throws -> Void = { _ in }) rethrows {
+    func visit(_ visitor: (Int, Node) throws -> Void, enter: (Node) throws -> Void = { _ in }, exit: (Node) throws -> Void = { _ in }) throws {
         let saved = Graph.current
         Graph.current = self
         defer {
             Graph.current = saved
         }
 
-        root.rebuildIfNeeded()
+        try root.rebuildIfNeeded()
 
         assert(activeNodeStack.isEmpty)
 

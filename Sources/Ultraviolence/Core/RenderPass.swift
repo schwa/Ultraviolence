@@ -16,7 +16,7 @@ public extension RenderPass where Body == Never {
 }
 
 internal extension RenderPass {
-    func expandNode(_ node: Node) {
+    func expandNode(_ node: Node) throws {
         // TODO: Refactor this to make expandion of the node tree distinct from handling observable and state properties.
         guard let graph = Graph.current else {
             fatalError("No graph is currently active.")
@@ -39,13 +39,13 @@ internal extension RenderPass {
         restoreStateProperties(node)
 
         if let builtInRenderPass = self as? any BodylessRenderPass {
-            try! builtInRenderPass._expandNode(node)
+            try builtInRenderPass._expandNode(node)
         }
 
         let shouldRunBody = node.needsRebuild || !equalToPrevious(node)
         if !shouldRunBody {
             for child in node.children {
-                child.rebuildIfNeeded()
+                try child.rebuildIfNeeded()
             }
             return
         }
@@ -54,7 +54,7 @@ internal extension RenderPass {
             if node.children.isEmpty {
                 node.children = [graph.makeNode()]
             }
-            body.expandNode(node.children[0])
+            try body.expandNode(node.children[0])
         }
 
         storeStateProperties(node)

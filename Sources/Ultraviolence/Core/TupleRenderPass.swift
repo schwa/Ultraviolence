@@ -9,7 +9,7 @@ public struct TupleRenderPass <each T: RenderPass>: RenderPass {
 }
 
 extension TupleRenderPass: BodylessRenderPass {
-    func _expandNode(_ node: Node) {
+    func _expandNode(_ node: Node) throws {
         guard let graph = node.graph else {
             fatalError("Cannot build node tree without a graph.")
         }
@@ -18,7 +18,7 @@ extension TupleRenderPass: BodylessRenderPass {
             if node.children.count <= index {
                 node.children.append(graph.makeNode())
             }
-            child.expandNode(node.children[index])
+            try child.expandNode(node.children[index])
             index += 1
         }
     }
