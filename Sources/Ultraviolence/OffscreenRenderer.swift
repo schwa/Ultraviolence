@@ -75,7 +75,7 @@ public extension OffscreenRenderer {
                 .environment(\.renderCommandEncoder, encoder) // TODO: Move to render
 
             let graph = Graph(content: root)
-    //        graph.dump()
+            //        graph.dump()
 
             try graph.visit { _, node in
                 if let renderPass = node.renderPass as? any BodylessRenderPass {

@@ -183,12 +183,12 @@ public struct Draw: RenderPass, BodylessRenderPass {
     }
 
     func drawEnter() {
-//        print("drawEnter")
+        //        print("drawEnter")
         try! encodeGeometry(renderCommandEncoder!)
     }
 
     func drawExit() {
-//        print("drawExit")
+        //        print("drawExit")
     }
 }
 
@@ -215,7 +215,7 @@ enum ShaderType {
     case tile
     case object
     case mesh
-//    case compute
+    //    case compute
 }
 
 extension MTLRenderPipelineReflection {

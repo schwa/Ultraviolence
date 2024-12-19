@@ -50,14 +50,14 @@ public extension TeapotDemo {
         let size = CGSize(width: 1_600, height: 1_200)
         let renderPass = try Self(size: size, modelMatrix: .identity)
         //        try MTLCaptureManager.shared().with {
-            let offscreenRenderer = try OffscreenRenderer(size: size)
-            let image = try offscreenRenderer.render(renderPass).cgImage
-            let url = URL(fileURLWithPath: "output.png")
-            // swiftlint:disable:next force_unwrapping
-            let imageDestination = CGImageDestinationCreateWithURL(url as CFURL, UTType.png.identifier as CFString, 1, nil)!
-            CGImageDestinationAddImage(imageDestination, image, nil)
-            CGImageDestinationFinalize(imageDestination)
-            NSWorkspace.shared.activateFileViewerSelecting([url.absoluteURL])
-//        }
+        let offscreenRenderer = try OffscreenRenderer(size: size)
+        let image = try offscreenRenderer.render(renderPass).cgImage
+        let url = URL(fileURLWithPath: "output.png")
+        // swiftlint:disable:next force_unwrapping
+        let imageDestination = CGImageDestinationCreateWithURL(url as CFURL, UTType.png.identifier as CFString, 1, nil)!
+        CGImageDestinationAddImage(imageDestination, image, nil)
+        CGImageDestinationFinalize(imageDestination)
+        NSWorkspace.shared.activateFileViewerSelecting([url.absoluteURL])
+        //        }
     }
 }
