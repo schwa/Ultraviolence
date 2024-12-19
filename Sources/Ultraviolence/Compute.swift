@@ -44,7 +44,7 @@ public extension Compute {
                 .environment(\.commandQueue, commandQueue)
                 .environment(\.computeCommandEncoder, encoder) // TODO: Move to render
 
-            let graph = Graph(content: root)
+            let graph = try Graph(content: root)
             //        graph.dump()
 
             try graph.visit { _, node in
@@ -83,25 +83,20 @@ public struct ComputePipeline <Content>: RenderPass, BodylessRenderPass where Co
         self.content = content()
     }
 
-    func _expandNode(_ node: Node) {
+    func _expandNode(_ node: Node) throws {
         guard let graph = node.graph else {
             fatalError("Cannot build node tree without a graph.")
         }
         if node.children.isEmpty {
             node.children.append(graph.makeNode())
         }
-        content.expandNode(node.children[0])
+        try content.expandNode(node.children[0])
 
-        guard let device else {
-            fatalError("TODO")
-        }
+        let device = try device.orThrow(.missingEnvironment("device"))
         let descriptor = MTLComputePipelineDescriptor()
         descriptor.computeFunction = computeKernel.function
-        let (computePipelineState, reflection) = try! device.makeComputePipelineState(descriptor: descriptor, options: .bindingInfo)
-        guard let reflection else {
-            fatalError("TODO")
-        }
-        node.environmentValues[keyPath: \.reflection] = Reflection(reflection)
+        let (computePipelineState, reflection) = try device.makeComputePipelineState(descriptor: descriptor, options: .bindingInfo)
+        node.environmentValues[keyPath: \.reflection] = Reflection(try reflection.orThrow(.resourceCreationFailure))
         node.environmentValues[keyPath: \.computePipelineState] = computePipelineState
     }
 }
@@ -139,7 +134,7 @@ public struct ComputeDispatch: RenderPass, BodylessRenderPass {
         self.threadsPerThreadgroup = threadsPerThreadgroup
     }
 
-    func _expandNode(_ node: Node) {
+    func _expandNode(_ node: Node) throws {
         // This line intentionally left blank.
     }
 

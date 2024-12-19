@@ -25,9 +25,9 @@ internal struct EnvironmentWritingModifier<Content: RenderPass>: RenderPass, Bod
     var content: Content
     var modify: (inout EnvironmentValues) -> Void
 
-    func _expandNode(_ node: Node) {
+    func _expandNode(_ node: Node) throws {
         modify(&node.environmentValues)
-        content.expandNode(node)
+        try content.expandNode(node)
     }
 }
 
@@ -48,9 +48,9 @@ public struct EnvironmentReader<Value, Content: RenderPass>: RenderPass, Bodyles
         self.content = content
     }
 
-    func _expandNode(_ node: Node) {
+    func _expandNode(_ node: Node) throws {
         let value = node.environmentValues[keyPath: keyPath]
-        content(value).expandNode(node)
+        try content(value).expandNode(node)
     }
 }
 

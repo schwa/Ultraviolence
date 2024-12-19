@@ -6,16 +6,16 @@ public class Graph {
     private(set) var root: Node
 
     @MainActor
-    public init<Content>(content: Content) where Content: RenderPass {
+    public init<Content>(content: Content) throws where Content: RenderPass {
         root = Node()
         root.graph = self
         Self.current = self
-        content.expandNode(root)
+        try content.expandNode(root)
         Self.current = nil
     }
 
     @MainActor
-    func rebuildIfNeeded() {
+    func rebuildIfNeeded() throws {
         let saved = Self.current
         Self.current = self
         defer {
@@ -24,7 +24,7 @@ public class Graph {
         guard let rootRenderPass = root.renderPass else {
             fatalError("Root renderPass is missing.")
         }
-        rootRenderPass.expandNode(root)
+        try rootRenderPass.expandNode(root)
     }
 
     static let _current = OSAllocatedUnfairLock<Graph?>(uncheckedState: nil)
