@@ -133,13 +133,14 @@ extension Graph {
 
         assert(activeNodeStack.isEmpty)
 
-        try root.visit(visitor, enter: { node in
+        try root.visit(visitor) { node in
             activeNodeStack.append(node)
             try enter(node)
-        }, exit: { node in
+        }
+        exit: { node in
             try exit(node)
             activeNodeStack.removeLast()
-        })
+        }
     }
 }
 
