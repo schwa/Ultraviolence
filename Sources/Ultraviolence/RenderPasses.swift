@@ -147,7 +147,7 @@ public struct RenderPipeline <Content>: BodylessRenderPass where Content: Render
         self.reflection = reflection
 
         if node.environmentValues[keyPath: \.depthStencilState] == nil, let depthStencilDescriptor {
-            let depthStencilState = try device.makeDepthStencilState(descriptor: depthStencilDescriptor)
+            let depthStencilState = device.makeDepthStencilState(descriptor: depthStencilDescriptor)
             node.environmentValues[keyPath: \.depthStencilState] = depthStencilState
         }
 

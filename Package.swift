@@ -10,8 +10,9 @@ public let package = Package(
         .macOS(.v15)
     ],
     products: [
-        .library(name: "Ultraviolence", targets: ["Ultraviolence"])
-//        .library(name: "UltraviolenceExamples", targets: ["UltraviolenceExamples"]),
+        .library(name: "Ultraviolence", targets: ["Ultraviolence"]),
+        .library(name: "UltraviolenceExamples", targets: ["UltraviolenceExamples"]),
+        .library(name: "UltraviolenceSupport", targets: ["UltraviolenceSupport"])
     ],
     dependencies: [
         .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.0-latest")
@@ -27,20 +28,24 @@ public let package = Package(
             name: "uvcli",
             dependencies: [
                 "Ultraviolence",
+                "UltraviolenceExamples",
                 "UltraviolenceSupport"
+            ],
+            resources: [
+                .copy("teapot.obj")
             ]
         ),
 
-//        .target(
-//            name: "UltraviolenceExamples",
-//            dependencies: [
-//                "Ultraviolence",
-//                "UltraviolenceSupport"
-//            ],
-//            resources: [
-//                .copy("teapot.obj")
-//            ]
-//        ),
+        .target(
+            name: "UltraviolenceExamples",
+            dependencies: [
+                "Ultraviolence",
+                "UltraviolenceSupport"
+            ],
+            resources: [
+                .copy("teapot.obj")
+            ]
+        ),
         .target(
             name: "UltraviolenceSupport",
             dependencies: [

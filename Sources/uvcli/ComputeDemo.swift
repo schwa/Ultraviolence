@@ -16,11 +16,13 @@ enum ComputeDemo {
         }
         """
 
-        let kernel = try ComputeKernel(source: source, logging: true)
-        let pipeline = ComputePipeline(computeKernel: kernel) {
-            ComputeDispatch(threads: .init(width: 1, height: 1, depth: 1), threadsPerThreadgroup: .init(width: 1, height: 1, depth: 1))
+        try MTLCaptureManager.shared().with(enabled: false) {
+            let kernel = try ComputeKernel(source: source, logging: true)
+            let pipeline = ComputePipeline(computeKernel: kernel) {
+                ComputeDispatch(threads: .init(width: 1, height: 1, depth: 1), threadsPerThreadgroup: .init(width: 1, height: 1, depth: 1))
+            }
+            let compute = try Compute(logging: true)
+            try compute.compute(pipeline)
         }
-        let compute = try Compute(logging: true)
-        try compute.compute(pipeline)
     }
 }

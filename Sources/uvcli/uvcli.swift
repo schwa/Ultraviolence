@@ -1,4 +1,5 @@
 import Foundation
+import UltraviolenceExamples
 
 @main
 struct UVCLI {
@@ -60,9 +61,13 @@ extension RedTriangle: Demo {
 extension TraditionalRedTriangle: Demo {
 }
 
+extension TeapotDemo: Demo {
+}
+
 let demos: [Demo.Type] = [
     AllDemos.self,
     ComputeDemo.self,
     RedTriangle.self,
-    TraditionalRedTriangle.self
+    TraditionalRedTriangle.self,
+    TeapotDemo.self
 ]
