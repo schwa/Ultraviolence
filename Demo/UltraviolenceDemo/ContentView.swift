@@ -16,9 +16,7 @@ struct ContentView: View {
 
     var body: some View {
         let modelMatrix = simd_float4x4(yRotation: .init(radians: Float(angle.radians)))
-
-//        RenderView(try! MyRenderPass(size: size, modelMatrix: modelMatrix))
-        RenderView(try! TeapotDemo(modelMatrix: modelMatrix))
+        RenderView(try! TeapotDemo(size: size, modelMatrix: modelMatrix))
             .onGeometryChange(for: CGSize.self, of: \.size) { size = $0 }
             .overlay(alignment: .bottom) {
                 VStack {

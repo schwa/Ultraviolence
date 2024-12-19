@@ -12,8 +12,9 @@ public struct TeapotDemo: RenderPass {
     var mesh: MTKMesh
     var modelMatrix: simd_float4x4
     var cameraMatrix: simd_float4x4
+    var size: CGSize
 
-    public init(modelMatrix: simd_float4x4) throws {
+    public init(size: CGSize, modelMatrix: simd_float4x4) throws {
         let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
         let teapotURL = try Bundle.module.url(forResource: "teapot", withExtension: "obj").orThrow(.resourceCreationFailure)
         let mdlAsset = MDLAsset(url: teapotURL, vertexDescriptor: nil, bufferAllocator: MTKMeshBufferAllocator(device: device))
@@ -22,14 +23,16 @@ public struct TeapotDemo: RenderPass {
         mesh = try MTKMesh(mesh: mdlMesh, device: device)
         self.modelMatrix = modelMatrix
         cameraMatrix = simd_float4x4(translation: [0, 2, 6])
+        self.size = size
     }
 
     public var body: some RenderPass {
         let viewMatrix = cameraMatrix.inverse
         let cameraPosition = cameraMatrix.translation
         Render {
+            // TODO: Size is hardcoded
             // swiftlint:disable:next force_try
-            try! LambertianShader(color: [1, 0, 0, 1], size: CGSize(width: 1_600, height: 1_200), modelMatrix: modelMatrix, viewMatrix: viewMatrix, cameraPosition: cameraPosition) {
+            try! LambertianShader(color: [1, 0, 0, 1], size: size, modelMatrix: modelMatrix, viewMatrix: viewMatrix, cameraPosition: cameraPosition) {
                 Draw { encoder in
                     encoder.draw(mesh)
                 }
@@ -42,10 +45,12 @@ public struct TeapotDemo: RenderPass {
 
 public extension TeapotDemo {
     @MainActor
+    // TODO: Make generic?
     static func main() throws {
-        let renderPass = try Self(modelMatrix: .identity)
+        let size = CGSize(width: 1_600, height: 1_200)
+        let renderPass = try Self(size: size, modelMatrix: .identity)
         //        try MTLCaptureManager.shared().with {
-            let offscreenRenderer = try OffscreenRenderer(size: CGSize(width: 1_600, height: 1_200))
+            let offscreenRenderer = try OffscreenRenderer(size: size)
             let image = try offscreenRenderer.render(renderPass).cgImage
             let url = URL(fileURLWithPath: "output.png")
             // swiftlint:disable:next force_unwrapping
