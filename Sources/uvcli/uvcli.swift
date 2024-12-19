@@ -52,7 +52,7 @@ enum AllDemos: Demo {
     }
 }
 
-extension ComputeDemo: Demo {
+extension HelloWorldComputeDemo: Demo {
 }
 
 extension RedTriangle: Demo {
@@ -64,10 +64,14 @@ extension TraditionalRedTriangle: Demo {
 extension TeapotDemo: Demo {
 }
 
+extension MemcpyComputeDemo: Demo {
+}
+
 let demos: [Demo.Type] = [
     AllDemos.self,
-    ComputeDemo.self,
+    HelloWorldComputeDemo.self,
     RedTriangle.self,
     TraditionalRedTriangle.self,
-    TeapotDemo.self
+    TeapotDemo.self,
+    MemcpyComputeDemo.self
 ]

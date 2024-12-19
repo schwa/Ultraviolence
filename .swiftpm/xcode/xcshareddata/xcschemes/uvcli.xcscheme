@@ -53,7 +53,7 @@
       <EnvironmentVariables>
          <EnvironmentVariable
             key = "DEMO"
-            value = "TeapotDemo"
+            value = "MemcpyComputeDemo"
             isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>

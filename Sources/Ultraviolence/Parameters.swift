@@ -40,7 +40,7 @@ internal struct ParameterRenderPass<Content, T>: BodylessRenderPass where Conten
 
     func drawEnter() throws {
         guard let reflection else {
-            fatalError("TODO")
+            fatalError("No reflection environment found.")
         }
         if let renderCommandEncoder {
             if let functionType {
