@@ -316,3 +316,97 @@ public extension MTLFunction {
         return vertexDescriptor
     }
 }
+
+public extension MTLRenderCommandEncoder {
+    func setVertexUnsafeBytes(of value: [some Any], index: Int) {
+        precondition(index >= 0)
+        value.withUnsafeBytes { buffer in
+            setVertexBytes(buffer.baseAddress.orFatalError(.resourceCreationFailure), length: buffer.count, index: index)
+        }
+    }
+
+    func setVertexUnsafeBytes(of value: some Any, index: Int) {
+        precondition(index >= 0)
+        withUnsafeBytes(of: value) { buffer in
+            setVertexBytes(buffer.baseAddress.orFatalError(.resourceCreationFailure), length: buffer.count, index: index)
+        }
+    }
+}
+
+public extension MTLRenderCommandEncoder {
+    func setFragmentUnsafeBytes(of value: [some Any], index: Int) {
+        precondition(index >= 0)
+        value.withUnsafeBytes { buffer in
+            setFragmentBytes(buffer.baseAddress.orFatalError(.resourceCreationFailure), length: buffer.count, index: index)
+        }
+    }
+
+    func setFragmentUnsafeBytes(of value: some Any, index: Int) {
+        precondition(index >= 0)
+        withUnsafeBytes(of: value) { buffer in
+            setFragmentBytes(buffer.baseAddress.orFatalError(.resourceCreationFailure), length: buffer.count, index: index)
+        }
+    }
+}
+
+public extension MTLRenderCommandEncoder {
+    func setUnsafeBytes(of value: [some Any], index: Int, functionType: MTLFunctionType) {
+        switch functionType {
+        case .vertex:
+            setVertexUnsafeBytes(of: value, index: index)
+        case .fragment:
+            setFragmentUnsafeBytes(of: value, index: index)
+        default:
+            fatalError("Unimplemented")
+        }
+    }
+
+    func setUnsafeBytes(of value: some Any, index: Int, functionType: MTLFunctionType) {
+        switch functionType {
+        case .vertex:
+            setVertexUnsafeBytes(of: value, index: index)
+        case .fragment:
+            setFragmentUnsafeBytes(of: value, index: index)
+        default:
+            fatalError("Unimplemented")
+        }
+    }
+
+    func setBuffer(_ buffer: MTLBuffer, offset: Int, index: Int, functionType: MTLFunctionType) {
+        switch functionType {
+        case .vertex:
+            setVertexBuffer(buffer, offset: offset, index: index)
+        case .fragment:
+            setFragmentBuffer(buffer, offset: offset, index: index)
+        default:
+            fatalError("Unimplemented")
+        }
+    }
+
+    func setTexture(_ texture: MTLTexture, index: Int, functionType: MTLFunctionType) {
+        switch functionType {
+        case .vertex:
+            setVertexTexture(texture, index: index)
+        case .fragment:
+            setFragmentTexture(texture, index: index)
+        default:
+            fatalError("Unimplemented")
+        }
+    }
+}
+
+public extension MTLComputeCommandEncoder {
+    func setUnsafeBytes(of value: [some Any], index: Int) {
+        precondition(index >= 0)
+        value.withUnsafeBytes { buffer in
+            setBytes(buffer.baseAddress.orFatalError(.resourceCreationFailure), length: buffer.count, index: index)
+        }
+    }
+
+    func setUnsafeBytes(of value: some Any, index: Int) {
+        precondition(index >= 0)
+        withUnsafeBytes(of: value) { buffer in
+            setBytes(buffer.baseAddress.orFatalError(.resourceCreationFailure), length: buffer.count, index: index)
+        }
+    }
+}

@@ -9,11 +9,13 @@ public extension EnvironmentValues {
     @Entry var renderPassDescriptor: MTLRenderPassDescriptor?
     @Entry var renderPipelineState: MTLRenderPipelineState?
     @Entry var vertexDescriptor: MTLVertexDescriptor?
+    @available(*, deprecated, message: "Deprecated. Use ``.reflection``.")
     @Entry var renderPipelineReflection: MTLRenderPipelineReflection?
     @Entry var depthStencilDescriptor: MTLDepthStencilDescriptor?
     @Entry var depthStencilState: MTLDepthStencilState?
     @Entry var computeCommandEncoder: MTLComputeCommandEncoder?
     @Entry var computePipelineState: MTLComputePipelineState?
+    @Entry var reflection: Reflection?
 }
 
 public extension RenderPass {
@@ -111,7 +113,7 @@ public struct RenderPipeline <Content>: BodylessRenderPass where Content: Render
     var renderPipelineState: MTLRenderPipelineState?
 
     @State
-    var reflection: MTLRenderPipelineReflection?
+    var reflection: Reflection?
 
     public init(vertexShader: VertexShader, fragmentShader: FragmentShader, @RenderPassBuilder content: () -> Content) {
         self.vertexShader = vertexShader
@@ -144,7 +146,7 @@ public struct RenderPipeline <Content>: BodylessRenderPass where Content: Render
         let device = try device.orThrow(.missingEnvironment("device"))
         let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: .bindingInfo)
         self.renderPipelineState = renderPipelineState
-        self.reflection = reflection
+        self.reflection = .init(reflection.orFatalError(.resourceCreationFailure))
 
         if node.environmentValues[keyPath: \.depthStencilState] == nil, let depthStencilDescriptor {
             let depthStencilState = device.makeDepthStencilState(descriptor: depthStencilDescriptor)
@@ -152,7 +154,7 @@ public struct RenderPipeline <Content>: BodylessRenderPass where Content: Render
         }
 
         node.environmentValues[keyPath: \.renderPipelineState] = renderPipelineState
-        node.environmentValues[keyPath: \.renderPipelineReflection] = reflection
+        node.environmentValues[keyPath: \.reflection] = self.reflection
     }
 
     func drawEnter() throws {
