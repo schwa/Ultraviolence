@@ -66,6 +66,8 @@ public extension Compute {
     }
 }
 
+// MARK: -
+
 public struct ComputePipeline <Content>: RenderPass, BodylessRenderPass where Content: RenderPass {
     var computeKernel: ComputeKernel
     var content: Content
@@ -82,7 +84,6 @@ public struct ComputePipeline <Content>: RenderPass, BodylessRenderPass where Co
     }
 
     func _expandNode(_ node: Node) {
-        // TODO: Move into BodylessRenderPass
         guard let graph = node.graph else {
             fatalError("Cannot build node tree without a graph.")
         }
@@ -90,9 +91,22 @@ public struct ComputePipeline <Content>: RenderPass, BodylessRenderPass where Co
             node.children.append(graph.makeNode())
         }
         content.expandNode(node.children[0])
-        node.environmentValues[keyPath: \.computePipelineState] = try! device!.makeComputePipelineState(function: computeKernel.function)
+
+        guard let device else {
+            fatalError("TODO")
+        }
+        let descriptor = MTLComputePipelineDescriptor()
+        descriptor.computeFunction = computeKernel.function
+        let (computePipelineState, reflection) = try! device.makeComputePipelineState(descriptor: descriptor, options: .bindingInfo)
+        guard let reflection else {
+            fatalError("TODO")
+        }
+        node.environmentValues[keyPath: \.reflection] = Reflection(reflection)
+        node.environmentValues[keyPath: \.computePipelineState] = computePipelineState
     }
 }
+
+// MARK: -
 
 public struct ComputeKernel {
     let function: MTLFunction
@@ -107,6 +121,8 @@ public struct ComputeKernel {
         function = try library.functionNames.compactMap { library.makeFunction(name: $0) }.first { $0.functionType == .kernel }.orThrow(.resourceCreationFailure)
     }
 }
+
+// MARK: -
 
 public struct ComputeDispatch: RenderPass, BodylessRenderPass {
     var threads: MTLSize
