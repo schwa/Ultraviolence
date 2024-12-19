@@ -4,7 +4,7 @@ import ImageIO
 import Metal
 import simd
 import Ultraviolence
-import UltraviolenceSupport
+internal import UltraviolenceSupport
 import UniformTypeIdentifiers
 
 enum RedTriangle {

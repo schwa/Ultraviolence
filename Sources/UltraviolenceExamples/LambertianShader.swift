@@ -92,12 +92,12 @@ public struct LambertianShader <Content>: RenderPass where Content: RenderPass {
     public var body: some RenderPass {
         RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
             content
-                .parameter("color", color)
-                .parameter("projectionMatrix", PerspectiveProjection().projectionMatrix(for: [Float(size.width), Float(size.height)]))
-                .parameter("modelMatrix", modelMatrix)
-                .parameter("viewMatrix", viewMatrix)
-                .parameter("lightDirection", SIMD3<Float>([-1, -2, -1]))
-                .parameter("cameraPosition", cameraPosition)
+                .parameter("color", value: color)
+                .parameter("projectionMatrix", value: PerspectiveProjection().projectionMatrix(for: [Float(size.width), Float(size.height)]))
+                .parameter("modelMatrix", value: modelMatrix)
+                .parameter("viewMatrix", value: viewMatrix)
+                .parameter("lightDirection", value: SIMD3<Float>([-1, -2, -1]))
+                .parameter("cameraPosition", value: cameraPosition)
         }
     }
 }

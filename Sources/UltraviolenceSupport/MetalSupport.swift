@@ -327,6 +327,7 @@ public extension MTLRenderCommandEncoder {
 
     func setVertexUnsafeBytes(of value: some Any, index: Int) {
         precondition(index >= 0)
+        assert(isPOD(value))
         withUnsafeBytes(of: value) { buffer in
             setVertexBytes(buffer.baseAddress.orFatalError(.resourceCreationFailure), length: buffer.count, index: index)
         }
@@ -343,6 +344,7 @@ public extension MTLRenderCommandEncoder {
 
     func setFragmentUnsafeBytes(of value: some Any, index: Int) {
         precondition(index >= 0)
+        assert(isPOD(value))
         withUnsafeBytes(of: value) { buffer in
             setFragmentBytes(buffer.baseAddress.orFatalError(.resourceCreationFailure), length: buffer.count, index: index)
         }
@@ -351,6 +353,7 @@ public extension MTLRenderCommandEncoder {
 
 public extension MTLRenderCommandEncoder {
     func setUnsafeBytes(of value: [some Any], index: Int, functionType: MTLFunctionType) {
+        precondition(index >= 0)
         switch functionType {
         case .vertex:
             setVertexUnsafeBytes(of: value, index: index)
@@ -362,6 +365,8 @@ public extension MTLRenderCommandEncoder {
     }
 
     func setUnsafeBytes(of value: some Any, index: Int, functionType: MTLFunctionType) {
+        precondition(index >= 0)
+        assert(isPOD(value))
         switch functionType {
         case .vertex:
             setVertexUnsafeBytes(of: value, index: index)
@@ -405,8 +410,37 @@ public extension MTLComputeCommandEncoder {
 
     func setUnsafeBytes(of value: some Any, index: Int) {
         precondition(index >= 0)
+        assert(isPOD(value))
         withUnsafeBytes(of: value) { buffer in
             setBytes(buffer.baseAddress.orFatalError(.resourceCreationFailure), length: buffer.count, index: index)
         }
+    }
+}
+
+// TODO: Move
+public extension MTLDevice {
+    func makeBuffer<C>(collection: C, options: MTLResourceOptions) throws -> MTLBuffer where C: Collection {
+        assert(isPOD(C.Element.self))
+        let buffer = try collection.withContiguousStorageIfAvailable { buffer in
+            let raw = UnsafeRawBufferPointer(buffer)
+            guard let buffer = makeBuffer(bytes: raw.baseAddress.orFatalError(), length: raw.count, options: options) else {
+                throw UltraviolenceError.resourceCreationFailure
+            }
+            return buffer
+        }
+        guard let buffer else {
+            fatalError("No contiguous storage available.")
+        }
+        return buffer
+    }
+}
+
+public extension MTLBuffer {
+    func contentsBuffer() -> UnsafeRawBufferPointer {
+        UnsafeRawBufferPointer(start: contents(), count: length)
+    }
+
+    func contents<T>() -> UnsafeBufferPointer<T> {
+        contentsBuffer().bindMemory(to: T.self)
     }
 }

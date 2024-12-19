@@ -62,6 +62,14 @@ internal struct ParameterRenderPass<Content, T>: BodylessRenderPass where Conten
                 }
             }
         }
+        else if let computeCommandEncoder {
+            precondition(functionType == nil || functionType == .kernel)
+            let index = try reflection.binding(forType: .kernel, name: name).orThrow(.missingBinding(name))
+            computeCommandEncoder.setValue(value, index: index, functionType: .kernel)
+        }
+        else {
+            fatalError("TODO")
+        }
     }
 }
 
@@ -77,9 +85,9 @@ public extension RenderPass {
         ParameterRenderPass(functionType: functionType, name: name, value: .value(value), content: self)
     }
 
-    func parameter(_ name: String, _ value: Color, functionType: MTLFunctionType? = nil) -> some RenderPass {
+    func parameter(_ name: String, color: Color, functionType: MTLFunctionType? = nil) -> some RenderPass {
         let colorspace = CGColorSpaceCreateDeviceRGB()
-        guard let color = value.resolve(in: .init()).cgColor.converted(to: colorspace, intent: .defaultIntent, options: nil) else {
+        guard let color = color.resolve(in: .init()).cgColor.converted(to: colorspace, intent: .defaultIntent, options: nil) else {
             fatalError("Unimplemented.")
         }
         guard let components = color.components?.map({ Float($0) }) else {
@@ -89,20 +97,20 @@ public extension RenderPass {
         return ParameterRenderPass(functionType: functionType, name: name, value: .value(value), content: self)
     }
 
-    func parameter(_ name: String, _ texture: MTLTexture, functionType: MTLFunctionType? = nil) -> some RenderPass {
+    func parameter(_ name: String, texture: MTLTexture, functionType: MTLFunctionType? = nil) -> some RenderPass {
         ParameterRenderPass(functionType: functionType, name: name, value: ParameterValue<()>.texture(texture), content: self)
     }
 
-    func parameter(_ name: String, _ buffer: MTLBuffer, offset: Int, functionType: MTLFunctionType? = nil) -> some RenderPass {
+    func parameter(_ name: String, buffer: MTLBuffer, offset: Int = 0, functionType: MTLFunctionType? = nil) -> some RenderPass {
         ParameterRenderPass(functionType: functionType, name: name, value: ParameterValue<()>.buffer(buffer, offset), content: self)
     }
 
-    func parameter(_ name: String, _ value: some Any, functionType: MTLFunctionType? = nil) -> some RenderPass {
-        ParameterRenderPass(functionType: functionType, name: name, value: .value(value), content: self)
+    func parameter(_ name: String, values: [some Any], functionType: MTLFunctionType? = nil) -> some RenderPass {
+        ParameterRenderPass(functionType: functionType, name: name, value: .array(values), content: self)
     }
 
-    func parameter<T>(_ name: String, _ value: [some Any], functionType: MTLFunctionType? = nil) -> some RenderPass {
-        ParameterRenderPass(functionType: functionType, name: name, value: .array(value), content: self)
+    func parameter(_ name: String, value: some Any, functionType: MTLFunctionType? = nil) -> some RenderPass {
+        ParameterRenderPass(functionType: functionType, name: name, value: .value(value), content: self)
     }
 }
 

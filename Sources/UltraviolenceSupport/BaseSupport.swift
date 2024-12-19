@@ -161,3 +161,15 @@ public extension Optional where Wrapped == String {
         return ["1", "true", "yes"].contains(value)
     }
 }
+
+func isPOD<T>(_ type: T.Type) -> Bool {
+    _isPOD(type)
+}
+
+func isPOD<T>(_ value: T) -> Bool {
+    _isPOD(T.self)
+}
+
+func isPODArray<T>(_ value: [T]) -> Bool {
+    _isPOD(T.self)
+}
