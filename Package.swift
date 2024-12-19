@@ -30,9 +30,6 @@ public let package = Package(
                 "Ultraviolence",
                 "UltraviolenceExamples",
                 "UltraviolenceSupport"
-            ],
-            resources: [
-                .copy("teapot.obj")
             ]
         ),
 
