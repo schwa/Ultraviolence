@@ -68,7 +68,7 @@ internal struct ParameterRenderPass<Content, T>: BodylessRenderPass where Conten
             computeCommandEncoder.setValue(value, index: index, functionType: .kernel)
         }
         else {
-            fatalError("TODO")
+            fatalError("Trying to process \(self) without a command encoder.")
         }
     }
 }
@@ -76,7 +76,6 @@ internal struct ParameterRenderPass<Content, T>: BodylessRenderPass where Conten
 // MARK: -
 
 public extension RenderPass {
-    // TODO: Add MTLFunctionType to all of these.
     func parameter(_ name: String, _ value: SIMD4<Float>, functionType: MTLFunctionType? = nil) -> some RenderPass {
         ParameterRenderPass(functionType: functionType, name: name, value: .value(value), content: self)
     }

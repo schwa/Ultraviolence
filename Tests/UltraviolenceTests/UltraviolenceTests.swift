@@ -3,6 +3,7 @@ import Testing
 @testable import Ultraviolence
 import UltraviolenceSupport
 
+// TODO: "Button" is a dumn name for a RenderPass :-)
 struct Button: RenderPass, BodylessRenderPass {
     typealias Body = Never
 
@@ -15,7 +16,7 @@ struct Button: RenderPass, BodylessRenderPass {
     }
 
     func _expandNode(_ node: Node) throws {
-        // todo create a UIButton
+        // This line intentionally left blank.
     }
 }
 

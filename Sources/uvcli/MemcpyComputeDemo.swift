@@ -23,13 +23,9 @@ enum MemcpyComputeDemo {
 
         try MTLCaptureManager.shared().with(enabled: false) {
             let device = MTLCreateSystemDefaultDevice()!
-
-            // TODO: we're taking it on faith that the memcpy is happening. Add some data to input and check output at end.
-
             let count = 16 * 1_024 * 1_024
             let inputBuffer = try device.makeBuffer(collection: (0..<count).map { index in UInt8(index % 256) }, options: [.storageModeShared])
             let outputBuffer = device.makeBuffer(length: count, options: [.storageModeShared])!
-
             let kernel = try ComputeKernel(source: source, logging: true)
             let pipeline = ComputePipeline(computeKernel: kernel) {
                 ComputeDispatch(threads: .init(width: count, height: 1, depth: 1), threadsPerThreadgroup: .init(width: 1_024, height: 1, depth: 1))
