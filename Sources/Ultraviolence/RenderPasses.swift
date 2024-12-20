@@ -16,6 +16,17 @@ public extension EnvironmentValues {
     @Entry var computeCommandEncoder: MTLComputeCommandEncoder?
     @Entry var computePipelineState: MTLComputePipelineState?
     @Entry var reflection: Reflection?
+    @Entry var colorAttachment: (MTLTexture, Int)?
+    @Entry var depthAttachment: MTLTexture?
+}
+
+public extension RenderPass {
+    func colorAttachment(_ texture: MTLTexture, index: Int) -> some RenderPass {
+        environment(\.colorAttachment, (texture, index))
+    }
+    func depthAttachment(_ texture: MTLTexture) -> some RenderPass {
+        environment(\.depthAttachment, texture)
+    }
 }
 
 public extension RenderPass {
