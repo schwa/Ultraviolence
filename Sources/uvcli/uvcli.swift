@@ -73,5 +73,6 @@ let demos: [Demo.Type] = [
     RedTriangle.self,
     TraditionalRedTriangle.self,
     TeapotDemo.self,
-    MemcpyComputeDemo.self
+    MemcpyComputeDemo.self,
+    MixedExample.self
 ]

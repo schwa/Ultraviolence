@@ -38,11 +38,13 @@ internal struct ParameterRenderPass<Content, T>: BodylessRenderPass where Conten
         try content.expandNode(node.children[0])
     }
 
-    func drawEnter() throws {
+    func drawEnter(_ node: Node) throws {
         guard let reflection else {
             fatalError("No reflection environment found.")
         }
-        if let renderCommandEncoder {
+
+        switch (renderCommandEncoder, computeCommandEncoder) {
+        case (.some(let renderCommandEncoder), nil):
             if let functionType {
                 let index = try reflection.binding(forType: functionType, name: name).orThrow(.missingBinding(name))
                 renderCommandEncoder.setValue(value, index: index, functionType: functionType)
@@ -61,14 +63,15 @@ internal struct ParameterRenderPass<Content, T>: BodylessRenderPass where Conten
                     throw UltraviolenceError.missingBinding(name)
                 }
             }
-        }
-        else if let computeCommandEncoder {
+        case (nil, .some(let computeCommandEncoder)):
             precondition(functionType == nil || functionType == .kernel)
             let index = try reflection.binding(forType: .kernel, name: name).orThrow(.missingBinding(name))
             computeCommandEncoder.setValue(value, index: index, functionType: .kernel)
-        }
-        else {
-            fatalError("Trying to process \(self) without a command encoder.")
+        case (.some, .some):
+            fatalError("Trying to process \(self.shortDescription) with both a render command encoder and a compute command encoder.")
+        default:
+            print(node.environmentValues.values.keys)
+            fatalError("Trying to process `\(self.shortDescription) without a command encoder.")
         }
     }
 }

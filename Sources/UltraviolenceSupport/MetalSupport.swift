@@ -542,3 +542,16 @@ public extension MTLBuffer {
         contentsBuffer().bindMemory(to: T.self)
     }
 }
+
+public extension MTLCommandBufferDescriptor {
+    func addDefaultLogging() throws {
+        let logStateDescriptor = MTLLogStateDescriptor()
+        logStateDescriptor.bufferSize = 16 * 1_024
+        let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
+        let logState = try device.makeLogState(descriptor: logStateDescriptor)
+        logState.addLogHandler { _, _, _, message in
+            print(message)
+        }
+        self.logState = logState
+    }
+}

@@ -244,3 +244,4 @@ only_rules:
   - xct_specific_matcher
   - xctfail_message
   - yoda_condition
+force_try: warning

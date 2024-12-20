@@ -1,5 +1,39 @@
 public struct EnvironmentValues {
-    internal var values: [ObjectIdentifier: Any] = [:]
+    struct Key: Hashable, CustomDebugStringConvertible {
+        var id: ObjectIdentifier // TODO: We don't need to store this. But AnyIdentifgier gets a tad upset.
+        var value: Any.Type
+
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            lhs.id == rhs.id
+        }
+
+        func hash(into hasher: inout Hasher) {
+            id.hash(into: &hasher)
+        }
+
+        init<K: EnvironmentKey>(_ key: K.Type) {
+            id = ObjectIdentifier(key)
+            value = key
+        }
+
+        var debugDescription: String {
+            "\(value)"
+        }
+    }
+
+    internal var values: [Key: Any] = [:]
+}
+
+struct IdentifiableBox <Key, Value>: Identifiable where Key: Hashable {
+    var id: Key
+    var value: Value
+}
+
+extension IdentifiableBox where Key == ObjectIdentifier, Value: AnyObject {
+    init(_ value: Value) {
+        self.id = ObjectIdentifier(value)
+        self.value = value
+    }
 }
 
 public protocol EnvironmentKey {
@@ -10,13 +44,13 @@ public protocol EnvironmentKey {
 public extension EnvironmentValues {
     subscript<Key: EnvironmentKey>(key: Key.Type) -> Key.Value {
         get {
-            guard let value = values[ObjectIdentifier(key), default: Key.defaultValue] as? Key.Value else {
+            guard let value = values[.init(key), default: Key.defaultValue] as? Key.Value else {
                 fatalError("Could not cast value.")
             }
             return value
         }
         set {
-            values[ObjectIdentifier(key)] = newValue
+            values[.init(key)] = newValue
         }
     }
 }

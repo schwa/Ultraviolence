@@ -124,12 +124,12 @@ public class RenderPassCoordinator <Content>: NSObject, MTKViewDelegate where Co
                 }
                 enter: { node in
                     if let body = node.renderPass as? any BodylessRenderPass {
-                        try body.drawEnter()
+                        try body.drawEnter(node)
                     }
                 }
                 exit: { node in
                     if let body = node.renderPass as? any BodylessRenderPass {
-                        try body.drawExit()
+                        try body.drawExit(node)
                     }
                 }
                 renderEncoder.endEncoding()

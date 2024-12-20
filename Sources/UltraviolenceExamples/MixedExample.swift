@@ -25,8 +25,10 @@ public struct MixedExample: RenderPass {
             .depthAttachment(depthTexture)
         }
 
-        // swiftlint:disable:next force_try
-        try! EdgeDetectionKernel(depthTexture: depthTexture, colorTexture: colorTexture)
+        try! Compute {
+            // swiftlint:disable:next force_try
+            try! EdgeDetectionKernel(depthTexture: depthTexture, colorTexture: colorTexture)
+        }
 
 //        try Compute(threads: .init(width: colorTexture.width, height: colorTexture.height, depth: 1), threadsPerThreadgroup: .init(width: 32, height: 32, depth: 1)) {
 //            EdgeDetectionKernel()

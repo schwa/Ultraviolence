@@ -1,68 +1,62 @@
 import Metal
 import UltraviolenceSupport
 
-public struct Compute {
-    let device: MTLDevice
-    let commandQueue: MTLCommandQueue
-    let logging: Bool
+public struct ComputeKernel {
+    let function: MTLFunction
 
-    public init(logging: Bool = false) throws {
-        device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
-        commandQueue = try device.makeCommandQueue().orThrow(.resourceCreationFailure)
-        self.logging = logging
-    }
+    public init(source: String, logging: Bool = false) throws {
+        let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
 
-    internal func compute(_ body: (MTLComputeCommandEncoder) throws -> Void) throws {
-        let commandBufferDescriptor = MTLCommandBufferDescriptor()
-        if logging {
-            let logStateDescriptor = MTLLogStateDescriptor()
-            logStateDescriptor.bufferSize = 16 * 1_024
-            let logState = try device.makeLogState(descriptor: logStateDescriptor)
+        let options = MTLCompileOptions()
+        options.enableLogging = logging
 
-            logState.addLogHandler { _, _, _, message in
-                print(message)
-            }
-            commandBufferDescriptor.logState = logState
-        }
-        let commandBuffer = try commandQueue.makeCommandBuffer(descriptor: commandBufferDescriptor).orThrow(.resourceCreationFailure)
-        let computeCommandEncoder = try commandBuffer.makeComputeCommandEncoder().orThrow(.resourceCreationFailure)
-        defer {
-            computeCommandEncoder.endEncoding()
-            commandBuffer.commit()
-            commandBuffer.waitUntilCompleted()
-        }
-        try body(computeCommandEncoder)
+        let library = try device.makeLibrary(source: source, options: options)
+        function = try library.functionNames.compactMap { library.makeFunction(name: $0) }.first { $0.functionType == .kernel }.orThrow(.resourceCreationFailure)
     }
 }
 
-public extension Compute {
-    @MainActor
-    func compute<Content>(_ content: Content) throws where Content: RenderPass {
-        try compute { encoder in
-            let root = content
-                .environment(\.device, device)
-                .environment(\.commandQueue, commandQueue)
-                .environment(\.computeCommandEncoder, encoder)
+// MARK: -
 
-            let graph = try Graph(content: root)
-            //        graph.dump()
+public struct Compute <Content>: RenderPass, BodylessRenderPass where Content: RenderPass {
+    let commandQueue: MTLCommandQueue
+    let logging: Bool
+    let content: Content
 
-            try graph.visit { _, node in
-                if let renderPass = node.renderPass as? any BodylessRenderPass {
-                    renderPass._setup(node)
-                }
-            }
-            enter: { node in
-                if let body = node.renderPass as? any BodylessRenderPass {
-                    try body.drawEnter()
-                }
-            }
-            exit: { node in
-                if let body = node.renderPass as? any BodylessRenderPass {
-                    try body.drawExit()
-                }
-            }
+    @Environment(\.commandBuffer)
+    var commandBuffer
+
+    @Environment(\.computeCommandEncoder)
+    var computeCommandEncoder
+
+    public init(logging: Bool = false, content: () -> Content) throws {
+        let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
+
+        // TODO: Move UP.
+        commandQueue = try device.makeCommandQueue().orThrow(.resourceCreationFailure)
+
+        self.logging = logging
+        self.content = content()
+    }
+
+    func _expandNode(_ node: Node) throws {
+        guard let graph = node.graph else {
+            fatalError("Cannot build node tree without a graph.")
         }
+        if node.children.isEmpty {
+            node.children.append(graph.makeNode())
+        }
+        try content.expandNode(node.children[0])
+    }
+
+    func drawEnter(_ node: Node) throws {
+        let commandBuffer = try commandBuffer.orThrow(.missingEnvironment("commandBuffer"))
+        let computeCommandEncoder = try commandBuffer.makeComputeCommandEncoder().orThrow(.resourceCreationFailure)
+        // TODO: FIXME - adding environment values here is _too_ late. They do not get propagated to childen.
+        node.environmentValues[keyPath: \.computeCommandEncoder] = computeCommandEncoder
+    }
+
+    func drawExit(_ node: Node) throws {
+        computeCommandEncoder!.endEncoding()
     }
 }
 
@@ -103,22 +97,6 @@ public struct ComputePipeline <Content>: RenderPass, BodylessRenderPass where Co
 
 // MARK: -
 
-public struct ComputeKernel {
-    let function: MTLFunction
-
-    public init(source: String, logging: Bool = false) throws {
-        let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
-
-        let options = MTLCompileOptions()
-        options.enableLogging = logging
-
-        let library = try device.makeLibrary(source: source, options: options)
-        function = try library.functionNames.compactMap { library.makeFunction(name: $0) }.first { $0.functionType == .kernel }.orThrow(.resourceCreationFailure)
-    }
-}
-
-// MARK: -
-
 public struct ComputeDispatch: RenderPass, BodylessRenderPass {
     var threads: MTLSize
     var threadsPerThreadgroup: MTLSize
@@ -148,5 +126,27 @@ public struct ComputeDispatch: RenderPass, BodylessRenderPass {
 
     func drawExit() {
         // This line intentionally left blank.
+    }
+}
+
+public extension Compute {
+    @MainActor
+    func compute() throws {
+        let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
+        let commandBufferDescriptor = MTLCommandBufferDescriptor()
+        if logging {
+            try commandBufferDescriptor.addDefaultLogging()
+        }
+        let commandBuffer = try commandQueue.makeCommandBuffer(descriptor: commandBufferDescriptor).orThrow(.resourceCreationFailure)
+        defer {
+            commandBuffer.commit()
+            commandBuffer.waitUntilCompleted()
+        }
+
+        let root = self
+        .environment(\.device, device)
+        .environment(\.commandBuffer, commandBuffer)
+        .environment(\.commandQueue, commandQueue)
+        try root._draw()
     }
 }

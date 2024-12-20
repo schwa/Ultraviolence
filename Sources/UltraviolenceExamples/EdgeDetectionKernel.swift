@@ -37,8 +37,6 @@ public struct EdgeDetectionKernel: RenderPass {
         // Read current color
         float4 currentColor = colorTexture.read(gid);
 
-        //        os_log_default.log("%f", gradient);
-
         // Edge detection logic
         if (gradient * 800 > 1) {
             colorTexture.write(float4(1.0, 1.0, 1.0, 1.0), gid); // Draw edge in white

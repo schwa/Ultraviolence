@@ -52,8 +52,9 @@ public struct OffscreenRenderer {
     }
 }
 
-internal extension OffscreenRenderer {
-    func render(_ body: (MTLRenderCommandEncoder) throws -> Void) throws -> Rendering {
+public extension OffscreenRenderer {
+    @MainActor
+    func render<Content>(_ content: Content) throws -> Rendering where Content: RenderPass {
         let commandBuffer = try commandQueue.makeCommandBuffer().orThrow(.resourceCreationFailure)
         let renderEncoder = try commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor).orThrow(.resourceCreationFailure)
         defer {
@@ -61,40 +62,17 @@ internal extension OffscreenRenderer {
             commandBuffer.commit()
             commandBuffer.waitUntilCompleted()
         }
-        try body(renderEncoder)
+
+        let root = content
+            .environment(\.renderPassDescriptor, renderPassDescriptor)
+            .environment(\.device, device)
+            .environment(\.commandBuffer, commandBuffer)
+            .environment(\.commandQueue, commandQueue)
+            .environment(\.renderCommandEncoder, renderEncoder) // TODO: Move to render
+
+        try root._draw()
+
         return .init(texture: colorTexture)
-    }
-}
-
-public extension OffscreenRenderer {
-    @MainActor
-    func render<Content>(_ content: Content) throws -> Rendering where Content: RenderPass {
-        try render { encoder in
-            let root = content
-                .environment(\.renderPassDescriptor, renderPassDescriptor)
-                .environment(\.device, device)
-                .environment(\.commandQueue, commandQueue)
-                .environment(\.renderCommandEncoder, encoder) // TODO: Move to render
-
-            let graph = try Graph(content: root)
-            //        graph.dump()
-
-            try graph.visit { _, node in
-                if let renderPass = node.renderPass as? any BodylessRenderPass {
-                    renderPass._setup(node)
-                }
-            }
-            enter: { node in
-                if let body = node.renderPass as? any BodylessRenderPass {
-                    try body.drawEnter()
-                }
-            }
-            exit: { node in
-                if let body = node.renderPass as? any BodylessRenderPass {
-                    try body.drawExit()
-                }
-            }
-        }
     }
 }
 
