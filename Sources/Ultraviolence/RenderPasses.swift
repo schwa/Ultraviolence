@@ -99,7 +99,7 @@ public struct Render <Content>: RenderPass, BodylessRenderPass where Content: Re
 extension RenderPass {
     // TODO: Rename.
     // TODO: Share with OffscreenRenderer and RenderView.
-    func _draw(log: Bool = true) throws {
+    func _process(log: Bool = true) throws {
         let logger = log ? logger : nil
 
         let graph = try Graph(content: self)
@@ -111,12 +111,12 @@ extension RenderPass {
         enter: { node in
             logger?.log("Entering: \(node.shortDescription)")
             if let body = node.renderPass as? any BodylessRenderPass {
-                try body.drawEnter(node)
+                try body._enter(node)
             }
         }
         exit: { node in
             if let body = node.renderPass as? any BodylessRenderPass {
-                try body.drawExit(node)
+                try body._exit(node)
             }
             logger?.log("Exited: \(node.shortDescription)")
         }

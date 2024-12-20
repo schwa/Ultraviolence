@@ -38,7 +38,7 @@ internal struct ParameterRenderPass<Content, T>: BodylessRenderPass where Conten
         try content.expandNode(node.children[0])
     }
 
-    func drawEnter(_ node: Node) throws {
+    func _enter(_ node: Node) throws {
         guard let reflection else {
             fatalError("No reflection environment found.")
         }

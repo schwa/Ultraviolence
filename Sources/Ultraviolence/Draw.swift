@@ -16,7 +16,7 @@ public struct Draw: RenderPass, BodylessRenderPass {
         // This line intentionally left blank.
     }
 
-    func drawEnter(_ node: Node) throws {
+    func _enter(_ node: Node) throws {
         try encodeGeometry(renderCommandEncoder.orThrow(.missingEnvironment("renderCommandEncoder")))
     }
 }

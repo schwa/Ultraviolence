@@ -48,14 +48,14 @@ public struct Compute <Content>: RenderPass, BodylessRenderPass where Content: R
         try content.expandNode(node.children[0])
     }
 
-    func drawEnter(_ node: Node) throws {
+    func _enter(_ node: Node) throws {
         let commandBuffer = try commandBuffer.orThrow(.missingEnvironment("commandBuffer"))
         let computeCommandEncoder = try commandBuffer.makeComputeCommandEncoder().orThrow(.resourceCreationFailure)
         // TODO: FIXME - adding environment values here is _too_ late. They do not get propagated to childen.
         node.environmentValues[keyPath: \.computeCommandEncoder] = computeCommandEncoder
     }
 
-    func drawExit(_ node: Node) throws {
+    func _exit(_ node: Node) throws {
         computeCommandEncoder!.endEncoding()
     }
 }
@@ -147,6 +147,6 @@ public extension Compute {
         .environment(\.device, device)
         .environment(\.commandBuffer, commandBuffer)
         .environment(\.commandQueue, commandQueue)
-        try root._draw()
+        try root._process()
     }
 }

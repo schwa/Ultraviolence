@@ -73,7 +73,7 @@ public struct RenderPipeline <Content>: BodylessRenderPass where Content: Render
         node.environmentValues[keyPath: \.reflection] = self.reflection
     }
 
-    func drawEnter(_ node: Node) throws {
+    func _enter(_ node: Node) throws {
         let renderCommandEncoder = try renderCommandEncoder.orThrow(.missingEnvironment("renderCommandEncoder"))
         let renderPipelineState = try renderPipelineState.orThrow(.missingEnvironment("renderPipelineState"))
 

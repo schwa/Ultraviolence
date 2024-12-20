@@ -70,7 +70,7 @@ public extension OffscreenRenderer {
             .environment(\.commandQueue, commandQueue)
             .environment(\.renderCommandEncoder, renderEncoder) // TODO: Move to render
 
-        try root._draw()
+        try root._process()
 
         return .init(texture: colorTexture)
     }
