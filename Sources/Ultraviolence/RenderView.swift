@@ -114,24 +114,8 @@ public class RenderPassCoordinator <Content>: NSObject, MTKViewDelegate where Co
                     .environment(\.commandQueue, commandQueue)
                     .environment(\.renderCommandEncoder, renderEncoder) // TODO: Move to Render() render pass.
 
-                let graph = try Graph(content: root)
-                try graph.rebuildIfNeeded()
+                try root._process()
 
-                try graph.visit { _, node in
-                    if let renderPass = node.renderPass as? any BodylessRenderPass {
-                        renderPass._setup(node)
-                    }
-                }
-                enter: { node in
-                    if let body = node.renderPass as? any BodylessRenderPass {
-                        try body._enter(node)
-                    }
-                }
-                exit: { node in
-                    if let body = node.renderPass as? any BodylessRenderPass {
-                        try body._exit(node)
-                    }
-                }
                 renderEncoder.endEncoding()
                 commandBuffer.commit()
             }

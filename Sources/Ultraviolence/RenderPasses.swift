@@ -103,10 +103,8 @@ extension RenderPass {
         let logger = log ? logger : nil
 
         let graph = try Graph(content: self)
-        try graph.visit { _, node in
-            if let renderPass = node.renderPass as? any BodylessRenderPass {
-                renderPass._setup(node)
-            }
+        try graph.visit { _, _ in
+            // This line intentionally left blank.
         }
         enter: { node in
             logger?.log("Entering: \(node.shortDescription)")
