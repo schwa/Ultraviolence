@@ -59,7 +59,7 @@
          <EnvironmentVariable
             key = "DEMO"
             value = "MemcpyComputeDemo"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </EnvironmentVariable>
          <EnvironmentVariable
             key = "LOGGING"
@@ -69,7 +69,7 @@
          <EnvironmentVariable
             key = "DEMO"
             value = "RedTriangle"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </EnvironmentVariable>
       </EnvironmentVariables>
    </LaunchAction>

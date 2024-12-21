@@ -77,9 +77,6 @@ public extension VertexShader {
 public struct Render <Content>: RenderPass, BodylessRenderPass where Content: RenderPass {
     var content: Content
 
-    @Environment(\.commandBuffer)
-    var commandBuffer
-
     public init(content: () -> Content) {
         self.content = content()
     }
@@ -97,24 +94,31 @@ public struct Render <Content>: RenderPass, BodylessRenderPass where Content: Re
 }
 
 extension RenderPass {
-    // TODO: Rename.
-    // TODO: Share with OffscreenRenderer and RenderView.
     func _process(log: Bool = true) throws {
         let logger = log ? logger : nil
 
+        var enviromentStack: [EnvironmentValues] = [.init()]
         let graph = try Graph(content: self)
         try graph.visit { _, _ in
             // This line intentionally left blank.
         }
         enter: { node in
+            var environment = node.environmentValues
+            environment.merge(enviromentStack.last!)
+
             logger?.log("Entering: \(node.shortDescription)")
             if let body = node.renderPass as? any BodylessRenderPass {
-                try body._enter(node)
+                try body._enter(node, environment: &environment)
             }
+            enviromentStack.append(environment)
         }
         exit: { node in
+            var environment = node.environmentValues
+            environment.merge(enviromentStack.last!)
+            enviromentStack.removeLast()
+
             if let body = node.renderPass as? any BodylessRenderPass {
-                try body._exit(node)
+                try body._exit(node, environment: environment)
             }
             logger?.log("Exited: \(node.shortDescription)")
         }

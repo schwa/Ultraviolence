@@ -6,20 +6,8 @@ public struct RenderPipeline <Content>: BodylessRenderPass where Content: Render
     @Environment(\.device)
     var device
 
-    @Environment(\.renderPassDescriptor)
-    var renderPassDescriptor
-
-    @Environment(\.vertexDescriptor)
-    var vertexDescriptor
-
-    @Environment(\.depthStencilDescriptor)
-    var depthStencilDescriptor
-
     @Environment(\.depthStencilState)
     var depthStencilState
-
-    @Environment(\.renderCommandEncoder)
-    var renderCommandEncoder
 
     var vertexShader: VertexShader
     var fragmentShader: FragmentShader
@@ -47,11 +35,13 @@ public struct RenderPipeline <Content>: BodylessRenderPass where Content: Render
         }
         try content.expandNode(node.children[0])
 
-        let renderPassDescriptor = try renderPassDescriptor.orThrow(.missingEnvironment("renderPassDescriptor"))
+        let environment = node.environmentValues
+
+        let renderPassDescriptor = try environment.renderPassDescriptor.orThrow(.missingEnvironment("renderPassDescriptor"))
         let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
         renderPipelineDescriptor.vertexFunction = vertexShader.function
         renderPipelineDescriptor.fragmentFunction = fragmentShader.function
-        guard let vertexDescriptor = vertexDescriptor ?? vertexShader.vertexDescriptor else {
+        guard let vertexDescriptor = environment.vertexDescriptor ?? vertexShader.vertexDescriptor else {
             throw UltraviolenceError.undefined
         }
         renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
@@ -64,18 +54,18 @@ public struct RenderPipeline <Content>: BodylessRenderPass where Content: Render
         self.renderPipelineState = renderPipelineState
         self.reflection = .init(reflection.orFatalError(.resourceCreationFailure))
 
-        if node.environmentValues[keyPath: \.depthStencilState] == nil, let depthStencilDescriptor {
+        if environment.depthStencilState == nil, let depthStencilDescriptor = environment.depthStencilDescriptor {
             let depthStencilState = device.makeDepthStencilState(descriptor: depthStencilDescriptor)
-            node.environmentValues[keyPath: \.depthStencilState] = depthStencilState
+            node.environmentValues.depthStencilState = depthStencilState
         }
 
-        node.environmentValues[keyPath: \.renderPipelineState] = renderPipelineState
-        node.environmentValues[keyPath: \.reflection] = self.reflection
+        node.environmentValues.renderPipelineState = renderPipelineState
+        node.environmentValues.reflection = self.reflection
     }
 
-    func _enter(_ node: Node) throws {
-        let renderCommandEncoder = try renderCommandEncoder.orThrow(.missingEnvironment("renderCommandEncoder"))
-        let renderPipelineState = try renderPipelineState.orThrow(.missingEnvironment("renderPipelineState"))
+    func _enter(_ node: Node, environment: inout EnvironmentValues) throws {
+        let renderCommandEncoder = try environment.renderCommandEncoder.orThrow(.missingEnvironment("renderCommandEncoder"))
+        let renderPipelineState = try environment.renderPipelineState.orThrow(.missingEnvironment("renderPipelineState"))
 
         if let depthStencilState {
             renderCommandEncoder.setDepthStencilState(depthStencilState)

@@ -22,6 +22,10 @@ public struct EnvironmentValues {
     }
 
     internal var values: [Key: Any] = [:]
+
+    internal mutating func merge(_ other: Self) {
+        values.merge(other.values) { _, new in new }
+    }
 }
 
 struct IdentifiableBox <Key, Value>: Identifiable where Key: Hashable {

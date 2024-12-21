@@ -3,9 +3,6 @@ import Metal
 public struct Draw: RenderPass, BodylessRenderPass {
     public typealias Body = Never
 
-    @Environment(\.renderCommandEncoder)
-    var renderCommandEncoder
-
     var encodeGeometry: (MTLRenderCommandEncoder) throws -> Void
 
     public init(encodeGeometry: @escaping (MTLRenderCommandEncoder) throws -> Void) {
@@ -16,7 +13,8 @@ public struct Draw: RenderPass, BodylessRenderPass {
         // This line intentionally left blank.
     }
 
-    func _enter(_ node: Node) throws {
-        try encodeGeometry(renderCommandEncoder.orThrow(.missingEnvironment("renderCommandEncoder")))
+    func _enter(_ node: Node, environment: inout EnvironmentValues) throws {
+        let renderCommandEncoder = try environment.renderCommandEncoder.orThrow(.missingEnvironment("renderCommandEncoder"))
+        try encodeGeometry(renderCommandEncoder)
     }
 }

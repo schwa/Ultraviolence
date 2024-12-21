@@ -22,18 +22,10 @@ public struct Compute <Content>: RenderPass, BodylessRenderPass where Content: R
     let logging: Bool
     let content: Content
 
-    @Environment(\.commandBuffer)
-    var commandBuffer
-
-    @Environment(\.computeCommandEncoder)
-    var computeCommandEncoder
-
     public init(logging: Bool = false, content: () -> Content) throws {
         let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
-
         // TODO: Move UP.
         commandQueue = try device.makeCommandQueue().orThrow(.resourceCreationFailure)
-
         self.logging = logging
         self.content = content()
     }
@@ -48,15 +40,15 @@ public struct Compute <Content>: RenderPass, BodylessRenderPass where Content: R
         try content.expandNode(node.children[0])
     }
 
-    func _enter(_ node: Node) throws {
-        let commandBuffer = try commandBuffer.orThrow(.missingEnvironment("commandBuffer"))
+    func _enter(_ node: Node, environment: inout EnvironmentValues) throws {
+        let commandBuffer = try environment.commandBuffer.orThrow(.missingEnvironment("commandBuffer"))
         let computeCommandEncoder = try commandBuffer.makeComputeCommandEncoder().orThrow(.resourceCreationFailure)
-        // TODO: FIXME - adding environment values here is _too_ late. They do not get propagated to childen.
-        node.environmentValues[keyPath: \.computeCommandEncoder] = computeCommandEncoder
+        environment.computeCommandEncoder = computeCommandEncoder
     }
 
-    func _exit(_ node: Node) throws {
-        computeCommandEncoder!.endEncoding()
+    func _exit(_ node: Node, environment: EnvironmentValues) throws {
+        let computeCommandEncoder = try environment.computeCommandEncoder.orThrow(.resourceCreationFailure)
+        computeCommandEncoder.endEncoding()
     }
 }
 
@@ -68,9 +60,6 @@ public struct ComputePipeline <Content>: RenderPass, BodylessRenderPass where Co
 
     @Environment(\.device)
     var device
-
-    @Environment(\.commandBuffer)
-    var commandBuffer
 
     public init(computeKernel: ComputeKernel, content: () -> Content) {
         self.computeKernel = computeKernel
@@ -101,12 +90,6 @@ public struct ComputeDispatch: RenderPass, BodylessRenderPass {
     var threads: MTLSize
     var threadsPerThreadgroup: MTLSize
 
-    @Environment(\.computePipelineState)
-    var computePipelineState
-
-    @Environment(\.computeCommandEncoder)
-    var computeCommandEncoder
-
     public init(threads: MTLSize, threadsPerThreadgroup: MTLSize) {
         self.threads = threads
         self.threadsPerThreadgroup = threadsPerThreadgroup
@@ -116,16 +99,12 @@ public struct ComputeDispatch: RenderPass, BodylessRenderPass {
         // This line intentionally left blank.
     }
 
-    func drawEnter() {
-        guard let computeCommandEncoder, let computePipelineState else {
+    func _enter(_ node: Node, environment: inout EnvironmentValues) throws {
+        guard let computeCommandEncoder = environment.computeCommandEncoder, let computePipelineState = environment.computePipelineState else {
             fatalError("No compute command encoder/compute pipeline state found.")
         }
         computeCommandEncoder.setComputePipelineState(computePipelineState)
         computeCommandEncoder.dispatchThreads(threads, threadsPerThreadgroup: threadsPerThreadgroup)
-    }
-
-    func drawExit() {
-        // This line intentionally left blank.
     }
 }
 

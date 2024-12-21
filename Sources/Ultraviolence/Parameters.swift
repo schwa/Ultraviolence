@@ -11,15 +11,6 @@ internal struct ParameterRenderPass<Content, T>: BodylessRenderPass where Conten
     var value: ParameterValue<T>
     var content: Content
 
-    @Environment(\.reflection)
-    var reflection
-
-    @Environment(\.renderCommandEncoder)
-    var renderCommandEncoder
-
-    @Environment(\.computeCommandEncoder)
-    var computeCommandEncoder
-
     internal init(functionType: MTLFunctionType? = nil, name: String, value: ParameterValue<T>, content: Content) {
         self.functionType = functionType
         self.name = name
@@ -38,10 +29,10 @@ internal struct ParameterRenderPass<Content, T>: BodylessRenderPass where Conten
         try content.expandNode(node.children[0])
     }
 
-    func _enter(_ node: Node) throws {
-        guard let reflection else {
-            fatalError("No reflection environment found.")
-        }
+    func _enter(_ node: Node, environment: inout EnvironmentValues) throws {
+        let reflection = try environment.reflection.orThrow(.missingEnvironment("reflection"))
+        let renderCommandEncoder = environment.renderCommandEncoder
+        let computeCommandEncoder = environment.computeCommandEncoder
 
         switch (renderCommandEncoder, computeCommandEncoder) {
         case (.some(let renderCommandEncoder), nil):
@@ -70,7 +61,6 @@ internal struct ParameterRenderPass<Content, T>: BodylessRenderPass where Conten
         case (.some, .some):
             fatalError("Trying to process \(self.shortDescription) with both a render command encoder and a compute command encoder.")
         default:
-            print(node.environmentValues.values.keys)
             fatalError("Trying to process `\(self.shortDescription) without a command encoder.")
         }
     }
