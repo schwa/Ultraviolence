@@ -31,12 +31,10 @@ public struct TeapotDemo: RenderPass {
     public var body: some RenderPass {
         let viewMatrix = cameraMatrix.inverse
         let cameraPosition = cameraMatrix.translation
-        Render {
-            // swiftlint:disable:next force_try
-            try! LambertianShader(color: [1, 0, 0, 1], size: size, modelMatrix: modelMatrix, viewMatrix: viewMatrix, cameraPosition: cameraPosition) {
-                Draw { encoder in
-                    encoder.draw(mesh)
-                }
+        // swiftlint:disable:next force_try
+        try! LambertianShader(color: [1, 0, 0, 1], size: size, modelMatrix: modelMatrix, viewMatrix: viewMatrix, cameraPosition: cameraPosition) {
+            Draw { encoder in
+                encoder.draw(mesh)
             }
         }
         .vertexDescriptor(MTLVertexDescriptor(mesh.vertexDescriptor))
@@ -49,7 +47,9 @@ public extension TeapotDemo {
     // TODO: Make generic for any RenderPass
     static func main() throws {
         let size = CGSize(width: 1_600, height: 1_200)
-        let renderPass = try Self(size: size, modelMatrix: .identity)
+        let renderPass = Render {
+            try! Self(size: size, modelMatrix: .identity)
+        }
         let offscreenRenderer = try OffscreenRenderer(size: size)
         let image = try offscreenRenderer.render(renderPass).cgImage
         let url = URL(fileURLWithPath: "output.png")

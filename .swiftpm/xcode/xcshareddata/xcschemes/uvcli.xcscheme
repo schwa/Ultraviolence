@@ -54,12 +54,17 @@
          <EnvironmentVariable
             key = "DEMO"
             value = "MixedExample"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </EnvironmentVariable>
          <EnvironmentVariable
             key = "DEMO"
             value = "MemcpyComputeDemo"
-            isEnabled = "YES">
+            isEnabled = "NO">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "DEMO"
+            value = "RedTriangle"
+            isEnabled = "NO">
          </EnvironmentVariable>
          <EnvironmentVariable
             key = "LOGGING"
@@ -68,7 +73,7 @@
          </EnvironmentVariable>
          <EnvironmentVariable
             key = "DEMO"
-            value = "RedTriangle"
+            value = "TeapotDemo"
             isEnabled = "NO">
          </EnvironmentVariable>
       </EnvironmentVariables>

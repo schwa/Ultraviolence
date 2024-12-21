@@ -18,4 +18,18 @@ public struct Render <Content>: RenderPass, BodylessRenderPass where Content: Re
         }
         try content.expandNode(node.children[0])
     }
+
+    func _enter(_ node: Node, environment: inout EnvironmentValues) throws {
+        let commandBuffer = try environment.commandBuffer.orThrow(.missingEnvironment("commandBuffer"))
+        let renderPassDescriptor = try environment.renderPassDescriptor.orThrow(.missingEnvironment("renderPassDescriptor"))
+        logger?.log("Render.\(#function) makeRenderCommandEncoder")
+        let renderCommandEncoder = try commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor).orThrow(.resourceCreationFailure)
+        environment.renderCommandEncoder = renderCommandEncoder
+    }
+
+    func _exit(_ node: Node, environment: EnvironmentValues) throws {
+        let renderCommandEncoder = try environment.renderCommandEncoder.orThrow(.missingEnvironment("renderCommandEncoder"))
+        renderCommandEncoder.endEncoding()
+        logger?.log("Render.\(#function) endEncoding")
+    }
 }

@@ -42,12 +42,14 @@ public struct Compute <Content>: RenderPass, BodylessRenderPass where Content: R
 
     func _enter(_ node: Node, environment: inout EnvironmentValues) throws {
         let commandBuffer = try environment.commandBuffer.orThrow(.missingEnvironment("commandBuffer"))
+        logger?.log("Compute.\(#function) makeComputeCommandEncoder")
         let computeCommandEncoder = try commandBuffer.makeComputeCommandEncoder().orThrow(.resourceCreationFailure)
         environment.computeCommandEncoder = computeCommandEncoder
     }
 
     func _exit(_ node: Node, environment: EnvironmentValues) throws {
-        let computeCommandEncoder = try environment.computeCommandEncoder.orThrow(.resourceCreationFailure)
+        logger?.log("Compute.\(#function) endEncoding")
+        let computeCommandEncoder = try environment.computeCommandEncoder.orThrow(.missingEnvironment("computeCommandEncoder"))
         computeCommandEncoder.endEncoding()
     }
 }

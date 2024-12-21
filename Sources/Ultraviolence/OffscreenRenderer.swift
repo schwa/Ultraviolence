@@ -37,11 +37,11 @@ public struct OffscreenRenderer {
     public init(size: CGSize) throws {
         let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
         let colorTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm_srgb, width: Int(size.width), height: Int(size.height), mipmapped: false)
-        colorTextureDescriptor.usage = [.renderTarget]
+        colorTextureDescriptor.usage = [.renderTarget, .shaderRead, .shaderWrite] // TODO: this is all hardcoded :-(
         let colorTexture = try device.makeTexture(descriptor: colorTextureDescriptor).orThrow(.resourceCreationFailure)
 
         let depthTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: Int(size.width), height: Int(size.height), mipmapped: false)
-        depthTextureDescriptor.usage = [.renderTarget]
+        depthTextureDescriptor.usage = [.renderTarget, .shaderRead] // TODO: this is all hardcoded :-(
         let depthTexture = try device.makeTexture(descriptor: depthTextureDescriptor).orThrow(.resourceCreationFailure)
 
         try self.init(size: size, colorTexture: colorTexture, depthTexture: depthTexture)
@@ -56,9 +56,7 @@ public extension OffscreenRenderer {
     @MainActor
     func render<Content>(_ content: Content) throws -> Rendering where Content: RenderPass {
         let commandBuffer = try commandQueue.makeCommandBuffer().orThrow(.resourceCreationFailure)
-        let renderEncoder = try commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor).orThrow(.resourceCreationFailure)
         defer {
-            renderEncoder.endEncoding()
             commandBuffer.commit()
             commandBuffer.waitUntilCompleted()
         }
@@ -68,7 +66,6 @@ public extension OffscreenRenderer {
             .environment(\.device, device)
             .environment(\.commandBuffer, commandBuffer)
             .environment(\.commandQueue, commandQueue)
-            .environment(\.renderCommandEncoder, renderEncoder) // TODO: Move to render
 
         try root._process()
 
