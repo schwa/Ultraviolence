@@ -41,9 +41,9 @@ public struct RenderView <Content>: NSViewRepresentable where Content: Element {
 #elseif os(iOS)
 public struct RenderView <Content>: UIViewRepresentable where Content: Element {
     let device = MTLCreateSystemDefaultDevice().orFatalError(.resourceCreationFailure)
-    let content: Content
+    var content: (CAMetalDrawable, MTLRenderPassDescriptor) -> Content
 
-    public init(_ content: Content) {
+    public init(_ content: @escaping (CAMetalDrawable, MTLRenderPassDescriptor) -> Content) {
         self.content = content
     }
 
