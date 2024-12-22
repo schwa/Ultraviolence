@@ -105,18 +105,15 @@ public class RenderPassCoordinator <Content>: NSObject, MTKViewDelegate where Co
             try commandQueue.withCommandBuffer(completion: .none, label: "􀐛RenderView.Coordinator.commandBuffer", debugGroup: "􀯕RenderView.Coordinator.draw()") { commandBuffer in
                 let renderPassDescriptor = try view.currentRenderPassDescriptor.orThrow(.undefined)
 
-                let renderEncoder = try commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor).orThrow(.resourceCreationFailure)
-
                 // TODO: Move to init().
                 let root = content
                     .environment(\.renderPassDescriptor, renderPassDescriptor)
                     .environment(\.device, device)
                     .environment(\.commandQueue, commandQueue)
-                    .environment(\.renderCommandEncoder, renderEncoder) // TODO: Move to Render() render pass.
+                    .environment(\.commandBuffer, commandBuffer)
 
                 try root._process()
 
-                renderEncoder.endEncoding()
                 commandBuffer.commit()
             }
         } catch {
