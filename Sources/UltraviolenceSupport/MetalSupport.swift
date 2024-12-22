@@ -3,6 +3,7 @@
 import Metal
 import MetalKit
 import ModelIO
+import simd
 
 public extension MTLVertexDescriptor {
     convenience init(vertexAttributes: [MTLVertexAttribute]) {
@@ -555,5 +556,11 @@ public extension MTLCommandBufferDescriptor {
             print(message)
         }
         self.logState = logState
+    }
+}
+
+public extension SIMD2<Float> {
+    init(_ size: CGSize) {
+        self.init(Float(size.width), Float(size.height))
     }
 }

@@ -1,14 +1,15 @@
 import Metal
 import MetalKit
 internal import os
+import QuartzCore
 import SwiftUI
 
 #if os(macOS)
 public struct RenderView <Content>: NSViewRepresentable where Content: Element {
-    let device = MTLCreateSystemDefaultDevice().orFatalError(.resourceCreationFailure)
-    let content: Content
+    var device = MTLCreateSystemDefaultDevice().orFatalError(.resourceCreationFailure)
+    var content: (CAMetalDrawable, MTLRenderPassDescriptor) -> Content
 
-    public init(_ content: Content) {
+    public init(_ content: @escaping (CAMetalDrawable, MTLRenderPassDescriptor) -> Content) {
         self.content = content
     }
 
@@ -75,7 +76,7 @@ public struct RenderView <Content>: UIViewRepresentable where Content: Element {
 public class RenderPassCoordinator <Content>: NSObject, MTKViewDelegate where Content: Element {
     var device: MTLDevice
     var commandQueue: MTLCommandQueue
-    var content: Content {
+    var content: (CAMetalDrawable, MTLRenderPassDescriptor) -> Content {
         didSet {
             print("Content did change")
         }
@@ -83,7 +84,7 @@ public class RenderPassCoordinator <Content>: NSObject, MTKViewDelegate where Co
     var lastError: Error?
     var logger: Logger? = Logger()
 
-    init(device: MTLDevice, content: Content) throws {
+    init(device: MTLDevice, content: @escaping (CAMetalDrawable, MTLRenderPassDescriptor) -> Content) throws {
         self.device = device
         self.content = content
         self.commandQueue = try device.makeCommandQueue().orThrow(.resourceCreationFailure)
@@ -106,7 +107,7 @@ public class RenderPassCoordinator <Content>: NSObject, MTKViewDelegate where Co
                 let renderPassDescriptor = try view.currentRenderPassDescriptor.orThrow(.undefined)
 
                 // TODO: Move to init().
-                let root = content
+                let root = content(currentDrawable, renderPassDescriptor)
                     .environment(\.renderPassDescriptor, renderPassDescriptor)
                     .environment(\.device, device)
                     .environment(\.commandQueue, commandQueue)

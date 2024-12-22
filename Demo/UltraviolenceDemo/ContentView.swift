@@ -5,23 +5,17 @@ import Ultraviolence
 import UltraviolenceExamples
 import UltraviolenceSupport
 
-// swiftlint:disable force_try
-
 struct ContentView: View {
-    @SwiftUI.State
-    var size: CGSize = .zero
-
     @SwiftUI.State
     var angle: SwiftUI.Angle = .zero
 
     var body: some View {
         let modelMatrix = simd_float4x4(yRotation: .init(radians: Float(angle.radians)))
-        RenderView(
-            RenderPass {
-                try! TeapotDemo(size: size, modelMatrix: modelMatrix)
-            }
-        )
-        .onGeometryChange(for: CGSize.self, of: \.size) { size = $0 }
+        RenderView { drawable, renderPassDescriptor in
+            let colorTexture = renderPassDescriptor.colorAttachments[0].texture.orFatalError()
+            let depthTexture = renderPassDescriptor.depthAttachment.texture.orFatalError()
+            return MixedExample(drawableSize: .init(drawable.layer.drawableSize), colorTexture: colorTexture, depthTexture: depthTexture, modelMatrix: modelMatrix)
+        }
         .overlay(alignment: .bottom) {
             VStack {
                 Slider(value: $angle.radians, in: 0...(.pi * 2))

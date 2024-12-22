@@ -15,9 +15,9 @@ public struct TeapotDemo: Element {
     var mesh: MTKMesh
     var modelMatrix: simd_float4x4
     var cameraMatrix: simd_float4x4
-    var size: CGSize
+    var drawableSize: SIMD2<Float>
 
-    public init(size: CGSize, modelMatrix: simd_float4x4) throws {
+    public init(drawableSize: SIMD2<Float>, modelMatrix: simd_float4x4) throws {
         let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
         let teapotURL = try Bundle.module.url(forResource: "teapot", withExtension: "obj").orThrow(.resourceCreationFailure)
         let mdlAsset = MDLAsset(url: teapotURL, vertexDescriptor: nil, bufferAllocator: MTKMeshBufferAllocator(device: device))
@@ -25,14 +25,14 @@ public struct TeapotDemo: Element {
         mesh = try MTKMesh(mesh: mdlMesh, device: device)
         self.modelMatrix = modelMatrix
         cameraMatrix = simd_float4x4(translation: [0, 2, 6])
-        self.size = size
+        self.drawableSize = drawableSize
     }
 
     public var body: some Element {
         let viewMatrix = cameraMatrix.inverse
         let cameraPosition = cameraMatrix.translation
         // swiftlint:disable:next force_try
-        try! LambertianShader(color: [1, 0, 0, 1], size: size, modelMatrix: modelMatrix, viewMatrix: viewMatrix, cameraPosition: cameraPosition) {
+        try! LambertianShader(color: [1, 0, 0, 1], drawableSize: drawableSize, modelMatrix: modelMatrix, viewMatrix: viewMatrix, cameraPosition: cameraPosition) {
             Draw { encoder in
                 encoder.draw(mesh)
             }
@@ -48,7 +48,7 @@ public extension TeapotDemo {
     static func main() throws {
         let size = CGSize(width: 1_600, height: 1_200)
         let element = RenderPass {
-            try! Self(size: size, modelMatrix: .identity)
+            try! Self(drawableSize: [Float(size.width), Float(size.height)], modelMatrix: .identity)
         }
         let offscreenRenderer = try OffscreenRenderer(size: size)
         let image = try offscreenRenderer.render(element).cgImage
