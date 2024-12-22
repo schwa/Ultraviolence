@@ -40,7 +40,7 @@ enum RedTriangle {
         let vertexShader = try VertexShader(source: source)
         let fragmentShader = try FragmentShader(source: source)
 
-        let root = Render {
+        let root = RenderPass {
             RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                 Draw { encoder in
                     let vertices: [SIMD2<Float>] = [[0, 0.75], [-0.75, -0.75], [0.75, -0.75]]

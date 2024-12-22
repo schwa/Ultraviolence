@@ -47,7 +47,7 @@ public extension TeapotDemo {
     // TODO: Make generic for any RenderPass
     static func main() throws {
         let size = CGSize(width: 1_600, height: 1_200)
-        let element = Render {
+        let element = RenderPass {
             try! Self(size: size, modelMatrix: .identity)
         }
         let offscreenRenderer = try OffscreenRenderer(size: size)

@@ -17,7 +17,7 @@ struct ContentView: View {
     var body: some View {
         let modelMatrix = simd_float4x4(yRotation: .init(radians: Float(angle.radians)))
         RenderView(
-            Render {
+            RenderPass {
                 try! TeapotDemo(size: size, modelMatrix: modelMatrix)
             }
         )

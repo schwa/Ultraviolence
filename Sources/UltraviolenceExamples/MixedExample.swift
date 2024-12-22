@@ -18,7 +18,7 @@ public struct MixedExample: Element {
     }
 
     public var body: some Element {
-        Render {
+        RenderPass {
             // swiftlint:disable:next force_try
             try! TeapotDemo(size: size, modelMatrix: modelMatrix)
             .colorAttachment(colorTexture, index: 0)

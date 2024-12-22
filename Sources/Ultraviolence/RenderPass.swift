@@ -1,7 +1,6 @@
 import Metal
 
-// TODO: this should really be called renderpass
-public struct Render <Content>: Element, BodylessElement where Content: Element {
+public struct RenderPass <Content>: Element, BodylessElement where Content: Element {
     var content: Content
 
     public init(content: () -> Content) {
