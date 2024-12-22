@@ -47,9 +47,9 @@ public extension Element {
 
 extension Graph {
     @MainActor
-    func _process(log: Bool = true) throws {
+    func _process(rootEnvironment: EnvironmentValues, log: Bool = true) throws {
         let logger = log ? logger : nil
-        var enviromentStack: [EnvironmentValues] = [.init()]
+        var enviromentStack: [EnvironmentValues] = [rootEnvironment]
         try self.visit { _, _ in
             // This line intentionally left blank.
         }
@@ -81,6 +81,6 @@ extension Element {
     @available(*, deprecated, message: "Deprecated. Use Graph._process()")
     func _process(log: Bool = true) throws {
         let graph = try Graph(content: self)
-        try graph._process(log: log)
+        try graph._process(rootEnvironment: .init(), log: log)
     }
 }
