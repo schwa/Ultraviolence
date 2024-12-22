@@ -42,6 +42,7 @@ public struct Compute <Content>: Element, BodylessElement where Content: Element
 
     func _enter(_ node: Node, environment: inout EnvironmentValues) throws {
         let commandBuffer = try environment.commandBuffer.orThrow(.missingEnvironment(\.commandBuffer))
+        commandBuffer.pushDebugGroup("COMPUTE PASS")
         logger?.log("Compute.\(#function) makeComputeCommandEncoder")
         let computeCommandEncoder = try commandBuffer.makeComputeCommandEncoder().orThrow(.resourceCreationFailure)
         environment.computeCommandEncoder = computeCommandEncoder
@@ -51,6 +52,8 @@ public struct Compute <Content>: Element, BodylessElement where Content: Element
         logger?.log("Compute.\(#function) endEncoding")
         let computeCommandEncoder = try environment.computeCommandEncoder.orThrow(.missingEnvironment(\.computeCommandEncoder))
         computeCommandEncoder.endEncoding()
+        let commandBuffer = try environment.commandBuffer.orThrow(.missingEnvironment(\.commandBuffer))
+        commandBuffer.popDebugGroup()
     }
 }
 
@@ -124,10 +127,12 @@ public extension Compute {
             commandBuffer.waitUntilCompleted()
         }
 
-        let root = self
-        .environment(\.device, device)
-        .environment(\.commandBuffer, commandBuffer)
-        .environment(\.commandQueue, commandQueue)
-        try root._process()
+        try commandBuffer.withDebugGroup("COMMAND BUFFER") {
+            let root = self
+                .environment(\.device, device)
+                .environment(\.commandBuffer, commandBuffer)
+                .environment(\.commandQueue, commandQueue)
+            try root._process()
+        }
     }
 }

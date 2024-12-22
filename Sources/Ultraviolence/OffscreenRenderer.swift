@@ -27,7 +27,7 @@ public struct OffscreenRenderer {
         renderPassDescriptor.depthAttachment.texture = depthTexture
         renderPassDescriptor.depthAttachment.loadAction = .clear
         renderPassDescriptor.depthAttachment.clearDepth = 1
-        renderPassDescriptor.depthAttachment.storeAction = .dontCare
+        renderPassDescriptor.depthAttachment.storeAction = .store // TODO: This is hardcoded. Should usually be .dontCare but we need to read back in some examples.
         self.renderPassDescriptor = renderPassDescriptor
 
         commandQueue = try device.makeCommandQueue().orThrow(.resourceCreationFailure)
@@ -39,10 +39,12 @@ public struct OffscreenRenderer {
         let colorTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm_srgb, width: Int(size.width), height: Int(size.height), mipmapped: false)
         colorTextureDescriptor.usage = [.renderTarget, .shaderRead, .shaderWrite] // TODO: this is all hardcoded :-(
         let colorTexture = try device.makeTexture(descriptor: colorTextureDescriptor).orThrow(.resourceCreationFailure)
+        colorTexture.label = "Color Texture"
 
         let depthTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: Int(size.width), height: Int(size.height), mipmapped: false)
         depthTextureDescriptor.usage = [.renderTarget, .shaderRead] // TODO: this is all hardcoded :-(
         let depthTexture = try device.makeTexture(descriptor: depthTextureDescriptor).orThrow(.resourceCreationFailure)
+        depthTexture.label = "Depth Texture"
 
         try self.init(size: size, colorTexture: colorTexture, depthTexture: depthTexture)
     }
@@ -54,22 +56,24 @@ public struct OffscreenRenderer {
 
 public extension OffscreenRenderer {
     @MainActor
-    func render<Content>(_ content: Content) throws -> Rendering where Content: Element {
-        let commandBuffer = try commandQueue.makeCommandBuffer().orThrow(.resourceCreationFailure)
-        defer {
-            commandBuffer.commit()
-            commandBuffer.waitUntilCompleted()
+    func render<Content>(_ content: Content, capture: Bool = false) throws -> Rendering where Content: Element {
+        try MTLCaptureManager.shared().with(enabled: capture) {
+            let commandBuffer = try commandQueue.makeCommandBuffer().orThrow(.resourceCreationFailure)
+            defer {
+                commandBuffer.commit()
+                commandBuffer.waitUntilCompleted()
+            }
+
+            let root = content
+                .environment(\.renderPassDescriptor, renderPassDescriptor)
+                .environment(\.device, device)
+                .environment(\.commandBuffer, commandBuffer)
+                .environment(\.commandQueue, commandQueue)
+
+                try root._process()
+
+            return .init(texture: colorTexture)
         }
-
-        let root = content
-            .environment(\.renderPassDescriptor, renderPassDescriptor)
-            .environment(\.device, device)
-            .environment(\.commandBuffer, commandBuffer)
-            .environment(\.commandQueue, commandQueue)
-
-        try root._process()
-
-        return .init(texture: colorTexture)
     }
 }
 

@@ -75,7 +75,7 @@ public extension MTLCaptureManager {
 }
 
 public extension MTLCommandBuffer {
-    func withDebugGroup<R>(enabled: Bool = true, label: String, _ body: () throws -> R) rethrows -> R {
+    func withDebugGroup<R>(enabled: Bool = true, _ label: String, _ body: () throws -> R) rethrows -> R {
         guard enabled else {
             return try body()
         }
@@ -88,7 +88,7 @@ public extension MTLCommandBuffer {
 }
 
 public extension MTLRenderCommandEncoder {
-    func withDebugGroup<R>(enabled: Bool = true, label: String, _ body: () throws -> R) rethrows -> R {
+    func withDebugGroup<R>(enabled: Bool = true, _ label: String, _ body: () throws -> R) rethrows -> R {
         guard enabled else {
             return try body()
         }
@@ -101,7 +101,7 @@ public extension MTLRenderCommandEncoder {
 }
 
 public extension MTLComputeCommandEncoder {
-    func withDebugGroup<R>(enabled: Bool = true, label: String, _ body: () throws -> R) rethrows -> R {
+    func withDebugGroup<R>(enabled: Bool = true, _ label: String, _ body: () throws -> R) rethrows -> R {
         guard enabled else {
             return try body()
         }
@@ -249,12 +249,14 @@ public extension MTLBuffer {
 
 public extension MTLRenderCommandEncoder {
     func draw(_ mesh: MTKMesh) {
-        for (index, vertexBuffer) in mesh.vertexBuffers.enumerated() {
-            setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: index)
-        }
+        withDebugGroup("draw mesh \(mesh.name)") {
+            for (index, vertexBuffer) in mesh.vertexBuffers.enumerated() {
+                setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: index)
+            }
 
-        for submesh in mesh.submeshes {
-            draw(submesh)
+            for submesh in mesh.submeshes {
+                draw(submesh)
+            }
         }
     }
 

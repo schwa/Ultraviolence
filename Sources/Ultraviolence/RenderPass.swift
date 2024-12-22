@@ -20,6 +20,7 @@ public struct RenderPass <Content>: Element, BodylessElement where Content: Elem
 
     func _enter(_ node: Node, environment: inout EnvironmentValues) throws {
         let commandBuffer = try environment.commandBuffer.orThrow(.missingEnvironment(\.commandBuffer))
+        commandBuffer.pushDebugGroup("RENDER PASS")
         let renderPassDescriptor = try environment.renderPassDescriptor.orThrow(.missingEnvironment(\.renderPassDescriptor))
         logger?.log("Render.\(#function) makeRenderCommandEncoder")
         let renderCommandEncoder = try commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor).orThrow(.resourceCreationFailure)
@@ -27,8 +28,10 @@ public struct RenderPass <Content>: Element, BodylessElement where Content: Elem
     }
 
     func _exit(_ node: Node, environment: EnvironmentValues) throws {
+        let commandBuffer = try environment.commandBuffer.orThrow(.missingEnvironment(\.commandBuffer))
         let renderCommandEncoder = try environment.renderCommandEncoder.orThrow(.missingEnvironment(\.renderCommandEncoder))
         renderCommandEncoder.endEncoding()
         logger?.log("Render.\(#function) endEncoding")
+        commandBuffer.popDebugGroup()
     }
 }
