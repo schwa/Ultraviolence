@@ -45,13 +45,12 @@ public extension Element {
 
 // MARK: -
 
-extension Element {
+extension Graph {
+    @MainActor
     func _process(log: Bool = true) throws {
         let logger = log ? logger : nil
-
         var enviromentStack: [EnvironmentValues] = [.init()]
-        let graph = try Graph(content: self)
-        try graph.visit { _, _ in
+        try self.visit { _, _ in
             // This line intentionally left blank.
         }
         enter: { node in
@@ -74,5 +73,14 @@ extension Element {
             }
             logger?.log("Exited: \(node.shortDescription)")
         }
+    }
+}
+
+extension Element {
+    // TODO: This should be on graph
+    @available(*, deprecated, message: "Deprecated. Use Graph._process()")
+    func _process(log: Bool = true) throws {
+        let graph = try Graph(content: self)
+        try graph._process(log: log)
     }
 }

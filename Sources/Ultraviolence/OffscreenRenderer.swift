@@ -57,21 +57,22 @@ public struct OffscreenRenderer {
 public extension OffscreenRenderer {
     @MainActor
     func render<Content>(_ content: Content, capture: Bool = false) throws -> Rendering where Content: Element {
-        try MTLCaptureManager.shared().with(enabled: capture) {
+        let graph = try Graph(content: content)
+
+        return try MTLCaptureManager.shared().with(enabled: capture) {
             let commandBuffer = try commandQueue.makeCommandBuffer().orThrow(.resourceCreationFailure)
             defer {
                 commandBuffer.commit()
                 commandBuffer.waitUntilCompleted()
             }
-
+            // TODO: Move as much of this as possible outside capture manager.
             let root = content
                 .environment(\.renderPassDescriptor, renderPassDescriptor)
                 .environment(\.device, device)
                 .environment(\.commandBuffer, commandBuffer)
                 .environment(\.commandQueue, commandQueue)
 
-                try root._process()
-
+            try graph._process()
             return .init(texture: colorTexture)
         }
     }

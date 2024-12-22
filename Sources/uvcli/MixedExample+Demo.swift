@@ -10,7 +10,7 @@ extension MixedExample: Demo {
         let size = CGSize(width: 1_600, height: 1_200)
         let offscreenRenderer = try OffscreenRenderer(size: size)
         let element = MixedExample(size: size, colorTexture: offscreenRenderer.colorTexture, depthTexture: offscreenRenderer.depthTexture, modelMatrix: .identity)
-        let image = try offscreenRenderer.render(element, capture: false).cgImage
+        let image = try offscreenRenderer.render(element, capture: true).cgImage
         let url = URL(fileURLWithPath: "output.png")
         let imageDestination = CGImageDestinationCreateWithURL(url as CFURL, UTType.png.identifier as CFString, 1, nil)!
         CGImageDestinationAddImage(imageDestination, image, nil)
