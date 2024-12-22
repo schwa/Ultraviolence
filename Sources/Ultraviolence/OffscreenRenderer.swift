@@ -54,7 +54,7 @@ public struct OffscreenRenderer {
 
 public extension OffscreenRenderer {
     @MainActor
-    func render<Content>(_ content: Content) throws -> Rendering where Content: RenderPass {
+    func render<Content>(_ content: Content) throws -> Rendering where Content: Element {
         let commandBuffer = try commandQueue.makeCommandBuffer().orThrow(.resourceCreationFailure)
         defer {
             commandBuffer.commit()

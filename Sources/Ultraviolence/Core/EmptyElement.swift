@@ -1,4 +1,4 @@
-public struct EmptyRenderPass: RenderPass {
+public struct EmptyElement: Element {
     public typealias Body = Never
 
     public init() {
@@ -6,7 +6,7 @@ public struct EmptyRenderPass: RenderPass {
     }
 }
 
-extension EmptyRenderPass: BodylessRenderPass {
+extension EmptyElement: BodylessElement {
     func _expandNode(_ node: Node) throws {
         // This line intentionally left blank.
     }

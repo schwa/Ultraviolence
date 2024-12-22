@@ -4,7 +4,7 @@ internal import os
 import SwiftUI
 
 #if os(macOS)
-public struct RenderView <Content>: NSViewRepresentable where Content: RenderPass {
+public struct RenderView <Content>: NSViewRepresentable where Content: Element {
     let device = MTLCreateSystemDefaultDevice().orFatalError(.resourceCreationFailure)
     let content: Content
 
@@ -38,7 +38,7 @@ public struct RenderView <Content>: NSViewRepresentable where Content: RenderPas
     }
 }
 #elseif os(iOS)
-public struct RenderView <Content>: UIViewRepresentable where Content: RenderPass {
+public struct RenderView <Content>: UIViewRepresentable where Content: Element {
     let device = MTLCreateSystemDefaultDevice().orFatalError(.resourceCreationFailure)
     let content: Content
 
@@ -72,7 +72,7 @@ public struct RenderView <Content>: UIViewRepresentable where Content: RenderPas
 
 // MARK: -
 
-public class RenderPassCoordinator <Content>: NSObject, MTKViewDelegate where Content: RenderPass {
+public class RenderPassCoordinator <Content>: NSObject, MTKViewDelegate where Content: Element {
     var device: MTLDevice
     var commandQueue: MTLCommandQueue
     var content: Content {

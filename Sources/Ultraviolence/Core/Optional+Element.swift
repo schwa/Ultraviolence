@@ -1,4 +1,4 @@
-extension Optional: RenderPass, BodylessRenderPass where Wrapped: RenderPass {
+extension Optional: Element, BodylessElement where Wrapped: Element {
     public typealias Body = Never
 
     func _expandNode(_ node: Node) throws {

@@ -40,7 +40,7 @@ enum RedTriangle {
         let vertexShader = try VertexShader(source: source)
         let fragmentShader = try FragmentShader(source: source)
 
-        let renderPass = Render {
+        let root = Render {
             RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                 Draw { encoder in
                     let vertices: [SIMD2<Float>] = [[0, 0.75], [-0.75, -0.75], [0.75, -0.75]]
@@ -53,7 +53,7 @@ enum RedTriangle {
 
         //        try MTLCaptureManager.shared().with {
         let offscreenRenderer = try OffscreenRenderer(size: CGSize(width: 1_600, height: 1_200))
-        let image = try offscreenRenderer.render(renderPass).cgImage
+        let image = try offscreenRenderer.render(root).cgImage
         let url = URL(fileURLWithPath: "output.png")
         let imageDestination = CGImageDestinationCreateWithURL(url as CFURL, UTType.png.identifier as CFString, 1, nil)!
         CGImageDestinationAddImage(imageDestination, image, nil)

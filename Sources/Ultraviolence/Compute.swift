@@ -17,7 +17,7 @@ public struct ComputeKernel {
 
 // MARK: -
 
-public struct Compute <Content>: RenderPass, BodylessRenderPass where Content: RenderPass {
+public struct Compute <Content>: Element, BodylessElement where Content: Element {
     let commandQueue: MTLCommandQueue
     let logging: Bool
     let content: Content
@@ -56,7 +56,7 @@ public struct Compute <Content>: RenderPass, BodylessRenderPass where Content: R
 
 // MARK: -
 
-public struct ComputePipeline <Content>: RenderPass, BodylessRenderPass where Content: RenderPass {
+public struct ComputePipeline <Content>: Element, BodylessElement where Content: Element {
     var computeKernel: ComputeKernel
     var content: Content
 
@@ -88,7 +88,7 @@ public struct ComputePipeline <Content>: RenderPass, BodylessRenderPass where Co
 
 // MARK: -
 
-public struct ComputeDispatch: RenderPass, BodylessRenderPass {
+public struct ComputeDispatch: Element, BodylessElement {
     var threads: MTLSize
     var threadsPerThreadgroup: MTLSize
 

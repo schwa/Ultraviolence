@@ -3,7 +3,7 @@ import simd
 import Ultraviolence
 internal import UltraviolenceSupport
 
-public struct LambertianShader <Content>: RenderPass where Content: RenderPass {
+public struct LambertianShader <Content>: Element where Content: Element {
     let source = """
     #include <metal_stdlib>
     using namespace metal;
@@ -89,7 +89,7 @@ public struct LambertianShader <Content>: RenderPass where Content: RenderPass {
         fragmentShader = try FragmentShader(source: source)
     }
 
-    public var body: some RenderPass {
+    public var body: some Element {
         RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
             content
                 .parameter("color", value: color)

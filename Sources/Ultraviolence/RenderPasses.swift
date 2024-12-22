@@ -20,60 +20,32 @@ public extension EnvironmentValues {
     @Entry var depthAttachment: MTLTexture?
 }
 
-public extension RenderPass {
-    func colorAttachment(_ texture: MTLTexture, index: Int) -> some RenderPass {
+public extension Element {
+    func colorAttachment(_ texture: MTLTexture, index: Int) -> some Element {
         environment(\.colorAttachment, (texture, index))
     }
-    func depthAttachment(_ texture: MTLTexture) -> some RenderPass {
+    func depthAttachment(_ texture: MTLTexture) -> some Element {
         environment(\.depthAttachment, texture)
     }
 }
 
-public extension RenderPass {
-    func vertexDescriptor(_ vertexDescriptor: MTLVertexDescriptor) -> some RenderPass {
+public extension Element {
+    func vertexDescriptor(_ vertexDescriptor: MTLVertexDescriptor) -> some Element {
         environment(\.vertexDescriptor, vertexDescriptor)
     }
 
-    func depthStencilDescriptor(_ depthStencilDescriptor: MTLDepthStencilDescriptor) -> some RenderPass {
+    func depthStencilDescriptor(_ depthStencilDescriptor: MTLDepthStencilDescriptor) -> some Element {
         environment(\.depthStencilDescriptor, depthStencilDescriptor)
     }
 
-    func depthCompare(function: MTLCompareFunction, enabled: Bool) -> some RenderPass {
+    func depthCompare(function: MTLCompareFunction, enabled: Bool) -> some Element {
         depthStencilDescriptor(.init(depthCompareFunction: function, isDepthWriteEnabled: enabled))
     }
 }
 
 // MARK: -
 
-public struct VertexShader {
-    let function: MTLFunction
-
-    public init(source: String) throws {
-        let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
-        let library = try device.makeLibrary(source: source, options: nil)
-        function = try library.functionNames.compactMap { library.makeFunction(name: $0) }.first { $0.functionType == .vertex }.orThrow(.resourceCreationFailure)
-    }
-}
-
-public struct FragmentShader {
-    let function: MTLFunction
-
-    public init(source: String) throws {
-        let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
-        let library = try device.makeLibrary(source: source, options: nil)
-        function = try library.functionNames.compactMap { library.makeFunction(name: $0) }.first { $0.functionType == .fragment }.orThrow(.resourceCreationFailure)
-    }
-}
-
-public extension VertexShader {
-    var vertexDescriptor: MTLVertexDescriptor? {
-        function.vertexDescriptor
-    }
-}
-
-// MARK: -
-
-extension RenderPass {
+extension Element {
     func _process(log: Bool = true) throws {
         let logger = log ? logger : nil
 
@@ -87,7 +59,7 @@ extension RenderPass {
             environment.merge(enviromentStack.last!)
 
             logger?.log("Entering: \(node.shortDescription)")
-            if let body = node.renderPass as? any BodylessRenderPass {
+            if let body = node.element as? any BodylessElement {
                 try body._enter(node, environment: &environment)
             }
             enviromentStack.append(environment)
@@ -97,24 +69,10 @@ extension RenderPass {
             environment.merge(enviromentStack.last!)
             enviromentStack.removeLast()
 
-            if let body = node.renderPass as? any BodylessRenderPass {
+            if let body = node.element as? any BodylessElement {
                 try body._exit(node, environment: environment)
             }
             logger?.log("Exited: \(node.shortDescription)")
         }
-    }
-}
-
-extension RenderPass {
-    func _dump() {
-        let graph = try! Graph(content: self)
-        graph.dump()
-    }
-}
-
-@MainActor
-extension Node {
-    var shortDescription: String {
-        "\(self.renderPass!.shortDescription)"
     }
 }

@@ -2,8 +2,8 @@ internal final class Node {
     weak var graph: Graph?
     var children: [Node] = []
     var needsRebuild = true
-    var renderPass: (any RenderPass)?
-    var previousRenderPass: (any RenderPass)?
+    var element: (any Element)?
+    var previousElement: (any Element)?
     var stateProperties: [String: Any] = [:]
     var environmentValues = EnvironmentValues()
 
@@ -18,7 +18,7 @@ internal final class Node {
 
     @MainActor
     func rebuildIfNeeded() throws {
-        try renderPass?.expandNode(self)
+        try element?.expandNode(self)
     }
 
     func setNeedsRebuild() {

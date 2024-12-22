@@ -1,6 +1,6 @@
 import UltraviolenceSupport
 
-public struct EnvironmentDumper: RenderPass, BodylessRenderPass {
+public struct EnvironmentDumper: Element, BodylessElement {
     @Environment(\.self)
     var environment
 
@@ -44,7 +44,7 @@ extension Node {
     }
 }
 
-extension RenderPass {
+extension Element {
     var shortDescription: String {
         "\(type(of: self))"
     }
@@ -65,5 +65,19 @@ internal extension IdentifiableBox where Key == ObjectIdentifier, Value: AnyObje
     init(_ value: Value) {
         self.id = ObjectIdentifier(value)
         self.value = value
+    }
+}
+
+extension Element {
+    func _dump() {
+        let graph = try! Graph(content: self)
+        graph.dump()
+    }
+}
+
+@MainActor
+extension Node {
+    var shortDescription: String {
+        "\(self.element!.shortDescription)"
     }
 }

@@ -1,7 +1,7 @@
 import Metal
 import UltraviolenceSupport
 
-public struct RenderPipeline <Content>: BodylessRenderPass where Content: RenderPass {
+public struct RenderPipeline <Content>: BodylessElement where Content: Element {
     public typealias Body = Never
     @Environment(\.device)
     var device
@@ -19,7 +19,7 @@ public struct RenderPipeline <Content>: BodylessRenderPass where Content: Render
     @State
     var reflection: Reflection?
 
-    public init(vertexShader: VertexShader, fragmentShader: FragmentShader, @RenderPassBuilder content: () -> Content) {
+    public init(vertexShader: VertexShader, fragmentShader: FragmentShader, @ElementBuilder content: () -> Content) {
         self.vertexShader = vertexShader
         self.fragmentShader = fragmentShader
         self.content = content()

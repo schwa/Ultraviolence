@@ -1,7 +1,7 @@
 import Metal
 import Ultraviolence
 
-public struct EdgeDetectionKernel: RenderPass {
+public struct EdgeDetectionKernel: Element {
     let source = """
     #import <metal_stdlib>
     #import <metal_logging>
@@ -56,7 +56,7 @@ public struct EdgeDetectionKernel: RenderPass {
         self.colorTexture = colorTexture
     }
 
-    public var body: some RenderPass {
+    public var body: some Element {
         ComputePipeline(computeKernel: kernel) {
             // TODO: Compute threads per threadgroup
             ComputeDispatch(threads: .init(width: depthTexture.width, height: depthTexture.height, depth: 1), threadsPerThreadgroup: .init(width: 32, height: 32, depth: 1))

@@ -1,6 +1,6 @@
 import Metal
 
-public struct Draw: RenderPass, BodylessRenderPass {
+public struct Draw: Element, BodylessElement {
     public typealias Body = Never
 
     var encodeGeometry: (MTLRenderCommandEncoder) throws -> Void

@@ -1,21 +1,20 @@
 @MainActor
-// TODO: This _cannot_ be called a RenderPass. It's a lower-level building block object. We can't call it Node because nodes exist.
-public protocol RenderPass {
-    associatedtype Body: RenderPass
-    @MainActor @RenderPassBuilder var body: Body { get }
+public protocol Element {
+    associatedtype Body: Element
+    @MainActor @ElementBuilder var body: Body { get }
 }
 
-extension Never: RenderPass {
+extension Never: Element {
     public typealias Body = Never
 }
 
-public extension RenderPass where Body == Never {
+public extension Element where Body == Never {
     var body: Never {
         fatalError("`body` is not implemented for `Never` types (on \(self)).")
     }
 }
 
-internal extension RenderPass {
+internal extension Element {
     func expandNode(_ node: Node) throws {
         // TODO: Refactor this to make expansion of the node tree distinct from handling observable and state properties.
         guard let graph = Graph.current else {
@@ -29,7 +28,7 @@ internal extension RenderPass {
             _ = graph.activeNodeStack.removeLast()
         }
 
-        node.renderPass = self
+        node.element = self
 
         if let parentEnvironmentValues = parent?.environmentValues {
             node.environmentValues.values.merge(parentEnvironmentValues.values) { old, _ in old }
@@ -38,8 +37,8 @@ internal extension RenderPass {
         observeObjects(node)
         restoreStateProperties(node)
 
-        if let builtInRenderPass = self as? any BodylessRenderPass {
-            try builtInRenderPass._expandNode(node)
+        if let bodylessElement = self as? any BodylessElement {
+            try bodylessElement._expandNode(node)
         }
 
         let shouldRunBody = node.needsRebuild || !equalToPrevious(node)
@@ -58,12 +57,12 @@ internal extension RenderPass {
         }
 
         storeStateProperties(node)
-        node.previousRenderPass = self
+        node.previousElement = self
         node.needsRebuild = false
     }
 
     private func equalToPrevious(_ node: Node) -> Bool {
-        guard let previous = node.previousRenderPass as? Self else {
+        guard let previous = node.previousElement as? Self else {
             return false
         }
         let lhs = Mirror(reflecting: self).children

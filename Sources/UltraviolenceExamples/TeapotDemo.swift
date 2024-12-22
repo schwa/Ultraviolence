@@ -11,7 +11,7 @@ import Ultraviolence
 internal import UltraviolenceSupport
 import UniformTypeIdentifiers
 
-public struct TeapotDemo: RenderPass {
+public struct TeapotDemo: Element {
     var mesh: MTKMesh
     var modelMatrix: simd_float4x4
     var cameraMatrix: simd_float4x4
@@ -28,7 +28,7 @@ public struct TeapotDemo: RenderPass {
         self.size = size
     }
 
-    public var body: some RenderPass {
+    public var body: some Element {
         let viewMatrix = cameraMatrix.inverse
         let cameraPosition = cameraMatrix.translation
         // swiftlint:disable:next force_try
@@ -47,11 +47,11 @@ public extension TeapotDemo {
     // TODO: Make generic for any RenderPass
     static func main() throws {
         let size = CGSize(width: 1_600, height: 1_200)
-        let renderPass = Render {
+        let element = Render {
             try! Self(size: size, modelMatrix: .identity)
         }
         let offscreenRenderer = try OffscreenRenderer(size: size)
-        let image = try offscreenRenderer.render(renderPass).cgImage
+        let image = try offscreenRenderer.render(element).cgImage
         let url = URL(fileURLWithPath: "output.png")
         // swiftlint:disable:next force_unwrapping
         let imageDestination = CGImageDestinationCreateWithURL(url as CFURL, UTType.png.identifier as CFString, 1, nil)!

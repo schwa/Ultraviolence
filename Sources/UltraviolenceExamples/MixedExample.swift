@@ -4,7 +4,7 @@ import SwiftUI
 import Ultraviolence
 internal import UltraviolenceSupport
 
-public struct MixedExample: RenderPass {
+public struct MixedExample: Element {
     var size: CGSize
     var colorTexture: MTLTexture
     var depthTexture: MTLTexture
@@ -17,7 +17,7 @@ public struct MixedExample: RenderPass {
         self.modelMatrix = modelMatrix
     }
 
-    public var body: some RenderPass {
+    public var body: some Element {
         Render {
             // swiftlint:disable:next force_try
             try! TeapotDemo(size: size, modelMatrix: modelMatrix)

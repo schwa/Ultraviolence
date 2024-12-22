@@ -4,7 +4,7 @@ import Metal
 import simd
 import UltraviolenceSupport
 
-internal struct ParameterRenderPass<Content, T>: BodylessRenderPass where Content: RenderPass {
+internal struct ParameterElement<Content, T>: BodylessElement where Content: Element {
     var name: String
 
     var functionType: MTLFunctionType?
@@ -68,16 +68,16 @@ internal struct ParameterRenderPass<Content, T>: BodylessRenderPass where Conten
 
 // MARK: -
 
-public extension RenderPass {
-    func parameter(_ name: String, _ value: SIMD4<Float>, functionType: MTLFunctionType? = nil) -> some RenderPass {
-        ParameterRenderPass(functionType: functionType, name: name, value: .value(value), content: self)
+public extension Element {
+    func parameter(_ name: String, _ value: SIMD4<Float>, functionType: MTLFunctionType? = nil) -> some Element {
+        ParameterElement(functionType: functionType, name: name, value: .value(value), content: self)
     }
 
-    func parameter(_ name: String, _ value: simd_float4x4, functionType: MTLFunctionType? = nil) -> some RenderPass {
-        ParameterRenderPass(functionType: functionType, name: name, value: .value(value), content: self)
+    func parameter(_ name: String, _ value: simd_float4x4, functionType: MTLFunctionType? = nil) -> some Element {
+        ParameterElement(functionType: functionType, name: name, value: .value(value), content: self)
     }
 
-    func parameter(_ name: String, color: Color, functionType: MTLFunctionType? = nil) -> some RenderPass {
+    func parameter(_ name: String, color: Color, functionType: MTLFunctionType? = nil) -> some Element {
         let colorspace = CGColorSpaceCreateDeviceRGB()
         guard let color = color.resolve(in: .init()).cgColor.converted(to: colorspace, intent: .defaultIntent, options: nil) else {
             fatalError("Unimplemented.")
@@ -86,23 +86,23 @@ public extension RenderPass {
             fatalError("Unimplemented.")
         }
         let value = SIMD4<Float>(components[0], components[1], components[2], components[3])
-        return ParameterRenderPass(functionType: functionType, name: name, value: .value(value), content: self)
+        return ParameterElement(functionType: functionType, name: name, value: .value(value), content: self)
     }
 
-    func parameter(_ name: String, texture: MTLTexture, functionType: MTLFunctionType? = nil) -> some RenderPass {
-        ParameterRenderPass(functionType: functionType, name: name, value: ParameterValue<()>.texture(texture), content: self)
+    func parameter(_ name: String, texture: MTLTexture, functionType: MTLFunctionType? = nil) -> some Element {
+        ParameterElement(functionType: functionType, name: name, value: ParameterValue<()>.texture(texture), content: self)
     }
 
-    func parameter(_ name: String, buffer: MTLBuffer, offset: Int = 0, functionType: MTLFunctionType? = nil) -> some RenderPass {
-        ParameterRenderPass(functionType: functionType, name: name, value: ParameterValue<()>.buffer(buffer, offset), content: self)
+    func parameter(_ name: String, buffer: MTLBuffer, offset: Int = 0, functionType: MTLFunctionType? = nil) -> some Element {
+        ParameterElement(functionType: functionType, name: name, value: ParameterValue<()>.buffer(buffer, offset), content: self)
     }
 
-    func parameter(_ name: String, values: [some Any], functionType: MTLFunctionType? = nil) -> some RenderPass {
-        ParameterRenderPass(functionType: functionType, name: name, value: .array(values), content: self)
+    func parameter(_ name: String, values: [some Any], functionType: MTLFunctionType? = nil) -> some Element {
+        ParameterElement(functionType: functionType, name: name, value: .array(values), content: self)
     }
 
-    func parameter(_ name: String, value: some Any, functionType: MTLFunctionType? = nil) -> some RenderPass {
-        ParameterRenderPass(functionType: functionType, name: name, value: .value(value), content: self)
+    func parameter(_ name: String, value: some Any, functionType: MTLFunctionType? = nil) -> some Element {
+        ParameterElement(functionType: functionType, name: name, value: .value(value), content: self)
     }
 }
 

@@ -1,4 +1,4 @@
-public struct TupleRenderPass <each T: RenderPass>: RenderPass {
+public struct TupleElement <each T: Element>: Element {
     public typealias Body = Never
 
     private let children: (repeat each T)
@@ -8,7 +8,7 @@ public struct TupleRenderPass <each T: RenderPass>: RenderPass {
     }
 }
 
-extension TupleRenderPass: BodylessRenderPass {
+extension TupleElement: BodylessElement {
     func _expandNode(_ node: Node) throws {
         guard let graph = node.graph else {
             fatalError("Cannot build node tree without a graph.")

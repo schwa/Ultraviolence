@@ -47,7 +47,7 @@ public extension EnvironmentValues {
     }
 }
 
-internal struct EnvironmentWritingModifier<Content: RenderPass>: RenderPass, BodylessRenderPass {
+internal struct EnvironmentWritingModifier<Content: Element>: Element, BodylessElement {
     var content: Content
     var modify: (inout EnvironmentValues) -> Void
 
@@ -57,15 +57,15 @@ internal struct EnvironmentWritingModifier<Content: RenderPass>: RenderPass, Bod
     }
 }
 
-public extension RenderPass {
-    func environment<Value>(_ keyPath: WritableKeyPath<EnvironmentValues, Value>, _ value: Value) -> some RenderPass {
+public extension Element {
+    func environment<Value>(_ keyPath: WritableKeyPath<EnvironmentValues, Value>, _ value: Value) -> some Element {
         EnvironmentWritingModifier(content: self) { environmentValues in
             environmentValues[keyPath: keyPath] = value
         }
     }
 }
 
-public struct EnvironmentReader<Value, Content: RenderPass>: RenderPass, BodylessRenderPass {
+public struct EnvironmentReader<Value, Content: Element>: Element, BodylessElement {
     var keyPath: KeyPath<EnvironmentValues, Value>
     var content: (Value) -> Content
 
