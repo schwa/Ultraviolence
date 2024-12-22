@@ -1,3 +1,5 @@
+import UltraviolenceSupport
+
 public struct EnvironmentDumper: RenderPass, BodylessRenderPass {
     @Environment(\.self)
     var environment
@@ -45,5 +47,23 @@ extension Node {
 extension RenderPass {
     var shortDescription: String {
         "\(type(of: self))"
+    }
+}
+
+extension UltraviolenceError {
+    static func missingEnvironment(_ key: PartialKeyPath<EnvironmentValues>) -> Self {
+        missingEnvironment("\(key)")
+    }
+}
+
+internal struct IdentifiableBox <Key, Value>: Identifiable where Key: Hashable {
+    var id: Key
+    var value: Value
+}
+
+internal extension IdentifiableBox where Key == ObjectIdentifier, Value: AnyObject {
+    init(_ value: Value) {
+        self.id = ObjectIdentifier(value)
+        self.value = value
     }
 }

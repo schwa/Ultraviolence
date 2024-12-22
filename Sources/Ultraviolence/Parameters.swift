@@ -30,7 +30,7 @@ internal struct ParameterRenderPass<Content, T>: BodylessRenderPass where Conten
     }
 
     func _enter(_ node: Node, environment: inout EnvironmentValues) throws {
-        let reflection = try environment.reflection.orThrow(.missingEnvironment("reflection"))
+        let reflection = try environment.reflection.orThrow(.missingEnvironment(\.reflection))
         let renderCommandEncoder = environment.renderCommandEncoder
         let computeCommandEncoder = environment.computeCommandEncoder
 

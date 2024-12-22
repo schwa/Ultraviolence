@@ -28,18 +28,6 @@ public struct EnvironmentValues {
     }
 }
 
-struct IdentifiableBox <Key, Value>: Identifiable where Key: Hashable {
-    var id: Key
-    var value: Value
-}
-
-extension IdentifiableBox where Key == ObjectIdentifier, Value: AnyObject {
-    init(_ value: Value) {
-        self.id = ObjectIdentifier(value)
-        self.value = value
-    }
-}
-
 public protocol EnvironmentKey {
     associatedtype Value
     static var defaultValue: Value { get }

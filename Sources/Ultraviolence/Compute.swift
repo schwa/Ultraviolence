@@ -41,7 +41,7 @@ public struct Compute <Content>: RenderPass, BodylessRenderPass where Content: R
     }
 
     func _enter(_ node: Node, environment: inout EnvironmentValues) throws {
-        let commandBuffer = try environment.commandBuffer.orThrow(.missingEnvironment("commandBuffer"))
+        let commandBuffer = try environment.commandBuffer.orThrow(.missingEnvironment(\.commandBuffer))
         logger?.log("Compute.\(#function) makeComputeCommandEncoder")
         let computeCommandEncoder = try commandBuffer.makeComputeCommandEncoder().orThrow(.resourceCreationFailure)
         environment.computeCommandEncoder = computeCommandEncoder
@@ -49,7 +49,7 @@ public struct Compute <Content>: RenderPass, BodylessRenderPass where Content: R
 
     func _exit(_ node: Node, environment: EnvironmentValues) throws {
         logger?.log("Compute.\(#function) endEncoding")
-        let computeCommandEncoder = try environment.computeCommandEncoder.orThrow(.missingEnvironment("computeCommandEncoder"))
+        let computeCommandEncoder = try environment.computeCommandEncoder.orThrow(.missingEnvironment(\.computeCommandEncoder))
         computeCommandEncoder.endEncoding()
     }
 }
@@ -77,7 +77,7 @@ public struct ComputePipeline <Content>: RenderPass, BodylessRenderPass where Co
         }
         try content.expandNode(node.children[0])
 
-        let device = try device.orThrow(.missingEnvironment("device"))
+        let device = try device.orThrow(.missingEnvironment(\.device))
         let descriptor = MTLComputePipelineDescriptor()
         descriptor.computeFunction = computeKernel.function
         let (computePipelineState, reflection) = try device.makeComputePipelineState(descriptor: descriptor, options: .bindingInfo)

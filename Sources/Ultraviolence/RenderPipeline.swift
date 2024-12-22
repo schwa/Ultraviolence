@@ -37,7 +37,7 @@ public struct RenderPipeline <Content>: BodylessRenderPass where Content: Render
 
         let environment = node.environmentValues
 
-        let renderPassDescriptor = try environment.renderPassDescriptor.orThrow(.missingEnvironment("renderPassDescriptor"))
+        let renderPassDescriptor = try environment.renderPassDescriptor.orThrow(.missingEnvironment(\.renderPassDescriptor))
         let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
         renderPipelineDescriptor.vertexFunction = vertexShader.function
         renderPipelineDescriptor.fragmentFunction = fragmentShader.function
@@ -49,7 +49,7 @@ public struct RenderPipeline <Content>: BodylessRenderPass where Content: Render
         renderPipelineDescriptor.colorAttachments[0].pixelFormat = colorAttachment0Texture.pixelFormat
         let depthAttachmentTexture = try renderPassDescriptor.depthAttachment.orThrow(.undefined).texture.orThrow(.undefined)
         renderPipelineDescriptor.depthAttachmentPixelFormat = depthAttachmentTexture.pixelFormat
-        let device = try device.orThrow(.missingEnvironment("device"))
+        let device = try device.orThrow(.missingEnvironment(\.device))
         let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: .bindingInfo)
         self.renderPipelineState = renderPipelineState
         self.reflection = .init(reflection.orFatalError(.resourceCreationFailure))
@@ -64,8 +64,8 @@ public struct RenderPipeline <Content>: BodylessRenderPass where Content: Render
     }
 
     func _enter(_ node: Node, environment: inout EnvironmentValues) throws {
-        let renderCommandEncoder = try environment.renderCommandEncoder.orThrow(.missingEnvironment("renderCommandEncoder"))
-        let renderPipelineState = try environment.renderPipelineState.orThrow(.missingEnvironment("renderPipelineState"))
+        let renderCommandEncoder = try environment.renderCommandEncoder.orThrow(.missingEnvironment(\.renderCommandEncoder))
+        let renderPipelineState = try environment.renderPipelineState.orThrow(.missingEnvironment(\.renderPipelineState))
 
         if let depthStencilState {
             renderCommandEncoder.setDepthStencilState(depthStencilState)

@@ -14,7 +14,7 @@ public struct Draw: RenderPass, BodylessRenderPass {
     }
 
     func _enter(_ node: Node, environment: inout EnvironmentValues) throws {
-        let renderCommandEncoder = try environment.renderCommandEncoder.orThrow(.missingEnvironment("renderCommandEncoder"))
+        let renderCommandEncoder = try environment.renderCommandEncoder.orThrow(.missingEnvironment(\.renderCommandEncoder))
         try encodeGeometry(renderCommandEncoder)
     }
 }
