@@ -15,6 +15,13 @@ public class Graph {
     }
 
     @MainActor
+    func updateContent<Content>(content: Content) throws where Content: Element {
+        Self.current = self
+        try content.expandNode(root)
+        Self.current = nil
+    }
+
+    @MainActor
     func rebuildIfNeeded() throws {
         let saved = Self.current
         Self.current = self

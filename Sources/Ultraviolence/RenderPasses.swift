@@ -56,7 +56,6 @@ extension Graph {
         enter: { node in
             var environment = node.environmentValues
             environment.merge(enviromentStack.last!)
-
             logger?.log("Entering: \(node.shortDescription)")
             if let body = node.element as? any BodylessElement {
                 try body._enter(node, environment: &environment)
@@ -73,14 +72,5 @@ extension Graph {
             }
             logger?.log("Exited: \(node.shortDescription)")
         }
-    }
-}
-
-extension Element {
-    // TODO: This should be on graph
-    @available(*, deprecated, message: "Deprecated. Use Graph._process()")
-    func _process(log: Bool = true) throws {
-        let graph = try Graph(content: self)
-        try graph._process(rootEnvironment: .init(), log: log)
     }
 }

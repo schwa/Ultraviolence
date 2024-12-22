@@ -83,11 +83,14 @@ public class RenderPassCoordinator <Content>: NSObject, MTKViewDelegate where Co
     }
     var lastError: Error?
     var logger: Logger? = Logger()
+    var graph: Graph
 
+    @MainActor
     init(device: MTLDevice, content: @escaping (CAMetalDrawable, MTLRenderPassDescriptor) -> Content) throws {
         self.device = device
         self.content = content
         self.commandQueue = try device.makeCommandQueue().orThrow(.resourceCreationFailure)
+        self.graph = try Graph(content: EmptyElement())
     }
 
     public func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
@@ -96,26 +99,29 @@ public class RenderPassCoordinator <Content>: NSObject, MTKViewDelegate where Co
 
     public func draw(in view: MTKView) {
         do {
-            guard let currentDrawable = view.currentDrawable else {
-                logger?.warning("No current drawable")
-                return
-            }
+            let currentDrawable = try view.currentDrawable.orThrow(.undefined)
             defer {
                 currentDrawable.present()
             }
+
+            let renderPassDescriptor = try view.currentRenderPassDescriptor.orThrow(.undefined)
+
+            renderPassDescriptor.depthAttachment.storeAction = .store // TODO: This should be customisable.
+
+            let root = content(currentDrawable, renderPassDescriptor)
+                .environment(\.renderPassDescriptor, renderPassDescriptor)
+                .environment(\.device, device)
+
+            try graph.updateContent(content: root)
+
             try commandQueue.withCommandBuffer(completion: .none, label: "􀐛RenderView.Coordinator.commandBuffer", debugGroup: "􀯕RenderView.Coordinator.draw()") { commandBuffer in
-                let renderPassDescriptor = try view.currentRenderPassDescriptor.orThrow(.undefined)
-
-                // TODO: Move to init().
-                let root = content(currentDrawable, renderPassDescriptor)
-                    .environment(\.renderPassDescriptor, renderPassDescriptor)
-                    .environment(\.device, device)
-                    .environment(\.commandQueue, commandQueue)
-                    .environment(\.commandBuffer, commandBuffer)
-
-                try root._process()
-
-                commandBuffer.commit()
+                defer {
+                    commandBuffer.commit()
+                }
+                var environment = EnvironmentValues()
+                environment.commandQueue = commandQueue
+                environment.commandBuffer = commandBuffer
+                try graph._process(rootEnvironment: environment, log: false)
             }
         } catch {
             logger?.error("Error when drawing: \(error)")

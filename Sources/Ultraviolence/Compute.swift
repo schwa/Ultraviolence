@@ -133,7 +133,8 @@ public extension Compute {
                 .environment(\.device, device)
                 .environment(\.commandBuffer, commandBuffer)
                 .environment(\.commandQueue, commandQueue)
-            try root._process()
+            let graph = try Graph(content: root)
+            try graph._process(rootEnvironment: .init()) // TODO: use root environment
         }
     }
 }
