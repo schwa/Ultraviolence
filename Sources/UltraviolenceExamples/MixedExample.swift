@@ -28,7 +28,7 @@ public struct MixedExample: Element {
             .colorAttachment(colorTexture, index: 0)
             .depthAttachment(depthTexture)
         }
-        try! Compute {
+        try! ComputePass {
             // swiftlint:disable:next force_try
             try! EdgeDetectionKernel(depthTexture: depthTexture, colorTexture: colorTexture)
         }

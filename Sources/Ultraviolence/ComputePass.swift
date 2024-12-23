@@ -17,8 +17,7 @@ public struct ComputeKernel {
 
 // MARK: -
 
-// TODO: Rename ComputePass
-public struct Compute <Content>: Element, BodylessElement where Content: Element {
+public struct ComputePass <Content>: Element, BodylessElement where Content: Element {
     let logging: Bool
     let content: Content
 
@@ -110,7 +109,7 @@ public struct ComputeDispatch: Element, BodylessElement {
     }
 }
 
-public extension Compute {
+public extension ComputePass {
     @MainActor
     func compute() throws {
         let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
