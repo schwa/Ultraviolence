@@ -17,15 +17,12 @@ public struct ComputeKernel {
 
 // MARK: -
 
+// Make ComputePass
 public struct Compute <Content>: Element, BodylessElement where Content: Element {
-    let commandQueue: MTLCommandQueue
     let logging: Bool
     let content: Content
 
     public init(logging: Bool = false, content: () -> Content) throws {
-        let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
-        // TODO: Move UP.
-        commandQueue = try device.makeCommandQueue().orThrow(.resourceCreationFailure)
         self.logging = logging
         self.content = content()
     }
@@ -122,6 +119,7 @@ public extension Compute {
         if logging {
             try commandBufferDescriptor.addDefaultLogging()
         }
+        let commandQueue = try device.makeCommandQueue().orThrow(.resourceCreationFailure)
         let commandBuffer = try commandQueue.makeCommandBuffer(descriptor: commandBufferDescriptor).orThrow(.resourceCreationFailure)
         defer {
             commandBuffer.commit()

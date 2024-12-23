@@ -11,10 +11,12 @@ struct ContentView: View {
 
     var body: some View {
         let modelMatrix = simd_float4x4(yRotation: .init(radians: Float(angle.radians)))
-        RenderView { drawable, renderPassDescriptor in
-            let colorTexture = renderPassDescriptor.colorAttachments[0].texture.orFatalError()
-            let depthTexture = renderPassDescriptor.depthAttachment.texture.orFatalError()
-            return MixedExample(drawableSize: .init(drawable.layer.drawableSize), colorTexture: colorTexture, depthTexture: depthTexture, modelMatrix: modelMatrix)
+        TimelineView(.animation) { _ in
+            RenderView { drawable, renderPassDescriptor in
+                let colorTexture = renderPassDescriptor.colorAttachments[0].texture.orFatalError()
+                let depthTexture = renderPassDescriptor.depthAttachment.texture.orFatalError()
+                return MixedExample(drawableSize: .init(drawable.layer.drawableSize), colorTexture: colorTexture, depthTexture: depthTexture, modelMatrix: modelMatrix)
+            }
         }
         .overlay(alignment: .bottom) {
             VStack {

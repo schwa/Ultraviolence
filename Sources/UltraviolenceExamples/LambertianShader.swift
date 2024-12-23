@@ -74,19 +74,21 @@ public struct LambertianShader <Content>: Element where Content: Element {
     var modelMatrix: simd_float4x4
     var viewMatrix: simd_float4x4
     var cameraPosition: SIMD3<Float>
-    var content: Content
     var vertexShader: VertexShader
     var fragmentShader: FragmentShader
+    var lightDirection: SIMD3<Float>
+    var content: Content
 
-    public init(color: SIMD4<Float>, drawableSize: SIMD2<Float>, modelMatrix: simd_float4x4, viewMatrix: simd_float4x4, cameraPosition: SIMD3<Float>, content: () -> Content) throws {
+    public init(color: SIMD4<Float>, drawableSize: SIMD2<Float>, modelMatrix: simd_float4x4, viewMatrix: simd_float4x4, cameraPosition: SIMD3<Float>, lightDirection: SIMD3<Float>, content: () -> Content) throws {
         self.color = color
         self.drawableSize = drawableSize
         self.modelMatrix = modelMatrix
         self.viewMatrix = viewMatrix
         self.cameraPosition = cameraPosition
+        self.lightDirection = lightDirection
+        self.vertexShader = try VertexShader(source: source)
+        self.fragmentShader = try FragmentShader(source: source)
         self.content = content()
-        vertexShader = try VertexShader(source: source)
-        fragmentShader = try FragmentShader(source: source)
     }
 
     public var body: some Element {
@@ -96,7 +98,7 @@ public struct LambertianShader <Content>: Element where Content: Element {
                 .parameter("projectionMatrix", value: PerspectiveProjection().projectionMatrix(for: drawableSize))
                 .parameter("modelMatrix", value: modelMatrix)
                 .parameter("viewMatrix", value: viewMatrix)
-                .parameter("lightDirection", value: SIMD3<Float>([-1, -2, -1]))
+                .parameter("lightDirection", value: lightDirection)
                 .parameter("cameraPosition", value: cameraPosition)
         }
     }
