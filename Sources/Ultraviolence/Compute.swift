@@ -17,7 +17,7 @@ public struct ComputeKernel {
 
 // MARK: -
 
-// Make ComputePass
+// TODO: Rename ComputePass
 public struct Compute <Content>: Element, BodylessElement where Content: Element {
     let logging: Bool
     let content: Content
@@ -80,7 +80,6 @@ public struct ComputePipeline <Content>: Element, BodylessElement where Content:
         let device = try device.orThrow(.missingEnvironment(\.device))
         let descriptor = MTLComputePipelineDescriptor()
         descriptor.computeFunction = computeKernel.function
-        print("**** makeComputePipelineState")
         let (computePipelineState, reflection) = try device.makeComputePipelineState(descriptor: descriptor, options: .bindingInfo)
         node.environmentValues[keyPath: \.reflection] = Reflection(try reflection.orThrow(.resourceCreationFailure))
         node.environmentValues[keyPath: \.computePipelineState] = computePipelineState
