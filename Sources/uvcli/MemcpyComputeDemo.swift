@@ -27,7 +27,7 @@ enum MemcpyComputeDemo {
             let inputBuffer = try device.makeBuffer(collection: (0..<count).map { index in UInt8(index % 256) }, options: [.storageModeShared])
             let outputBuffer = device.makeBuffer(length: count, options: [.storageModeShared])!
             let kernel = try ComputeKernel(source: source)
-            let compute = try Compute {
+            let compute = try ComputePass {
                 ComputePipeline(computeKernel: kernel) {
                     ComputeDispatch(threads: .init(width: count, height: 1, depth: 1), threadsPerThreadgroup: .init(width: 1_024, height: 1, depth: 1))
                     .parameter("src", buffer: inputBuffer)
