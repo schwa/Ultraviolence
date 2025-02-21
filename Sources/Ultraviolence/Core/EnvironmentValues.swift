@@ -37,7 +37,7 @@ public extension EnvironmentValues {
     subscript<Key: EnvironmentKey>(key: Key.Type) -> Key.Value {
         get {
             guard let value = values[.init(key), default: Key.defaultValue] as? Key.Value else {
-                fatalError("Could not cast value.")
+                preconditionFailure("Could not cast value.")
             }
             return value
         }
@@ -93,10 +93,10 @@ public struct EnvironmentReader<Value, Content: Element>: Element, BodylessEleme
 public struct UVEnvironment <Value> {
     public var wrappedValue: Value {
         guard let graph = Graph.current else {
-            fatalError("Environment must be used within a Graph.")
+            preconditionFailure("Environment must be used within a Graph.")
         }
         guard let currentNode = graph.activeNodeStack.last else {
-            fatalError("Environment must be used within a Node.")
+            preconditionFailure("Environment must be used within a Node.")
         }
         return currentNode.environmentValues[keyPath: keyPath]
     }

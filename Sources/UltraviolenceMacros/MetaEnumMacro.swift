@@ -151,7 +151,7 @@ extension DeclGroupSyntax {
         case is EnumDeclSyntax:
             return article ? "an enum" : "enum"
         default:
-            fatalError("Unknown DeclGroupSyntax")
+            preconditionFailure("Unknown DeclGroupSyntax")
         }
     }
 }

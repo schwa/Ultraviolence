@@ -21,7 +21,7 @@ internal struct ParameterElement<Content, T>: BodylessElement where Content: Ele
     func _expandNode(_ node: Node) throws {
         // TODO: Move into BodylessRenderPass
         guard let graph = node.graph else {
-            fatalError("Cannot build node tree without a graph.")
+            preconditionFailure("Cannot build node tree without a graph.")
         }
         if node.children.isEmpty {
             node.children.append(graph.makeNode())
@@ -45,7 +45,7 @@ internal struct ParameterElement<Content, T>: BodylessElement where Content: Ele
                 let fragmentIndex = reflection.binding(forType: .fragment, name: name)
                 switch (vertexIndex, fragmentIndex) {
                 case (.some(let vertexIndex), .some(let fragmentIndex)):
-                    fatalError("Ambiguous parameter, found parameter named \(name) in both vertex (index: #\(vertexIndex)) and fragment (index: #\(fragmentIndex)) shaders.")
+                    preconditionFailure("Ambiguous parameter, found parameter named \(name) in both vertex (index: #\(vertexIndex)) and fragment (index: #\(fragmentIndex)) shaders.")
                 case (.some(let vertexIndex), .none):
                     renderCommandEncoder.setValue(value, index: vertexIndex, functionType: .vertex)
                 case (.none, .some(let fragmentIndex)):
@@ -59,9 +59,9 @@ internal struct ParameterElement<Content, T>: BodylessElement where Content: Ele
             let index = try reflection.binding(forType: .kernel, name: name).orThrow(.missingBinding(name))
             computeCommandEncoder.setValue(value, index: index, functionType: .kernel)
         case (.some, .some):
-            fatalError("Trying to process \(self.shortDescription) with both a render command encoder and a compute command encoder.")
+            preconditionFailure("Trying to process \(self.shortDescription) with both a render command encoder and a compute command encoder.")
         default:
-            fatalError("Trying to process `\(self.shortDescription) without a command encoder.")
+            preconditionFailure("Trying to process `\(self.shortDescription) without a command encoder.")
         }
     }
 }
@@ -80,10 +80,10 @@ public extension Element {
     func parameter(_ name: String, color: Color, functionType: MTLFunctionType? = nil) -> some Element {
         let colorspace = CGColorSpaceCreateDeviceRGB()
         guard let color = color.resolve(in: .init()).cgColor.converted(to: colorspace, intent: .defaultIntent, options: nil) else {
-            fatalError("Unimplemented.")
+            preconditionFailure("Unimplemented.")
         }
         guard let components = color.components?.map({ Float($0) }) else {
-            fatalError("Unimplemented.")
+            preconditionFailure("Unimplemented.")
         }
         let value = SIMD4<Float>(components[0], components[1], components[2], components[3])
         return ParameterElement(functionType: functionType, name: name, value: .value(value), content: self)

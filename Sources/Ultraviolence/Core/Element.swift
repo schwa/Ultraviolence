@@ -10,7 +10,7 @@ extension Never: Element {
 
 public extension Element where Body == Never {
     var body: Never {
-        fatalError("`body` is not implemented for `Never` types (on \(self)).")
+        preconditionFailure("`body` is not implemented for `Never` types (on \(self)).")
     }
 }
 
@@ -18,7 +18,7 @@ internal extension Element {
     func expandNode(_ node: Node) throws {
         // TODO: Refactor this to make expansion of the node tree distinct from handling observable and state properties.
         guard let graph = Graph.current else {
-            fatalError("No graph is currently active.")
+            preconditionFailure("No graph is currently active.")
         }
 
         let parent = graph.activeNodeStack.last
@@ -96,7 +96,7 @@ internal extension Element {
         for (label, value) in mirror.children {
             guard let prop = value as? StateProperty else { continue }
             guard let label else {
-                fatalError("No label for state property.")
+                preconditionFailure("No label for state property.")
             }
             guard let propValue = node.stateProperties[label] else { continue }
             prop.erasedValue = propValue
@@ -108,7 +108,7 @@ internal extension Element {
         for (label, value) in m.children {
             guard let prop = value as? StateProperty else { continue }
             guard let label else {
-                fatalError("No label for state property.")
+                preconditionFailure("No label for state property.")
             }
             node.stateProperties[label] = prop.erasedValue
         }

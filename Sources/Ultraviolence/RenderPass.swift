@@ -10,7 +10,7 @@ public struct RenderPass <Content>: Element, BodylessElement where Content: Elem
     func _expandNode(_ node: Node) throws {
         // TODO: Move into BodylessRenderPass
         guard let graph = node.graph else {
-            fatalError("Cannot build node tree without a graph.")
+            preconditionFailure("Cannot build node tree without a graph.")
         }
         if node.children.isEmpty {
             node.children.append(graph.makeNode())

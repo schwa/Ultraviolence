@@ -26,7 +26,7 @@ extension UVState: StateProperty {
         get { state }
         nonmutating set {
             guard let newValue = newValue as? StateBox<Value> else {
-                fatalError("Expected StateBox<Value> in State.value set")
+                preconditionFailure("Expected StateBox<Value> in State.value set")
             }
             state = newValue
         }

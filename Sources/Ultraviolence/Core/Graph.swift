@@ -29,7 +29,7 @@ public class Graph {
             Self.current = saved
         }
         guard let rootElement = root.element else {
-            fatalError("Root element is missing.")
+            preconditionFailure("Root element is missing.")
         }
         try rootElement.expandNode(root)
     }

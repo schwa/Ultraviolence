@@ -28,7 +28,7 @@ public struct ComputePass <Content>: Element, BodylessElement where Content: Ele
 
     func _expandNode(_ node: Node) throws {
         guard let graph = node.graph else {
-            fatalError("Cannot build node tree without a graph.")
+            preconditionFailure("Cannot build node tree without a graph.")
         }
         if node.children.isEmpty {
             node.children.append(graph.makeNode())
@@ -69,7 +69,7 @@ public struct ComputePipeline <Content>: Element, BodylessElement where Content:
 
     func _expandNode(_ node: Node) throws {
         guard let graph = node.graph else {
-            fatalError("Cannot build node tree without a graph.")
+            preconditionFailure("Cannot build node tree without a graph.")
         }
         if node.children.isEmpty {
             node.children.append(graph.makeNode())
@@ -102,7 +102,7 @@ public struct ComputeDispatch: Element, BodylessElement {
 
     func _enter(_ node: Node, environment: inout EnvironmentValues) throws {
         guard let computeCommandEncoder = environment.computeCommandEncoder, let computePipelineState = environment.computePipelineState else {
-            fatalError("No compute command encoder/compute pipeline state found.")
+            preconditionFailure("No compute command encoder/compute pipeline state found.")
         }
         computeCommandEncoder.setComputePipelineState(computePipelineState)
         computeCommandEncoder.dispatchThreads(threads, threadsPerThreadgroup: threadsPerThreadgroup)

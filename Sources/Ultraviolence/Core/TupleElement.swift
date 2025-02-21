@@ -11,7 +11,7 @@ public struct TupleElement <each T: Element>: Element {
 extension TupleElement: BodylessElement {
     func _expandNode(_ node: Node) throws {
         guard let graph = node.graph else {
-            fatalError("Cannot build node tree without a graph.")
+            preconditionFailure("Cannot build node tree without a graph.")
         }
         var index = 0
         for child in repeat (each children) {

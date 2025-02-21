@@ -30,8 +30,8 @@ internal final class StateBox<Wrapped> {
     }
 
     var binding: Binding<Wrapped> = Binding(
-        get: { fatalError("Empty Binding: get() called.") },
-        set: { _ in fatalError("Empty Binding: set() called.") }
+        get: { preconditionFailure("Empty Binding: get() called.") },
+        set: { _ in preconditionFailure("Empty Binding: set() called.") }
     )
 
     init(_ wrappedValue: Wrapped) {

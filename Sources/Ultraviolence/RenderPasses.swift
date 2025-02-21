@@ -56,7 +56,7 @@ extension Graph {
         enter: { node in
             var environment = node.environmentValues
             guard let last = enviromentStack.last else {
-                fatalError("Stack underflow")
+                preconditionFailure("Stack underflow")
             }
             environment.merge(last)
             logger?.log("Entering: \(node.shortDescription)")
@@ -68,7 +68,7 @@ extension Graph {
         exit: { node in
             var environment = node.environmentValues
             guard let last = enviromentStack.last else {
-                fatalError("Stack underflow")
+                preconditionFailure("Stack underflow")
             }
             environment.merge(last)
             enviromentStack.removeLast()

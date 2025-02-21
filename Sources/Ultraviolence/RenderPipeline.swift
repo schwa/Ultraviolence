@@ -28,7 +28,7 @@ public struct RenderPipeline <Content>: BodylessElement where Content: Element {
     func _expandNode(_ node: Node) throws {
         // TODO: Move into BodylessRenderPass
         guard let graph = node.graph else {
-            fatalError("Cannot build node tree without a graph.")
+            preconditionFailure("Cannot build node tree without a graph.")
         }
         if node.children.isEmpty {
             node.children.append(graph.makeNode())

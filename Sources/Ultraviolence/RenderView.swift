@@ -77,7 +77,7 @@ public struct RenderView <Content>: View where Content: Element {
             self.viewModel = try ViewModel(device: device, content: content)
         }
         catch {
-            fatalError("Failed to create RenderView.ViewModel: \(error)")
+            preconditionFailure("Failed to create RenderView.ViewModel: \(error)")
         }
     }
 
