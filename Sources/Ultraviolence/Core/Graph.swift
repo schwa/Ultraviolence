@@ -23,6 +23,7 @@ public class Graph {
 
     @MainActor
     func rebuildIfNeeded() throws {
+        logger?.log("\(type(of: self)).\(#function)")
         let saved = Self.current
         Self.current = self
         defer {

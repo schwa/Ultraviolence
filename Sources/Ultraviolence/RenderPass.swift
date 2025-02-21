@@ -22,7 +22,6 @@ public struct RenderPass <Content>: Element, BodylessElement where Content: Elem
         let commandBuffer = try environment.commandBuffer.orThrow(.missingEnvironment(\.commandBuffer))
         commandBuffer.pushDebugGroup("RENDER PASS")
         let renderPassDescriptor = try environment.renderPassDescriptor.orThrow(.missingEnvironment(\.renderPassDescriptor))
-        logger?.log("Render.\(#function) makeRenderCommandEncoder")
         let renderCommandEncoder = try commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor).orThrow(.resourceCreationFailure)
         environment.renderCommandEncoder = renderCommandEncoder
     }
@@ -31,7 +30,6 @@ public struct RenderPass <Content>: Element, BodylessElement where Content: Elem
         let commandBuffer = try environment.commandBuffer.orThrow(.missingEnvironment(\.commandBuffer))
         let renderCommandEncoder = try environment.renderCommandEncoder.orThrow(.missingEnvironment(\.renderCommandEncoder))
         renderCommandEncoder.endEncoding()
-        logger?.log("Render.\(#function) endEncoding")
         commandBuffer.popDebugGroup()
     }
 }

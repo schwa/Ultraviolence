@@ -55,6 +55,10 @@ public struct OffscreenRenderer {
 public extension OffscreenRenderer {
     @MainActor
     func render<Content>(_ content: Content, capture: Bool = false) throws -> Rendering where Content: Element {
+        logger?.log("\(type(of: self)).\(#function) enter.")
+        defer {
+            logger?.log("\(type(of: self)).\(#function) exit.")
+        }
         let content = content
             .environment(\.renderPassDescriptor, renderPassDescriptor)
             .environment(\.device, device)

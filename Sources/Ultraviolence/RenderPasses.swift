@@ -48,6 +48,10 @@ public extension Element {
 extension Graph {
     @MainActor
     func _process(rootEnvironment: EnvironmentValues, log: Bool = true) throws {
+        logger?.log("\(type(of: self)).\(#function) enter.")
+        defer {
+            logger?.log("\(type(of: self)).\(#function) exit.")
+        }
         let logger = log ? logger : nil
         var enviromentStack: [EnvironmentValues] = [rootEnvironment]
         try self.visit { _, _ in
@@ -59,7 +63,7 @@ extension Graph {
                 preconditionFailure("Stack underflow")
             }
             environment.merge(last)
-            logger?.log("Entering: \(node.shortDescription)")
+            logger?.log("\(String(repeating: "􀄫", count: enviromentStack.count)) '\(node.shortDescription)._enter()'")
             if let body = node.element as? any BodylessElement {
                 try body._enter(node, environment: &environment)
             }
@@ -73,10 +77,10 @@ extension Graph {
             environment.merge(last)
             enviromentStack.removeLast()
 
+            logger?.log("\(String(repeating: "􀄪", count: enviromentStack.count)) '\(node.shortDescription)._exit()'")
             if let body = node.element as? any BodylessElement {
                 try body._exit(node, environment: environment)
             }
-            logger?.log("Exited: \(node.shortDescription)")
         }
     }
 }

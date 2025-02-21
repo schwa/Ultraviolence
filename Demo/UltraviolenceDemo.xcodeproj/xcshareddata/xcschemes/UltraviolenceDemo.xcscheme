@@ -67,7 +67,7 @@
       </BuildableProductRunnable>
       <EnvironmentVariables>
          <EnvironmentVariable
-            key = "LOG_VISITOR"
+            key = "LOGGING"
             value = "1"
             isEnabled = "YES">
          </EnvironmentVariable>
