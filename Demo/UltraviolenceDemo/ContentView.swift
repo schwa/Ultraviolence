@@ -9,6 +9,7 @@ struct ContentView: View {
             List(selection: $demo) {
                 row(for: AnimatedDemoView.self)
                 row(for: TriangleDemoView.self)
+                row(for: OffscreenDemoView.self)
             }
         } detail: {
             if let demo = demo {
