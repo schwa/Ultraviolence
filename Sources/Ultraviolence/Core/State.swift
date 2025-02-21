@@ -16,7 +16,7 @@ public struct UVState<Value> {
         nonmutating set { state.wrappedValue = newValue }
     }
 
-    public var projectedValue: Binding<Value> {
+    public var projectedValue: UVBinding<Value> {
         state.binding
     }
 }

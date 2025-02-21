@@ -71,8 +71,8 @@ public struct ProjectedValue <ObjectType: ObservableObject> {
         self.observedObject = observedObject
     }
 
-    public subscript<Value>(dynamicMember keyPath: ReferenceWritableKeyPath<ObjectType, Value>) -> Binding<Value> {
-        Binding(get: {
+    public subscript<Value>(dynamicMember keyPath: ReferenceWritableKeyPath<ObjectType, Value>) -> UVBinding<Value> {
+        UVBinding(get: {
             observedObject.wrappedValue[keyPath: keyPath]
         }, set: { newValue in
             observedObject.wrappedValue[keyPath: keyPath] = newValue

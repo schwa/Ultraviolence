@@ -1,7 +1,7 @@
 internal import Foundation
 
 @propertyWrapper
-public struct Binding<Value>: Equatable {
+public struct UVBinding<Value>: Equatable {
     private let get: () -> Value
     private let set: (Value) -> Void
     private let id = UUID()
