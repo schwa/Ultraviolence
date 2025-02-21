@@ -16,7 +16,7 @@ public struct RenderView <Content>: View where Content: Element {
         var commandQueue: MTLCommandQueue
         var content: (CAMetalDrawable, MTLRenderPassDescriptor) -> Content {
             didSet {
-                print("Content did change")
+                logger?.log("Content did change.")
             }
         }
         var lastError: Error?
