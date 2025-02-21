@@ -6,13 +6,13 @@ import UltraviolenceExamples
 import UltraviolenceSupport
 
 struct AnimatedDemoView: View {
-    @SwiftUI.State
+    @State
     var angle: SwiftUI.Angle = .zero
 
-    @SwiftUI.State
+    @State
     var lightDirection: SIMD3<Float> = [-1, -2, -1]
 
-    @SwiftUI.State
+    @State
     var color: SIMD4<Float> = [1, 0, 0, 1]
 
     var body: some View {

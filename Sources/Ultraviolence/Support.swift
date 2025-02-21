@@ -1,7 +1,7 @@
 import UltraviolenceSupport
 
 public struct EnvironmentDumper: Element, BodylessElement {
-    @Environment(\.self)
+    @UVEnvironment(\.self)
     var environment
 
     func _expandNode(_ node: Node) throws {

@@ -3,20 +3,20 @@ import UltraviolenceSupport
 
 public struct RenderPipeline <Content>: BodylessElement where Content: Element {
     public typealias Body = Never
-    @Environment(\.device)
+    @UVEnvironment(\.device)
     var device
 
-    @Environment(\.depthStencilState)
+    @UVEnvironment(\.depthStencilState)
     var depthStencilState
 
     var vertexShader: VertexShader
     var fragmentShader: FragmentShader
     var content: Content
 
-    @State
+    @UVState
     var renderPipelineState: MTLRenderPipelineState?
 
-    @State
+    @UVState
     var reflection: Reflection?
 
     public init(vertexShader: VertexShader, fragmentShader: FragmentShader, @ElementBuilder content: () -> Content) {

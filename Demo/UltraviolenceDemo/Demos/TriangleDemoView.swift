@@ -35,7 +35,7 @@ struct TriangleDemoView: View {
     }
     """
 
-    @SwiftUI.State
+    @State
     var color: SIMD4<Float> = [1, 0, 0, 1]
 
     var body: some View {

@@ -59,7 +59,7 @@ public struct ComputePipeline <Content>: Element, BodylessElement where Content:
     var computeKernel: ComputeKernel
     var content: Content
 
-    @Environment(\.device)
+    @UVEnvironment(\.device)
     var device
 
     public init(computeKernel: ComputeKernel, content: () -> Content) {

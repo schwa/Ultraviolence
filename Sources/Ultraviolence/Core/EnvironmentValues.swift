@@ -90,7 +90,7 @@ public struct EnvironmentReader<Value, Content: Element>: Element, BodylessEleme
 // }
 
 @propertyWrapper
-public struct Environment <Value> {
+public struct UVEnvironment <Value> {
     public var wrappedValue: Value {
         guard let graph = Graph.current else {
             fatalError("Environment must be used within a Graph.")

@@ -3,7 +3,7 @@ internal protocol StateProperty {
 }
 
 @propertyWrapper
-public struct State<Value> {
+public struct UVState<Value> {
     @Box
     private var state: StateBox<Value>
 
@@ -21,7 +21,7 @@ public struct State<Value> {
     }
 }
 
-extension State: StateProperty {
+extension UVState: StateProperty {
     var erasedValue: Any {
         get { state }
         nonmutating set {

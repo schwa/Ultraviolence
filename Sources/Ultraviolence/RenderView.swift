@@ -67,7 +67,7 @@ public struct RenderView <Content>: View where Content: Element {
         }
     }
 
-    @SwiftUI.State
+    @State
     private var viewModel: ViewModel
 
     public init(content: @escaping (CAMetalDrawable, MTLRenderPassDescriptor) -> Content) {
@@ -103,10 +103,10 @@ public struct RenderView <Content>: View where Content: Element {
 }
 
 internal struct RenderViewDebugViewModifier <Root>: ViewModifier where Root: Element {
-    @SwiftUI.State
+    @State
     var debugInspectorIsPresented = true
 
-    @SwiftUI.Environment(RenderView<Root>.ViewModel.self)
+    @Environment(RenderView<Root>.ViewModel.self)
     var viewModel
 
     func body(content: Content) -> some View {
