@@ -63,19 +63,14 @@ public extension OffscreenRenderer {
         try graph.rebuildIfNeeded()
 
         return try MTLCaptureManager.shared().with(enabled: capture) {
-            let commandBuffer = try commandQueue.makeCommandBuffer().orThrow(.resourceCreationFailure)
-            defer {
-                commandBuffer.commit()
-                commandBuffer.waitUntilCompleted()
+            try commandQueue.withCommandBuffer(logState: nil, completion: .commitAndWaitUntilCompleted, label: "TODO", debugGroup: "CommandBuffer") { commandBuffer in
+                var rootEnvironment = EnvironmentValues()
+                rootEnvironment.device = device
+                rootEnvironment.commandBuffer = commandBuffer
+                rootEnvironment.commandQueue = commandQueue
+                try graph._process(rootEnvironment: rootEnvironment)
+                return .init(texture: colorTexture)
             }
-            var rootEnvironment = EnvironmentValues()
-            rootEnvironment.device = device
-
-            rootEnvironment.commandBuffer = commandBuffer
-            rootEnvironment.commandQueue = commandQueue
-
-            try graph._process(rootEnvironment: rootEnvironment)
-            return .init(texture: colorTexture)
         }
     }
 }

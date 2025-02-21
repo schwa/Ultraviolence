@@ -41,15 +41,15 @@ public struct RenderView <Content>: View where Content: Element {
                     currentDrawable.present()
                 }
 
+                // TODO: This should be customisable. Issue#18
                 let renderPassDescriptor = try view.currentRenderPassDescriptor.orThrow(.undefined)
+                renderPassDescriptor.depthAttachment.storeAction = .store
 
-                renderPassDescriptor.depthAttachment.storeAction = .store // TODO: This should be customisable.
-
-                let root = try content(currentDrawable, renderPassDescriptor)
+                let content = try content(currentDrawable, renderPassDescriptor)
                     .environment(\.renderPassDescriptor, renderPassDescriptor)
                     .environment(\.device, device)
 
-                try graph.updateContent(content: root)
+                try graph.updateContent(content: content)
 
                 try commandQueue.withCommandBuffer(completion: .none, label: "􀐛RenderView.Coordinator.commandBuffer", debugGroup: "􀯕RenderView.Coordinator.draw()") { commandBuffer in
                     defer {
