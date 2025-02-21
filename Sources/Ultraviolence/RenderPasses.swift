@@ -55,7 +55,10 @@ extension Graph {
         }
         enter: { node in
             var environment = node.environmentValues
-            environment.merge(enviromentStack.last!)
+            guard let last = enviromentStack.last else {
+                fatalError("Stack underflow")
+            }
+            environment.merge(last)
             logger?.log("Entering: \(node.shortDescription)")
             if let body = node.element as? any BodylessElement {
                 try body._enter(node, environment: &environment)
@@ -64,7 +67,10 @@ extension Graph {
         }
         exit: { node in
             var environment = node.environmentValues
-            environment.merge(enviromentStack.last!)
+            guard let last = enviromentStack.last else {
+                fatalError("Stack underflow")
+            }
+            environment.merge(last)
             enviromentStack.removeLast()
 
             if let body = node.element as? any BodylessElement {

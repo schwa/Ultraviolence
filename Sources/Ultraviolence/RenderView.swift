@@ -73,7 +73,12 @@ public struct RenderView <Content>: View where Content: Element {
     public init(content: @escaping (CAMetalDrawable, MTLRenderPassDescriptor) -> Content) {
         self.device = MTLCreateSystemDefaultDevice().orFatalError(.resourceCreationFailure)
         self.content = content
-        self.viewModel = try! ViewModel(device: device, content: content)
+        do {
+            self.viewModel = try ViewModel(device: device, content: content)
+        }
+        catch {
+            fatalError("Failed to create RenderView.ViewModel: \(error)")
+        }
     }
 
     public var body: some View {

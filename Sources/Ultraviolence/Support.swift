@@ -69,8 +69,8 @@ internal extension IdentifiableBox where Key == ObjectIdentifier, Value: AnyObje
 }
 
 extension Element {
-    func _dump() {
-        let graph = try! Graph(content: self)
+    func _dump() throws {
+        let graph = try Graph(content: self)
         graph.dump()
     }
 }
@@ -78,6 +78,6 @@ extension Element {
 @MainActor
 extension Node {
     var shortDescription: String {
-        "\(self.element!.shortDescription)"
+        self.element?.shortDescription ?? "<empty>"
     }
 }
