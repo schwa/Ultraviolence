@@ -8,7 +8,7 @@ internal protocol AnyObservedObject {
 // MARK: -
 
 @propertyWrapper
-public struct ObservedObject<ObjectType: ObservableObject> {
+public struct UVObservedObject<ObjectType: ObservableObject> {
     @ObservedObjectBox
     private var object: ObjectType
 
@@ -25,13 +25,13 @@ public struct ObservedObject<ObjectType: ObservableObject> {
     }
 }
 
-extension ObservedObject: Equatable {
-    public static func == (l: ObservedObject, r: ObservedObject) -> Bool {
+extension UVObservedObject: Equatable {
+    public static func == (l: UVObservedObject, r: UVObservedObject) -> Bool {
         l.wrappedValue === r.wrappedValue
     }
 }
 
-extension ObservedObject: AnyObservedObject {
+extension UVObservedObject: AnyObservedObject {
     func addDependency(_ node: Node) {
         _object.addDependency(node)
     }
@@ -65,9 +65,9 @@ private final class ObservedObjectBox<Wrapped: ObservableObject> {
 
 @dynamicMemberLookup
 public struct ProjectedValue <ObjectType: ObservableObject> {
-    private var observedObject: ObservedObject<ObjectType>
+    private var observedObject: UVObservedObject<ObjectType>
 
-    internal init(_ observedObject: ObservedObject<ObjectType>) {
+    internal init(_ observedObject: UVObservedObject<ObjectType>) {
         self.observedObject = observedObject
     }
 
