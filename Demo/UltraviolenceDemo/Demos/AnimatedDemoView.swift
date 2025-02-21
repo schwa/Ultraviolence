@@ -5,7 +5,7 @@ import Ultraviolence
 import UltraviolenceExamples
 import UltraviolenceSupport
 
-struct AnimatedExampleView: View {
+struct AnimatedDemoView: View {
     @SwiftUI.State
     var angle: SwiftUI.Angle = .zero
 
@@ -41,4 +41,7 @@ struct AnimatedExampleView: View {
             .padding()
         }
     }
+}
+
+extension AnimatedDemoView: DemoView {
 }

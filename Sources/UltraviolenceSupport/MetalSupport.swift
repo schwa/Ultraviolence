@@ -407,10 +407,14 @@ public extension MTLFunction {
             case .float2:
                 vertexDescriptor.attributes[attribute.attributeIndex].format = .float2
                 vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<SIMD2<Float>>.stride
+                totalStride += vertexDescriptor.layouts[attribute.attributeIndex].stride
+            case .float3:
+                vertexDescriptor.attributes[attribute.attributeIndex].format = .float3
+                vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<Float>.stride * 3
                 totalStride += MemoryLayout<SIMD2<Float>>.stride
             default:
                 // TODO: Flesh this out.
-                fatalError("Unimplemented")
+                fatalError("Unimplemented: \(attribute.attributeType)")
             }
         }
         vertexDescriptor.layouts[0].stride = totalStride
