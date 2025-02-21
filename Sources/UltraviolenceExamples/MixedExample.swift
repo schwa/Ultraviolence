@@ -22,15 +22,17 @@ public struct MixedExample: Element {
     }
 
     public var body: some Element {
-        RenderPass {
-            // swiftlint:disable:next force_try
-            try! TeapotDemo(drawableSize: drawableSize, modelMatrix: modelMatrix, color: color, lightDirection: lightDirection)
-                .colorAttachment(colorTexture, index: 0)
-                .depthAttachment(depthTexture)
-        }
-        try! ComputePass {
-            // swiftlint:disable:next force_try
-            try! EdgeDetectionKernel(depthTexture: depthTexture, colorTexture: colorTexture)
+        get throws {
+            try RenderPass {
+                // swiftlint:disable:next force_try
+                try! TeapotDemo(drawableSize: drawableSize, modelMatrix: modelMatrix, color: color, lightDirection: lightDirection)
+                    .colorAttachment(colorTexture, index: 0)
+                    .depthAttachment(depthTexture)
+            }
+            try! ComputePass {
+                // swiftlint:disable:next force_try
+                try! EdgeDetectionKernel(depthTexture: depthTexture, colorTexture: colorTexture)
+            }
         }
     }
 }

@@ -8,13 +8,13 @@ import UltraviolenceSupport
 
 public struct RenderView <Content>: View where Content: Element {
     var device = MTLCreateSystemDefaultDevice().orFatalError(.resourceCreationFailure)
-    var content: (CAMetalDrawable, MTLRenderPassDescriptor) -> Content
+    var content: (CAMetalDrawable, MTLRenderPassDescriptor) throws -> Content
 
     @Observable
     class ViewModel: NSObject, MTKViewDelegate {
         var device: MTLDevice
         var commandQueue: MTLCommandQueue
-        var content: (CAMetalDrawable, MTLRenderPassDescriptor) -> Content {
+        var content: (CAMetalDrawable, MTLRenderPassDescriptor) throws -> Content {
             didSet {
                 logger?.log("Content did change.")
             }
@@ -24,7 +24,7 @@ public struct RenderView <Content>: View where Content: Element {
         var graph: Graph
 
         @MainActor
-        init(device: MTLDevice, content: @escaping (CAMetalDrawable, MTLRenderPassDescriptor) -> Content) throws {
+        init(device: MTLDevice, content: @escaping (CAMetalDrawable, MTLRenderPassDescriptor) throws -> Content) throws {
             self.device = device
             self.content = content
             self.commandQueue = try device.makeCommandQueue().orThrow(.resourceCreationFailure)
@@ -45,7 +45,7 @@ public struct RenderView <Content>: View where Content: Element {
 
                 renderPassDescriptor.depthAttachment.storeAction = .store // TODO: This should be customisable.
 
-                let root = content(currentDrawable, renderPassDescriptor)
+                let root = try content(currentDrawable, renderPassDescriptor)
                     .environment(\.renderPassDescriptor, renderPassDescriptor)
                     .environment(\.device, device)
 
@@ -70,7 +70,7 @@ public struct RenderView <Content>: View where Content: Element {
     @State
     private var viewModel: ViewModel
 
-    public init(content: @escaping (CAMetalDrawable, MTLRenderPassDescriptor) -> Content) {
+    public init(content: @escaping (CAMetalDrawable, MTLRenderPassDescriptor) throws -> Content) {
         self.device = MTLCreateSystemDefaultDevice().orFatalError(.resourceCreationFailure)
         self.content = content
         do {

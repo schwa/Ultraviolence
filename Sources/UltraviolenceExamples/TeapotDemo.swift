@@ -51,7 +51,7 @@ public extension TeapotDemo {
     // TODO: Make generic for any RenderPass
     static func main() throws {
         let size = CGSize(width: 1_600, height: 1_200)
-        let element = RenderPass {
+        let element = try RenderPass {
             try! Self(drawableSize: [Float(size.width), Float(size.height)], modelMatrix: .identity, color: [1, 0, 0, 1], lightDirection: [-1, -2, -1])
         }
         let offscreenRenderer = try OffscreenRenderer(size: size)

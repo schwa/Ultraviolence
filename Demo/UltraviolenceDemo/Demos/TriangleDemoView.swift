@@ -43,7 +43,7 @@ struct TriangleDemoView: View {
         let fragmentShader = try! FragmentShader(source: source)
         TimelineView(.animation()) { timeline in
             RenderView { drawable, renderPassDescriptor in
-                RenderPass {
+                try RenderPass {
                     RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                         Draw { encoder in
                             let vertices: [SIMD2<Float>] = [[0, 0.75], [-0.75, -0.75], [0.75, -0.75]]

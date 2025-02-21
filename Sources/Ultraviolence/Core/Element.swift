@@ -1,7 +1,7 @@
 @MainActor
 public protocol Element {
     associatedtype Body: Element
-    @MainActor @ElementBuilder var body: Body { get }
+    @MainActor @ElementBuilder var body: Body { get throws }
 }
 
 extension Never: Element {
