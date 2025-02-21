@@ -97,7 +97,7 @@ public struct RenderView <Content>: View where Content: Element {
     }
 }
 
-struct RenderViewDebugViewModifier <Root>: ViewModifier where Root: Element {
+internal struct RenderViewDebugViewModifier <Root>: ViewModifier where Root: Element {
     @SwiftUI.State
     var debugInspectorIsPresented = true
 
@@ -120,11 +120,12 @@ struct RenderViewDebugViewModifier <Root>: ViewModifier where Root: Element {
     }
 }
 
-struct NodeListBox: Identifiable {
+internal struct NodeListBox: Identifiable {
     var id: ObjectIdentifier {
         ObjectIdentifier(node)
     }
     var node: Node
+    // swiftlint:disable:next discouraged_optional_collection
     var children: [Self]? {
         node.children.map { Self(node: $0) }
     }
