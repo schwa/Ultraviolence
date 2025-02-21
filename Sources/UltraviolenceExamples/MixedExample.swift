@@ -25,8 +25,8 @@ public struct MixedExample: Element {
         RenderPass {
             // swiftlint:disable:next force_try
             try! TeapotDemo(drawableSize: drawableSize, modelMatrix: modelMatrix, color: color, lightDirection: lightDirection)
-            .colorAttachment(colorTexture, index: 0)
-            .depthAttachment(depthTexture)
+                .colorAttachment(colorTexture, index: 0)
+                .depthAttachment(depthTexture)
         }
         try! ComputePass {
             // swiftlint:disable:next force_try

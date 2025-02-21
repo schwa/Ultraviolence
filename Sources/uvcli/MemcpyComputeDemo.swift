@@ -30,8 +30,8 @@ enum MemcpyComputeDemo {
             let compute = try ComputePass {
                 ComputePipeline(computeKernel: kernel) {
                     ComputeDispatch(threads: .init(width: count, height: 1, depth: 1), threadsPerThreadgroup: .init(width: 1_024, height: 1, depth: 1))
-                    .parameter("src", buffer: inputBuffer)
-                    .parameter("dst", buffer: outputBuffer)
+                        .parameter("src", buffer: inputBuffer)
+                        .parameter("dst", buffer: outputBuffer)
                 }
             }
             try compute.compute()

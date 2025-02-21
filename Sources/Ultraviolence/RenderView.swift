@@ -106,17 +106,17 @@ struct RenderViewDebugViewModifier <Root>: ViewModifier where Root: Element {
 
     func body(content: Content) -> some View {
         content
-        .toolbar {
-            Toggle("Inspector", systemImage: "ladybug", isOn: $debugInspectorIsPresented)
-        }
-        .inspector(isPresented: $debugInspectorIsPresented) {
-            Text("\(viewModel.graph.root)")
-            List([NodeListBox(node: viewModel.graph.root)], children: \.children) { box in
-                let node = box.node
-                Text("\(node.shortDescription)").fixedSize().font(.caption2)
+            .toolbar {
+                Toggle("Inspector", systemImage: "ladybug", isOn: $debugInspectorIsPresented)
             }
-            .inspectorColumnWidth(min: 200, ideal: 300)
-        }
+            .inspector(isPresented: $debugInspectorIsPresented) {
+                Text("\(viewModel.graph.root)")
+                List([NodeListBox(node: viewModel.graph.root)], children: \.children) { box in
+                    let node = box.node
+                    Text("\(node.shortDescription)").fixedSize().font(.caption2)
+                }
+                .inspectorColumnWidth(min: 200, ideal: 300)
+            }
     }
 }
 

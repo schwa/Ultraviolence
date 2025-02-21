@@ -60,8 +60,8 @@ public struct EdgeDetectionKernel: Element {
         ComputePipeline(computeKernel: kernel) {
             // TODO: Compute threads per threadgroup
             ComputeDispatch(threads: .init(width: depthTexture.width, height: depthTexture.height, depth: 1), threadsPerThreadgroup: .init(width: 32, height: 32, depth: 1))
-            .parameter("depthTexture", texture: depthTexture)
-            .parameter("colorTexture", texture: colorTexture)
+                .parameter("depthTexture", texture: depthTexture)
+                .parameter("colorTexture", texture: colorTexture)
         }
     }
 }
