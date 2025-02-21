@@ -4,7 +4,7 @@ public struct EnvironmentDumper: Element, BodylessElement {
     @UVEnvironment(\.self)
     var environment
 
-    func _expandNode(_ node: Node) throws {
+    func _expandNode(_ node: Node, depth: Int) throws {
         print(environment)
     }
 }

@@ -9,7 +9,7 @@ public struct Draw: Element, BodylessElement {
         self.encodeGeometry = encodeGeometry
     }
 
-    func _expandNode(_ node: Node) throws {
+    func _expandNode(_ node: Node, depth: Int) throws {
         // This line intentionally left blank.
     }
 

@@ -7,7 +7,7 @@ public struct RenderPass <Content>: Element, BodylessElement where Content: Elem
         self.content = try content()
     }
 
-    func _expandNode(_ node: Node) throws {
+    func _expandNode(_ node: Node, depth: Int) throws {
         // TODO: Move into BodylessRenderPass
         guard let graph = node.graph else {
             preconditionFailure("Cannot build node tree without a graph.")
@@ -15,7 +15,7 @@ public struct RenderPass <Content>: Element, BodylessElement where Content: Elem
         if node.children.isEmpty {
             node.children.append(graph.makeNode())
         }
-        try content.expandNode(node.children[0])
+        try content.expandNode(node.children[0], depth: depth + 1)
     }
 
     func _enter(_ node: Node, environment: inout EnvironmentValues) throws {

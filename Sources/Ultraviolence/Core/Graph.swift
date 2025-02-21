@@ -10,14 +10,14 @@ public class Graph {
         root = Node()
         root.graph = self
         Self.current = self
-        try content.expandNode(root)
+        try content.expandNode(root, depth: 0)
         Self.current = nil
     }
 
     @MainActor
     func updateContent<Content>(content: Content) throws where Content: Element {
         Self.current = self
-        try content.expandNode(root)
+        try content.expandNode(root, depth: 0)
         Self.current = nil
     }
 
@@ -32,7 +32,7 @@ public class Graph {
         guard let rootElement = root.element else {
             preconditionFailure("Root element is missing.")
         }
-        try rootElement.expandNode(root)
+        try rootElement.expandNode(root, depth: 0)
     }
 
     static let _current = OSAllocatedUnfairLock<Graph?>(uncheckedState: nil)

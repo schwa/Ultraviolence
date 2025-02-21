@@ -15,7 +15,7 @@ public extension Element where Body == Never {
 }
 
 internal extension Element {
-    func expandNode(_ node: Node) throws {
+    func expandNode(_ node: Node, depth: Int) throws {
         logger?.log("\(type(of: self)).\(#function) enter.")
         defer {
             logger?.log("\(type(of: self)).\(#function)")
@@ -43,7 +43,7 @@ internal extension Element {
         restoreStateProperties(node)
 
         if let bodylessElement = self as? any BodylessElement {
-            try bodylessElement._expandNode(node)
+            try bodylessElement._expandNode(node, depth: depth + 1)
         }
 
         let shouldRunBody = node.needsRebuild || !equalToPrevious(node)
@@ -58,7 +58,7 @@ internal extension Element {
             if node.children.isEmpty {
                 node.children = [graph.makeNode()]
             }
-            try body.expandNode(node.children[0])
+            try body.expandNode(node.children[0], depth: depth + 1)
         }
 
         storeStateProperties(node)

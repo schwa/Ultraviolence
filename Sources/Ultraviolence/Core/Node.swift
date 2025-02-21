@@ -18,7 +18,7 @@ internal final class Node {
 
     @MainActor
     func rebuildIfNeeded() throws {
-        try element?.expandNode(self)
+        try element?.expandNode(self, depth: 0)
     }
 
     func setNeedsRebuild() {
