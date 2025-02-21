@@ -79,7 +79,7 @@ public struct LambertianShader <Content>: Element where Content: Element {
     var lightDirection: SIMD3<Float>
     var content: Content
 
-    public init(color: SIMD4<Float>, drawableSize: SIMD2<Float>, modelMatrix: simd_float4x4, viewMatrix: simd_float4x4, cameraPosition: SIMD3<Float>, lightDirection: SIMD3<Float>, content: () -> Content) throws {
+    public init(color: SIMD4<Float>, drawableSize: SIMD2<Float>, modelMatrix: simd_float4x4, viewMatrix: simd_float4x4, cameraPosition: SIMD3<Float>, lightDirection: SIMD3<Float>, @ElementBuilder content: () -> Content) throws {
         self.color = color
         self.drawableSize = drawableSize
         self.modelMatrix = modelMatrix

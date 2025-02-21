@@ -39,11 +39,11 @@ struct TriangleDemoView: View {
     var color: SIMD4<Float> = [1, 0, 0, 1]
 
     var body: some View {
-        let vertexShader = try! VertexShader(source: source)
-        let fragmentShader = try! FragmentShader(source: source)
         TimelineView(.animation()) { timeline in
             RenderView { drawable, renderPassDescriptor in
                 try RenderPass {
+                    let vertexShader = try VertexShader(source: source)
+                    let fragmentShader = try FragmentShader(source: source)
                     RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                         Draw { encoder in
                             let vertices: [SIMD2<Float>] = [[0, 0.75], [-0.75, -0.75], [0.75, -0.75]]

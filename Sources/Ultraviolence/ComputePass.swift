@@ -21,7 +21,7 @@ public struct ComputePass <Content>: Element, BodylessElement where Content: Ele
     let logging: Bool
     let content: Content
 
-    public init(logging: Bool = false, content: () -> Content) throws {
+    public init(logging: Bool = false, @ElementBuilder content: () -> Content) throws {
         self.logging = logging
         self.content = content()
     }
@@ -62,7 +62,7 @@ public struct ComputePipeline <Content>: Element, BodylessElement where Content:
     @UVEnvironment(\.device)
     var device
 
-    public init(computeKernel: ComputeKernel, content: () -> Content) {
+    public init(computeKernel: ComputeKernel, @ElementBuilder content: () -> Content) {
         self.computeKernel = computeKernel
         self.content = content()
     }

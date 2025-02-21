@@ -3,7 +3,7 @@ import Metal
 public struct RenderPass <Content>: Element, BodylessElement where Content: Element {
     var content: Content
 
-    public init(content: () throws -> Content) throws {
+    public init(@ElementBuilder content: () throws -> Content) throws {
         self.content = try content()
     }
 
