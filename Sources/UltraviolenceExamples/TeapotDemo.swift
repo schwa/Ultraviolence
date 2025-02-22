@@ -28,21 +28,22 @@ public struct TeapotDemo: Element {
         self.modelMatrix = modelMatrix
         cameraMatrix = simd_float4x4(translation: [0, 2, 6])
         self.drawableSize = drawableSize
-        self.color = color // [1, 0, 0, 1]
-        self.lightDirection = lightDirection // [-1, -2, -1]
+        self.color = color
+        self.lightDirection = lightDirection
     }
 
     public var body: some Element {
-        let viewMatrix = cameraMatrix.inverse
-        let cameraPosition = cameraMatrix.translation
-        // swiftlint:disable:next force_try
-        try! LambertianShader(color: color, drawableSize: drawableSize, modelMatrix: modelMatrix, viewMatrix: viewMatrix, cameraPosition: cameraPosition, lightDirection: lightDirection) {
-            Draw { encoder in
-                encoder.draw(mesh)
+        get throws {
+            let viewMatrix = cameraMatrix.inverse
+            let cameraPosition = cameraMatrix.translation
+            try LambertianShader(color: color, drawableSize: drawableSize, modelMatrix: modelMatrix, viewMatrix: viewMatrix, cameraPosition: cameraPosition, lightDirection: lightDirection) {
+                Draw { encoder in
+                    encoder.draw(mesh)
+                }
             }
+            .vertexDescriptor(MTLVertexDescriptor(mesh.vertexDescriptor))
+            .depthCompare(function: .less, enabled: true)
         }
-        .vertexDescriptor(MTLVertexDescriptor(mesh.vertexDescriptor))
-        .depthCompare(function: .less, enabled: true)
     }
 }
 
@@ -52,7 +53,7 @@ public extension TeapotDemo {
     static func main() throws {
         let size = CGSize(width: 1_600, height: 1_200)
         let element = try RenderPass {
-            try! Self(drawableSize: [Float(size.width), Float(size.height)], modelMatrix: .identity, color: [1, 0, 0, 1], lightDirection: [-1, -2, -1])
+            try Self(drawableSize: [Float(size.width), Float(size.height)], modelMatrix: .identity, color: [1, 0, 0, 1], lightDirection: [-1, -2, -1])
         }
         let offscreenRenderer = try OffscreenRenderer(size: size)
         let image = try offscreenRenderer.render(element).cgImage

@@ -21,9 +21,9 @@ public struct ComputePass <Content>: Element, BodylessElement, BodylessContentEl
     internal let logging: Bool
     internal let content: Content
 
-    public init(logging: Bool = false, @ElementBuilder content: () -> Content) throws {
+    public init(logging: Bool = false, @ElementBuilder content: () throws -> Content) throws {
         self.logging = logging
-        self.content = content()
+        self.content = try content()
     }
 
     func _enter(_ node: Node, environment: inout UVEnvironmentValues) throws {

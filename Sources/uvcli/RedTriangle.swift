@@ -10,6 +10,7 @@ import UniformTypeIdentifiers
 
 enum RedTriangle {
     @MainActor
+    // swiftlint:disable:next function_body_length
     static func main() throws {
         let logger = Logger()
         logger.log("\(#function) enter.")
@@ -58,7 +59,6 @@ enum RedTriangle {
             }
         }
 
-        //        try MTLCaptureManager.shared().with {
         let offscreenRenderer = try OffscreenRenderer(size: CGSize(width: 1_600, height: 1_200))
         let image = try offscreenRenderer.render(root).cgImage
         let url = URL(fileURLWithPath: "output.png")
@@ -66,6 +66,5 @@ enum RedTriangle {
         CGImageDestinationAddImage(imageDestination, image, nil)
         CGImageDestinationFinalize(imageDestination)
         NSWorkspace.shared.activateFileViewerSelecting([url.absoluteURL])
-        //        }
     }
 }

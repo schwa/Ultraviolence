@@ -40,8 +40,8 @@ public struct RedTriangle: Element {
 
     public var body: some Element {
         get throws {
-            let vertexShader = try! VertexShader(source: source)
-            let fragmentShader = try! FragmentShader(source: source)
+            let vertexShader = try VertexShader(source: source)
+            let fragmentShader = try FragmentShader(source: source)
 
             try RenderPass {
                 RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
