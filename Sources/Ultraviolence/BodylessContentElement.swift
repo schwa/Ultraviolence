@@ -1,11 +1,10 @@
-// TODO: Rename
-internal protocol FoobarElement: BodylessElement {
+internal protocol BodylessContentElement: BodylessElement {
     associatedtype Content: Element
 
     var content: Content { get }
 }
 
-extension FoobarElement {
+extension BodylessContentElement {
     func _expandNode(_ node: Node, depth: Int) throws {
         guard let graph = node.graph else {
             preconditionFailure("Cannot build node tree without a graph.")

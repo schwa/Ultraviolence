@@ -4,7 +4,7 @@ import Metal
 import simd
 import UltraviolenceSupport
 
-internal struct ParameterElement<Content, T>: BodylessElement, FoobarElement where Content: Element {
+internal struct ParameterElement<Content, T>: BodylessElement, BodylessContentElement where Content: Element {
     var name: String
 
     var functionType: MTLFunctionType?

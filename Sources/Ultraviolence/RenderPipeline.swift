@@ -26,7 +26,7 @@ public struct RenderPipeline <Content>: BodylessElement where Content: Element {
     }
 
     func _expandNode(_ node: Node, depth: Int) throws {
-        // TODO: Replace with `FoobarElement`
+        // TODO: Replace with `BodylessContentElement`?
         guard let graph = node.graph else {
             preconditionFailure("Cannot build node tree without a graph.")
         }

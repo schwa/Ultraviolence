@@ -17,7 +17,7 @@ public struct ComputeKernel {
 
 // MARK: -
 
-public struct ComputePass <Content>: Element, BodylessElement, FoobarElement where Content: Element {
+public struct ComputePass <Content>: Element, BodylessElement, BodylessContentElement where Content: Element {
     internal let logging: Bool
     internal let content: Content
 

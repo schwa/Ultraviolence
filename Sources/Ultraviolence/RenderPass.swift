@@ -1,6 +1,6 @@
 import Metal
 
-public struct RenderPass <Content>: Element, BodylessElement, FoobarElement where Content: Element {
+public struct RenderPass <Content>: Element, BodylessElement, BodylessContentElement where Content: Element {
     var content: Content
 
     public init(@ElementBuilder content: () throws -> Content) throws {

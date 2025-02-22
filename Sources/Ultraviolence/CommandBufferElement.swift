@@ -1,7 +1,7 @@
 import Metal
 import UltraviolenceSupport
 
-public struct CommandBufferElement <Content>: Element, FoobarElement where Content: Element {
+public struct CommandBufferElement <Content>: Element, BodylessContentElement where Content: Element {
     var completion: MTLCommandQueueCompletion
     var content: Content
 
