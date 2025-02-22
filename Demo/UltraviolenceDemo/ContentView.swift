@@ -9,7 +9,9 @@ struct ContentView: View {
             List(selection: $demo) {
                 row(for: AnimatedDemoView.self)
                 row(for: TriangleDemoView.self)
+                #if canImport(AppKit)
                 row(for: OffscreenDemoView.self)
+                #endif
                 row(for: ComputeDemoView.self)
             }
         } detail: {

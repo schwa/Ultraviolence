@@ -1,3 +1,4 @@
+#if canImport(AppKit)
 import SwiftUI
 import Ultraviolence
 import UltraviolenceExamples
@@ -27,3 +28,4 @@ struct OffscreenDemoView: View {
 
 extension OffscreenDemoView: DemoView {
 }
+#endif
