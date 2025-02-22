@@ -1,3 +1,5 @@
+import UltraviolenceSupport
+
 @MainActor
 public protocol Element {
     associatedtype Body: Element
@@ -16,9 +18,9 @@ public extension Element where Body == Never {
 
 internal extension Element {
     func expandNode(_ node: Node, depth: Int) throws {
-        logger?.log("\(type(of: self)).\(#function) enter.")
+        logger?.log("\(String(repeating: "􀄫", count: depth))\(type(of: self)).\(#function) enter.")
         defer {
-            logger?.log("\(type(of: self)).\(#function)")
+            logger?.log("\(String(repeating: "􀰌", count: depth))\(type(of: self)).\(#function) exit.")
         }
 
         // TODO: Refactor this to make expansion of the node tree distinct from handling observable and state properties.

@@ -7,6 +7,10 @@ public class Graph {
 
     @MainActor
     public init<Content>(content: Content) throws where Content: Element {
+        logger?.log("\(type(of: self)).\(#function) enter.")
+        defer {
+            logger?.log("\(type(of: self)).\(#function) exit.")
+        }
         root = Node()
         root.graph = self
         Self.current = self
