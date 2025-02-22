@@ -47,19 +47,9 @@ public struct RenderView <Content>: View where Content: Element {
 
                 let content = try content(currentDrawable, renderPassDescriptor)
                     .environment(\.renderPassDescriptor, renderPassDescriptor)
-                    .environment(\.device, device)
 
-                try graph.updateContent(content: content)
-
-                try commandQueue.withCommandBuffer(completion: .none, label: "􀐛RenderView.Coordinator.commandBuffer", debugGroup: "􀯕RenderView.Coordinator.draw()") { commandBuffer in
-                    defer {
-                        commandBuffer.commit()
-                    }
-                    var environment = EnvironmentValues()
-                    environment.commandQueue = commandQueue
-                    environment.commandBuffer = commandBuffer
-                    try graph._process(rootEnvironment: environment, log: false)
-                }
+                let processor = Processor(device: device, completion: .commit, commandQueue: commandQueue)
+                try processor.process(content)
             } catch {
                 logger?.error("Error when drawing: \(error)")
                 lastError = error
