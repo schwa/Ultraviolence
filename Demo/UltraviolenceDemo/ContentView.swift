@@ -10,6 +10,7 @@ struct ContentView: View {
                 row(for: AnimatedDemoView.self)
                 row(for: TriangleDemoView.self)
                 row(for: OffscreenDemoView.self)
+                row(for: ComputeDemoView.self)
             }
         } detail: {
             if let demo = demo {
