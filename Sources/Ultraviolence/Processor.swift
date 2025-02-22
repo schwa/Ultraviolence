@@ -23,24 +23,20 @@ internal struct Processor {
                 rootEnvironment.device = device
                 rootEnvironment.commandBuffer = commandBuffer
                 rootEnvironment.commandQueue = commandQueue
-                try graph._process(rootEnvironment: rootEnvironment)
+                try _process(graph: graph, rootEnvironment: rootEnvironment)
             }
         }
     }
-}
 
-// MARK: -
-
-extension Graph {
     @MainActor
-    func _process(rootEnvironment: EnvironmentValues, log: Bool = true) throws {
+    func _process(graph: Graph, rootEnvironment: EnvironmentValues, log: Bool = true) throws {
         logger?.log("\(type(of: self)).\(#function) enter.")
         defer {
             logger?.log("\(type(of: self)).\(#function) exit.")
         }
         let logger = log ? logger : nil
         var enviromentStack: [EnvironmentValues] = [rootEnvironment]
-        try visit { _, _ in
+        try graph.visit { _, _ in
             // This line intentionally left blank.
         }
         enter: { node in
