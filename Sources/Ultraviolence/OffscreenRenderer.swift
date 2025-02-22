@@ -60,19 +60,12 @@ public extension OffscreenRenderer {
             logger?.log("\(type(of: self)).\(#function) exit.")
         }
         let content = content
-            .environment(\.device, device)
             .environment(\.renderPassDescriptor, renderPassDescriptor)
-
-        let graph = try Graph(content: content)
-        return try MTLCaptureManager.shared().with(enabled: capture) {
-            try commandQueue.withCommandBuffer(logState: nil, completion: .commitAndWaitUntilCompleted, label: "TODO", debugGroup: "CommandBuffer") { commandBuffer in
-                var rootEnvironment = EnvironmentValues()
-                rootEnvironment.commandBuffer = commandBuffer
-                rootEnvironment.commandQueue = commandQueue
-                try graph._process(rootEnvironment: rootEnvironment)
-                return .init(texture: colorTexture)
-            }
-        }
+        let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
+        let commandQueue = try device.makeCommandQueue().orThrow(.resourceCreationFailure)
+        let processor = Processor(device: device, completion: .commitAndWaitUntilCompleted, commandQueue: commandQueue)
+        try processor.process(content)
+        return .init(texture: colorTexture)
     }
 }
 
