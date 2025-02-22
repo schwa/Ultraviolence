@@ -26,6 +26,7 @@ public struct ComputePass <Content>: Element, BodylessElement where Content: Ele
         self.content = content()
     }
 
+    // TODO: Replace with `FoobarElement`
     func _expandNode(_ node: Node, depth: Int) throws {
         guard let graph = node.graph else {
             preconditionFailure("Cannot build node tree without a graph.")

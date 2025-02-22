@@ -14,27 +14,25 @@ internal struct Processor {
         defer {
             logger?.log("\(type(of: self)).\(#function) exit.")
         }
-        let content = content
-            .environment(\.device, device)
+        let content = CommandBufferElement(completion: completion) {
+            content
+        }
+        .environment(\.device, device)
 
         let graph = try Graph(content: content)
         try MTLCaptureManager.shared().with(enabled: capture) {
-            try commandQueue.withCommandBuffer(logState: nil, completion: completion, label: "TODO", debugGroup: "CommandBuffer") { commandBuffer in
-                var rootEnvironment = UVEnvironmentValues()
-                rootEnvironment.commandBuffer = commandBuffer
-                rootEnvironment.commandQueue = commandQueue
-                try process(graph: graph, rootEnvironment: rootEnvironment)
-            }
+            var rootEnvironment = UVEnvironmentValues()
+            rootEnvironment.commandQueue = commandQueue
+            try process(graph: graph, rootEnvironment: rootEnvironment)
         }
     }
 
     @MainActor
-    func process(graph: Graph, rootEnvironment: UVEnvironmentValues, log: Bool = true) throws {
+    private func process(graph: Graph, rootEnvironment: UVEnvironmentValues) throws {
         logger?.log("\(type(of: self)).\(#function) enter.")
         defer {
             logger?.log("\(type(of: self)).\(#function) exit.")
         }
-        let logger = log ? logger : nil
         var enviromentStack: [UVEnvironmentValues] = [rootEnvironment]
         try graph.visit { _, _ in
             // This line intentionally left blank.
@@ -63,6 +61,58 @@ internal struct Processor {
             if let body = node.element as? any BodylessElement {
                 try body._exit(node, environment: environment)
             }
+        }
+    }
+}
+
+// TODO: Rename
+internal protocol FoobarElement: BodylessElement {
+    associatedtype Content: Element
+
+    var content: Content { get }
+}
+
+extension FoobarElement {
+    func _expandNode(_ node: Node, depth: Int) throws {
+        guard let graph = node.graph else {
+            preconditionFailure("Cannot build node tree without a graph.")
+        }
+        if node.children.isEmpty {
+            node.children.append(graph.makeNode())
+        }
+        try content.expandNode(node.children[0], depth: depth + 1)
+    }
+}
+
+public struct CommandBufferElement <Content>: Element, FoobarElement where Content: Element {
+    var completion: MTLCommandQueueCompletion
+    var content: Content
+
+    init(completion: MTLCommandQueueCompletion, @ElementBuilder content: () throws -> Content) rethrows {
+        self.completion = completion
+        self.content = try content()
+    }
+
+
+
+    func _enter(_ node: Node, environment: inout UVEnvironmentValues) throws {
+        let device = try environment.device.orThrow(.missingEnvironment(\.commandBuffer))
+        let commandQueue = try environment.commandQueue.orThrow(.missingEnvironment(\.commandBuffer))
+        let commandBufferDescriptor = MTLCommandBufferDescriptor()
+        let commandBuffer = try commandQueue.makeCommandBuffer(descriptor: commandBufferDescriptor).orThrow(.resourceCreationFailure)
+        environment.commandBuffer = commandBuffer
+    }
+
+    func _exit(_ node: Node, environment: UVEnvironmentValues) throws {
+        let commandBuffer = try environment.commandBuffer.orThrow(.missingEnvironment(\.commandBuffer))
+        switch completion {
+        case .none:
+            break
+        case .commit:
+            commandBuffer.commit()
+        case .commitAndWaitUntilCompleted:
+            commandBuffer.commit()
+            commandBuffer.waitUntilCompleted()
         }
     }
 }

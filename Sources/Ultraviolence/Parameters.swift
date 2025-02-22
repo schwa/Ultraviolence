@@ -18,6 +18,7 @@ internal struct ParameterElement<Content, T>: BodylessElement where Content: Ele
         self.content = content
     }
 
+    // TODO: Replace with `FoobarElement`
     func _expandNode(_ node: Node, depth: Int) throws {
         // TODO: Move into BodylessRenderPass
         guard let graph = node.graph else {
