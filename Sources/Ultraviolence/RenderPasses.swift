@@ -9,8 +9,6 @@ public extension EnvironmentValues {
     @Entry var renderPassDescriptor: MTLRenderPassDescriptor?
     @Entry var renderPipelineState: MTLRenderPipelineState?
     @Entry var vertexDescriptor: MTLVertexDescriptor?
-    @available(*, deprecated, message: "Deprecated. Use ``.reflection``.")
-    @Entry var renderPipelineReflection: MTLRenderPipelineReflection?
     @Entry var depthStencilDescriptor: MTLDepthStencilDescriptor?
     @Entry var depthStencilState: MTLDepthStencilState?
     @Entry var computeCommandEncoder: MTLComputeCommandEncoder?

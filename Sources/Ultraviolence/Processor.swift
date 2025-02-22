@@ -20,7 +20,6 @@ internal struct Processor {
         try MTLCaptureManager.shared().with(enabled: capture) {
             try commandQueue.withCommandBuffer(logState: nil, completion: completion, label: "TODO", debugGroup: "CommandBuffer") { commandBuffer in
                 var rootEnvironment = EnvironmentValues()
-                rootEnvironment.device = device
                 rootEnvironment.commandBuffer = commandBuffer
                 rootEnvironment.commandQueue = commandQueue
                 try _process(graph: graph, rootEnvironment: rootEnvironment)
