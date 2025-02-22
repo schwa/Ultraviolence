@@ -13,9 +13,7 @@ public class Graph {
         }
         root = Node()
         root.graph = self
-        Self.current = self
-        try content.expandNode(root, depth: 0)
-        Self.current = nil
+        root.element = content
     }
 
     @MainActor
@@ -27,7 +25,10 @@ public class Graph {
 
     @MainActor
     func rebuildIfNeeded() throws {
-        logger?.log("\(type(of: self)).\(#function)")
+        logger?.log("\(type(of: self)).\(#function) enter ‼️‼️‼️.")
+        defer {
+            logger?.log("\(type(of: self)).\(#function) exit ‼️‼️‼️.")
+        }
         let saved = Self.current
         Self.current = self
         defer {
