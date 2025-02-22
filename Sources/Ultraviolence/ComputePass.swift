@@ -17,24 +17,13 @@ public struct ComputeKernel {
 
 // MARK: -
 
-public struct ComputePass <Content>: Element, BodylessElement where Content: Element {
+public struct ComputePass <Content>: Element, BodylessElement, FoobarElement where Content: Element {
     internal let logging: Bool
-    private let content: Content
+    internal let content: Content
 
     public init(logging: Bool = false, @ElementBuilder content: () -> Content) throws {
         self.logging = logging
         self.content = content()
-    }
-
-    // TODO: Replace with `FoobarElement`
-    func _expandNode(_ node: Node, depth: Int) throws {
-        guard let graph = node.graph else {
-            preconditionFailure("Cannot build node tree without a graph.")
-        }
-        if node.children.isEmpty {
-            node.children.append(graph.makeNode())
-        }
-        try content.expandNode(node.children[0], depth: depth + 1)
     }
 
     func _enter(_ node: Node, environment: inout UVEnvironmentValues) throws {

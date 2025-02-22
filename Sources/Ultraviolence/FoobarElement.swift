@@ -1,11 +1,4 @@
-//
-//  FoobarElement.swift
-//  Ultraviolence
-//
-//  Created by Jonathan Wight on 2/22/25.
-//
-
-
+// TODO: Rename
 internal protocol FoobarElement: BodylessElement {
     associatedtype Content: Element
 
