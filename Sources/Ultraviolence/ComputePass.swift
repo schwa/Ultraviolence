@@ -18,8 +18,8 @@ public struct ComputeKernel {
 // MARK: -
 
 public struct ComputePass <Content>: Element, BodylessElement where Content: Element {
-    let logging: Bool
-    let content: Content
+    internal let logging: Bool
+    private let content: Content
 
     public init(logging: Bool = false, @ElementBuilder content: () -> Content) throws {
         self.logging = logging

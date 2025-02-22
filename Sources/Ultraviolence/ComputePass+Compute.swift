@@ -4,6 +4,7 @@ import UltraviolenceSupport
 public extension ComputePass {
     @MainActor
     func compute() throws {
+        // TODO: This has surprisingly little to do with compute. It's basically the same as offscreen rendererr.
         let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
         let commandBufferDescriptor = MTLCommandBufferDescriptor()
         if logging {
@@ -16,13 +17,19 @@ public extension ComputePass {
             commandBuffer.waitUntilCompleted()
         }
 
+        let content = self
+            .environment(\.device, device)
+
         try commandBuffer.withDebugGroup("COMMAND BUFFER") {
-            let root = self
-                .environment(\.device, device)
+            var rootEnvironment = EnvironmentValues()
+            rootEnvironment.commandBuffer = commandBuffer
+            rootEnvironment.commandQueue = commandQueue
+
+            let content = content
                 .environment(\.commandBuffer, commandBuffer)
                 .environment(\.commandQueue, commandQueue)
-            let graph = try Graph(content: root)
-            try graph._process(rootEnvironment: .init()) // TODO: use root environment
+            let graph = try Graph(content: content)
+            try graph._process(rootEnvironment: rootEnvironment)
         }
     }
 }
