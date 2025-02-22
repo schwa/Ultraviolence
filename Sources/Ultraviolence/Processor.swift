@@ -2,6 +2,7 @@ import CoreGraphics
 import Metal
 import UltraviolenceSupport
 
+// TODO: This is very generically named.
 internal struct Processor {
     var device: MTLDevice
     var completion: MTLCommandQueueCompletion
@@ -22,13 +23,13 @@ internal struct Processor {
                 var rootEnvironment = UVEnvironmentValues()
                 rootEnvironment.commandBuffer = commandBuffer
                 rootEnvironment.commandQueue = commandQueue
-                try _process(graph: graph, rootEnvironment: rootEnvironment)
+                try process(graph: graph, rootEnvironment: rootEnvironment)
             }
         }
     }
 
     @MainActor
-    func _process(graph: Graph, rootEnvironment: UVEnvironmentValues, log: Bool = true) throws {
+    func process(graph: Graph, rootEnvironment: UVEnvironmentValues, log: Bool = true) throws {
         logger?.log("\(type(of: self)).\(#function) enter.")
         defer {
             logger?.log("\(type(of: self)).\(#function) exit.")
