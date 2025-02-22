@@ -9,7 +9,7 @@ import XCTest
 import UltraviolenceMacros
 
 let testMacros: [String: Macro.Type] = [
-    "Entry": EntryMacro.self
+    "Entry": UVEntryMacro.self
 ]
 #endif
 
