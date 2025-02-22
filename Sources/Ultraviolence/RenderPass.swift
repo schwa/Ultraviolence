@@ -8,7 +8,6 @@ public struct RenderPass <Content>: Element, BodylessElement where Content: Elem
     }
 
     func _expandNode(_ node: Node, depth: Int) throws {
-        // TODO: Move into BodylessRenderPass
         guard let graph = node.graph else {
             preconditionFailure("Cannot build node tree without a graph.")
         }

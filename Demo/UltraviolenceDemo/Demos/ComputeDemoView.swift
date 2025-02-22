@@ -2,15 +2,13 @@ import SwiftUI
 import Ultraviolence
 
 struct ComputeDemoView: View {
-
     @State
-    var state: Result<Void, Error>?
+    private var state: Result<Void, Error>?
 
     var body: some View {
-
         Text("\(String(describing: state))")
-        .task {
-            let source = """
+            .task {
+                let source = """
             #import <metal_stdlib>
             #import <metal_logging>
 
@@ -22,21 +20,20 @@ struct ComputeDemoView: View {
             }
             """
 
-            do {
-                let kernel = try ComputeKernel(source: source, logging: true)
-                let compute = try ComputePass(logging: true) {
-                    ComputePipeline(computeKernel: kernel) {
-                        ComputeDispatch(threads: .init(width: 1, height: 1, depth: 1), threadsPerThreadgroup: .init(width: 1, height: 1, depth: 1))
+                do {
+                    let kernel = try ComputeKernel(source: source, logging: true)
+                    let compute = try ComputePass(logging: true) {
+                        ComputePipeline(computeKernel: kernel) {
+                            ComputeDispatch(threads: .init(width: 1, height: 1, depth: 1), threadsPerThreadgroup: .init(width: 1, height: 1, depth: 1))
+                        }
                     }
+                    try compute.compute()
+                    state = .success(())
                 }
-                try compute.compute()
-                state = .success(())
+                catch {
+                    state = .failure(error)
+                }
             }
-            catch {
-                state = .failure(error)
-            }
-
-        }
     }
 }
 

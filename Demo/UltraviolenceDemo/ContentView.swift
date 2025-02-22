@@ -2,7 +2,7 @@ import SwiftUI
 
 struct ContentView: View {
     @State
-    var demo: Demo?
+    private var demo: Demo?
 
     var body: some View {
         NavigationSplitView {
@@ -13,7 +13,7 @@ struct ContentView: View {
                 row(for: ComputeDemoView.self)
             }
         } detail: {
-            if let demo = demo {
+            if let demo {
                 AnyView(demo.type.init())// .id(currentDemo)
             }
         }

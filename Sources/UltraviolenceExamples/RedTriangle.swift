@@ -8,7 +8,6 @@ internal import UltraviolenceSupport
 import UniformTypeIdentifiers
 
 public struct RedTriangle: Element {
-
     let source = """
     #include <metal_stdlib>
     using namespace metal;

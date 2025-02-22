@@ -6,7 +6,6 @@ import UltraviolenceExamples
 import UltraviolenceSupport
 
 struct TriangleDemoView: View {
-
     let source = """
     #include <metal_stdlib>
     using namespace metal;
@@ -36,11 +35,11 @@ struct TriangleDemoView: View {
     """
 
     @State
-    var color: SIMD4<Float> = [1, 0, 0, 1]
+    private var color: SIMD4<Float> = [1, 0, 0, 1]
 
     var body: some View {
         TimelineView(.animation()) { timeline in
-            RenderView { drawable, renderPassDescriptor in
+            RenderView { _, _ in
                 try RenderPass {
                     let vertexShader = try VertexShader(source: source)
                     let fragmentShader = try FragmentShader(source: source)
@@ -54,7 +53,7 @@ struct TriangleDemoView: View {
                     }
                 }
             }
-            .onChange(of: timeline.date) { old, new in
+            .onChange(of: timeline.date) { _, new in
                 let timeInterval = new.timeIntervalSince1970
                 let red = (1 + sin(timeInterval * 2 * .pi / 0.3)) / 2
                 let green = (1 + sin(timeInterval * 2 * .pi / 0.5)) / 2

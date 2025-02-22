@@ -2,11 +2,11 @@ import AppKit
 import CoreGraphics
 import ImageIO
 import Metal
+import os
 import simd
 import Ultraviolence
 internal import UltraviolenceSupport
 import UniformTypeIdentifiers
-import os
 
 enum RedTriangle {
     @MainActor
@@ -16,8 +16,6 @@ enum RedTriangle {
         defer {
             logger.log("\(#function) exit.")
         }
-
-
 
         let source = """
         #include <metal_stdlib>

@@ -108,4 +108,3 @@ public struct ComputeDispatch: Element, BodylessElement {
         computeCommandEncoder.dispatchThreads(threads, threadsPerThreadgroup: threadsPerThreadgroup)
     }
 }
-
