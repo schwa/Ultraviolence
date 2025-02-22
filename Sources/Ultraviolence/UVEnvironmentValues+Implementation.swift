@@ -2,20 +2,20 @@ import Metal
 import UltraviolenceSupport
 
 public extension UVEnvironmentValues {
-    @Entry var device: MTLDevice?
-    @Entry var commandQueue: MTLCommandQueue?
-    @Entry var commandBuffer: MTLCommandBuffer?
-    @Entry var renderCommandEncoder: MTLRenderCommandEncoder?
-    @Entry var renderPassDescriptor: MTLRenderPassDescriptor?
-    @Entry var renderPipelineState: MTLRenderPipelineState?
-    @Entry var vertexDescriptor: MTLVertexDescriptor?
-    @Entry var depthStencilDescriptor: MTLDepthStencilDescriptor?
-    @Entry var depthStencilState: MTLDepthStencilState?
-    @Entry var computeCommandEncoder: MTLComputeCommandEncoder?
-    @Entry var computePipelineState: MTLComputePipelineState?
-    @Entry var reflection: Reflection?
-    @Entry var colorAttachment: (MTLTexture, Int)?
-    @Entry var depthAttachment: MTLTexture?
+    @UVEntry var device: MTLDevice?
+    @UVEntry var commandQueue: MTLCommandQueue?
+    @UVEntry var commandBuffer: MTLCommandBuffer?
+    @UVEntry var renderCommandEncoder: MTLRenderCommandEncoder?
+    @UVEntry var renderPassDescriptor: MTLRenderPassDescriptor?
+    @UVEntry var renderPipelineState: MTLRenderPipelineState?
+    @UVEntry var vertexDescriptor: MTLVertexDescriptor?
+    @UVEntry var depthStencilDescriptor: MTLDepthStencilDescriptor?
+    @UVEntry var depthStencilState: MTLDepthStencilState?
+    @UVEntry var computeCommandEncoder: MTLComputeCommandEncoder?
+    @UVEntry var computePipelineState: MTLComputePipelineState?
+    @UVEntry var reflection: Reflection?
+    @UVEntry var colorAttachment: (MTLTexture, Int)?
+    @UVEntry var depthAttachment: MTLTexture?
 }
 
 public extension Element {

@@ -15,4 +15,4 @@ public macro MetaEnum() = #externalMacro(module: "UltraviolenceMacros", type: "M
 
 @attached(accessor)
 @attached(peer, names: prefixed(__Key_))
-public macro Entry() = #externalMacro(module: "UltraviolenceMacros", type: "EntryMacro")
+public macro UVEntry() = #externalMacro(module: "UltraviolenceMacros", type: "UVEntryMacro")

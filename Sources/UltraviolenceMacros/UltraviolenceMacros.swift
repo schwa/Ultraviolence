@@ -7,7 +7,7 @@ public struct UltraviolenceMacros: CompilerPlugin {
         StringifyMacro.self,
         UUIDMacro.self,
         MetaEnumMacro.self,
-        EntryMacro.self
+        UVEntryMacro.self
     ]
 
     public init() {
