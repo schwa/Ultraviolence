@@ -32,7 +32,7 @@ extension UVObservedObject: Equatable {
 }
 
 extension UVObservedObject: AnyObservedObject {
-    func addDependency(_ node: Node) {
+    internal func addDependency(_ node: Node) {
         _object.addDependency(node)
     }
 }
@@ -41,9 +41,9 @@ extension UVObservedObject: AnyObservedObject {
 
 @propertyWrapper
 private final class ObservedObjectBox<Wrapped: ObservableObject> {
-    private let wrappedValue: Wrapped
-    private var cancellable: AnyCancellable?
-    private weak var node: Node?
+    let wrappedValue: Wrapped
+    var cancellable: AnyCancellable?
+    weak var node: Node?
 
     init(_ wrappedValue: Wrapped) {
         self.wrappedValue = wrappedValue

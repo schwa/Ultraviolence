@@ -3,7 +3,7 @@ internal final class StateBox<Wrapped> {
     private weak var _graph: Graph?
     private var dependencies: [WeakBox<Node>] = []
 
-    var graph: Graph? {
+    private var graph: Graph? {
         if _graph == nil {
             _graph = Graph.current
             assert(_graph != nil, "StateBox must be used within a Graph.")
@@ -11,7 +11,7 @@ internal final class StateBox<Wrapped> {
         return _graph
     }
 
-    var wrappedValue: Wrapped {
+    internal var wrappedValue: Wrapped {
         get {
             // Remove dependnecies whose values have been deallocated
             dependencies = dependencies.filter { $0.wrappedValue != nil }
@@ -29,12 +29,12 @@ internal final class StateBox<Wrapped> {
         }
     }
 
-    var binding: UVBinding<Wrapped> = UVBinding(
+    internal var binding: UVBinding<Wrapped> = UVBinding(
         get: { preconditionFailure("Empty Binding: get() called.") },
         set: { _ in preconditionFailure("Empty Binding: set() called.") }
     )
 
-    init(_ wrappedValue: Wrapped) {
+    internal init(_ wrappedValue: Wrapped) {
         self._value = wrappedValue
         // swiftlint:disable:next unowned_variable_capture
         self.binding = UVBinding(get: { [unowned self] in
@@ -46,7 +46,7 @@ internal final class StateBox<Wrapped> {
     }
 
     /// Update dependencies when the value changes
-    func valueDidChange() {
+    private func valueDidChange() {
         dependencies.forEach { $0()?.setNeedsRebuild() }
     }
 }

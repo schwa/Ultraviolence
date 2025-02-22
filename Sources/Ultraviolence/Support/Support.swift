@@ -2,14 +2,14 @@ import UltraviolenceSupport
 
 public struct EnvironmentDumper: Element, BodylessElement {
     @UVEnvironment(\.self)
-    var environment
+    private var environment
 
-    func _expandNode(_ node: Node, depth: Int) throws {
+    internal func _expandNode(_ node: Node, depth: Int) throws {
         print(environment)
     }
 }
 
-extension Element {
+internal extension Element {
     var shortDescription: String {
         "\(type(of: self))"
     }
@@ -33,15 +33,15 @@ internal extension IdentifiableBox where Key == ObjectIdentifier, Value: AnyObje
     }
 }
 
-extension Element {
+internal extension Element {
     func _dump() throws {
         let graph = try Graph(content: self)
-        graph.dump()
+        try graph.dump()
     }
 }
 
 @MainActor
-extension Node {
+internal extension Node {
     var shortDescription: String {
         self.element?.shortDescription ?? "<empty>"
     }

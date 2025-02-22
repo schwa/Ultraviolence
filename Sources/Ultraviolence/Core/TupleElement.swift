@@ -9,7 +9,7 @@ public struct TupleElement <each T: Element>: Element {
 }
 
 extension TupleElement: BodylessElement {
-    func _expandNode(_ node: Node, depth: Int) throws {
+    internal func _expandNode(_ node: Node, depth: Int) throws {
         guard let graph = node.graph else {
             preconditionFailure("Cannot build node tree without a graph.")
         }

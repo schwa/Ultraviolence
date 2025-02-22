@@ -22,7 +22,7 @@ public struct UVState<Value> {
 }
 
 extension UVState: StateProperty {
-    var erasedValue: Any {
+    internal var erasedValue: Any {
         get { state }
         nonmutating set {
             guard let newValue = newValue as? StateBox<Value> else {

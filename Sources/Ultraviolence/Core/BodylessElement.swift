@@ -7,7 +7,7 @@ internal protocol BodylessElement: Element where Body == Never {
     func _exit(_ node: Node, environment: UVEnvironmentValues) throws
 }
 
-extension BodylessElement {
+internal extension BodylessElement {
     func _enter(_ node: Node, environment: inout UVEnvironmentValues) throws {
         // This line intentionally left blank.
     }

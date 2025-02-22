@@ -17,7 +17,7 @@ public extension Element where Body == Never {
 }
 
 internal extension Element {
-    func expandNode(_ node: Node, depth: Int) throws {
+    internal func expandNode(_ node: Node, depth: Int) throws {
         logger?.log("\(String(repeating: "􀄫", count: depth))\(type(of: self)).\(#function) enter.")
         defer {
             logger?.log("\(String(repeating: "􀰌", count: depth))\(type(of: self)).\(#function) exit.")

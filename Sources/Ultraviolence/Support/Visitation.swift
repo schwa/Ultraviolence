@@ -1,4 +1,4 @@
-extension Graph {
+internal extension Graph {
     @MainActor
     func visit(_ visitor: (Int, Node) throws -> Void, enter: (Node) throws -> Void = { _ in }, exit: (Node) throws -> Void = { _ in }) throws {
         let saved = Graph.current
@@ -22,7 +22,7 @@ extension Graph {
     }
 }
 
-extension Node {
+internal extension Node {
     func visit(depth: Int = 0, _ visitor: (Int, Node) throws -> Void, enter: (Node) throws -> Void = { _ in }, exit: (Node) throws -> Void = { _ in }) rethrows {
         try enter(self)
         try visitor(depth, self)

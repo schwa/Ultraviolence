@@ -101,7 +101,7 @@ public struct UVEnvironment <Value> {
         return currentNode.environmentValues[keyPath: keyPath]
     }
 
-    var keyPath: KeyPath<UVEnvironmentValues, Value>
+    private var keyPath: KeyPath<UVEnvironmentValues, Value>
 
     public init(_ keyPath: KeyPath<UVEnvironmentValues, Value>) {
         self.keyPath = keyPath
