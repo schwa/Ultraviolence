@@ -1,7 +1,7 @@
 import Metal
 import UltraviolenceSupport
 
-public extension EnvironmentValues {
+public extension UVEnvironmentValues {
     @Entry var device: MTLDevice?
     @Entry var commandQueue: MTLCommandQueue?
     @Entry var commandBuffer: MTLCommandBuffer?

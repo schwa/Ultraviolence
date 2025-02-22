@@ -1,4 +1,4 @@
-public struct EnvironmentValues {
+public struct UVEnvironmentValues {
     struct Key: Hashable, CustomDebugStringConvertible {
         var id: ObjectIdentifier // TODO: We don't need to store this. But AnyIdentifgier gets a tad upset.
         var value: Any.Type
@@ -33,7 +33,7 @@ public protocol EnvironmentKey {
     static var defaultValue: Value { get }
 }
 
-public extension EnvironmentValues {
+public extension UVEnvironmentValues {
     subscript<Key: EnvironmentKey>(key: Key.Type) -> Key.Value {
         get {
             guard let value = values[.init(key), default: Key.defaultValue] as? Key.Value else {
@@ -49,7 +49,7 @@ public extension EnvironmentValues {
 
 internal struct EnvironmentWritingModifier<Content: Element>: Element, BodylessElement {
     var content: Content
-    var modify: (inout EnvironmentValues) -> Void
+    var modify: (inout UVEnvironmentValues) -> Void
 
     func _expandNode(_ node: Node, depth: Int) throws {
         modify(&node.environmentValues)
@@ -58,7 +58,7 @@ internal struct EnvironmentWritingModifier<Content: Element>: Element, BodylessE
 }
 
 public extension Element {
-    func environment<Value>(_ keyPath: WritableKeyPath<EnvironmentValues, Value>, _ value: Value) -> some Element {
+    func environment<Value>(_ keyPath: WritableKeyPath<UVEnvironmentValues, Value>, _ value: Value) -> some Element {
         EnvironmentWritingModifier(content: self) { environmentValues in
             environmentValues[keyPath: keyPath] = value
         }
@@ -66,10 +66,10 @@ public extension Element {
 }
 
 public struct EnvironmentReader<Value, Content: Element>: Element, BodylessElement {
-    var keyPath: KeyPath<EnvironmentValues, Value>
+    var keyPath: KeyPath<UVEnvironmentValues, Value>
     var content: (Value) -> Content
 
-    public init(keyPath: KeyPath<EnvironmentValues, Value>, content: @escaping (Value) -> Content) {
+    public init(keyPath: KeyPath<UVEnvironmentValues, Value>, content: @escaping (Value) -> Content) {
         self.keyPath = keyPath
         self.content = content
     }
@@ -101,9 +101,9 @@ public struct UVEnvironment <Value> {
         return currentNode.environmentValues[keyPath: keyPath]
     }
 
-    var keyPath: KeyPath<EnvironmentValues, Value>
+    var keyPath: KeyPath<UVEnvironmentValues, Value>
 
-    public init(_ keyPath: KeyPath<EnvironmentValues, Value>) {
+    public init(_ keyPath: KeyPath<UVEnvironmentValues, Value>) {
         self.keyPath = keyPath
     }
 }

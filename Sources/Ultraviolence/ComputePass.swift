@@ -36,7 +36,7 @@ public struct ComputePass <Content>: Element, BodylessElement where Content: Ele
         try content.expandNode(node.children[0], depth: depth + 1)
     }
 
-    func _enter(_ node: Node, environment: inout EnvironmentValues) throws {
+    func _enter(_ node: Node, environment: inout UVEnvironmentValues) throws {
         let commandBuffer = try environment.commandBuffer.orThrow(.missingEnvironment(\.commandBuffer))
         commandBuffer.pushDebugGroup("COMPUTE PASS")
         logger?.log("Compute.\(#function) makeComputeCommandEncoder")
@@ -44,7 +44,7 @@ public struct ComputePass <Content>: Element, BodylessElement where Content: Ele
         environment.computeCommandEncoder = computeCommandEncoder
     }
 
-    func _exit(_ node: Node, environment: EnvironmentValues) throws {
+    func _exit(_ node: Node, environment: UVEnvironmentValues) throws {
         logger?.log("Compute.\(#function) endEncoding")
         let computeCommandEncoder = try environment.computeCommandEncoder.orThrow(.missingEnvironment(\.computeCommandEncoder))
         computeCommandEncoder.endEncoding()
@@ -100,7 +100,7 @@ public struct ComputeDispatch: Element, BodylessElement {
         // This line intentionally left blank.
     }
 
-    func _enter(_ node: Node, environment: inout EnvironmentValues) throws {
+    func _enter(_ node: Node, environment: inout UVEnvironmentValues) throws {
         guard let computeCommandEncoder = environment.computeCommandEncoder, let computePipelineState = environment.computePipelineState else {
             preconditionFailure("No compute command encoder/compute pipeline state found.")
         }

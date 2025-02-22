@@ -461,7 +461,7 @@ struct NotSwiftUIStateTests {
     }
 }
 
-extension EnvironmentValues {
+extension UVEnvironmentValues {
     @Entry
     var exampleValue: String = ""
 }

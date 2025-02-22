@@ -5,7 +5,7 @@ internal final class Node {
     var element: (any Element)?
     var previousElement: (any Element)?
     var stateProperties: [String: Any] = [:]
-    var environmentValues = EnvironmentValues()
+    var environmentValues = UVEnvironmentValues()
 
     init() {
         // This line intentionally left blank.

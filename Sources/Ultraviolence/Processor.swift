@@ -19,7 +19,7 @@ internal struct Processor {
         let graph = try Graph(content: content)
         try MTLCaptureManager.shared().with(enabled: capture) {
             try commandQueue.withCommandBuffer(logState: nil, completion: completion, label: "TODO", debugGroup: "CommandBuffer") { commandBuffer in
-                var rootEnvironment = EnvironmentValues()
+                var rootEnvironment = UVEnvironmentValues()
                 rootEnvironment.commandBuffer = commandBuffer
                 rootEnvironment.commandQueue = commandQueue
                 try _process(graph: graph, rootEnvironment: rootEnvironment)
@@ -28,13 +28,13 @@ internal struct Processor {
     }
 
     @MainActor
-    func _process(graph: Graph, rootEnvironment: EnvironmentValues, log: Bool = true) throws {
+    func _process(graph: Graph, rootEnvironment: UVEnvironmentValues, log: Bool = true) throws {
         logger?.log("\(type(of: self)).\(#function) enter.")
         defer {
             logger?.log("\(type(of: self)).\(#function) exit.")
         }
         let logger = log ? logger : nil
-        var enviromentStack: [EnvironmentValues] = [rootEnvironment]
+        var enviromentStack: [UVEnvironmentValues] = [rootEnvironment]
         try graph.visit { _, _ in
             // This line intentionally left blank.
         }

@@ -29,7 +29,7 @@ internal struct ParameterElement<Content, T>: BodylessElement where Content: Ele
         try content.expandNode(node.children[0], depth: depth + 1)
     }
 
-    func _enter(_ node: Node, environment: inout EnvironmentValues) throws {
+    func _enter(_ node: Node, environment: inout UVEnvironmentValues) throws {
         let reflection = try environment.reflection.orThrow(.missingEnvironment(\.reflection))
         let renderCommandEncoder = environment.renderCommandEncoder
         let computeCommandEncoder = environment.computeCommandEncoder
