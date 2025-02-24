@@ -1,3 +1,4 @@
+internal import os
 import UltraviolenceSupport
 
 public struct EnvironmentDumper: Element, BodylessElement {
@@ -45,5 +46,26 @@ internal extension Element {
 internal extension Node {
     var shortDescription: String {
         self.element?.shortDescription ?? "<empty>"
+    }
+}
+
+internal struct TrivialID: Hashable, Sendable {
+    private var rawValue: Int
+    static let nextValue: OSAllocatedUnfairLock<Int> = .init(uncheckedState: 0)
+
+    internal init() {
+        rawValue = Self.nextValue.withLock { value in
+            defer {
+                value += 1
+            }
+            print("value: \(value)")
+            return value
+        }
+    }
+}
+
+extension TrivialID: CustomDebugStringConvertible {
+    var debugDescription: String {
+        "#\(rawValue)"
     }
 }

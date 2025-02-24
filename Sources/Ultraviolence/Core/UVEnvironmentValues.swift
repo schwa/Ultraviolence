@@ -1,14 +1,29 @@
 public struct UVEnvironmentValues {
+
     struct Key: Hashable, CustomDebugStringConvertible {
         var id: ObjectIdentifier // TODO: We don't need to store this. But AnyIdentifgier gets a tad upset.
         var value: Any.Type
     }
 
-    private var values: [Key: Any] = [:]
+    class Storage {
+        weak var parent: Storage?
+        var values: [Key: Any] = [:]
+    }
 
-    // TODO: Deprecate this and keep a pointer back to parent.
-    internal mutating func merge(_ other: Self) {
-        values.merge(other.values) { _, new in new }
+    var storage = Storage()
+
+    internal init() {
+    }
+
+    internal mutating func merge(_ parent: Self) {
+        guard parent.storage !== self.storage else {
+            // TODO: JIW HERE. We should not need to do this
+            logger?.warning("Parent and child are the same.")
+            return
+        }
+        logger?.warning("Parent and child are the same.")
+//        precondition(parent.storage !== self.storage)
+        storage.parent = parent.storage
     }
 }
 
@@ -20,13 +35,14 @@ public protocol UVEnvironmentKey {
 public extension UVEnvironmentValues {
     subscript<Key: UVEnvironmentKey>(key: Key.Type) -> Key.Value {
         get {
-            guard let value = values[.init(key), default: Key.defaultValue] as? Key.Value else {
-                preconditionFailure("Could not cast value.")
+            if let value = storage.get(.init(key)) as? Key.Value {
+                return value
             }
-            return value
+            return Key.defaultValue
         }
         set {
-            values[.init(key)] = newValue
+            // TODO: Use isKnownUniquelyReferenced.
+            storage.values[.init(key)] = newValue
         }
     }
 }
@@ -110,3 +126,37 @@ extension UVEnvironmentValues.Key {
         "\(value)"
     }
 }
+
+extension UVEnvironmentValues.Storage {
+    // TODO: Replace with subscript.
+    func get(_ key: UVEnvironmentValues.Key) -> Any? {
+        if let value = values[key] {
+            return value
+        }
+        else {
+            if let parent, let value = parent.get(key) {
+                return value
+            }
+        }
+        return nil
+    }
+}
+
+extension UVEnvironmentValues.Storage: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        let keys = values.map({ "\($0.key)".trimmingPrefix("__Key_") }).sorted()
+
+        return "([\(keys.joined(separator: ", "))], parent: \(parent != nil)))"
+    }
+}
+
+
+extension UVEnvironmentValues: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        "(storage: \(storage.debugDescription))"
+    }
+}
+
+
+
+

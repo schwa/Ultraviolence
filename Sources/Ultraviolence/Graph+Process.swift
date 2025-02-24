@@ -18,7 +18,7 @@ internal extension Graph {
         defer {
             logger?.log("\(type(of: self)).\(#function) exit.")
         }
-        var enviromentStack: [UVEnvironmentValues] = [rootEnvironment]
+        var enviromentStack: [UVEnvironmentValues] = [.init()]
         try visit { node in
             var environment = node.environmentValues
             guard let last = enviromentStack.last else {

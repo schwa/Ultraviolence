@@ -3,7 +3,6 @@ internal import os
 public class Graph {
     internal var activeNodeStack: [Node] = []
     private(set) var root: Node
-    var rootEnvironment: UVEnvironmentValues
 
     @MainActor
     public init<Content>(content: Content) throws where Content: Element {
@@ -11,7 +10,6 @@ public class Graph {
         defer {
             logger?.log("\(type(of: self)).\(#function) exit.")
         }
-        self.rootEnvironment = .init()
         root = Node()
         root.graph = self
         root.element = content
@@ -64,8 +62,8 @@ public extension Graph {
             let element = node.element
             let indent = String(repeating: "  ", count: depth)
             if let element {
-                let typeName = String(describing: type(of: element))
-                print("\(indent)\(typeName)", terminator: "")
+                let typeName = String(describing: type(of: element)).split(separator: "<").first ?? ""
+                print("\(indent)\(typeName): \(node.environmentValues)", terminator: "")
                 print("")
             }
             else {

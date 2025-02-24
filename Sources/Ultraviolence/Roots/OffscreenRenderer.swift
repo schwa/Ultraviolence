@@ -70,6 +70,9 @@ public extension OffscreenRenderer {
         .environment(\.renderPassDescriptor, renderPassDescriptor)
         let graph = try Graph(content: content)
         try graph.process()
+
+        try graph.dump()
+
         return .init(texture: colorTexture)
     }
 }
