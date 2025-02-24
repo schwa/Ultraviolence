@@ -14,8 +14,8 @@ public extension ComputePass {
         .environment(\.commandQueue, commandQueue)
         .environment(\.device, device)
 
-        let processor = Processor()
+
         let graph = try Graph(content: content, rootEnvironment: .init())
-        try processor.process(graph: graph)
+        try graph.process()
     }
 }

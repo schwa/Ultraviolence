@@ -2,16 +2,15 @@ import CoreGraphics
 import Metal
 import UltraviolenceSupport
 
-// TODO: This is very generically named.
-internal struct Processor {
+internal extension Graph {
     @MainActor
-    internal func process(graph: Graph) throws {
+    internal func process() throws {
         logger?.log("\(type(of: self)).\(#function) enter.")
         defer {
             logger?.log("\(type(of: self)).\(#function) exit.")
         }
-        var enviromentStack: [UVEnvironmentValues] = [graph.rootEnvironment]
-        try graph.visit { node in
+        var enviromentStack: [UVEnvironmentValues] = [rootEnvironment]
+        try visit { node in
             var environment = node.environmentValues
             guard let last = enviromentStack.last else {
                 preconditionFailure("Stack underflow")
