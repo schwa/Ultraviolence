@@ -3,8 +3,7 @@ import Testing
 @testable import Ultraviolence
 import UltraviolenceSupport
 
-// TODO: "Button" rename as "DemoElement" or something.
-struct Button: Element, BodylessElement {
+struct DemoElement: Element, BodylessElement {
     typealias Body = Never
 
     var title: String
@@ -34,7 +33,7 @@ extension Element {
 struct ContentRenderPass: Element {
     @UVObservedObject var model = Model()
     var body: some Element {
-        Button("\(model.counter)") {
+        DemoElement("\(model.counter)") {
             model.counter += 1
         }
     }
@@ -68,13 +67,13 @@ struct NotSwiftUIStateTests {
 
         let graph = try Graph(content: v)
         try graph.rebuildIfNeeded()
-        var button: Button {
-            graph.element(at: [0], type: Button.self)
+        var demoElement: DemoElement {
+            graph.element(at: [0], type: DemoElement.self)
         }
-        #expect(button.title == "0")
-        button.action()
+        #expect(demoElement.title == "0")
+        demoElement.action()
         try graph.rebuildIfNeeded()
-        #expect(button.title == "1")
+        #expect(demoElement.title == "1")
     }
 
     // MARK: ObservedObject tests
@@ -84,14 +83,14 @@ struct NotSwiftUIStateTests {
         @MainActor struct Nested: Element {
             var body: some Element {
                 nestedBodyCount += 1
-                return Button("Nested Button") {}
+                return DemoElement("Nested DemoElement") {}
             }
         }
 
         struct ContentRenderPass: Element {
             @UVObservedObject var model = Model()
             var body: some Element {
-                Button("\(model.counter)") {
+                DemoElement("\(model.counter)") {
                     model.counter += 1
                 }
                 Nested()
@@ -106,10 +105,10 @@ struct NotSwiftUIStateTests {
         try graph.rebuildIfNeeded()
         #expect(contentRenderPassBodyCount == 1)
         #expect(nestedBodyCount == 1)
-        var button: Button {
-            graph.element(at: [0, 0], type: Button.self)
+        var demoElement: DemoElement {
+            graph.element(at: [0, 0], type: DemoElement.self)
         }
-        button.action()
+        demoElement.action()
         try graph.rebuildIfNeeded()
         #expect(contentRenderPassBodyCount == 2)
         #expect(nestedBodyCount == 1)
@@ -121,14 +120,14 @@ struct NotSwiftUIStateTests {
             var counter: Int
             var body: some Element {
                 nestedBodyCount += 1
-                return Button("Nested Button") {}
+                return DemoElement("Nested DemoElement") {}
             }
         }
 
         struct ContentRenderPass: Element {
             @UVObservedObject var model = Model()
             var body: some Element {
-                Button("\(model.counter)") {
+                DemoElement("\(model.counter)") {
                     model.counter += 1
                 }
                 Nested(counter: model.counter)
@@ -143,10 +142,10 @@ struct NotSwiftUIStateTests {
         try graph.rebuildIfNeeded()
         #expect(contentRenderPassBodyCount == 1)
         #expect(nestedBodyCount == 1)
-        var button: Button {
-            graph.element(at: [0, 0], type: Button.self)
+        var demoElement: DemoElement {
+            graph.element(at: [0, 0], type: DemoElement.self)
         }
-        button.action()
+        demoElement.action()
         try graph.rebuildIfNeeded()
         #expect(contentRenderPassBodyCount == 2)
         #expect(nestedBodyCount == 2)
@@ -157,14 +156,14 @@ struct NotSwiftUIStateTests {
             var isLarge: Bool = false
             var body: some Element {
                 nestedBodyCount += 1
-                return Button("Nested Button") {}
+                return DemoElement("Nested DemoElement") {}
             }
         }
 
         struct ContentRenderPass: Element {
             @UVObservedObject var model = Model()
             var body: some Element {
-                Button("\(model.counter)") {
+                DemoElement("\(model.counter)") {
                     model.counter += 1
                 }
                 Nested(isLarge: model.counter > 10)
@@ -179,10 +178,10 @@ struct NotSwiftUIStateTests {
         try graph.rebuildIfNeeded()
         #expect(contentRenderPassBodyCount == 1)
         #expect(nestedBodyCount == 1)
-        var button: Button {
-            graph.element(at: [0, 0], type: Button.self)
+        var demoElement: DemoElement {
+            graph.element(at: [0, 0], type: DemoElement.self)
         }
-        button.action()
+        demoElement.action()
         try graph.rebuildIfNeeded()
         #expect(contentRenderPassBodyCount == 2)
         #expect(nestedBodyCount == 1)
@@ -193,14 +192,14 @@ struct NotSwiftUIStateTests {
             @UVObservedObject var model = nestedModel
             var body: some Element {
                 nestedBodyCount += 1
-                return Button("Nested Button") {}
+                return DemoElement("Nested DemoElement") {}
             }
         }
 
         struct ContentRenderPass: Element {
             @UVObservedObject var model = Model()
             var body: some Element {
-                Button("\(model.counter)") {
+                DemoElement("\(model.counter)") {
                     model.counter += 1
                 }
                 Nested()
@@ -215,10 +214,10 @@ struct NotSwiftUIStateTests {
         try graph.rebuildIfNeeded()
         #expect(contentRenderPassBodyCount == 1)
         #expect(nestedBodyCount == 1)
-        var button: Button {
-            graph.element(at: [0, 0], type: Button.self)
+        var demoElement: DemoElement {
+            graph.element(at: [0, 0], type: DemoElement.self)
         }
-        button.action()
+        demoElement.action()
         try graph.rebuildIfNeeded()
         #expect(contentRenderPassBodyCount == 2)
         #expect(nestedBodyCount == 1)
@@ -229,14 +228,14 @@ struct NotSwiftUIStateTests {
             @UVBinding var counter: Int
             var body: some Element {
                 nestedBodyCount += 1
-                return Button("Nested Button") {}
+                return DemoElement("Nested DemoElement") {}
             }
         }
 
         struct ContentRenderPass: Element {
             @UVObservedObject var model = Model()
             var body: some Element {
-                Button("\(model.counter)") {
+                DemoElement("\(model.counter)") {
                     model.counter += 1
                 }
                 Nested(counter: $model.counter)
@@ -251,10 +250,10 @@ struct NotSwiftUIStateTests {
         try graph.rebuildIfNeeded()
         #expect(contentRenderPassBodyCount == 1)
         #expect(nestedBodyCount == 1)
-        var button: Button {
-            graph.element(at: [0, 0], type: Button.self)
+        var demoElement: DemoElement {
+            graph.element(at: [0, 0], type: DemoElement.self)
         }
-        button.action()
+        demoElement.action()
         try graph.rebuildIfNeeded()
         #expect(contentRenderPassBodyCount == 2)
         #expect(nestedBodyCount == 2)
@@ -265,7 +264,7 @@ struct NotSwiftUIStateTests {
             @UVBinding var counter: Int
             var body: some Element {
                 nestedBodyCount += 1
-                return Button("\(counter)") { counter += 1 }
+                return DemoElement("\(counter)") { counter += 1 }
             }
         }
 
@@ -282,17 +281,17 @@ struct NotSwiftUIStateTests {
         let v = ContentRenderPass()
         let graph = try Graph(content: v)
         try graph.rebuildIfNeeded()
-        var button: Button {
-            graph.element(at: [0, 0], type: Button.self)
+        var demoElement: DemoElement {
+            graph.element(at: [0, 0], type: DemoElement.self)
         }
         #expect(contentRenderPassBodyCount == 1)
         #expect(nestedBodyCount == 1)
-        #expect(button.title == "0")
-        button.action()
+        #expect(demoElement.title == "0")
+        demoElement.action()
         try graph.rebuildIfNeeded()
         #expect(contentRenderPassBodyCount == 2)
         #expect(nestedBodyCount == 2)
-        #expect(button.title == "1")
+        #expect(demoElement.title == "1")
     }
 
     // MARK: State tests
@@ -301,7 +300,7 @@ struct NotSwiftUIStateTests {
         struct Nested: Element {
             @UVState private var counter = 0
             var body: some Element {
-                Button("\(counter)") {
+                DemoElement("\(counter)") {
                     counter += 1
                 }
             }
@@ -310,7 +309,7 @@ struct NotSwiftUIStateTests {
         struct Sample: Element {
             @UVState private var counter = 0
             var body: some Element {
-                Button("\(counter)") {
+                DemoElement("\(counter)") {
                     counter += 1
                 }
                 Nested()
@@ -320,33 +319,33 @@ struct NotSwiftUIStateTests {
         let s = Sample()
         let graph = try Graph(content: s)
         try graph.rebuildIfNeeded()
-        var button: Button {
-            graph.element(at: [0, 0], type: Button.self)
+        var demoElement: DemoElement {
+            graph.element(at: [0, 0], type: DemoElement.self)
         }
-        var nestedButton: Button {
-            graph.element(at: [0, 1, 0], type: Button.self)
+        var nestedDemoElement: DemoElement {
+            graph.element(at: [0, 1, 0], type: DemoElement.self)
         }
-        #expect(button.title == "0")
-        #expect(nestedButton.title == "0")
+        #expect(demoElement.title == "0")
+        #expect(nestedDemoElement.title == "0")
 
-        nestedButton.action()
+        nestedDemoElement.action()
         try graph.rebuildIfNeeded()
 
-        #expect(button.title == "0")
-        #expect(nestedButton.title == "1")
+        #expect(demoElement.title == "0")
+        #expect(nestedDemoElement.title == "1")
 
-        button.action()
+        demoElement.action()
         try graph.rebuildIfNeeded()
 
-        #expect(button.title == "1")
-        #expect(nestedButton.title == "1")
+        #expect(demoElement.title == "1")
+        #expect(nestedDemoElement.title == "1")
     }
 
     @Test func testBindings() throws {
         struct Nested: Element {
             @UVBinding var counter: Int
             var body: some Element {
-                Button("\(counter)") {
+                DemoElement("\(counter)") {
                     counter += 1
                 }
             }
@@ -362,21 +361,21 @@ struct NotSwiftUIStateTests {
         let s = Sample()
         let graph = try Graph(content: s)
         try graph.rebuildIfNeeded()
-        var nestedButton: Button {
-            graph.element(at: [0, 0], type: Button.self)
+        var nestedDemoElement: DemoElement {
+            graph.element(at: [0, 0], type: DemoElement.self)
         }
-        #expect(nestedButton.title == "0")
+        #expect(nestedDemoElement.title == "0")
 
-        nestedButton.action()
+        nestedDemoElement.action()
         try graph.rebuildIfNeeded()
-        #expect(nestedButton.title == "1")
+        #expect(nestedDemoElement.title == "1")
     }
 
     @Test func testUnusedBinding() throws {
         struct Nested: Element {
             @UVBinding var counter: Int
             var body: some Element {
-                Button("") {
+                DemoElement("") {
                     counter += 1
                 }
                 .debug { nestedBodyCount += 1 }
@@ -386,7 +385,7 @@ struct NotSwiftUIStateTests {
         struct Sample: Element {
             @UVState private var counter = 0
             var body: some Element {
-                Button("\(counter)") {}
+                DemoElement("\(counter)") {}
                 Nested(counter: $counter)
                     .debug { sampleBodyCount += 1 }
             }
@@ -395,13 +394,13 @@ struct NotSwiftUIStateTests {
         let s = Sample()
         let graph = try Graph(content: s)
         try graph.rebuildIfNeeded()
-        var nestedButton: Button {
-            graph.element(at: [0, 1, 0], type: Button.self)
+        var nestedDemoElement: DemoElement {
+            graph.element(at: [0, 1, 0], type: DemoElement.self)
         }
         #expect(sampleBodyCount == 1)
         #expect(nestedBodyCount == 1)
 
-        nestedButton.action()
+        nestedDemoElement.action()
         try graph.rebuildIfNeeded()
 
         #expect(sampleBodyCount == 2)

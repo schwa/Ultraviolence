@@ -522,7 +522,6 @@ public extension MTLComputeCommandEncoder {
     }
 }
 
-// TODO: Move
 public extension MTLDevice {
     func makeBuffer<C>(collection: C, options: MTLResourceOptions) throws -> MTLBuffer where C: Collection {
         assert(isPOD(C.Element.self))
