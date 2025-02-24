@@ -10,7 +10,7 @@ public struct CommandBufferElement <Content>: Element, BodylessContentElement wh
         self.content = try content()
     }
 
-    func _enter(_ node: Node, environment: inout UVEnvironmentValues) throws {
+    func workloadEnter(_ node: Node, environment: inout UVEnvironmentValues) throws {
         let device = try environment.device.orThrow(.missingEnvironment(\.device))
         let commandQueue = try environment.commandQueue.orThrow(.missingEnvironment(\.commandQueue))
         let commandBufferDescriptor = MTLCommandBufferDescriptor()
@@ -18,7 +18,7 @@ public struct CommandBufferElement <Content>: Element, BodylessContentElement wh
         environment.commandBuffer = commandBuffer
     }
 
-    func _exit(_ node: Node, environment: UVEnvironmentValues) throws {
+    func workloadExit(_ node: Node, environment: UVEnvironmentValues) throws {
         let commandBuffer = try environment.commandBuffer.orThrow(.missingEnvironment(\.commandBuffer))
         switch completion {
         case .none:

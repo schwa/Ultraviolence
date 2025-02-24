@@ -6,9 +6,9 @@ internal extension Graph {
     @MainActor
     internal func process() throws {
         try process { element, node, environment in
-            try element._enter(node, environment: &environment)
+            try element.workloadEnter(node, environment: &environment)
         } exit: { element, node, environment in
-            try element._exit(node, environment: environment)
+            try element.workloadExit(node, environment: environment)
         }
     }
 

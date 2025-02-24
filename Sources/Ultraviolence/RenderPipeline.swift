@@ -63,7 +63,7 @@ public struct RenderPipeline <Content>: BodylessElement where Content: Element {
         node.environmentValues.reflection = self.reflection
     }
 
-    func _enter(_ node: Node, environment: inout UVEnvironmentValues) throws {
+    func workloadEnter(_ node: Node, environment: inout UVEnvironmentValues) throws {
         let renderCommandEncoder = try environment.renderCommandEncoder.orThrow(.missingEnvironment(\.renderCommandEncoder))
         let renderPipelineState = try environment.renderPipelineState.orThrow(.missingEnvironment(\.renderPipelineState))
 

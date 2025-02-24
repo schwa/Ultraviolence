@@ -7,7 +7,7 @@ public struct RenderPass <Content>: Element, BodylessElement, BodylessContentEle
         self.content = try content()
     }
 
-    func _enter(_ node: Node, environment: inout UVEnvironmentValues) throws {
+    func workloadEnter(_ node: Node, environment: inout UVEnvironmentValues) throws {
         let commandBuffer = try environment.commandBuffer.orThrow(.missingEnvironment(\.commandBuffer))
         commandBuffer.pushDebugGroup("RENDER PASS")
         let renderPassDescriptor = try environment.renderPassDescriptor.orThrow(.missingEnvironment(\.renderPassDescriptor))
@@ -15,7 +15,7 @@ public struct RenderPass <Content>: Element, BodylessElement, BodylessContentEle
         environment.renderCommandEncoder = renderCommandEncoder
     }
 
-    func _exit(_ node: Node, environment: UVEnvironmentValues) throws {
+    func workloadExit(_ node: Node, environment: UVEnvironmentValues) throws {
         let commandBuffer = try environment.commandBuffer.orThrow(.missingEnvironment(\.commandBuffer))
         let renderCommandEncoder = try environment.renderCommandEncoder.orThrow(.missingEnvironment(\.renderCommandEncoder))
         renderCommandEncoder.endEncoding()

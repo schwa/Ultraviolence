@@ -18,7 +18,7 @@ internal struct ParameterElement<Content, T>: BodylessElement, BodylessContentEl
         self.content = content
     }
 
-    func _enter(_ node: Node, environment: inout UVEnvironmentValues) throws {
+    func workloadEnter(_ node: Node, environment: inout UVEnvironmentValues) throws {
         let reflection = try environment.reflection.orThrow(.missingEnvironment(\.reflection))
         let renderCommandEncoder = environment.renderCommandEncoder
         let computeCommandEncoder = environment.computeCommandEncoder
