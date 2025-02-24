@@ -1,5 +1,6 @@
 internal import os
 
+// TODO: Make Internal
 public class Graph {
     internal var activeNodeStack: [Node] = []
     private(set) var root: Node
@@ -16,7 +17,7 @@ public class Graph {
     }
 
     @MainActor
-    private func updateContent<Content>(content: Content) throws where Content: Element {
+    internal func updateContent<Content>(content: Content) throws where Content: Element {
         Self.current = self
         try content.expandNode(root, depth: 0)
         Self.current = nil

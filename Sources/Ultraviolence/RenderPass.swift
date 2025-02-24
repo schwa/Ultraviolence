@@ -8,6 +8,7 @@ public struct RenderPass <Content>: Element, BodylessElement, BodylessContentEle
     }
 
     func workloadEnter(_ node: Node) throws {
+        logger?.log("\(type(of: self)) \(#function)")
         let commandBuffer = try node.environmentValues.commandBuffer.orThrow(.missingEnvironment(\.commandBuffer))
         let renderPassDescriptor = try node.environmentValues.renderPassDescriptor.orThrow(.missingEnvironment(\.renderPassDescriptor))
         let renderCommandEncoder = try commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor).orThrow(.resourceCreationFailure)
@@ -15,6 +16,7 @@ public struct RenderPass <Content>: Element, BodylessElement, BodylessContentEle
     }
 
     func workloadExit(_ node: Node) throws {
+        logger?.log("\(type(of: self)) \(#function)")
         let commandBuffer = try node.environmentValues.commandBuffer.orThrow(.missingEnvironment(\.commandBuffer))
         let renderCommandEncoder = try node.environmentValues.renderCommandEncoder.orThrow(.missingEnvironment(\.renderCommandEncoder))
         renderCommandEncoder.endEncoding()

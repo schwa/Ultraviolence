@@ -22,6 +22,7 @@ public struct RenderView <Content>: View where Content: Element {
         var lastError: Error?
         var logger: Logger? = Logger()
         var graph: Graph
+        var needsSetup = true
 
         @MainActor
         init(device: MTLDevice, content: @escaping (CAMetalDrawable, MTLRenderPassDescriptor) throws -> Content) throws {
@@ -51,10 +52,12 @@ public struct RenderView <Content>: View where Content: Element {
                 .environment(\.commandQueue, commandQueue)
                 .environment(\.renderPassDescriptor, renderPassDescriptor)
 
-                // TODO: We should be re-using the view's graph
-                let graph = try Graph(content: content)
-
-                try graph.processSetup()
+                // TODO: Find a way to detect if graph has changed and set needsSetup to true
+                try graph.updateContent(content: content)
+                if needsSetup {
+                    try graph.processSetup()
+                    needsSetup = false
+                }
                 try graph.processWorkload()
             } catch {
                 logger?.error("Error when drawing: \(error)")
