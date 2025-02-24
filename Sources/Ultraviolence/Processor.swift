@@ -11,10 +11,7 @@ internal struct Processor {
             logger?.log("\(type(of: self)).\(#function) exit.")
         }
         var enviromentStack: [UVEnvironmentValues] = [graph.rootEnvironment]
-        try graph.visit { _, _ in
-            // This line intentionally left blank.
-        }
-        enter: { node in
+        try graph.visit { node in
             var environment = node.environmentValues
             guard let last = enviromentStack.last else {
                 preconditionFailure("Stack underflow")

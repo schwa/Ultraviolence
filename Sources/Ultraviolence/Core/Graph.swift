@@ -73,5 +73,11 @@ public extension Graph {
                 print("\(indent)<no element!>")
             }
         }
+        enter: { _ in
+            // This line intentionally left blank.
+        }
+        exit: { _ in
+            // This line intentionally left blank.
+        }
     }
 }

@@ -1,6 +1,11 @@
 internal extension Graph {
     @MainActor
-    func visit(_ visitor: (Int, Node) throws -> Void, enter: (Node) throws -> Void = { _ in }, exit: (Node) throws -> Void = { _ in }) throws {
+    func visit(enter: (Node) throws -> Void, exit: (Node) throws -> Void) throws {
+        try visit({ _, _ in }, enter: enter, exit: exit)
+    }
+
+    @MainActor
+    func visit(_ visitor: (Int, Node) throws -> Void, enter: (Node) throws -> Void, exit: (Node) throws -> Void) throws {
         let saved = Graph.current
         Graph.current = self
         defer {
