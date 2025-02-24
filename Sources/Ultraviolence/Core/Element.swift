@@ -18,11 +18,6 @@ public extension Element where Body == Never {
 
 internal extension Element {
     internal func expandNode(_ node: Node, depth: Int) throws {
-        logger?.log("\(String(repeating: "􀄫", count: depth))\(type(of: self)).\(#function) enter.")
-        defer {
-            logger?.log("\(String(repeating: "􀰌", count: depth))\(type(of: self)).\(#function) exit.")
-        }
-
         // TODO: Refactor this to make expansion of the node tree distinct from handling observable and state properties.
         guard let graph = Graph.current else {
             preconditionFailure("No graph is currently active.")

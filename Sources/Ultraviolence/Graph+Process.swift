@@ -4,7 +4,16 @@ import UltraviolenceSupport
 
 internal extension Graph {
     @MainActor
-    internal func process() throws {
+    internal func processSetup() throws {
+        try process { element, node in
+            try element.setupEnter(node)
+        } exit: { element, node in
+            try element.setupExit(node)
+        }
+    }
+
+    @MainActor
+    internal func processWorkload() throws {
         try process { element, node in
             try element.workloadEnter(node)
         } exit: { element, node in

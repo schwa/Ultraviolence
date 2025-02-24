@@ -34,7 +34,9 @@ public struct RenderPipeline <Content>: BodylessElement where Content: Element {
             node.children.append(graph.makeNode())
         }
         try content.expandNode(node.children[0], depth: depth + 1)
+    }
 
+    func setupEnter(_ node: Node) throws {
         let environment = node.environmentValues
 
         let renderPassDescriptor = try environment.renderPassDescriptor.orThrow(.missingEnvironment(\.renderPassDescriptor))

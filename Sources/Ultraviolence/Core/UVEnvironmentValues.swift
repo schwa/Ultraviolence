@@ -1,5 +1,4 @@
 public struct UVEnvironmentValues {
-
     struct Key: Hashable, CustomDebugStringConvertible {
         var id: ObjectIdentifier // TODO: We don't need to store this. But AnyIdentifgier gets a tad upset.
         var value: Any.Type
@@ -12,9 +11,6 @@ public struct UVEnvironmentValues {
 
     var storage = Storage()
 
-    internal init() {
-    }
-
     internal mutating func merge(_ parent: Self) {
         guard parent.storage !== self.storage else {
             // TODO: JIW HERE. We should not need to do this
@@ -22,7 +18,7 @@ public struct UVEnvironmentValues {
             return
         }
         logger?.warning("Parent and child are the same.")
-//        precondition(parent.storage !== self.storage)
+        //        precondition(parent.storage !== self.storage)
         storage.parent = parent.storage
     }
 }
@@ -137,19 +133,19 @@ extension UVEnvironmentValues.Storage {
             if let parent, let value = parent.get(key) {
                 return value
             }
+            else {
+                return nil
+            }
         }
-        return nil
     }
 }
 
 extension UVEnvironmentValues.Storage: CustomDebugStringConvertible {
     public var debugDescription: String {
-        let keys = values.map({ "\($0.key)".trimmingPrefix("__Key_") }).sorted()
-
+        let keys = values.map { "\($0.key)".trimmingPrefix("__Key_") }.sorted()
         return "([\(keys.joined(separator: ", "))], parent: \(parent != nil)))"
     }
 }
-
 
 extension UVEnvironmentValues: CustomDebugStringConvertible {
     public var debugDescription: String {

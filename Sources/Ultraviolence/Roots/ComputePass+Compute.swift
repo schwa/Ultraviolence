@@ -15,6 +15,7 @@ public extension ComputePass {
         .environment(\.device, device)
 
         let graph = try Graph(content: content)
-        try graph.process()
+        try graph.processSetup()
+        try graph.processWorkload()
     }
 }

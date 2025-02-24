@@ -54,7 +54,8 @@ public struct RenderView <Content>: View where Content: Element {
                 // TODO: We should be re-using the view's graph
                 let graph = try Graph(content: content)
 
-                try graph.process()
+                try graph.processSetup()
+                try graph.processWorkload()
             } catch {
                 logger?.error("Error when drawing: \(error)")
                 lastError = error

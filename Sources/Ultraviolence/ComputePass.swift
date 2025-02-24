@@ -57,7 +57,18 @@ public struct ComputePipeline <Content>: Element, BodylessElement where Content:
         self.content = content()
     }
 
+    func setupEnter(_ node: Node) throws {
+        // TODO: Use environment.
+        let device = try device.orThrow(.missingEnvironment(\.device))
+        let descriptor = MTLComputePipelineDescriptor()
+        descriptor.computeFunction = computeKernel.function
+        let (computePipelineState, reflection) = try device.makeComputePipelineState(descriptor: descriptor, options: .bindingInfo)
+        node.environmentValues[keyPath: \.reflection] = Reflection(try reflection.orThrow(.resourceCreationFailure))
+        node.environmentValues[keyPath: \.computePipelineState] = computePipelineState
+    }
+
     func _expandNode(_ node: Node, depth: Int) throws {
+        // TODO: Remove.
         guard let graph = node.graph else {
             preconditionFailure("Cannot build node tree without a graph.")
         }
@@ -65,13 +76,6 @@ public struct ComputePipeline <Content>: Element, BodylessElement where Content:
             node.children.append(graph.makeNode())
         }
         try content.expandNode(node.children[0], depth: depth + 1)
-
-        let device = try device.orThrow(.missingEnvironment(\.device))
-        let descriptor = MTLComputePipelineDescriptor()
-        descriptor.computeFunction = computeKernel.function
-        let (computePipelineState, reflection) = try device.makeComputePipelineState(descriptor: descriptor, options: .bindingInfo)
-        node.environmentValues[keyPath: \.reflection] = Reflection(try reflection.orThrow(.resourceCreationFailure))
-        node.environmentValues[keyPath: \.computePipelineState] = computePipelineState
     }
 }
 
