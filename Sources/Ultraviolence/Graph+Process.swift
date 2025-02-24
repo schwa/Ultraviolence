@@ -5,6 +5,15 @@ import UltraviolenceSupport
 internal extension Graph {
     @MainActor
     internal func process() throws {
+        try process { element, node, environment in
+            try element._enter(node, environment: &environment)
+        } exit: { element, node, environment in
+            try element._exit(node, environment: environment)
+        }
+    }
+
+    @MainActor
+    internal func process(enter: (any BodylessElement, Node, inout UVEnvironmentValues) throws -> Void, exit: (any BodylessElement, Node, inout UVEnvironmentValues) throws -> Void) throws {
         logger?.log("\(type(of: self)).\(#function) enter.")
         defer {
             logger?.log("\(type(of: self)).\(#function) exit.")
@@ -18,7 +27,7 @@ internal extension Graph {
             environment.merge(last)
             logger?.log("\(String(repeating: "􀄫", count: enviromentStack.count)) '\(node.shortDescription)._enter()'")
             if let body = node.element as? any BodylessElement {
-                try body._enter(node, environment: &environment)
+                try enter(body, node, &environment)
             }
             enviromentStack.append(environment)
         }
@@ -32,7 +41,7 @@ internal extension Graph {
 
             logger?.log("\(String(repeating: "􀄪", count: enviromentStack.count)) '\(node.shortDescription)._exit()'")
             if let body = node.element as? any BodylessElement {
-                try body._exit(node, environment: environment)
+                try exit(body, node, &environment)
             }
         }
     }
