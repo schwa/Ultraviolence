@@ -1,7 +1,7 @@
 import Metal
 import UltraviolenceSupport
 
-public struct RenderPipeline <Content>: BodylessElement where Content: Element {
+public struct RenderPipeline <Content>: BodylessElement, BodylessContentElement where Content: Element {
     public typealias Body = Never
     @UVEnvironment(\.device)
     var device
@@ -23,17 +23,6 @@ public struct RenderPipeline <Content>: BodylessElement where Content: Element {
         self.vertexShader = vertexShader
         self.fragmentShader = fragmentShader
         self.content = content()
-    }
-
-    func _expandNode(_ node: Node, depth: Int) throws {
-        // TODO: Replace with `BodylessContentElement`?
-        guard let graph = node.graph else {
-            preconditionFailure("Cannot build node tree without a graph.")
-        }
-        if node.children.isEmpty {
-            node.children.append(graph.makeNode())
-        }
-        try content.expandNode(node.children[0], depth: depth + 1)
     }
 
     func setupEnter(_ node: Node) throws {

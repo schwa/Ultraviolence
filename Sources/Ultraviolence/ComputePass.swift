@@ -25,7 +25,7 @@ public struct ComputePass <Content>: Element, BodylessElement, BodylessContentEl
 
 // MARK: -
 
-public struct ComputePipeline <Content>: Element, BodylessElement where Content: Element {
+public struct ComputePipeline <Content>: Element, BodylessElement, BodylessContentElement where Content: Element {
     var computeKernel: ComputeKernel
     var content: Content
 
@@ -41,17 +41,6 @@ public struct ComputePipeline <Content>: Element, BodylessElement where Content:
         let (computePipelineState, reflection) = try device.makeComputePipelineState(descriptor: descriptor, options: .bindingInfo)
         node.environmentValues.reflection = Reflection(try reflection.orThrow(.resourceCreationFailure))
         node.environmentValues.computePipelineState = computePipelineState
-    }
-
-    func _expandNode(_ node: Node, depth: Int) throws {
-        // TODO: Remove.
-        guard let graph = node.graph else {
-            preconditionFailure("Cannot build node tree without a graph.")
-        }
-        if node.children.isEmpty {
-            node.children.append(graph.makeNode())
-        }
-        try content.expandNode(node.children[0], depth: depth + 1)
     }
 }
 
