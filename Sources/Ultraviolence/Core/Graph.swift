@@ -7,10 +7,6 @@ public class Graph {
 
     @MainActor
     public init<Content>(content: Content) throws where Content: Element {
-        logger?.log("\(type(of: self)).\(#function) enter.")
-        defer {
-            logger?.log("\(type(of: self)).\(#function) exit.")
-        }
         root = Node()
         root.graph = self
         root.element = content
@@ -25,10 +21,6 @@ public class Graph {
 
     @MainActor
     internal func rebuildIfNeeded() throws {
-        logger?.log("\(type(of: self)).\(#function) enter ‼️‼️‼️.")
-        defer {
-            logger?.log("\(type(of: self)).\(#function) exit ‼️‼️‼️.")
-        }
         let saved = Self.current
         Self.current = self
         defer {

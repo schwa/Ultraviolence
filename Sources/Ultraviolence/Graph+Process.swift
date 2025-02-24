@@ -23,10 +23,6 @@ internal extension Graph {
 
     @MainActor
     internal func process(enter: (any BodylessElement, Node) throws -> Void, exit: (any BodylessElement, Node) throws -> Void) throws {
-        logger?.log("\(type(of: self)).\(#function) enter.")
-        defer {
-            logger?.log("\(type(of: self)).\(#function) exit.")
-        }
         try visit { node in
             if let body = node.element as? any BodylessElement {
                 try enter(body, node)

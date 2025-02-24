@@ -55,11 +55,6 @@ public struct OffscreenRenderer {
 public extension OffscreenRenderer {
     @MainActor
     func render<Content>(_ content: Content, capture: Bool = false) throws -> Rendering where Content: Element {
-        logger?.log("\(type(of: self)).\(#function) enter.")
-        defer {
-            logger?.log("\(type(of: self)).\(#function) exit.")
-        }
-
         let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
         let commandQueue = try device.makeCommandQueue().orThrow(.resourceCreationFailure)
         let content = CommandBufferElement(completion: .commitAndWaitUntilCompleted) {
@@ -71,9 +66,6 @@ public extension OffscreenRenderer {
         let graph = try Graph(content: content)
         try graph.processSetup()
         try graph.processWorkload()
-
-        try graph.dump()
-
         return .init(texture: colorTexture)
     }
 }

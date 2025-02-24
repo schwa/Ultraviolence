@@ -28,13 +28,11 @@ public struct ComputePass <Content>: Element, BodylessElement, BodylessContentEl
 
     func workloadEnter(_ node: Node) throws {
         let commandBuffer = try node.environmentValues.commandBuffer.orThrow(.missingEnvironment(\.commandBuffer))
-        logger?.log("Compute.\(#function) makeComputeCommandEncoder")
         let computeCommandEncoder = try commandBuffer.makeComputeCommandEncoder().orThrow(.resourceCreationFailure)
         node.environmentValues.computeCommandEncoder = computeCommandEncoder
     }
 
     func workloadExit(_ node: Node) throws {
-        logger?.log("Compute.\(#function) endEncoding")
         let computeCommandEncoder = try node.environmentValues.computeCommandEncoder.orThrow(.missingEnvironment(\.computeCommandEncoder))
         computeCommandEncoder.endEncoding()
         let commandBuffer = try node.environmentValues.commandBuffer.orThrow(.missingEnvironment(\.commandBuffer))
