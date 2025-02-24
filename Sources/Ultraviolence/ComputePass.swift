@@ -29,22 +29,18 @@ public struct ComputePipeline <Content>: Element, BodylessElement where Content:
     var computeKernel: ComputeKernel
     var content: Content
 
-    @UVEnvironment(\.device)
-    var device
-
     public init(computeKernel: ComputeKernel, @ElementBuilder content: () -> Content) {
         self.computeKernel = computeKernel
         self.content = content()
     }
 
     func setupEnter(_ node: Node) throws {
-        // TODO: Use environment.
-        let device = try device.orThrow(.missingEnvironment(\.device))
+        let device = try node.environmentValues.device.orThrow(.missingEnvironment(\.device))
         let descriptor = MTLComputePipelineDescriptor()
         descriptor.computeFunction = computeKernel.function
         let (computePipelineState, reflection) = try device.makeComputePipelineState(descriptor: descriptor, options: .bindingInfo)
-        node.environmentValues[keyPath: \.reflection] = Reflection(try reflection.orThrow(.resourceCreationFailure))
-        node.environmentValues[keyPath: \.computePipelineState] = computePipelineState
+        node.environmentValues.reflection = Reflection(try reflection.orThrow(.resourceCreationFailure))
+        node.environmentValues.computePipelineState = computePipelineState
     }
 
     func _expandNode(_ node: Node, depth: Int) throws {
