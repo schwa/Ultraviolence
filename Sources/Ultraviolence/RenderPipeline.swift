@@ -63,9 +63,9 @@ public struct RenderPipeline <Content>: BodylessElement where Content: Element {
         node.environmentValues.reflection = self.reflection
     }
 
-    func workloadEnter(_ node: Node, environment: inout UVEnvironmentValues) throws {
-        let renderCommandEncoder = try environment.renderCommandEncoder.orThrow(.missingEnvironment(\.renderCommandEncoder))
-        let renderPipelineState = try environment.renderPipelineState.orThrow(.missingEnvironment(\.renderPipelineState))
+    func workloadEnter(_ node: Node) throws {
+        let renderCommandEncoder = try node.environmentValues.renderCommandEncoder.orThrow(.missingEnvironment(\.renderCommandEncoder))
+        let renderPipelineState = try node.environmentValues.renderPipelineState.orThrow(.missingEnvironment(\.renderPipelineState))
 
         if let depthStencilState {
             renderCommandEncoder.setDepthStencilState(depthStencilState)

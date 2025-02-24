@@ -13,8 +13,8 @@ public struct Draw: Element, BodylessElement {
         // This line intentionally left blank.
     }
 
-    func workloadEnter(_ node: Node, environment: inout UVEnvironmentValues) throws {
-        let renderCommandEncoder = try environment.renderCommandEncoder.orThrow(.missingEnvironment(\.renderCommandEncoder))
+    func workloadEnter(_ node: Node) throws {
+        let renderCommandEncoder = try node.environmentValues.renderCommandEncoder.orThrow(.missingEnvironment(\.renderCommandEncoder))
         try encodeGeometry(renderCommandEncoder)
     }
 }

@@ -26,19 +26,19 @@ public struct ComputePass <Content>: Element, BodylessElement, BodylessContentEl
         self.content = try content()
     }
 
-    func workloadEnter(_ node: Node, environment: inout UVEnvironmentValues) throws {
-        let commandBuffer = try environment.commandBuffer.orThrow(.missingEnvironment(\.commandBuffer))
+    func workloadEnter(_ node: Node) throws {
+        let commandBuffer = try node.environmentValues.commandBuffer.orThrow(.missingEnvironment(\.commandBuffer))
         commandBuffer.pushDebugGroup("COMPUTE PASS")
         logger?.log("Compute.\(#function) makeComputeCommandEncoder")
         let computeCommandEncoder = try commandBuffer.makeComputeCommandEncoder().orThrow(.resourceCreationFailure)
-        environment.computeCommandEncoder = computeCommandEncoder
+        node.environmentValues.computeCommandEncoder = computeCommandEncoder
     }
 
-    func workloadExit(_ node: Node, environment: UVEnvironmentValues) throws {
+    func workloadExit(_ node: Node) throws {
         logger?.log("Compute.\(#function) endEncoding")
-        let computeCommandEncoder = try environment.computeCommandEncoder.orThrow(.missingEnvironment(\.computeCommandEncoder))
+        let computeCommandEncoder = try node.environmentValues.computeCommandEncoder.orThrow(.missingEnvironment(\.computeCommandEncoder))
         computeCommandEncoder.endEncoding()
-        let commandBuffer = try environment.commandBuffer.orThrow(.missingEnvironment(\.commandBuffer))
+        let commandBuffer = try node.environmentValues.commandBuffer.orThrow(.missingEnvironment(\.commandBuffer))
         commandBuffer.popDebugGroup()
     }
 }
@@ -90,8 +90,8 @@ public struct ComputeDispatch: Element, BodylessElement {
         // This line intentionally left blank.
     }
 
-    func workloadEnter(_ node: Node, environment: inout UVEnvironmentValues) throws {
-        guard let computeCommandEncoder = environment.computeCommandEncoder, let computePipelineState = environment.computePipelineState else {
+    func workloadEnter(_ node: Node) throws {
+        guard let computeCommandEncoder = node.environmentValues.computeCommandEncoder, let computePipelineState = node.environmentValues.computePipelineState else {
             preconditionFailure("No compute command encoder/compute pipeline state found.")
         }
         computeCommandEncoder.setComputePipelineState(computePipelineState)

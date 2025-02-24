@@ -7,17 +7,17 @@ public struct RenderPass <Content>: Element, BodylessElement, BodylessContentEle
         self.content = try content()
     }
 
-    func workloadEnter(_ node: Node, environment: inout UVEnvironmentValues) throws {
-        let commandBuffer = try environment.commandBuffer.orThrow(.missingEnvironment(\.commandBuffer))
+    func workloadEnter(_ node: Node) throws {
+        let commandBuffer = try node.environmentValues.commandBuffer.orThrow(.missingEnvironment(\.commandBuffer))
         commandBuffer.pushDebugGroup("RENDER PASS")
-        let renderPassDescriptor = try environment.renderPassDescriptor.orThrow(.missingEnvironment(\.renderPassDescriptor))
+        let renderPassDescriptor = try node.environmentValues.renderPassDescriptor.orThrow(.missingEnvironment(\.renderPassDescriptor))
         let renderCommandEncoder = try commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor).orThrow(.resourceCreationFailure)
-        environment.renderCommandEncoder = renderCommandEncoder
+        node.environmentValues.renderCommandEncoder = renderCommandEncoder
     }
 
-    func workloadExit(_ node: Node, environment: UVEnvironmentValues) throws {
-        let commandBuffer = try environment.commandBuffer.orThrow(.missingEnvironment(\.commandBuffer))
-        let renderCommandEncoder = try environment.renderCommandEncoder.orThrow(.missingEnvironment(\.renderCommandEncoder))
+    func workloadExit(_ node: Node) throws {
+        let commandBuffer = try node.environmentValues.commandBuffer.orThrow(.missingEnvironment(\.commandBuffer))
+        let renderCommandEncoder = try node.environmentValues.renderCommandEncoder.orThrow(.missingEnvironment(\.renderCommandEncoder))
         renderCommandEncoder.endEncoding()
         commandBuffer.popDebugGroup()
     }
