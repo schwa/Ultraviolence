@@ -4,34 +4,13 @@ import UltraviolenceSupport
 
 // TODO: This is very generically named.
 internal struct Processor {
-    var device: MTLDevice
-    var completion: MTLCommandQueueCompletion
-    var commandQueue: MTLCommandQueue
-
     @MainActor
-    func process<Content>(_ content: Content, capture: Bool = false) throws where Content: Element {
+    internal func process(graph: Graph) throws {
         logger?.log("\(type(of: self)).\(#function) enter.")
         defer {
             logger?.log("\(type(of: self)).\(#function) exit.")
         }
-        let content = CommandBufferElement(completion: completion) {
-            content
-        }
-        .environment(\.device, device)
-
-        let graph = try Graph(content: content)
-        var rootEnvironment = UVEnvironmentValues()
-        rootEnvironment.commandQueue = commandQueue
-        try process(graph: graph, rootEnvironment: rootEnvironment)
-    }
-
-    @MainActor
-    private func process(graph: Graph, rootEnvironment: UVEnvironmentValues) throws {
-        logger?.log("\(type(of: self)).\(#function) enter.")
-        defer {
-            logger?.log("\(type(of: self)).\(#function) exit.")
-        }
-        var enviromentStack: [UVEnvironmentValues] = [rootEnvironment]
+        var enviromentStack: [UVEnvironmentValues] = [graph.rootEnvironment]
         try graph.visit { _, _ in
             // This line intentionally left blank.
         }

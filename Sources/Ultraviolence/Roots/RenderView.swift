@@ -28,7 +28,7 @@ public struct RenderView <Content>: View where Content: Element {
             self.device = device
             self.content = content
             self.commandQueue = try device.makeCommandQueue().orThrow(.resourceCreationFailure)
-            self.graph = try Graph(content: EmptyElement())
+            self.graph = try Graph(content: EmptyElement(), rootEnvironment: .init())
         }
 
         func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
@@ -40,16 +40,22 @@ public struct RenderView <Content>: View where Content: Element {
                 defer {
                     currentDrawable.present()
                 }
-
                 // TODO: This should be customisable. Issue#18
                 let renderPassDescriptor = try view.currentRenderPassDescriptor.orThrow(.undefined)
                 renderPassDescriptor.depthAttachment.storeAction = .store
 
-                let content = try content(currentDrawable, renderPassDescriptor)
-                    .environment(\.renderPassDescriptor, renderPassDescriptor)
+                let content = try CommandBufferElement(completion: .commit) {
+                    try self.content(currentDrawable, renderPassDescriptor)
+                }
+                .environment(\.device, device)
+                .environment(\.commandQueue, commandQueue)
+                .environment(\.renderPassDescriptor, renderPassDescriptor)
 
-                let processor = Processor(device: device, completion: .commit, commandQueue: commandQueue)
-                try processor.process(content)
+                // TODO: We should be re-using the view's graph
+                let graph = try Graph(content: content, rootEnvironment: .init())
+
+                let processor = Processor()
+                try processor.process(graph: graph)
             } catch {
                 logger?.error("Error when drawing: \(error)")
                 lastError = error

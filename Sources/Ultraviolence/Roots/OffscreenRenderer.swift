@@ -59,12 +59,18 @@ public extension OffscreenRenderer {
         defer {
             logger?.log("\(type(of: self)).\(#function) exit.")
         }
-        let content = content
-            .environment(\.renderPassDescriptor, renderPassDescriptor)
+
         let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
         let commandQueue = try device.makeCommandQueue().orThrow(.resourceCreationFailure)
-        let processor = Processor(device: device, completion: .commitAndWaitUntilCompleted, commandQueue: commandQueue)
-        try processor.process(content)
+        let content = CommandBufferElement(completion: .commitAndWaitUntilCompleted) {
+            content
+        }
+        .environment(\.device, device)
+        .environment(\.commandQueue, commandQueue)
+        .environment(\.renderPassDescriptor, renderPassDescriptor)
+        let processor = Processor()
+        let graph = try Graph(content: content, rootEnvironment: .init())
+        try processor.process(graph: graph)
         return .init(texture: colorTexture)
     }
 }

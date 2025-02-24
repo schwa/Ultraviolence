@@ -7,8 +7,15 @@ public extension ComputePass {
         // TODO: This has surprisingly little to do with compute. It's basically the same as offscreen rendererr.
         let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
         let commandQueue = try device.makeCommandQueue().orThrow(.resourceCreationFailure)
-        let processor = Processor(device: device, completion: .commitAndWaitUntilCompleted, commandQueue: commandQueue)
-        let content = self
-        try processor.process(content)
+
+        let content = CommandBufferElement(completion: .commitAndWaitUntilCompleted) {
+            self
+        }
+        .environment(\.commandQueue, commandQueue)
+        .environment(\.device, device)
+
+        let processor = Processor()
+        let graph = try Graph(content: content, rootEnvironment: .init())
+        try processor.process(graph: graph)
     }
 }

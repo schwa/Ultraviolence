@@ -35,7 +35,8 @@ internal extension IdentifiableBox where Key == ObjectIdentifier, Value: AnyObje
 
 internal extension Element {
     func _dump() throws {
-        let graph = try Graph(content: self)
+        // TODO: make rootEnvironment use default constructor.
+        let graph = try Graph(content: self, rootEnvironment: .init())
         try graph.dump()
     }
 }

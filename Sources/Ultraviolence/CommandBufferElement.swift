@@ -11,8 +11,8 @@ public struct CommandBufferElement <Content>: Element, BodylessContentElement wh
     }
 
     func _enter(_ node: Node, environment: inout UVEnvironmentValues) throws {
-        let device = try environment.device.orThrow(.missingEnvironment(\.commandBuffer))
-        let commandQueue = try environment.commandQueue.orThrow(.missingEnvironment(\.commandBuffer))
+        let device = try environment.device.orThrow(.missingEnvironment(\.device))
+        let commandQueue = try environment.commandQueue.orThrow(.missingEnvironment(\.commandQueue))
         let commandBufferDescriptor = MTLCommandBufferDescriptor()
         let commandBuffer = try commandQueue.makeCommandBuffer(descriptor: commandBufferDescriptor).orThrow(.resourceCreationFailure)
         environment.commandBuffer = commandBuffer

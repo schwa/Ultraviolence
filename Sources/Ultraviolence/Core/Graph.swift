@@ -3,13 +3,15 @@ internal import os
 public class Graph {
     internal var activeNodeStack: [Node] = []
     private(set) var root: Node
+    var rootEnvironment: UVEnvironmentValues
 
     @MainActor
-    public init<Content>(content: Content) throws where Content: Element {
+    public init<Content>(content: Content, rootEnvironment: UVEnvironmentValues) throws where Content: Element {
         logger?.log("\(type(of: self)).\(#function) enter.")
         defer {
             logger?.log("\(type(of: self)).\(#function) exit.")
         }
+        self.rootEnvironment = rootEnvironment
         root = Node()
         root.graph = self
         root.element = content
