@@ -21,7 +21,7 @@ public struct UVEnvironmentValues {
         }
     }
 
-    internal var values: [Key: Any] = [:]
+    private var values: [Key: Any] = [:]
 
     internal mutating func merge(_ other: Self) {
         values.merge(other.values) { _, new in new }

@@ -6,12 +6,12 @@ public class Graph {
     var rootEnvironment: UVEnvironmentValues
 
     @MainActor
-    public init<Content>(content: Content, rootEnvironment: UVEnvironmentValues? = nil) throws where Content: Element {
+    public init<Content>(content: Content) throws where Content: Element {
         logger?.log("\(type(of: self)).\(#function) enter.")
         defer {
             logger?.log("\(type(of: self)).\(#function) exit.")
         }
-        self.rootEnvironment = rootEnvironment ?? .init()
+        self.rootEnvironment = .init()
         root = Node()
         root.graph = self
         root.element = content
@@ -66,7 +66,6 @@ public extension Graph {
             if let element {
                 let typeName = String(describing: type(of: element))
                 print("\(indent)\(typeName)", terminator: "")
-                print(" [Env: \(node.environmentValues.values.count)]", terminator: "")
                 print("")
             }
             else {

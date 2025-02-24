@@ -38,7 +38,7 @@ internal extension Element {
         node.element = self
 
         if let parentEnvironmentValues = parent?.environmentValues {
-            node.environmentValues.values.merge(parentEnvironmentValues.values) { old, _ in old }
+            node.environmentValues.merge(parentEnvironmentValues)
         }
 
         observeObjects(node)

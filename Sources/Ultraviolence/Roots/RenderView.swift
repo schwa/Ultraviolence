@@ -28,7 +28,7 @@ public struct RenderView <Content>: View where Content: Element {
             self.device = device
             self.content = content
             self.commandQueue = try device.makeCommandQueue().orThrow(.resourceCreationFailure)
-            self.graph = try Graph(content: EmptyElement(), rootEnvironment: .init())
+            self.graph = try Graph(content: EmptyElement())
         }
 
         func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
@@ -52,7 +52,7 @@ public struct RenderView <Content>: View where Content: Element {
                 .environment(\.renderPassDescriptor, renderPassDescriptor)
 
                 // TODO: We should be re-using the view's graph
-                let graph = try Graph(content: content, rootEnvironment: .init())
+                let graph = try Graph(content: content)
 
                 try graph.process()
             } catch {

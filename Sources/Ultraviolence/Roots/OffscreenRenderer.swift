@@ -68,7 +68,7 @@ public extension OffscreenRenderer {
         .environment(\.device, device)
         .environment(\.commandQueue, commandQueue)
         .environment(\.renderPassDescriptor, renderPassDescriptor)
-        let graph = try Graph(content: content, rootEnvironment: .init())
+        let graph = try Graph(content: content)
         try graph.process()
         return .init(texture: colorTexture)
     }
