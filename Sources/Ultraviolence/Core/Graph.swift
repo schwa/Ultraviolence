@@ -6,12 +6,12 @@ public class Graph {
     var rootEnvironment: UVEnvironmentValues
 
     @MainActor
-    public init<Content>(content: Content, rootEnvironment: UVEnvironmentValues) throws where Content: Element {
+    public init<Content>(content: Content, rootEnvironment: UVEnvironmentValues? = nil) throws where Content: Element {
         logger?.log("\(type(of: self)).\(#function) enter.")
         defer {
             logger?.log("\(type(of: self)).\(#function) exit.")
         }
-        self.rootEnvironment = rootEnvironment
+        self.rootEnvironment = rootEnvironment ?? .init()
         root = Node()
         root.graph = self
         root.element = content
