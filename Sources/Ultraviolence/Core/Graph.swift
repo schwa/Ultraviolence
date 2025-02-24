@@ -1,6 +1,6 @@
 internal import os
 
-// TODO: Make Internal
+// TODO: Make Internal #24
 public class Graph {
     internal var activeNodeStack: [Node] = []
     private(set) var root: Node
@@ -14,7 +14,7 @@ public class Graph {
 
     @MainActor
     internal func updateContent<Content>(content: Content) throws where Content: Element {
-        // TODO: We need to somehow detect if the content has changed.
+        // TODO: We need to somehow detect if the content has changed. https://github.com/schwa/Ultraviolence/issues/25
         Self.current = self
         try content.expandNode(root, depth: 0)
         Self.current = nil

@@ -41,7 +41,7 @@ public struct RenderView <Content>: View where Content: Element {
                 defer {
                     currentDrawable.present()
                 }
-                // TODO: This should be customisable. Issue#18
+                // TODO: This should be customisable. Issue #18
                 let renderPassDescriptor = try view.currentRenderPassDescriptor.orThrow(.undefined)
                 renderPassDescriptor.depthAttachment.storeAction = .store
 
@@ -89,7 +89,7 @@ public struct RenderView <Content>: View where Content: Element {
             view.clearColor = MTLClearColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)
             view.colorPixelFormat = .bgra8Unorm_srgb
             view.depthStencilPixelFormat = .depth32Float
-            view.depthStencilAttachmentTextureUsage = [.shaderRead, .renderTarget] // TODO: Assumed
+            view.depthStencilAttachmentTextureUsage = [.shaderRead, .renderTarget] // TODO: Assumed Issue #18
             view.framebufferOnly = false
             return view
         }

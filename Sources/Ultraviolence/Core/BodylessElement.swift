@@ -1,6 +1,6 @@
 @MainActor
 internal protocol BodylessElement: Element where Body == Never {
-    // TODO: This should be renamed. And it should be differently named than Node.buildNodeTree.
+    // TODO: This should be renamed. And it should be differently named than Node.buildNodeTree. Issue #12.
     func _expandNode(_ node: Node, depth: Int) throws
 
     func setupEnter(_ node: Node) throws

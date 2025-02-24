@@ -36,7 +36,7 @@ public extension UVEnvironmentValues {
             return Key.defaultValue
         }
         set {
-            // TODO: Use isKnownUniquelyReferenced.
+            // TODO: Use isKnownUniquelyReferenced. #26
             storage.values[.init(key)] = newValue
         }
     }
