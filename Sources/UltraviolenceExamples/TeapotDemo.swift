@@ -21,7 +21,6 @@ public struct TeapotDemo: Element {
     var drawableSize: SIMD2<Float>
 
     public init(drawableSize: SIMD2<Float>, modelMatrix: simd_float4x4, color: SIMD4<Float>, lightDirection: SIMD3<Float>) throws {
-        logger?.log("Creating teapot demo.")
         let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
         let teapotURL = try Bundle.module.url(forResource: "teapot", withExtension: "obj").orThrow(.resourceCreationFailure)
         let mdlAsset = MDLAsset(url: teapotURL, vertexDescriptor: nil, bufferAllocator: MTKMeshBufferAllocator(device: device))
