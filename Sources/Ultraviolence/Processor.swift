@@ -20,11 +20,9 @@ internal struct Processor {
         .environment(\.device, device)
 
         let graph = try Graph(content: content)
-        try MTLCaptureManager.shared().with(enabled: capture) {
-            var rootEnvironment = UVEnvironmentValues()
-            rootEnvironment.commandQueue = commandQueue
-            try process(graph: graph, rootEnvironment: rootEnvironment)
-        }
+        var rootEnvironment = UVEnvironmentValues()
+        rootEnvironment.commandQueue = commandQueue
+        try process(graph: graph, rootEnvironment: rootEnvironment)
     }
 
     @MainActor
