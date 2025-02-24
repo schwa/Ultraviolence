@@ -7,41 +7,14 @@ internal import UltraviolenceSupport
 import UniformTypeIdentifiers
 
 public struct RedTriangle: Element {
-    let source = """
-    #include <metal_stdlib>
-    using namespace metal;
-
-    struct VertexIn {
-        float2 position [[attribute(0)]];
-    };
-
-    struct VertexOut {
-        float4 position [[position]];
-    };
-
-    [[vertex]] VertexOut vertex_main(
-        const VertexIn in [[stage_in]]
-    ) {
-        VertexOut out;
-        out.position = float4(in.position, 0.0, 1.0);
-        return out;
-    }
-
-    [[fragment]] float4 fragment_main(
-        VertexOut in [[stage_in]],
-        constant float4 &color [[buffer(0)]]
-    ) {
-        return color;
-    }
-    """
-
     public init() {
     }
 
     public var body: some Element {
         get throws {
-            let vertexShader = try VertexShader(source: source)
-            let fragmentShader = try FragmentShader(source: source)
+            let library = try ShaderLibrary(bundle: .module, namespace: "RedTriangle")
+            let vertexShader: VertexShader = try library.vertex_main
+            let fragmentShader: FragmentShader = try library.vertex_main
 
             try RenderPass {
                 RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {

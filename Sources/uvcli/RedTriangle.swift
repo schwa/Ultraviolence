@@ -12,12 +12,6 @@ enum RedTriangle {
     @MainActor
     // swiftlint:disable:next function_body_length
     static func main() throws {
-        let logger = Logger()
-        logger.log("\(#function) enter.")
-        defer {
-            logger.log("\(#function) exit.")
-        }
-
         let source = """
         #include <metal_stdlib>
         using namespace metal;

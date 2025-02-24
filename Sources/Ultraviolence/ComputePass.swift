@@ -1,22 +1,6 @@
 import Metal
 import UltraviolenceSupport
 
-public struct ComputeKernel {
-    let function: MTLFunction
-
-    public init(source: String, logging: Bool = false) throws {
-        let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
-
-        let options = MTLCompileOptions()
-        options.enableLogging = logging
-
-        let library = try device.makeLibrary(source: source, options: options)
-        function = try library.functionNames.compactMap { library.makeFunction(name: $0) }.first { $0.functionType == .kernel }.orThrow(.resourceCreationFailure)
-    }
-}
-
-// MARK: -
-
 public struct ComputePass <Content>: Element, BodylessElement, BodylessContentElement where Content: Element {
     internal let logging: Bool
     internal let content: Content
