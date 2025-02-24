@@ -38,6 +38,7 @@ internal extension Element {
         node.element = self
 
         if let parentEnvironmentValues = parent?.environmentValues {
+            // TODO: Replace this with a pointer to parent.
             node.environmentValues.merge(parentEnvironmentValues)
         }
 

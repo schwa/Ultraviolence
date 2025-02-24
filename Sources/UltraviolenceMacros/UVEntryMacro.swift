@@ -39,7 +39,7 @@ public struct UVEntryMacro: AccessorMacro, PeerMacro {
         let defaultValue = binding.initializer?.value ?? "nil"
         return [
             """
-            private struct __Key_\(raw: name): EnvironmentKey {
+            private struct __Key_\(raw: name): UVEnvironmentKey {
                 typealias Value = \(raw: type)
                 static var defaultValue: Value { \(raw: defaultValue) }
             }

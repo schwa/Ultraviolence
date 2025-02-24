@@ -35,7 +35,7 @@ final class EntryMacroTests: XCTestCase {
                     }
                 }
 
-                private struct __Key_name: EnvironmentKey {
+                private struct __Key_name: UVEnvironmentKey {
                     typealias Value = Int
                     static var defaultValue: Value {
                         42
@@ -71,7 +71,7 @@ final class EntryMacroTests: XCTestCase {
                     }
                 }
 
-                private struct __Key_name: EnvironmentKey {
+                private struct __Key_name: UVEnvironmentKey {
                     typealias Value = String?
                     static var defaultValue: Value {
                         nil

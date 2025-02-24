@@ -2,39 +2,23 @@ public struct UVEnvironmentValues {
     struct Key: Hashable, CustomDebugStringConvertible {
         var id: ObjectIdentifier // TODO: We don't need to store this. But AnyIdentifgier gets a tad upset.
         var value: Any.Type
-
-        static func == (lhs: Self, rhs: Self) -> Bool {
-            lhs.id == rhs.id
-        }
-
-        func hash(into hasher: inout Hasher) {
-            id.hash(into: &hasher)
-        }
-
-        init<K: EnvironmentKey>(_ key: K.Type) {
-            id = ObjectIdentifier(key)
-            value = key
-        }
-
-        var debugDescription: String {
-            "\(value)"
-        }
     }
 
     private var values: [Key: Any] = [:]
 
+    // TODO: Deprecate this and keep a pointer back to parent.
     internal mutating func merge(_ other: Self) {
         values.merge(other.values) { _, new in new }
     }
 }
 
-public protocol EnvironmentKey {
+public protocol UVEnvironmentKey {
     associatedtype Value
     static var defaultValue: Value { get }
 }
 
 public extension UVEnvironmentValues {
-    subscript<Key: EnvironmentKey>(key: Key.Type) -> Key.Value {
+    subscript<Key: UVEnvironmentKey>(key: Key.Type) -> Key.Value {
         get {
             guard let value = values[.init(key), default: Key.defaultValue] as? Key.Value else {
                 preconditionFailure("Could not cast value.")
@@ -105,5 +89,24 @@ public struct UVEnvironment <Value> {
 
     public init(_ keyPath: KeyPath<UVEnvironmentValues, Value>) {
         self.keyPath = keyPath
+    }
+}
+
+extension UVEnvironmentValues.Key {
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.id == rhs.id
+    }
+
+    func hash(into hasher: inout Hasher) {
+        id.hash(into: &hasher)
+    }
+
+    init<K: UVEnvironmentKey>(_ key: K.Type) {
+        id = ObjectIdentifier(key)
+        value = key
+    }
+
+    var debugDescription: String {
+        "\(value)"
     }
 }
