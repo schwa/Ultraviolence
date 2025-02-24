@@ -14,6 +14,7 @@ public class Graph {
 
     @MainActor
     internal func updateContent<Content>(content: Content) throws where Content: Element {
+        // TODO: We need to somehow detect if the content has changed.
         Self.current = self
         try content.expandNode(root, depth: 0)
         Self.current = nil

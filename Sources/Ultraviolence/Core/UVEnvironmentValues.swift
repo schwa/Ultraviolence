@@ -17,7 +17,6 @@ public struct UVEnvironmentValues {
             logger?.warning("Parent and child are the same.")
             return
         }
-        logger?.warning("Parent and child are the same.")
         //        precondition(parent.storage !== self.storage)
         storage.parent = parent.storage
     }
