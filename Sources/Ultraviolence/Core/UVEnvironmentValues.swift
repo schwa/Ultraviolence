@@ -129,14 +129,10 @@ extension UVEnvironmentValues.Storage {
         if let value = values[key] {
             return value
         }
-        else {
-            if let parent, let value = parent.get(key) {
-                return value
-            }
-            else {
-                return nil
-            }
+        if let parent, let value = parent.get(key) {
+            return value
         }
+        return nil
     }
 }
 
@@ -152,7 +148,3 @@ extension UVEnvironmentValues: CustomDebugStringConvertible {
         "(storage: \(storage.debugDescription))"
     }
 }
-
-
-
-
