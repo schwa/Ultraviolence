@@ -3,6 +3,8 @@ import Testing
 @testable import Ultraviolence
 import UltraviolenceSupport
 
+// TODO: Break this up into smaller files.
+
 struct DemoElement: Element, BodylessElement {
     typealias Body = Never
 
@@ -17,6 +19,12 @@ struct DemoElement: Element, BodylessElement {
     func _expandNode(_ node: Node, depth: Int) throws {
         // This line intentionally left blank.
     }
+}
+
+
+extension UVEnvironmentValues {
+    @UVEntry
+    var exampleValue: String = ""
 }
 
 final class Model: ObservableObject {
@@ -53,7 +61,7 @@ var sampleBodyCount = 0
 
 @Suite(.serialized)
 @MainActor
-struct NotSwiftUIStateTests {
+struct UltraviolenceStateTests {
     init() {
         nestedBodyCount = 0
         contentRenderPassBodyCount = 0
@@ -151,7 +159,8 @@ struct NotSwiftUIStateTests {
         #expect(nestedBodyCount == 2)
     }
 
-    @Test func testUnchangedNested() throws {
+    @Test
+    func testUnchangedNested() throws {
         struct Nested: Element {
             var isLarge: Bool = false
             var body: some Element {
@@ -187,7 +196,8 @@ struct NotSwiftUIStateTests {
         #expect(nestedBodyCount == 1)
     }
 
-    @Test func testUnchangedNestedWithObservedObject() throws {
+    @Test
+    func testUnchangedNestedWithObservedObject() throws {
         struct Nested: Element {
             @UVObservedObject var model = nestedModel
             var body: some Element {
@@ -223,7 +233,8 @@ struct NotSwiftUIStateTests {
         #expect(nestedBodyCount == 1)
     }
 
-    @Test func testBinding1() throws {
+    @Test
+    func testBinding1() throws {
         struct Nested: Element {
             @UVBinding var counter: Int
             var body: some Element {
@@ -259,7 +270,8 @@ struct NotSwiftUIStateTests {
         #expect(nestedBodyCount == 2)
     }
 
-    @Test func testBinding2() throws {
+    @Test
+    func testBinding2() throws {
         struct Nested: Element {
             @UVBinding var counter: Int
             var body: some Element {
@@ -296,7 +308,8 @@ struct NotSwiftUIStateTests {
 
     // MARK: State tests
 
-    @Test func testSimple() throws {
+    @Test
+    func testSimple() throws {
         struct Nested: Element {
             @UVState private var counter = 0
             var body: some Element {
@@ -341,7 +354,8 @@ struct NotSwiftUIStateTests {
         #expect(nestedDemoElement.title == "1")
     }
 
-    @Test func testBindings() throws {
+    @Test
+    func testBindings() throws {
         struct Nested: Element {
             @UVBinding var counter: Int
             var body: some Element {
@@ -371,7 +385,8 @@ struct NotSwiftUIStateTests {
         #expect(nestedDemoElement.title == "1")
     }
 
-    @Test func testUnusedBinding() throws {
+    @Test
+    func testUnusedBinding() throws {
         struct Nested: Element {
             @UVBinding var counter: Int
             var body: some Element {
@@ -409,7 +424,8 @@ struct NotSwiftUIStateTests {
 
     // Environment Tests
 
-    @Test func testEnvironment1() throws {
+    @Test
+    func testEnvironment1() throws {
         struct Example1: Element {
             var body: some Element {
                 EnvironmentReader(keyPath: \.exampleValue) { Example2(value: $0) }
@@ -430,7 +446,8 @@ struct NotSwiftUIStateTests {
         #expect(graph.element(at: [0], type: Example2.self).value == "Hello world")
     }
 
-    @Test func testEnvironment2() throws {
+    @Test
+    func testEnvironment2() throws {
         struct Example1: Element {
             var body: some Element {
                 Example2()
@@ -453,32 +470,32 @@ struct NotSwiftUIStateTests {
             }
         }
 
-        let s = Example1()
-        let graph = try Graph(content: s)
-        try graph.rebuildIfNeeded()
-        #expect(graph.element(at: [0, 0], type: Example3.self).value == "Hello world")
+        let g1 = try Graph(content: Example1())
+        try g1.rebuildIfNeeded()
+        #expect(g1.element(at: [0, 0], type: Example3.self).value == "Hello world")
     }
 
-    @Test
+ @Test
     func testAnyElement() throws {
         let e = DemoElement("Hello world", action: {}).eraseToAnyElement()
         let graph = try Graph(content: e)
         try graph.rebuildIfNeeded()
         #expect(graph.element(at: [0], type: DemoElement.self).title == "Hello world")
     }
-}
 
-extension UVEnvironmentValues {
-    @UVEntry
-    var exampleValue: String = ""
-}
+    @Test
+    func testModifier() throws {
 
-extension Graph {
-    func element<V>(at path: [Int], type: V.Type) -> V {
-        var node: Node = root
-        for index in path {
-            node = node.children[index]
-        }
-        return node.element as! V
+        let root = DemoElement("Hello world", action: {}).modifier(PassthroughModifier())
+
+        let graph = try Graph(content: root)
+        try graph.rebuildIfNeeded()
+//        #expect(graph.element(at: [0, 0, 0], type: Example3.self).value == "Hello world")
+
+        try graph.dump()
+
+
+
     }
+
 }
