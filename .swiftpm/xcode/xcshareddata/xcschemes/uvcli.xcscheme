@@ -54,7 +54,7 @@
          <EnvironmentVariable
             key = "DEMO"
             value = "MixedExample"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </EnvironmentVariable>
          <EnvironmentVariable
             key = "DEMO"

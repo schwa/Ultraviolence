@@ -23,13 +23,15 @@ public struct MixedExample: Element {
 
     public var body: some Element {
         get throws {
+            // TODO: All these `orThrow` calls are ugly and we need a better way.
+            let renderPassDescriptor = try renderPassDescriptor.orThrow(.missingEnvironment("renderPassDescriptor"))
+            let colorTexture = try renderPassDescriptor.colorAttachments[0].texture.orThrow(.undefined)
+            let depthTexture = try renderPassDescriptor.depthAttachment.texture.orThrow(.undefined)
+
             try RenderPass {
-                // TODO: All these `orThrow` calls are ugly and we need a better way.
                 let drawableSize = try drawableSize.orThrow(.missingEnvironment("drawableSize"))
-                let renderPassDescriptor = try renderPassDescriptor.orThrow(.missingEnvironment("renderPassDescriptor"))
-                let colorTexture = try renderPassDescriptor.colorAttachments[0].texture.orThrow(.undefined)
-                let depthTexture = try renderPassDescriptor.depthAttachment.texture.orThrow(.undefined)
                 try TeapotDemo(drawableSize: .init(drawableSize), modelMatrix: modelMatrix, color: color, lightDirection: lightDirection)
+                    // TODO: Next two lines are only needed for the offscreen examples?
                     .colorAttachment(colorTexture, index: 0)
                     .depthAttachment(depthTexture)
             }
@@ -38,12 +40,7 @@ public struct MixedExample: Element {
                 renderPassDescriptor.depthAttachment.storeAction = .store
             }
             try ComputePass {
-                EnvironmentReader(keyPath: \.renderPassDescriptor) { renderPassDescriptor in
-                    let renderPassDescriptor = try renderPassDescriptor.orThrow(.missingEnvironment("renderPassDescriptor"))
-                    let colorTexture = renderPassDescriptor.colorAttachments[0].texture.orFatalError()
-                    let depthTexture = renderPassDescriptor.depthAttachment.texture.orFatalError()
-                    try EdgeDetectionKernel(depthTexture: depthTexture, colorTexture: colorTexture)
-                }
+                try EdgeDetectionKernel(depthTexture: depthTexture, colorTexture: colorTexture)
             }
         }
     }

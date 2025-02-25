@@ -60,8 +60,12 @@ public let package = Package(
             name: "UltraviolenceTests",
             dependencies: [
                 "Ultraviolence",
+                "UltraviolenceExamples",
                 "UltraviolenceSupport",
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax")
+            ],
+            resources: [
+                .copy("MixedExample.png")
             ]
         )
     ],

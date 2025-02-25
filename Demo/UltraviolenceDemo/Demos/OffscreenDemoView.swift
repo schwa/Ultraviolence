@@ -7,14 +7,12 @@ struct OffscreenDemoView: View {
     @State
     private var result: Result<CGImage, Error>?
 
-
-
     var body: some View {
         ZStack {
             Color.black
             if case let .success(image) = result {
                 Image(nsImage: NSImage(cgImage: image, size: .zero))
-                .resizable()
+                    .resizable()
             }
         }
         .overlay(alignment: .bottom) {

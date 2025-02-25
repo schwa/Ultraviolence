@@ -56,6 +56,8 @@ public extension Element {
     }
 }
 
+// MARK: -
+
 public struct EnvironmentReader<Value, Content: Element>: Element, BodylessElement {
     var keyPath: KeyPath<UVEnvironmentValues, Value>
     var content: (Value) throws -> Content
@@ -80,6 +82,8 @@ public struct EnvironmentReader<Value, Content: Element>: Element, BodylessEleme
 //    public mutating func update()
 // }
 
+// MARK: -
+
 @propertyWrapper
 public struct UVEnvironment <Value> {
     public var wrappedValue: Value {
@@ -98,6 +102,8 @@ public struct UVEnvironment <Value> {
         self.keyPath = keyPath
     }
 }
+
+// MARK: -
 
 extension UVEnvironmentValues.Key {
     static func == (lhs: Self, rhs: Self) -> Bool {
