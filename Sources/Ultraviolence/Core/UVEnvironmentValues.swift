@@ -12,12 +12,7 @@ public struct UVEnvironmentValues {
     var storage = Storage()
 
     internal mutating func merge(_ parent: Self) {
-        guard parent.storage !== self.storage else {
-            // TODO: Use a precondition instead.
-            logger?.warning("Parent and child are the same.")
-            return
-        }
-        //        precondition(parent.storage !== self.storage)
+        precondition(parent.storage !== self.storage)
         storage.parent = parent.storage
     }
 }

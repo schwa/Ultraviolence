@@ -14,11 +14,7 @@ public struct RenderView <Content>: View where Content: Element {
     class ViewModel: NSObject, MTKViewDelegate {
         var device: MTLDevice
         var commandQueue: MTLCommandQueue
-        var content: (CAMetalDrawable, MTLRenderPassDescriptor) throws -> Content {
-            didSet {
-                logger?.log("Content did change.")
-            }
-        }
+        var content: (CAMetalDrawable, MTLRenderPassDescriptor) throws -> Content
         var lastError: Error?
         var logger: Logger? = Logger()
         var graph: Graph

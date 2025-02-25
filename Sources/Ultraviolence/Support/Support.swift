@@ -1,15 +1,6 @@
 internal import os
 import UltraviolenceSupport
 
-public struct EnvironmentDumper: Element, BodylessElement {
-    @UVEnvironment(\.self)
-    private var environment
-
-    internal func _expandNode(_ node: Node, depth: Int) throws {
-        print(environment)
-    }
-}
-
 internal extension Element {
     var shortDescription: String {
         "\(type(of: self))"
@@ -57,7 +48,6 @@ internal struct TrivialID: Hashable, Sendable {
             defer {
                 value += 1
             }
-            print("value: \(value)")
             return value
         }
     }

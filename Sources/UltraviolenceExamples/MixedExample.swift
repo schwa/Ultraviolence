@@ -29,7 +29,6 @@ public struct MixedExample: Element {
                     .depthAttachment(depthTexture)
             }
             .renderPassModifier { renderPassDescriptor in
-                print("********* modifying render pass descriptor *********")
                 renderPassDescriptor.depthAttachment.storeAction = .store
             }
             try ComputePass {
