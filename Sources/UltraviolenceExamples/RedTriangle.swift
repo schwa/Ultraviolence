@@ -14,7 +14,7 @@ public struct RedTriangle: Element {
         get throws {
             let library = try ShaderLibrary(bundle: .module, namespace: "RedTriangle")
             let vertexShader: VertexShader = try library.vertex_main
-            let fragmentShader: FragmentShader = try library.vertex_main
+            let fragmentShader: FragmentShader = try library.fragment_main
 
             try RenderPass {
                 RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
