@@ -11,7 +11,7 @@ struct DemoElement: Element, BodylessElement {
     var title: String
     var action: () -> Void
 
-    init(_ title: String, action: @escaping () -> Void = { _ in }) {
+    init(_ title: String, action: @escaping () -> Void = { }) {
         self.title = title
         self.action = action
     }

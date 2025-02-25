@@ -4,7 +4,7 @@ import Metal
 import simd
 import UltraviolenceSupport
 
-internal struct ParameterElement<Content, T>: BodylessElement, BodylessContentElement where Content: Element {
+internal struct ParameterElement<Content, T>: Element, BodylessElement, BodylessContentElement where Content: Element {
     var name: String
 
     var functionType: MTLFunctionType?
@@ -48,9 +48,9 @@ internal struct ParameterElement<Content, T>: BodylessElement, BodylessContentEl
             let index = try reflection.binding(forType: .kernel, name: name).orThrow(.missingBinding(name))
             computeCommandEncoder.setValue(value, index: index, functionType: .kernel)
         case (.some, .some):
-            preconditionFailure("Trying to process \(self.shortDescription) with both a render command encoder and a compute command encoder.")
+            preconditionFailure("Trying to process \(self) with both a render command encoder and a compute command encoder.")
         default:
-            preconditionFailure("Trying to process `\(self.shortDescription) without a command encoder.")
+            preconditionFailure("Trying to process `\(self) without a command encoder.")
         }
     }
 }

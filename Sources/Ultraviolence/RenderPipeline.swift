@@ -1,7 +1,7 @@
 import Metal
 import UltraviolenceSupport
 
-public struct RenderPipeline <Content>: BodylessElement, BodylessContentElement where Content: Element {
+public struct RenderPipeline <Content>: Element, BodylessElement, BodylessContentElement where Content: Element {
     public typealias Body = Never
     @UVEnvironment(\.device)
     var device
