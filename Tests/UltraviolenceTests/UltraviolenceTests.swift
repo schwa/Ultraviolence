@@ -485,17 +485,9 @@ struct UltraviolenceStateTests {
 
     @Test
     func testModifier() throws {
-
         let root = DemoElement("Hello world", action: {}).modifier(PassthroughModifier())
-
         let graph = try Graph(content: root)
         try graph.rebuildIfNeeded()
-//        #expect(graph.element(at: [0, 0, 0], type: Example3.self).value == "Hello world")
-
-        try graph.dump()
-
-
-
+        #expect(graph.element(at: [0, 0], type: DemoElement.self).title == "Hello world")
     }
-
 }
