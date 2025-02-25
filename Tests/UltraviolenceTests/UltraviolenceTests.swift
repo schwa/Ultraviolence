@@ -458,6 +458,14 @@ struct NotSwiftUIStateTests {
         try graph.rebuildIfNeeded()
         #expect(graph.element(at: [0, 0], type: Example3.self).value == "Hello world")
     }
+
+    @Test
+    func testAnyElement() throws {
+        let e = DemoElement("Hello world", action: {}).eraseToAnyElement()
+        let graph = try Graph(content: e)
+        try graph.rebuildIfNeeded()
+        #expect(graph.element(at: [0], type: DemoElement.self).title == "Hello world")
+    }
 }
 
 extension UVEnvironmentValues {
