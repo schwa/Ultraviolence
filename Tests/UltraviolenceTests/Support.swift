@@ -1,6 +1,7 @@
 import Accelerate
 import CoreGraphics
 import CoreImage
+import CoreImage.CIFilterBuiltins
 import Testing
 @testable import Ultraviolence
 import UltraviolenceExamples
