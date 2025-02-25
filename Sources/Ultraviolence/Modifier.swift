@@ -1,5 +1,7 @@
 import UltraviolenceSupport
 
+// TODO: Stuff like @Environment/@State on modifiers won't work because #30
+
 public protocol ElementModifier {
     // TODO: Remove reliance on AnyElement?
     typealias Content = AnyElement
