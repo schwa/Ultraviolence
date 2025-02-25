@@ -9,4 +9,3 @@ extension Graph {
         return node.element as! V
     }
 }
-

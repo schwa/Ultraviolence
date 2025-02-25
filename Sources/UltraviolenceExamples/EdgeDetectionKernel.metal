@@ -14,7 +14,6 @@ kernel void EdgeDetectionKernel(
 
     // Read current pixel and four neighbors
     float pixel00 = depthTexture.read(gid).r;
-    float4 pixel = depthTexture.read(gid);
 
     //os_log_default.log("(%d, %d): %f, %f, %f, %f", gid.x, gid.y, pixel.x, pixel.y, pixel.z, pixel.w);
 

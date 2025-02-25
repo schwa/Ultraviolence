@@ -19,7 +19,6 @@ public struct ComputePass <Content>: Element, BodylessElement, BodylessContentEl
     func workloadExit(_ node: Node) throws {
         let computeCommandEncoder = try node.environmentValues.computeCommandEncoder.orThrow(.missingEnvironment(\.computeCommandEncoder))
         computeCommandEncoder.endEncoding()
-        let commandBuffer = try node.environmentValues.commandBuffer.orThrow(.missingEnvironment(\.commandBuffer))
     }
 }
 

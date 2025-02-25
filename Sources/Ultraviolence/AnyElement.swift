@@ -4,10 +4,8 @@ public struct AnyElement: Element, BodylessElement {
 
     public init(_ base: some Element) {
         self.base = base
-
-
-        expand = {
-            try base.expandNode($0, depth: $1)
+        expand = { node, depth in
+            try base.expandNode(node, depth: depth)
         }
     }
 

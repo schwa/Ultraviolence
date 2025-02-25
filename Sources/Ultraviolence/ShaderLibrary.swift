@@ -3,7 +3,6 @@ import UltraviolenceSupport
 
 @dynamicMemberLookup
 public struct ShaderLibrary {
-
     var library: MTLLibrary
     var namespace: String?
 
@@ -29,25 +28,24 @@ public struct ShaderLibrary {
         return function
     }
 
-
     public subscript(dynamicMember name: String) -> ComputeKernel {
         get throws {
             let function = try function(named: name, type: .kernel)
-            return try ComputeKernel(function)
+            return ComputeKernel(function)
         }
     }
 
     public subscript(dynamicMember name: String) -> VertexShader {
         get throws {
             let function = try function(named: name, type: .vertex)
-            return try VertexShader(function)
+            return VertexShader(function)
         }
     }
 
     public subscript(dynamicMember name: String) -> FragmentShader {
         get throws {
             let function = try function(named: name, type: .fragment)
-            return try FragmentShader(function)
+            return FragmentShader(function)
         }
     }
 }

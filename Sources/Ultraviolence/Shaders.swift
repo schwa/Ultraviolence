@@ -77,4 +77,3 @@ public struct FragmentShader: ShaderProtocol {
         self.function = function
     }
 }
-

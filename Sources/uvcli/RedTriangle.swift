@@ -10,7 +10,6 @@ import UniformTypeIdentifiers
 
 enum RedTriangle {
     @MainActor
-    // swiftlint:disable:next function_body_length
     static func main() throws {
         let source = """
         #include <metal_stdlib>

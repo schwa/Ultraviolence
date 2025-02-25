@@ -15,7 +15,6 @@ public struct RenderPass <Content>: Element, BodylessElement, BodylessContentEle
     }
 
     func workloadExit(_ node: Node) throws {
-        let commandBuffer = try node.environmentValues.commandBuffer.orThrow(.missingEnvironment(\.commandBuffer))
         let renderCommandEncoder = try node.environmentValues.renderCommandEncoder.orThrow(.missingEnvironment(\.renderCommandEncoder))
         renderCommandEncoder.endEncoding()
         node.environmentValues.renderCommandEncoder = nil

@@ -11,7 +11,7 @@ struct DemoElement: Element, BodylessElement {
     var title: String
     var action: () -> Void
 
-    init(_ title: String, action: @escaping () -> Void) {
+    init(_ title: String, action: @escaping () -> Void = { _ in }) {
         self.title = title
         self.action = action
     }
@@ -20,7 +20,6 @@ struct DemoElement: Element, BodylessElement {
         // This line intentionally left blank.
     }
 }
-
 
 extension UVEnvironmentValues {
     @UVEntry
@@ -475,9 +474,9 @@ struct UltraviolenceStateTests {
         #expect(g1.element(at: [0, 0], type: Example3.self).value == "Hello world")
     }
 
- @Test
+    @Test
     func testAnyElement() throws {
-        let e = DemoElement("Hello world", action: {}).eraseToAnyElement()
+        let e = DemoElement("Hello world") {}.eraseToAnyElement()
         let graph = try Graph(content: e)
         try graph.rebuildIfNeeded()
         #expect(graph.element(at: [0], type: DemoElement.self).title == "Hello world")
@@ -485,7 +484,7 @@ struct UltraviolenceStateTests {
 
     @Test
     func testModifier() throws {
-        let root = DemoElement("Hello world", action: {}).modifier(PassthroughModifier())
+        let root = DemoElement("Hello world") {}.modifier(PassthroughModifier())
         let graph = try Graph(content: root)
         try graph.rebuildIfNeeded()
         #expect(graph.element(at: [0, 0], type: DemoElement.self).title == "Hello world")

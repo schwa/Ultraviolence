@@ -56,7 +56,7 @@ public extension Graph {
             let element = node.element
             let indent = String(repeating: "  ", count: depth)
             if let element {
-                let typeName = String(describing: type(of: element))//.split(separator: "<").first ?? ""
+                let typeName = String(describing: type(of: element)).split(separator: "<").first ?? ""
                 print("\(indent)\(typeName): \(node.environmentValues)", terminator: "")
                 print("")
             }

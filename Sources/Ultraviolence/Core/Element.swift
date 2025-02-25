@@ -17,7 +17,7 @@ public extension Element where Body == Never {
 }
 
 internal extension Element {
-    internal func expandNode(_ node: Node, depth: Int) throws {
+    func expandNode(_ node: Node, depth: Int) throws {
         // TODO: Refactor this to make expansion of the node tree distinct from handling observable and state properties. Issue #23.
         guard let graph = Graph.current else {
             preconditionFailure("No graph is currently active.")
