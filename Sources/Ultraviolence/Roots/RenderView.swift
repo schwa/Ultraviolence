@@ -45,6 +45,7 @@ public struct RenderView <Content>: View where Content: Element {
                 .environment(\.commandQueue, commandQueue)
                 .environment(\.renderPassDescriptor, renderPassDescriptor)
                 .environment(\.currentDrawable, currentDrawable)
+                .environment(\.drawableSize, view.drawableSize)
 
                 // TODO: Find a way to detect if graph has changed and set needsSetup to true
                 try graph.updateContent(content: content)

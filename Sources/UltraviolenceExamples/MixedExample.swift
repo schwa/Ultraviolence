@@ -5,17 +5,17 @@ import Ultraviolence
 internal import UltraviolenceSupport
 
 public struct MixedExample: Element {
-    var drawableSize: SIMD2<Float>
-    var colorTexture: MTLTexture
-    var depthTexture: MTLTexture
     var modelMatrix: simd_float4x4
     var color: SIMD4<Float>
     var lightDirection: SIMD3<Float>
 
-    public init(drawableSize: SIMD2<Float>, colorTexture: MTLTexture, depthTexture: MTLTexture, modelMatrix: simd_float4x4, color: SIMD4<Float>, lightDirection: SIMD3<Float>) {
-        self.drawableSize = drawableSize
-        self.colorTexture = colorTexture
-        self.depthTexture = depthTexture
+    @UVEnvironment(\.renderPassDescriptor)
+    var renderPassDescriptor
+
+    @UVEnvironment(\.drawableSize)
+    var drawableSize
+
+    public init(modelMatrix: simd_float4x4, color: SIMD4<Float>, lightDirection: SIMD3<Float>) {
         self.modelMatrix = modelMatrix
         self.color = color
         self.lightDirection = lightDirection
@@ -24,7 +24,12 @@ public struct MixedExample: Element {
     public var body: some Element {
         get throws {
             try RenderPass {
-                try TeapotDemo(drawableSize: drawableSize, modelMatrix: modelMatrix, color: color, lightDirection: lightDirection)
+                // TODO: All these `orThrow` calls are ugly and we need a better way.
+                let drawableSize = try drawableSize.orThrow(.missingEnvironment("drawableSize"))
+                let renderPassDescriptor = try renderPassDescriptor.orThrow(.missingEnvironment("renderPassDescriptor"))
+                let colorTexture = try renderPassDescriptor.colorAttachments[0].texture.orThrow(.undefined)
+                let depthTexture = try renderPassDescriptor.depthAttachment.texture.orThrow(.undefined)
+                try TeapotDemo(drawableSize: .init(drawableSize), modelMatrix: modelMatrix, color: color, lightDirection: lightDirection)
                     .colorAttachment(colorTexture, index: 0)
                     .depthAttachment(depthTexture)
             }
@@ -33,7 +38,12 @@ public struct MixedExample: Element {
                 renderPassDescriptor.depthAttachment.storeAction = .store
             }
             try ComputePass {
-                try EdgeDetectionKernel(depthTexture: depthTexture, colorTexture: colorTexture)
+                EnvironmentReader(keyPath: \.renderPassDescriptor) { renderPassDescriptor in
+                    let renderPassDescriptor = try renderPassDescriptor.orThrow(.missingEnvironment("renderPassDescriptor"))
+                    let colorTexture = renderPassDescriptor.colorAttachments[0].texture.orFatalError()
+                    let depthTexture = renderPassDescriptor.depthAttachment.texture.orFatalError()
+                    try EdgeDetectionKernel(depthTexture: depthTexture, colorTexture: colorTexture)
+                }
             }
         }
     }

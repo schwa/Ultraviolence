@@ -19,19 +19,9 @@ struct MixedDemoView: View {
         let modelMatrix = simd_float4x4(yRotation: .init(radians: Float(angle.radians)))
         TimelineView(.animation) { timeline in
             RenderView {
-                EnvironmentReader(keyPath: \.renderPassDescriptor) { renderPassDescriptor in
-                    let renderPassDescriptor = try renderPassDescriptor.orThrow(.missingEnvironment("renderPassDescriptor"))
-                    let colorTexture = renderPassDescriptor.colorAttachments[0].texture.orFatalError()
-                    let depthTexture = renderPassDescriptor.depthAttachment.texture.orFatalError()
-                    EnvironmentReader(keyPath: \.currentDrawable) { currentDrawable in
-                        let currentDrawable = currentDrawable.orFatalError()
-
-                        MixedExample(drawableSize: .init(currentDrawable.layer.drawableSize), colorTexture: colorTexture, depthTexture: depthTexture, modelMatrix: modelMatrix, color: color, lightDirection: lightDirection)
-                    }
-                }
+                MixedExample(modelMatrix: modelMatrix, color: color, lightDirection: lightDirection)
             }
             .onChange(of: timeline.date) {
-                // degrees per second
                 let degreesPerSecond = 90.0
                 let angle = Angle(degrees: (degreesPerSecond * timeline.date.timeIntervalSince1970).truncatingRemainder(dividingBy: 360))
                 lightDirection = SIMD3<Float>(sin(Float(angle.radians)), -2, cos(Float(angle.radians)))

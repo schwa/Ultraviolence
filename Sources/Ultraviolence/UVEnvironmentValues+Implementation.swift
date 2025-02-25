@@ -18,6 +18,7 @@ public extension UVEnvironmentValues {
     @UVEntry var colorAttachment: (MTLTexture, Int)?
     @UVEntry var depthAttachment: MTLTexture?
     @UVEntry var currentDrawable: CAMetalDrawable?
+    @UVEntry var drawableSize: CGSize?
 }
 
 public extension Element {
