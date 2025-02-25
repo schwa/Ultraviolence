@@ -12,7 +12,7 @@ extension Never: Element {
 
 public extension Element where Body == Never {
     var body: Never {
-        preconditionFailure("`body` is not implemented for `Never` types (on \(self)).")
+        unreachable("`body` is not implemented for `Never` types (on \(self)).")
     }
 }
 
