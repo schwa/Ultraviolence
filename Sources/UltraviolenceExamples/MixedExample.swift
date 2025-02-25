@@ -28,6 +28,10 @@ public struct MixedExample: Element {
                     .colorAttachment(colorTexture, index: 0)
                     .depthAttachment(depthTexture)
             }
+            .renderPassModifier { renderPassDescriptor in
+                print("********* modifying render pass descriptor *********")
+                renderPassDescriptor.depthAttachment.storeAction = .store
+            }
             try ComputePass {
                 try EdgeDetectionKernel(depthTexture: depthTexture, colorTexture: colorTexture)
             }

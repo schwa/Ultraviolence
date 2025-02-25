@@ -10,6 +10,12 @@ internal struct RenderPassModifier<Content>: Element, BodylessContentElement whe
     func body(content: Content) -> some Element {
         content
     }
+
+    func setupEnter(_ node: Node) throws {
+        if let renderPassDescriptor {
+            modify(renderPassDescriptor)
+        }
+    }
 }
 
 public extension Element {

@@ -57,9 +57,6 @@ internal extension Element {
             }
             try body.expandNode(node.children[0], depth: depth + 1)
         }
-        else {
-            print("Empty body: \(self) \(Body.self) \(Never.self)")
-        }
 
         storeStateProperties(node)
         node.previousElement = self

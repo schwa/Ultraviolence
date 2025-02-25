@@ -25,7 +25,7 @@ public struct OffscreenRenderer {
         renderPassDescriptor.depthAttachment.texture = depthTexture
         renderPassDescriptor.depthAttachment.loadAction = .clear
         renderPassDescriptor.depthAttachment.clearDepth = 1
-        renderPassDescriptor.depthAttachment.storeAction = .store // TODO: This is hardcoded. Should usually be .dontCare but we need to read back in some examples. Issue #18
+        renderPassDescriptor.depthAttachment.storeAction = .store // TODO: This is hardcoded. Should usually be .dontCare but we need to read back in some examples. https://github.com/schwa/Ultraviolence/issues/33
         self.renderPassDescriptor = renderPassDescriptor
 
         commandQueue = try device.makeCommandQueue().orThrow(.resourceCreationFailure)
@@ -35,12 +35,12 @@ public struct OffscreenRenderer {
     public init(size: CGSize) throws {
         let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
         let colorTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm_srgb, width: Int(size.width), height: Int(size.height), mipmapped: false)
-        colorTextureDescriptor.usage = [.renderTarget, .shaderRead, .shaderWrite] // TODO: this is all hardcoded :-( Issue #18
+        colorTextureDescriptor.usage = [.renderTarget, .shaderRead, .shaderWrite] // TODO: this is all hardcoded :-( https://github.com/schwa/Ultraviolence/issues/33
         let colorTexture = try device.makeTexture(descriptor: colorTextureDescriptor).orThrow(.resourceCreationFailure)
         colorTexture.label = "Color Texture"
 
         let depthTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: Int(size.width), height: Int(size.height), mipmapped: false)
-        depthTextureDescriptor.usage = [.renderTarget, .shaderRead] // TODO: this is all hardcoded :-( Issue #18
+        depthTextureDescriptor.usage = [.renderTarget, .shaderRead] // TODO: this is all hardcoded :-( https://github.com/schwa/Ultraviolence/issues/33
         let depthTexture = try device.makeTexture(descriptor: depthTextureDescriptor).orThrow(.resourceCreationFailure)
         depthTexture.label = "Depth Texture"
 
