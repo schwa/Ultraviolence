@@ -1,6 +1,6 @@
 internal import os
 
-// TODO: Make Internal #24
+// TODO: Make Internal #https://github.com/schwa/Ultraviolence/issues/24
 public class Graph {
     internal var activeNodeStack: [Node] = []
     private(set) var root: Node

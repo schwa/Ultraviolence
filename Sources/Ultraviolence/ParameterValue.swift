@@ -7,7 +7,7 @@ internal enum ParameterValue<T> {
     case value(T)
 }
 
-// TODO: We really need to rethink type safety of ParameterValue. Make this a struct and keep internal enum - still need to worry about <T> though. Issue #21.
+// TODO: We really need to rethink type safety of ParameterValue. Make this a struct and keep internal enum - still need to worry about <T> though. https://github.com/schwa/Ultraviolence/issues/21
 // extension ParameterValue where T == () {
 //    static func texture(_ texture: MTLTexture) -> ParameterValue {
 //        .texture(texture) // TODO: Error. Ambiguous use of 'texture'.

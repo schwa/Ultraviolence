@@ -7,7 +7,7 @@ struct ContentView: View {
     var body: some View {
         NavigationSplitView {
             List(selection: $demo) {
-                row(for: AnimatedDemoView.self)
+                row(for: MixedDemoView.self)
                 row(for: TriangleDemoView.self)
                 #if canImport(AppKit)
                 row(for: OffscreenDemoView.self)

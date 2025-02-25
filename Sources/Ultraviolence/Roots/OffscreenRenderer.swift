@@ -31,7 +31,7 @@ public struct OffscreenRenderer {
         commandQueue = try device.makeCommandQueue().orThrow(.resourceCreationFailure)
     }
 
-    // TODO: Most of this belongs on a RenderSession type API. We should be able to render multiple times with the same setup. Issue #28
+    // TODO: Most of this belongs on a RenderSession type API. We should be able to render multiple times with the same setup. https://github.com/schwa/Ultraviolence/issues/28
     public init(size: CGSize) throws {
         let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
         let colorTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm_srgb, width: Int(size.width), height: Int(size.height), mipmapped: false)

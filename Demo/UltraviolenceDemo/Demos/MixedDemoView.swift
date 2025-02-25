@@ -5,7 +5,7 @@ import Ultraviolence
 import UltraviolenceExamples
 import UltraviolenceSupport
 
-struct AnimatedDemoView: View {
+struct MixedDemoView: View {
     @State
     private var angle: SwiftUI.Angle = .zero
 
@@ -43,5 +43,5 @@ struct AnimatedDemoView: View {
     }
 }
 
-extension AnimatedDemoView: DemoView {
+extension MixedDemoView: DemoView {
 }
