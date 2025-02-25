@@ -39,7 +39,7 @@ struct TriangleDemoView: View {
 
     var body: some View {
         TimelineView(.animation()) { timeline in
-            RenderView { _, _ in
+            RenderView {
                 try RenderPass {
                     let vertexShader = try VertexShader(source: source)
                     let fragmentShader = try FragmentShader(source: source)

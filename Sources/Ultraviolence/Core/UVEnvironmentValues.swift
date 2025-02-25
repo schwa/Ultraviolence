@@ -37,6 +37,7 @@ public extension UVEnvironmentValues {
     }
 }
 
+// TODO: Make into actual modifier.
 internal struct EnvironmentWritingModifier<Content: Element>: Element, BodylessElement {
     var content: Content
     var modify: (inout UVEnvironmentValues) -> Void
@@ -57,9 +58,9 @@ public extension Element {
 
 public struct EnvironmentReader<Value, Content: Element>: Element, BodylessElement {
     var keyPath: KeyPath<UVEnvironmentValues, Value>
-    var content: (Value) -> Content
+    var content: (Value) throws -> Content
 
-    public init(keyPath: KeyPath<UVEnvironmentValues, Value>, content: @escaping (Value) -> Content) {
+    public init(keyPath: KeyPath<UVEnvironmentValues, Value>, @ElementBuilder content: @escaping (Value) throws -> Content) {
         self.keyPath = keyPath
         self.content = content
     }

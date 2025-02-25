@@ -1,4 +1,5 @@
 import Metal
+import QuartzCore
 import UltraviolenceSupport
 
 public extension UVEnvironmentValues {
@@ -16,6 +17,7 @@ public extension UVEnvironmentValues {
     @UVEntry var reflection: Reflection?
     @UVEntry var colorAttachment: (MTLTexture, Int)?
     @UVEntry var depthAttachment: MTLTexture?
+    @UVEntry var currentDrawable: CAMetalDrawable?
 }
 
 public extension Element {

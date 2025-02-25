@@ -8,20 +8,20 @@ import UltraviolenceSupport
 
 public struct RenderView <Content>: View where Content: Element {
     var device = MTLCreateSystemDefaultDevice().orFatalError(.resourceCreationFailure)
-    var content: (CAMetalDrawable, MTLRenderPassDescriptor) throws -> Content
+    var content: () throws -> Content
 
     @Observable
     class ViewModel: NSObject, MTKViewDelegate {
         var device: MTLDevice
         var commandQueue: MTLCommandQueue
-        var content: (CAMetalDrawable, MTLRenderPassDescriptor) throws -> Content
+        var content: () throws -> Content
         var lastError: Error?
         var logger: Logger? = Logger()
         var graph: Graph
         var needsSetup = true
 
         @MainActor
-        init(device: MTLDevice, content: @escaping (CAMetalDrawable, MTLRenderPassDescriptor) throws -> Content) throws {
+        init(device: MTLDevice, content: @escaping () throws -> Content) throws {
             self.device = device
             self.content = content
             self.commandQueue = try device.makeCommandQueue().orThrow(.resourceCreationFailure)
@@ -39,11 +39,12 @@ public struct RenderView <Content>: View where Content: Element {
                 }
                 let renderPassDescriptor = try view.currentRenderPassDescriptor.orThrow(.undefined)
                 let content = try CommandBufferElement(completion: .commit) {
-                    try self.content(currentDrawable, renderPassDescriptor)
+                    try self.content()
                 }
                 .environment(\.device, device)
                 .environment(\.commandQueue, commandQueue)
                 .environment(\.renderPassDescriptor, renderPassDescriptor)
+                .environment(\.currentDrawable, currentDrawable)
 
                 // TODO: Find a way to detect if graph has changed and set needsSetup to true
                 try graph.updateContent(content: content)
@@ -62,7 +63,7 @@ public struct RenderView <Content>: View where Content: Element {
     @State
     private var viewModel: ViewModel
 
-    public init(content: @escaping (CAMetalDrawable, MTLRenderPassDescriptor) throws -> Content) {
+    public init(content: @escaping () throws -> Content) {
         self.device = MTLCreateSystemDefaultDevice().orFatalError(.resourceCreationFailure)
         self.content = content
         do {

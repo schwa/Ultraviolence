@@ -18,10 +18,17 @@ struct MixedDemoView: View {
     var body: some View {
         let modelMatrix = simd_float4x4(yRotation: .init(radians: Float(angle.radians)))
         TimelineView(.animation) { timeline in
-            RenderView { drawable, renderPassDescriptor in
-                let colorTexture = renderPassDescriptor.colorAttachments[0].texture.orFatalError()
-                let depthTexture = renderPassDescriptor.depthAttachment.texture.orFatalError()
-                return MixedExample(drawableSize: .init(drawable.layer.drawableSize), colorTexture: colorTexture, depthTexture: depthTexture, modelMatrix: modelMatrix, color: color, lightDirection: lightDirection)
+            RenderView {
+                EnvironmentReader(keyPath: \.renderPassDescriptor) { renderPassDescriptor in
+                    let renderPassDescriptor = try renderPassDescriptor.orThrow(.missingEnvironment("renderPassDescriptor"))
+                    let colorTexture = renderPassDescriptor.colorAttachments[0].texture.orFatalError()
+                    let depthTexture = renderPassDescriptor.depthAttachment.texture.orFatalError()
+                    EnvironmentReader(keyPath: \.currentDrawable) { currentDrawable in
+                        let currentDrawable = currentDrawable.orFatalError()
+
+                        MixedExample(drawableSize: .init(currentDrawable.layer.drawableSize), colorTexture: colorTexture, depthTexture: depthTexture, modelMatrix: modelMatrix, color: color, lightDirection: lightDirection)
+                    }
+                }
             }
             .onChange(of: timeline.date) {
                 // degrees per second
