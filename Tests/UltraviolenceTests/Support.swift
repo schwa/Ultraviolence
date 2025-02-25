@@ -1,12 +1,15 @@
 import Accelerate
 import CoreGraphics
 import CoreImage
+// swiftlint:disable:next duplicate_imports
 import CoreImage.CIFilterBuiltins
 import Testing
 @testable import Ultraviolence
 import UltraviolenceExamples
 import UltraviolenceSupport
 import UniformTypeIdentifiers
+
+// swiftlint:disable force_unwrapping
 
 extension Graph {
     func element<V>(at path: [Int], type: V.Type) -> V {

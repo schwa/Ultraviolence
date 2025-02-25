@@ -56,8 +56,11 @@ struct Demo: Hashable {
     }
 
     var name: String {
-        String(describing: type).replacingOccurrences(of: "DemoView", with: "").replacing(#/[A-Z][^A-Z]+/#) { match in
-            String(match.output) + " "
-        }.trimmingCharacters(in: .whitespacesAndNewlines)
+        String(describing: type)
+            .replacingOccurrences(of: "DemoView", with: "")
+            .replacing(#/[A-Z][^A-Z]+/#) { match in
+                String(match.output) + " "
+            }
+            .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
