@@ -108,8 +108,6 @@ struct BoundingBox {
     var max: SIMD3<Float>
 }
 
-
-
 extension Teapot {
     var matrix: simd_float4x4 {
         var matrix = simd_float4x4.identity
@@ -119,4 +117,3 @@ extension Teapot {
         return matrix
     }
 }
-

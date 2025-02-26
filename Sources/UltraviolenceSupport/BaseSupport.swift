@@ -2,7 +2,6 @@ import Metal
 import MetalKit
 
 public extension simd_float4x4 {
-
     init(scale: SIMD3<Float>) {
         self.init([
             [scale.x, 0, 0, 0],

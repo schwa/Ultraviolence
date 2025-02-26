@@ -1,5 +1,5 @@
-import simd
 import CoreGraphics
+import simd
 
 public protocol ProjectionProtocol: Equatable, Sendable {
     func projectionMatrix(for viewSize: SIMD2<Float>) -> simd_float4x4

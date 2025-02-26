@@ -66,4 +66,3 @@ struct Demo: Hashable {
             .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
-

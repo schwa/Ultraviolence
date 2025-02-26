@@ -5,7 +5,6 @@ public protocol Example {
     static func runExample() throws -> MTLTexture
 }
 
-
 @MainActor
 var allExamples: [Example.Type] = [
     CheckerboardKernel.self

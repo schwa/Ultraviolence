@@ -1,7 +1,6 @@
-
 import Ultraviolence
 
-//struct StencilExample: Element {
+// struct StencilExample: Element {
 //
 //
 //    var body: some Element {
@@ -10,4 +9,4 @@ import Ultraviolence
 ////        Teapot
 //
 //    }
-//}
+// }

@@ -43,4 +43,3 @@ extension CheckerboardKernel: Example {
         return texture
     }
 }
-

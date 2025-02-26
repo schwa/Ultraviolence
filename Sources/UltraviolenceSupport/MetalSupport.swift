@@ -276,7 +276,6 @@ public extension MTLRenderCommandEncoder {
     }
 }
 
-
 public extension MTLVertexDescriptor {
     convenience init(_ vertexDescriptor: MDLVertexDescriptor) {
         self.init()
