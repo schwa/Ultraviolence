@@ -40,7 +40,13 @@ public let package = Package(
                 "UltraviolenceSupport"
             ],
             resources: [
-                .copy("teapot.obj")
+                .copy("teapot.obj"),
+                .process("Assets.xcassets"),
+                .process("CheckerboardKernel.metal"),
+                .process("EdgeDetectionKernel.metal"),
+                .process("FlatShader.metal"),
+                .process("LambertianShader.metal"),
+                .process("RedTriangle.metal")
             ]
         ),
         .target(
