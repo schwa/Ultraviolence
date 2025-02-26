@@ -1,4 +1,4 @@
-import os
+internal import os
 
 private let onceKeys = OSAllocatedUnfairLock(initialState: Set<String>())
 
