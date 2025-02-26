@@ -14,7 +14,7 @@ import UniformTypeIdentifiers
 public struct TeapotDemo: Element {
     @UVState
     var mesh: MTKMesh
-    var color: SIMD4<Float>
+    var color: SIMD3<Float>
     var modelMatrix: simd_float4x4
     var cameraMatrix: simd_float4x4
     var lightDirection: SIMD3<Float>
@@ -22,7 +22,7 @@ public struct TeapotDemo: Element {
     @UVEnvironment(\.drawableSize)
     var drawableSize
 
-    public init(modelMatrix: simd_float4x4, color: SIMD4<Float>, lightDirection: SIMD3<Float>) throws {
+    public init(modelMatrix: simd_float4x4, color: SIMD3<Float>, lightDirection: SIMD3<Float>) throws {
         let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
         let teapotURL = try Bundle.module.url(forResource: "teapot", withExtension: "obj").orThrow(.resourceCreationFailure)
         let mdlAsset = MDLAsset(url: teapotURL, vertexDescriptor: nil, bufferAllocator: MTKMeshBufferAllocator(device: device))

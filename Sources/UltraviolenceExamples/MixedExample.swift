@@ -6,7 +6,7 @@ internal import UltraviolenceSupport
 
 public struct MixedExample: Element {
     var modelMatrix: simd_float4x4
-    var color: SIMD4<Float>
+    var color: SIMD3<Float>
     var lightDirection: SIMD3<Float>
 
     @UVEnvironment(\.renderPassDescriptor)
@@ -15,7 +15,7 @@ public struct MixedExample: Element {
     @UVEnvironment(\.drawableSize)
     var drawableSize
 
-    public init(modelMatrix: simd_float4x4, color: SIMD4<Float>, lightDirection: SIMD3<Float>) {
+    public init(modelMatrix: simd_float4x4, color: SIMD3<Float>, lightDirection: SIMD3<Float>) {
         self.modelMatrix = modelMatrix
         self.color = color
         self.lightDirection = lightDirection
@@ -45,11 +45,11 @@ public struct MixedExample: Element {
     }
 }
 
-extension MixedExample: Example {
-    public static func runExample() throws -> MTLTexture {
-        let size = CGSize(width: 1_600, height: 1_200)
-        let offscreenRenderer = try OffscreenRenderer(size: size)
-        let element = MixedExample(modelMatrix: .identity, color: [1, 0, 0, 1], lightDirection: [1, 1, 1])
-        return try offscreenRenderer.render(element, capture: true).texture
-    }
-}
+//extension MixedExample: Example {
+//    public static func runExample() throws -> MTLTexture {
+//        let size = CGSize(width: 1_600, height: 1_200)
+//        let offscreenRenderer = try OffscreenRenderer(size: size)
+//        let element = MixedExample(modelMatrix: .identity, color: [1, 0, 0, 1], lightDirection: [1, 1, 1])
+//        return try offscreenRenderer.render(element, capture: true).texture
+//    }
+//}

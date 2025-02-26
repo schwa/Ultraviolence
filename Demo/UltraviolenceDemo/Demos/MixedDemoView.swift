@@ -13,7 +13,7 @@ struct MixedDemoView: View {
     private var lightDirection: SIMD3<Float> = [-1, -2, -1]
 
     @State
-    private var color: SIMD4<Float> = [1, 0, 0, 1]
+    private var color: SIMD3<Float> = [1, 0, 0]
 
     var body: some View {
         let modelMatrix = simd_float4x4(yRotation: .init(radians: Float(angle.radians)))

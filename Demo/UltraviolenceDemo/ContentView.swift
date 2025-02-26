@@ -1,4 +1,5 @@
 import SwiftUI
+import UltraviolenceExamples
 
 struct ContentView: View {
     @State
@@ -13,6 +14,7 @@ struct ContentView: View {
                 row(for: OffscreenDemoView.self)
                 #endif
                 row(for: ComputeDemoView.self)
+                row(for: BouncingTeapotsDemoView.self)
             }
         } detail: {
             if let demo {
@@ -64,3 +66,4 @@ struct Demo: Hashable {
             .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
+
