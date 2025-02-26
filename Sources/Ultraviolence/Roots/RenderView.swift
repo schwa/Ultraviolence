@@ -33,11 +33,11 @@ public struct RenderView <Content>: View where Content: Element {
 
         func draw(in view: MTKView) {
             do {
-                let currentDrawable = try view.currentDrawable.orThrow(.undefined)
+                let currentDrawable = try view.currentDrawable.orThrow(.generic("No drawable available"))
                 defer {
                     currentDrawable.present()
                 }
-                let renderPassDescriptor = try view.currentRenderPassDescriptor.orThrow(.undefined)
+                let renderPassDescriptor = try view.currentRenderPassDescriptor.orThrow(.generic("No render pass descriptor available"))
                 let content = try CommandBufferElement(completion: .commit) {
                     try self.content()
                 }
@@ -57,6 +57,7 @@ public struct RenderView <Content>: View where Content: Element {
             } catch {
                 logger?.error("Error when drawing: \(error)")
                 lastError = error
+                fatalError()
             }
         }
     }
@@ -64,7 +65,7 @@ public struct RenderView <Content>: View where Content: Element {
     @State
     private var viewModel: ViewModel
 
-    public init(content: @escaping () throws -> Content) {
+    public init(@ElementBuilder content: @escaping () throws -> Content) {
         self.device = MTLCreateSystemDefaultDevice().orFatalError(.resourceCreationFailure)
         self.content = content
         do {

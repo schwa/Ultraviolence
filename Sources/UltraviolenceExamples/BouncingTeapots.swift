@@ -13,8 +13,18 @@ public struct BouncingTeapotsDemoView: View {
 
     let cameraMatrix: simd_float4x4 = .init(translation: [0, 2, 6])
     let mesh: MTKMesh = .teapot()
+    let sphere: MTKMesh = .sphere(extent: [100, 100, 100], inwardNormals: true)
+    let skyboxSampler: MTLSamplerState
+    let skyboxTexture: MTLTexture
 
     public init() {
+        print("#INIT#")
+        let device = MTLCreateSystemDefaultDevice().orFatalError()
+        let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm, width: 512, height: 512, mipmapped: false)
+        textureDescriptor.usage = [.shaderRead, .shaderWrite]
+        skyboxTexture = device.makeTexture(descriptor: textureDescriptor).orFatalError()
+        let samplerDescriptor = MTLSamplerDescriptor()
+        skyboxSampler = device.makeSamplerState(descriptor: samplerDescriptor).orFatalError()
     }
 
     public var body: some View {
@@ -22,18 +32,29 @@ public struct BouncingTeapotsDemoView: View {
             let colors = simulation.teapots.map(\.color)
             let modelMatrices = simulation.teapots.map(\.matrix)
             RenderView {
+                try ComputePass {
+                    try CheckerboardKernel(outputTexture: skyboxTexture, checkerSize: [32, 32], backgroundColor: [0, 0, 0, 1], foregroundColor: [1, 1, 1, 1])
+                }
                 EnvironmentReader(keyPath: \.drawableSize) { drawableSize in
                     let projectionMatrix = PerspectiveProjection().projectionMatrix(for: drawableSize.orFatalError())
                     try RenderPass {
+                        try FlatShader(modelMatrix: .identity, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix, texture: skyboxTexture, sampler: skyboxSampler) {
+                            Draw { encoder in
+                                encoder.setVertexBuffers(of: sphere)
+                                encoder.draw(sphere)
+                            }
+                        }
+                        .vertexDescriptor(MTLVertexDescriptor(sphere.vertexDescriptor))
+
                         try LambertianShaderInstanced(colors: colors, modelMatrices: modelMatrices, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix, lightDirection: [-1, -2, -1]) {
                             Draw { encoder in
                                 encoder.setVertexBuffers(of: mesh)
                                 encoder.draw(mesh, instanceCount: simulation.teapots.count)
                             }
                         }
+                        .vertexDescriptor(MTLVertexDescriptor(mesh.vertexDescriptor))
                     }
                     .depthCompare(function: .less, enabled: true)
-                    .vertexDescriptor(MTLVertexDescriptor(mesh.vertexDescriptor))
                 }
             }
             .onChange(of: timeline.date) {

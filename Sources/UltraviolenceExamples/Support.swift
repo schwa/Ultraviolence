@@ -48,11 +48,11 @@ extension MTKMesh {
 }
 
 extension MTKMesh {
-    static func unitSphere(inwardNormals: Bool = false) -> MTKMesh {
+    static func sphere(extent: SIMD3<Float> = [1, 1, 1], inwardNormals: Bool = false) -> MTKMesh {
         do {
             let device = MTLCreateSystemDefaultDevice().orFatalError(.resourceCreationFailure)
             let allocator = MTKMeshBufferAllocator(device: device)
-            let mdlMesh = MDLMesh(sphereWithExtent: [1, 1, 1], segments: [48, 48], inwardNormals: inwardNormals, geometryType: .triangles, allocator: allocator)
+            let mdlMesh = MDLMesh(sphereWithExtent: extent, segments: [48, 48], inwardNormals: inwardNormals, geometryType: .triangles, allocator: allocator)
             return try MTKMesh(mesh: mdlMesh, device: device)
         }
         catch {

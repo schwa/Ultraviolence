@@ -49,7 +49,7 @@ public enum FlatShaderExample: Example {
         let samplerDescriptor = MTLSamplerDescriptor()
         let sampler = try device.makeSamplerState(descriptor: samplerDescriptor).orThrow(.resourceCreationFailure)
         return try MTLCaptureManager.shared().with(enabled: false) {
-            let mesh = MTKMesh.unitSphere(inwardNormals: true)
+            let mesh = MTKMesh.sphere(inwardNormals: true)
             let root = try Group {
                 try RenderPass {
                     let modelMatrix = simd_float4x4(scale: [100, 100, 100])

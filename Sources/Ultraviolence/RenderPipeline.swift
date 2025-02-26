@@ -30,14 +30,15 @@ public struct RenderPipeline <Content>: Element, BodylessElement, BodylessConten
         renderPipelineDescriptor.vertexFunction = vertexShader.function
         renderPipelineDescriptor.fragmentFunction = fragmentShader.function
         guard let vertexDescriptor = environment.vertexDescriptor ?? vertexShader.vertexDescriptor else {
-            throw UltraviolenceError.undefined
+            // TODO: We were falling back to vertexShader.vertexDescriptor but that seems to be unreliable.
+            throw UltraviolenceError.generic("No vertex descriptor")
         }
         renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
 
         // TODO: This is copying everything from the render pass descriptor. But really we should be getting this entirely from the enviroment.
-        let colorAttachment0Texture = try renderPassDescriptor.colorAttachments[0].texture.orThrow(.undefined)
+        let colorAttachment0Texture = try renderPassDescriptor.colorAttachments[0].texture.orThrow(.generic("No color attachment 0 texture"))
         renderPipelineDescriptor.colorAttachments[0].pixelFormat = colorAttachment0Texture.pixelFormat
-        let depthAttachmentTexture = try renderPassDescriptor.depthAttachment.orThrow(.undefined).texture.orThrow(.undefined)
+        let depthAttachmentTexture = try renderPassDescriptor.depthAttachment.orThrow(.generic("No depth attachment")).texture.orThrow(.generic("No depth attachment texture"))
         renderPipelineDescriptor.depthAttachmentPixelFormat = depthAttachmentTexture.pixelFormat
 
         let device = try device.orThrow(.missingEnvironment(\.device))
