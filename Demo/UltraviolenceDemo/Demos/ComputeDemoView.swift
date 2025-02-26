@@ -22,7 +22,7 @@ struct ComputeDemoView: View {
 
                 do {
                     let kernel = try ComputeKernel(source: source, logging: true)
-                    let compute = try ComputePass(logging: true) {
+                    let compute = try ComputePass {
                         ComputePipeline(computeKernel: kernel) {
                             ComputeDispatch(threads: .init(width: 1, height: 1, depth: 1), threadsPerThreadgroup: .init(width: 1, height: 1, depth: 1))
                         }
