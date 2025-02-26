@@ -12,3 +12,6 @@ test: build
 
 push: test
     jj bookmark move main --to @-; jj git push --branch main
+
+format:
+    swiftlint --fix --format --quiet
