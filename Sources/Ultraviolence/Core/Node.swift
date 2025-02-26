@@ -6,6 +6,7 @@ internal final class Node {
     var previousElement: (any Element)?
     var stateProperties: [String: Any] = [:]
     var environmentValues = UVEnvironmentValues()
+    var debugLabel: String?
 
     init() {
         // This line intentionally left blank.
