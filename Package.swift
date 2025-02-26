@@ -15,7 +15,8 @@ public let package = Package(
         .library(name: "UltraviolenceSupport", targets: ["UltraviolenceSupport"])
     ],
     dependencies: [
-        .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.0-latest")
+        .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.0-latest"),
+        .package(url: "https://github.com/schwa/MetalCompilerPlugin", branch: "main"),
     ],
     targets: [
         .target(
@@ -39,14 +40,19 @@ public let package = Package(
                 "Ultraviolence",
                 "UltraviolenceSupport"
             ],
+            exclude: [
+                "EdgeDetectionKernel.metal",
+                "FlatShader.metal",
+                "LambertianShader.metal",
+                "RedTriangle.metal",
+                "CheckerboardKernel.metal"
+            ],
             resources: [
                 .copy("teapot.obj"),
-                .process("Assets.xcassets"),
-                .process("CheckerboardKernel.metal"),
-                .process("EdgeDetectionKernel.metal"),
-                .process("FlatShader.metal"),
-                .process("LambertianShader.metal"),
-                .process("RedTriangle.metal")
+                .copy("HD-Testcard-original.jpg")
+            ],
+            plugins: [
+                .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
             ]
         ),
         .target(

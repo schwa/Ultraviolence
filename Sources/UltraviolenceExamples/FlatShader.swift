@@ -44,7 +44,8 @@ public enum FlatShaderExample: Example {
     public static func runExample() throws -> ExampleResult {
         let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
         let textureLoader = MTKTextureLoader(device: device)
-        let texture = try textureLoader.newTexture(name: "HD-Testcard-original", scaleFactor: 1, bundle: Bundle.module)
+        let imageURL = Bundle.module.url(forResource: "HD-Testcard-original", withExtension: "jpg").orFatalError()
+        let texture = try textureLoader.newTexture(URL: imageURL)
         let samplerDescriptor = MTLSamplerDescriptor()
         let sampler = device.makeSamplerState(descriptor: samplerDescriptor)!
         return try MTLCaptureManager.shared().with(enabled: false) {

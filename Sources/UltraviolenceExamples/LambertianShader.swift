@@ -19,7 +19,6 @@ public struct LambertianShader <Content>: Element where Content: Element {
         self.cameraMatrix = cameraMatrix
         self.projectionMatrix = projectionMatrix
         self.lightDirection = lightDirection
-
         let library = try ShaderLibrary(bundle: .module, namespace: "LambertianShader")
         self.vertexShader = try library.vertex_main
         self.fragmentShader = try library.fragment_main

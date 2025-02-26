@@ -7,7 +7,7 @@ import UltraviolenceSupport
 
 @MainActor
 struct UltraviolenceExampleTests {
-    @Test(.disabled("Disabled - failing on CI"), .bug("https://github.com/schwa/Ultraviolence/issues/38", "Caught error: Error Domain=MTLLibraryErrorDomain Code=6 \"no default library was found\" UserInfo={NSLocalizedDescription=no default library was found}"))
+    @Test
     func testMixedExample() throws {
         let size = CGSize(width: 1_600, height: 1_200)
         let offscreenRenderer = try OffscreenRenderer(size: size)
