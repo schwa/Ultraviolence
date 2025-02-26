@@ -14,6 +14,9 @@ public struct BouncingTeapotsDemoView: View {
     let cameraMatrix: simd_float4x4 = .init(translation: [0, 2, 6])
     let mesh: MTKMesh = .teapot()
 
+    public init() {
+    }
+
     public var body: some View {
         TimelineView(.animation) { timeline in
             let colors = simulation.teapots.map(\.color)
@@ -44,7 +47,7 @@ public struct BouncingTeapotsDemoView: View {
     }
 }
 
-struct Teapot {
+internal struct Teapot {
     var position: SIMD3<Float>
     var rotation: simd_quatf
     var rotationVelocity: simd_quatf
@@ -52,7 +55,7 @@ struct Teapot {
     var color: SIMD3<Float>
 }
 
-struct TeapotSimulation {
+internal struct TeapotSimulation {
     var teapots: [Teapot] = []
     var boundingBox: BoundingBox = .init(min: [-4, 0, -4], max: [4, 4, 4])
 
@@ -103,7 +106,7 @@ struct TeapotSimulation {
     }
 }
 
-struct BoundingBox {
+internal struct BoundingBox {
     var min: SIMD3<Float>
     var max: SIMD3<Float>
 }

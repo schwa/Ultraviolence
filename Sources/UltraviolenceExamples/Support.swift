@@ -21,11 +21,13 @@ extension MTLTexture {
     }
 }
 
+#if canImport(AppKit)
 extension URL {
     func revealInFinder() {
         NSWorkspace.shared.activateFileViewerSelecting([self])
     }
 }
+#endif
 
 extension MTKMesh {
     static func teapot() -> MTKMesh {
