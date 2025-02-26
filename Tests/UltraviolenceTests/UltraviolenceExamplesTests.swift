@@ -18,22 +18,22 @@ struct UltraviolenceExampleTests {
         #expect(try imageCompare(image, goldenImage) == true)
     }
 
-    @Test
-    func testAllExamples() throws {
-        let examples: [Example.Type] = [
-            CheckerboardKernel.self,
-            FlatShaderExample.self,
-            MixedExample.self
-        ]
-        for example in examples {
-            let result = try example.runExample()
-            switch result {
-            case .texture(let texture):
-                let url = URL(fileURLWithPath: "/tmp/\(example).png")
-                try texture.write(to: url)
-            default:
-                break
-            }
+    @Test(arguments: [
+        CheckerboardKernel.self,
+        FlatShaderExample.self,
+        MixedExample.self,
+    ] as [any Example.Type])
+    func testExample(_ example: Example.Type) throws {
+        let result = try example.runExample()
+        switch result {
+        case .texture(let texture):
+            let url = URL(fileURLWithPath: "/tmp/\(example).png")
+            try texture.write(to: url)
+            let image = try texture.toCGImage()
+            let goldenImage = goldenImage(named: "\(example)")
+            #expect(try imageCompare(image, goldenImage) == true)
+        default:
+            break
         }
     }
 }

@@ -8,7 +8,8 @@ public extension MTLTexture {
     func toCGImage() throws -> CGImage {
         // TODO: Hack
         assert(self.pixelFormat == .rgba8Unorm || self.pixelFormat == .bgra8Unorm_srgb)
-        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
+        var bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue)
+        bitmapInfo.insert(.byteOrder32Little)
         let context = try CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: width * 4, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: bitmapInfo.rawValue).orThrow(.resourceCreationFailure)
         let data = try context.data.orThrow(.resourceCreationFailure)
         getBytes(data, bytesPerRow: width * 4, from: MTLRegionMake2D(0, 0, width, height), mipmapLevel: 0)

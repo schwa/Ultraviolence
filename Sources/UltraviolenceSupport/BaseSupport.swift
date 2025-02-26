@@ -162,15 +162,6 @@ extension SIMD4 {
 //    }
 // }
 
-public extension Optional where Wrapped == String {
-    var isTrue: Bool {
-        guard let value = self?.lowercased() else {
-            return false
-        }
-        return ["1", "true", "yes"].contains(value)
-    }
-}
-
 public func isPOD<T>(_ type: T.Type) -> Bool {
     _isPOD(type)
 }
