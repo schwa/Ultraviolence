@@ -57,7 +57,6 @@ public struct RenderView <Content>: View where Content: Element {
             } catch {
                 logger?.error("Error when drawing: \(error)")
                 lastError = error
-                fatalError()
             }
         }
     }

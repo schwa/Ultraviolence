@@ -32,49 +32,54 @@ public struct BouncingTeapotsDemoView: View {
 
     public var body: some View {
         TimelineView(.animation) { timeline in
-            let colors = simulation.teapots.map(\.color)
-            let modelMatrices = simulation.teapots.map(\.matrix)
-            RenderView {
-                // Render a checkerboard pattern into a texture
-                try ComputePass {
-                    try CheckerboardKernel(outputTexture: skyboxTexture, checkerSize: [20, 20], backgroundColor: [0, 0, 0, 1], foregroundColor: .init(color: checkerboardColor))
-                }
-                try RenderPass {
-                    EnvironmentReader(keyPath: \.drawableSize) { drawableSize in
-                        let projectionMatrix = PerspectiveProjection().projectionMatrix(for: drawableSize.orFatalError())
-
-                        // Draw the checkerboard texture into a skybox
-                        try FlatShader(modelMatrix: .identity, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix, texture: skyboxTexture, sampler: skyboxSampler) {
-                            Draw { encoder in
-                                encoder.setVertexBuffers(of: sphere)
-                                encoder.draw(sphere)
-                            }
-                        }
-                        .vertexDescriptor(MTLVertexDescriptor(sphere.vertexDescriptor))
-
-                        // Teapot party.
-                        try LambertianShaderInstanced(colors: colors, modelMatrices: modelMatrices, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix, lightDirection: [-1, -2, -1]) {
-                            Draw { encoder in
-                                encoder.setVertexBuffers(of: mesh)
-                                encoder.draw(mesh, instanceCount: simulation.teapots.count)
-                            }
-                        }
-                        .vertexDescriptor(MTLVertexDescriptor(mesh.vertexDescriptor))
+            renderView
+                .onChange(of: timeline.date) {
+                    let now = timeline.date
+                    if let lastUpdate {
+                        simulation.step(duration: now.timeIntervalSince(lastUpdate))
                     }
-                    .depthCompare(function: .less, enabled: true)
+                    lastUpdate = now
                 }
+                .inspector(isPresented: .constant(true)) {
+                    Form {
+                        ColorPicker("Checkerboard Color", selection: $checkerboardColor)
+                    }
+                }
+        }
+    }
+
+    @ViewBuilder
+    var renderView: some View {
+        let colors = simulation.teapots.map(\.color)
+        let modelMatrices = simulation.teapots.map(\.matrix)
+        RenderView {
+            // Render a checkerboard pattern into a texture
+            try ComputePass {
+                try CheckerboardKernel(outputTexture: skyboxTexture, checkerSize: [20, 20], backgroundColor: [0, 0, 0, 1], foregroundColor: .init(color: checkerboardColor))
             }
-            .onChange(of: timeline.date) {
-                let now = timeline.date
-                if let lastUpdate {
-                    simulation.step(duration: now.timeIntervalSince(lastUpdate))
+            try RenderPass {
+                EnvironmentReader(keyPath: \.drawableSize) { drawableSize in
+                    let projectionMatrix = PerspectiveProjection().projectionMatrix(for: drawableSize.orFatalError())
+
+                    // Draw the checkerboard texture into a skybox
+                    try FlatShader(modelMatrix: .identity, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix, texture: skyboxTexture, sampler: skyboxSampler) {
+                        Draw { encoder in
+                            encoder.setVertexBuffers(of: sphere)
+                            encoder.draw(sphere)
+                        }
+                    }
+                    .vertexDescriptor(MTLVertexDescriptor(sphere.vertexDescriptor))
+
+                    // Teapot party.
+                    try LambertianShaderInstanced(colors: colors, modelMatrices: modelMatrices, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix, lightDirection: [-1, -2, -1]) {
+                        Draw { encoder in
+                            encoder.setVertexBuffers(of: mesh)
+                            encoder.draw(mesh, instanceCount: simulation.teapots.count)
+                        }
+                    }
+                    .vertexDescriptor(MTLVertexDescriptor(mesh.vertexDescriptor))
                 }
-                lastUpdate = now
-            }
-            .inspector(isPresented: .constant(true)) {
-                Form {
-                    ColorPicker("Checkerboard Color", selection: $checkerboardColor)
-                }
+                .depthCompare(function: .less, enabled: true)
             }
         }
     }

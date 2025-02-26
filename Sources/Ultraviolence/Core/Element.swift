@@ -122,7 +122,7 @@ internal extension Element {
     }
 }
 
-extension Node {
+internal extension Node {
     var ancestors: [Node] {
         var ancestors: [Node] = []
         var current: Node = self
@@ -152,13 +152,13 @@ extension Node {
     }
 }
 
-extension Element {
+internal extension Element {
     var debugName: String {
         abbreviatedTypeName(of: self)
     }
 }
 
-func abbreviatedTypeName<T>(of t: T) -> String {
+internal func abbreviatedTypeName<T>(of t: T) -> String {
     let name = "\(type(of: t))"
-    return String(name[..<name.firstIndex(of: "<")!])
+    return String(name[..<(name.firstIndex(of: "<") ?? name.endIndex)])
 }
