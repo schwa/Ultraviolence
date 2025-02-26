@@ -513,6 +513,17 @@ public extension MTLRenderCommandEncoder {
             fatalError("Unimplemented")
         }
     }
+
+    func setSamplerState(_ sampler: MTLSamplerState, index: Int, functionType: MTLFunctionType) {
+        switch functionType {
+        case .vertex:
+            setVertexSamplerState(sampler, index: index)
+        case .fragment:
+            setFragmentSamplerState(sampler, index: index)
+        default:
+            fatalError("Unimplemented")
+        }
+    }
 }
 
 public extension MTLComputeCommandEncoder {

@@ -82,6 +82,10 @@ public extension Element {
         ParameterElement(functionType: functionType, name: name, value: ParameterValue<()>.texture(texture), content: self)
     }
 
+    func parameter(_ name: String, samplerState: MTLSamplerState, functionType: MTLFunctionType? = nil) -> some Element {
+        ParameterElement(functionType: functionType, name: name, value: ParameterValue<()>.samplerState(samplerState), content: self)
+    }
+
     func parameter(_ name: String, buffer: MTLBuffer, offset: Int = 0, functionType: MTLFunctionType? = nil) -> some Element {
         ParameterElement(functionType: functionType, name: name, value: ParameterValue<()>.buffer(buffer, offset), content: self)
     }

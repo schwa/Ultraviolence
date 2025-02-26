@@ -5,6 +5,10 @@ public struct ElementBuilder {
         content
     }
 
+    public static func buildBlock() -> EmptyElement {
+        EmptyElement()
+    }
+
     public static func buildBlock<each Content>(_ content: repeat each Content) -> TupleElement<repeat each Content> where repeat each Content: Element {
         TupleElement(repeat each content)
     }
@@ -12,4 +16,6 @@ public struct ElementBuilder {
     public static func buildOptional<Content>(_ content: Content?) -> some Element where Content: Element {
         content
     }
+
+    // TODO: Flesh this out (follow ViewBuilder for more)
 }

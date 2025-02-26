@@ -2,10 +2,12 @@ import CoreGraphics
 import ImageIO
 import MetalKit
 import UniformTypeIdentifiers
+import ModelIO
 
-extension MTLTexture {
+public extension MTLTexture {
     func toCGImage() throws -> CGImage {
-        assert(self.pixelFormat == .rgba8Unorm)
+        // TODO: Hack
+        assert(self.pixelFormat == .rgba8Unorm || self.pixelFormat == .bgra8Unorm_srgb)
         var bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
         let context = try CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: width * 4, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: bitmapInfo.rawValue).orThrow(.resourceCreationFailure)
         let data = try context.data.orThrow(.resourceCreationFailure)
@@ -22,7 +24,7 @@ extension MTLTexture {
 }
 
 #if canImport(AppKit)
-extension URL {
+public extension URL {
     func revealInFinder() {
         NSWorkspace.shared.activateFileViewerSelecting([self])
     }
@@ -36,6 +38,20 @@ extension MTKMesh {
             let teapotURL = try Bundle.module.url(forResource: "teapot", withExtension: "obj")
             let mdlAsset = MDLAsset(url: teapotURL, vertexDescriptor: nil, bufferAllocator: MTKMeshBufferAllocator(device: device))
             let mdlMesh = try (mdlAsset.object(at: 0) as? MDLMesh).orFatalError(.resourceCreationFailure)
+            return try MTKMesh(mesh: mdlMesh, device: device)
+        }
+        catch {
+            fatalError("\(error)")
+        }
+    }
+}
+
+extension MTKMesh {
+    static func unitSphere(inwardNormals: Bool = false) -> MTKMesh {
+        do {
+            let device = MTLCreateSystemDefaultDevice().orFatalError(.resourceCreationFailure)
+            let allocator = MTKMeshBufferAllocator(device: device)
+            let mdlMesh = MDLMesh(sphereWithExtent: [1, 1, 1], segments: [48, 48], inwardNormals: inwardNormals, geometryType: .triangles, allocator: allocator)
             return try MTKMesh(mesh: mdlMesh, device: device)
         }
         catch {

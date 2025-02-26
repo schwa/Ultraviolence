@@ -2,6 +2,7 @@ import Metal
 
 internal enum ParameterValue<T> {
     case texture(MTLTexture)
+    case samplerState(MTLSamplerState)
     case buffer(MTLBuffer, Int)
     case array([T])
     case value(T)
@@ -19,6 +20,8 @@ internal extension MTLRenderCommandEncoder {
         switch value {
         case .texture(let texture):
             setTexture(texture, index: index, functionType: functionType)
+        case .samplerState(let samplerState):
+            setSamplerState(samplerState, index: index, functionType: functionType)
         case .buffer(let buffer, let offset):
             setBuffer(buffer, offset: offset, index: index, functionType: functionType)
         case .array(let array):
@@ -34,6 +37,8 @@ internal extension MTLComputeCommandEncoder {
         switch value {
         case .texture(let texture):
             setTexture(texture, index: index)
+        case .samplerState(let samplerState):
+            setSamplerState(samplerState, index: index)
         case .buffer(let buffer, let offset):
             setBuffer(buffer, offset: offset, index: index) // TODO: OFFSET
         case .array(let array):
