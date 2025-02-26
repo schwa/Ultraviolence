@@ -105,7 +105,9 @@ func testHistogram() throws {
 }
 
 func goldenImage(named name: String) -> CGImage {
-    let url = Bundle.module.url(forResource: name, withExtension: "png")!
+
+
+    let url = Bundle.module.resourceURL!.appendingPathComponent("Golden Images").appendingPathComponent(name).appendingPathExtension("png")
     let data = try! Data(contentsOf: url)
     let imageSource = CGImageSourceCreateWithData(data as CFData, nil)!
     return CGImageSourceCreateImageAtIndex(imageSource, 0, nil)!

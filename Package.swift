@@ -65,7 +65,7 @@ public let package = Package(
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax")
             ],
             resources: [
-                .copy("MixedExample.png")
+                .copy("Golden Images")
             ]
         )
     ],
