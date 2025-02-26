@@ -14,9 +14,6 @@ public struct RenderPipeline <Content>: Element, BodylessElement, BodylessConten
     var content: Content
 
     @UVState
-    var renderPipelineState: MTLRenderPipelineState?
-
-    @UVState
     var reflection: Reflection?
 
     public init(vertexShader: VertexShader, fragmentShader: FragmentShader, @ElementBuilder content: () -> Content) {
@@ -45,7 +42,6 @@ public struct RenderPipeline <Content>: Element, BodylessElement, BodylessConten
 
         let device = try device.orThrow(.missingEnvironment(\.device))
         let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: .bindingInfo)
-        self.renderPipelineState = renderPipelineState
         self.reflection = .init(reflection.orFatalError(.resourceCreationFailure))
 
         if environment.depthStencilState == nil, let depthStencilDescriptor = environment.depthStencilDescriptor {

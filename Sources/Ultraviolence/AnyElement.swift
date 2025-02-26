@@ -1,9 +1,7 @@
 public struct AnyElement: Element, BodylessElement {
-    private let base: Any
     private let expand: (Node, Int) throws -> Void
 
     public init(_ base: some Element) {
-        self.base = base
         expand = { node, depth in
             try base.expandNode(node, depth: depth)
         }

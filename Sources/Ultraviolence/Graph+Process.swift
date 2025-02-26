@@ -1,6 +1,5 @@
 import CoreGraphics
 import Metal
-import UltraviolenceSupport
 
 internal extension Graph {
     @MainActor

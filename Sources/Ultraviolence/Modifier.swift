@@ -1,5 +1,3 @@
-import UltraviolenceSupport
-
 // TODO: Stuff like @Environment/@State on modifiers won't work because https://github.com/schwa/ultraviolence/issues/30
 
 @available(*, deprecated, message: "Incomplete: See issue https://github.com/schwa/ultraviolence/issues/30")

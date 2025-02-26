@@ -1,11 +1,9 @@
 import Metal
 
 public struct BlitPass <Content>: Element, BodylessElement, BodylessContentElement where Content: Element {
-    internal let logging: Bool
     internal let content: Content
 
-    public init(logging: Bool = false, @ElementBuilder content: () throws -> Content) throws {
-        self.logging = logging
+    public init(@ElementBuilder content: () throws -> Content) throws {
         self.content = try content()
     }
 

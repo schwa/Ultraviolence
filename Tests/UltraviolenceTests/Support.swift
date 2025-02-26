@@ -5,8 +5,6 @@ import CoreImage
 import CoreImage.CIFilterBuiltins
 import Testing
 @testable import Ultraviolence
-import UltraviolenceExamples
-import UltraviolenceSupport
 import UniformTypeIdentifiers
 
 // swiftlint:disable force_unwrapping

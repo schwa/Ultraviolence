@@ -33,7 +33,7 @@ internal extension MTLRenderCommandEncoder {
 }
 
 internal extension MTLComputeCommandEncoder {
-    func setValue<T>(_ value: ParameterValue<T>, index: Int, functionType: MTLFunctionType) {
+    func setValue<T>(_ value: ParameterValue<T>, index: Int) {
         switch value {
         case .texture(let texture):
             setTexture(texture, index: index)

@@ -12,9 +12,6 @@ public struct MixedExample: Element {
     @UVEnvironment(\.renderPassDescriptor)
     var renderPassDescriptor
 
-    @UVEnvironment(\.drawableSize)
-    var drawableSize
-
     public init(modelMatrix: simd_float4x4, color: SIMD3<Float>, lightDirection: SIMD3<Float>) {
         self.modelMatrix = modelMatrix
         self.color = color

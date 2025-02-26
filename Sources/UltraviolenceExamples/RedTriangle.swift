@@ -3,7 +3,6 @@ import ImageIO
 import Metal
 import simd
 import Ultraviolence
-internal import UltraviolenceSupport
 import UniformTypeIdentifiers
 
 public struct RedTriangle: Element {

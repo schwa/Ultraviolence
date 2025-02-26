@@ -6,7 +6,6 @@ import os
 import simd
 import Ultraviolence
 import UltraviolenceExamples
-import UltraviolenceSupport
 import UniformTypeIdentifiers
 
 enum RedTriangle {

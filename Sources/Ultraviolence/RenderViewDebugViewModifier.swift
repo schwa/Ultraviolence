@@ -1,6 +1,5 @@
 import QuartzCore
 import SwiftUI
-import UltraviolenceSupport
 
 internal struct RenderViewDebugViewModifier <Root>: ViewModifier where Root: Element {
     @State

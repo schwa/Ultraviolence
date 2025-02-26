@@ -46,7 +46,7 @@ internal struct ParameterElement<Content, T>: Element, BodylessElement, Bodyless
         case (nil, .some(let computeCommandEncoder)):
             precondition(functionType == nil || functionType == .kernel)
             let index = try reflection.binding(forType: .kernel, name: name).orThrow(.missingBinding(name))
-            computeCommandEncoder.setValue(value, index: index, functionType: .kernel)
+            computeCommandEncoder.setValue(value, index: index)
         case (.some, .some):
             preconditionFailure("Trying to process \(self) with both a render command encoder and a compute command encoder.")
         default:
