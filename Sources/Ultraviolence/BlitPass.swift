@@ -1,0 +1,39 @@
+import Metal
+
+public struct BlitPass <Content>: Element, BodylessElement, BodylessContentElement where Content: Element {
+    internal let logging: Bool
+    internal let content: Content
+
+    public init(logging: Bool = false, @ElementBuilder content: () throws -> Content) throws {
+        self.logging = logging
+        self.content = try content()
+    }
+
+    func workloadEnter(_ node: Node) throws {
+        let commandBuffer = try node.environmentValues.commandBuffer.orThrow(.missingEnvironment(\.commandBuffer))
+        let blitCommandEncoder = try commandBuffer.makeBlitCommandEncoder().orThrow(.resourceCreationFailure)
+        node.environmentValues.blitCommandEncoder = blitCommandEncoder
+    }
+
+    func workloadExit(_ node: Node) throws {
+        let blitCommandEncoder = try node.environmentValues.blitCommandEncoder.orThrow(.missingEnvironment(\.blitCommandEncoder))
+        blitCommandEncoder.endEncoding()
+    }
+}
+
+public struct Blit: Element, BodylessElement {
+    var block: (MTLBlitCommandEncoder) throws -> Void
+
+    public init(_ block: @escaping (MTLBlitCommandEncoder) throws -> Void) {
+        self.block = block
+    }
+
+    func _expandNode(_ node: Node, depth: Int) throws {
+        // This line intentionally left blank.
+    }
+
+    func workloadEnter(_ node: Node) throws {
+        let blitCommandEncoder = try node.environmentValues.blitCommandEncoder.orThrow(.missingEnvironment(\.blitCommandEncoder))
+        try block(blitCommandEncoder)
+    }
+}
