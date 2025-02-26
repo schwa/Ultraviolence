@@ -18,9 +18,11 @@ public struct TeapotDemo: Element {
     var modelMatrix: simd_float4x4
     var cameraMatrix: simd_float4x4
     var lightDirection: SIMD3<Float>
-    var drawableSize: SIMD2<Float>
 
-    public init(drawableSize: SIMD2<Float>, modelMatrix: simd_float4x4, color: SIMD4<Float>, lightDirection: SIMD3<Float>) throws {
+    @UVEnvironment(\.drawableSize)
+    var drawableSize
+
+    public init(modelMatrix: simd_float4x4, color: SIMD4<Float>, lightDirection: SIMD3<Float>) throws {
         let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
         let teapotURL = try Bundle.module.url(forResource: "teapot", withExtension: "obj").orThrow(.resourceCreationFailure)
         let mdlAsset = MDLAsset(url: teapotURL, vertexDescriptor: nil, bufferAllocator: MTKMeshBufferAllocator(device: device))
@@ -28,16 +30,16 @@ public struct TeapotDemo: Element {
         mesh = try MTKMesh(mesh: mdlMesh, device: device)
         self.modelMatrix = modelMatrix
         cameraMatrix = simd_float4x4(translation: [0, 2, 6])
-        self.drawableSize = drawableSize
         self.color = color
         self.lightDirection = lightDirection
     }
 
     public var body: some Element {
         get throws {
+            let drawableSize = SIMD2<Float>(drawableSize.orFatalError())
             let viewMatrix = cameraMatrix.inverse
             let cameraPosition = cameraMatrix.translation
-            try LambertianShader(color: color, drawableSize: drawableSize, modelMatrix: modelMatrix, viewMatrix: viewMatrix, cameraPosition: cameraPosition, lightDirection: lightDirection) {
+            try LambertianShader(color: color, modelMatrix: modelMatrix, cameraMatrix: cameraMatrix, projectionMatrix: PerspectiveProjection().projectionMatrix(for: drawableSize), lightDirection: lightDirection) {
                 Draw { encoder in
                     encoder.draw(mesh)
                 }
@@ -54,7 +56,7 @@ public extension TeapotDemo {
     static func main() throws {
         let size = CGSize(width: 1_600, height: 1_200)
         let element = try RenderPass {
-            try Self(drawableSize: [Float(size.width), Float(size.height)], modelMatrix: .identity, color: [1, 0, 0, 1], lightDirection: [-1, -2, -1])
+            try Self(modelMatrix: .identity, color: [1, 0, 0, 1], lightDirection: [-1, -2, -1])
         }
         let offscreenRenderer = try OffscreenRenderer(size: size)
         let image = try offscreenRenderer.render(element).cgImage

@@ -29,8 +29,7 @@ public struct MixedExample: Element {
             let depthTexture = try renderPassDescriptor.depthAttachment.texture.orThrow(.undefined)
 
             try RenderPass {
-                let drawableSize = try drawableSize.orThrow(.missingEnvironment("drawableSize"))
-                try TeapotDemo(drawableSize: .init(drawableSize), modelMatrix: modelMatrix, color: color, lightDirection: lightDirection)
+                try TeapotDemo(modelMatrix: modelMatrix, color: color, lightDirection: lightDirection)
                     // TODO: Next two lines are only needed for the offscreen examples?
                     .colorAttachment(colorTexture, index: 0)
                     .depthAttachment(depthTexture)
