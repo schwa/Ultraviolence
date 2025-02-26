@@ -1,7 +1,7 @@
 import CoreGraphics
 import ImageIO
+import MetalKit
 import UniformTypeIdentifiers
-import AppKit
 
 extension MTLTexture {
     func toCGImage() throws -> CGImage {
@@ -24,5 +24,20 @@ extension MTLTexture {
 extension URL {
     func revealInFinder() {
         NSWorkspace.shared.activateFileViewerSelecting([self])
+    }
+}
+
+extension MTKMesh {
+    static func teapot() -> MTKMesh {
+        do {
+            let device = try MTLCreateSystemDefaultDevice().orFatalError(.resourceCreationFailure)
+            let teapotURL = try Bundle.module.url(forResource: "teapot", withExtension: "obj")
+            let mdlAsset = MDLAsset(url: teapotURL, vertexDescriptor: nil, bufferAllocator: MTKMeshBufferAllocator(device: device))
+            let mdlMesh = try (mdlAsset.object(at: 0) as? MDLMesh).orFatalError(.resourceCreationFailure)
+            return try MTKMesh(mesh: mdlMesh, device: device)
+        }
+        catch {
+            fatalError("\(error)")
+        }
     }
 }

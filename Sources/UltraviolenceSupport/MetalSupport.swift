@@ -249,22 +249,33 @@ public extension MTLBuffer {
 }
 
 public extension MTLRenderCommandEncoder {
-    func draw(_ mesh: MTKMesh) {
-        withDebugGroup("draw mesh \(mesh.name)") {
-            for (index, vertexBuffer) in mesh.vertexBuffers.enumerated() {
-                setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: index)
-            }
+    func setVertexBuffers(of mesh: MTKMesh) {
+        for (index, vertexBuffer) in mesh.vertexBuffers.enumerated() {
+            setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: index)
+        }
+    }
 
-            for submesh in mesh.submeshes {
-                draw(submesh)
-            }
+    func draw(_ mesh: MTKMesh) {
+        for submesh in mesh.submeshes {
+            draw(submesh)
         }
     }
 
     func draw(_ submesh: MTKSubmesh) {
         drawIndexedPrimitives(type: submesh.primitiveType, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBuffer.buffer, indexBufferOffset: submesh.indexBuffer.offset)
     }
+
+    func draw(_ mesh: MTKMesh, instanceCount: Int) {
+        for submesh in mesh.submeshes {
+            draw(submesh, instanceCount: instanceCount)
+        }
+    }
+
+    func draw(_ submesh: MTKSubmesh, instanceCount: Int) {
+        drawIndexedPrimitives(type: submesh.primitiveType, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBuffer.buffer, indexBufferOffset: submesh.indexBuffer.offset, instanceCount: instanceCount)
+    }
 }
+
 
 public extension MTLVertexDescriptor {
     convenience init(_ vertexDescriptor: MDLVertexDescriptor) {

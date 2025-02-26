@@ -120,30 +120,3 @@ extension Teapot {
     }
 }
 
-public extension MTLRenderCommandEncoder {
-    func setVertexBuffers(of mesh: MTKMesh) {
-        for (index, vertexBuffer) in mesh.vertexBuffers.enumerated() {
-            setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: index)
-        }
-    }
-
-    func draw(_ mesh: MTKMesh, instanceCount: Int) {
-        for submesh in mesh.submeshes {
-            draw(submesh, instanceCount: instanceCount)
-        }
-    }
-
-    func draw(_ submesh: MTKSubmesh, instanceCount: Int) {
-        drawIndexedPrimitives(type: submesh.primitiveType, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBuffer.buffer, indexBufferOffset: submesh.indexBuffer.offset, instanceCount: instanceCount)
-    }
-}
-
-extension MTKMesh {
-    static func teapot() -> MTKMesh {
-        let device = try MTLCreateSystemDefaultDevice().orFatalError()
-        let teapotURL = try Bundle.module.url(forResource: "teapot", withExtension: "obj").orFatalError()
-        let mdlAsset = MDLAsset(url: teapotURL, vertexDescriptor: nil, bufferAllocator: MTKMeshBufferAllocator(device: device))
-        let mdlMesh = try (mdlAsset.object(at: 0) as? MDLMesh).orFatalError()
-        return try! MTKMesh(mesh: mdlMesh, device: device)
-    }
-}
