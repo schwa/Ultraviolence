@@ -2,13 +2,12 @@ import AppKit
 import CoreGraphics
 import ImageIO
 import Metal
-import os
+internal import os
 import simd
 import Ultraviolence
-import UltraviolenceExamples
 import UniformTypeIdentifiers
 
-enum RedTriangle {
+public enum RedTriangleInline {
     @MainActor
     static func main() throws -> MTLTexture {
         let source = """
@@ -57,8 +56,8 @@ enum RedTriangle {
     }
 }
 
-extension RedTriangle: Example {
-    static func runExample() throws -> ExampleResult {
-        .texture(try RedTriangle.main())
+extension RedTriangleInline: Example {
+    public static func runExample() throws -> ExampleResult {
+        .texture(try RedTriangleInline.main())
     }
 }

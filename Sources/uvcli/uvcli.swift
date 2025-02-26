@@ -10,7 +10,7 @@ struct UVCLI {
 
         let examples: [Example.Type] = [
             MemcpyComputeDemo.self,
-            RedTriangle.self,
+            RedTriangleInline.self,
             TraditionalRedTriangle.self,
             CheckerboardKernel.self,
             FlatShaderExample.self,

@@ -7,21 +7,13 @@ import UltraviolenceSupport
 
 @MainActor
 struct UltraviolenceExampleTests {
-    @Test
-    func testMixedExample() throws {
-        let size = CGSize(width: 1_600, height: 1_200)
-        let offscreenRenderer = try OffscreenRenderer(size: size)
-        let element = MixedExample(modelMatrix: .identity, color: [1, 0, 0], lightDirection: [1, 1, 1])
-        //        let element = MixedExample(modelMatrix: .identity, color: [1, 1, 0, 1], lightDirection: [1, 1, 1])
-        let image = try offscreenRenderer.render(element).cgImage
-        let goldenImage = goldenImage(named: "MixedExample")
-        #expect(try imageCompare(image, goldenImage) == true)
-    }
-
     @Test(arguments: [
+        MemcpyComputeDemo.self,
+        RedTriangleInline.self,
+        TraditionalRedTriangle.self,
         CheckerboardKernel.self,
         FlatShaderExample.self,
-        MixedExample.self,
+        MixedExample.self
     ] as [any Example.Type])
     func testExample(_ example: Example.Type) throws {
         let result = try example.runExample()

@@ -2,11 +2,10 @@ import CoreGraphics
 import ImageIO
 import Metal
 import simd
-import UltraviolenceExamples
 import UniformTypeIdentifiers
 
 // Render a red triangle using Metal _without_ using any external libraries.
-enum TraditionalRedTriangle {
+public enum TraditionalRedTriangle {
     // swiftlint:disable:next function_body_length
     static func main() throws -> MTLTexture {
         // Normally you'd keep the shader in a .metal file, but for the purposes of this example. The shader code is written in Metal Shading Language, which is a subset of C++. This code runs directly on the GPU.
@@ -40,7 +39,7 @@ enum TraditionalRedTriangle {
         }
         """
         // "8-bit normalized unsigned integer components in BGRA order"
-        let pixelFormat = MTLPixelFormat.bgra8Unorm
+        let pixelFormat = MTLPixelFormat.rgba8Unorm
         let device = MTLCreateSystemDefaultDevice()!
         // Start by loading our shaders...
         let library = try device.makeLibrary(source: source, options: nil)
@@ -113,7 +112,7 @@ enum TraditionalRedTriangle {
 }
 
 extension TraditionalRedTriangle: Example {
-    static func runExample() throws -> ExampleResult {
-        .texture(try RedTriangle.main())
+    public static func runExample() throws -> ExampleResult {
+        .texture(try TraditionalRedTriangle.main())
     }
 }

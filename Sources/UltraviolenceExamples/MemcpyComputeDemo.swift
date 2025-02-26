@@ -1,9 +1,8 @@
 import Metal
 import Ultraviolence
 import UltraviolenceExamples
-import UltraviolenceSupport
 
-enum MemcpyComputeDemo {
+public enum MemcpyComputeDemo {
     @MainActor
     static func main() throws {
         let source = """
@@ -42,7 +41,7 @@ enum MemcpyComputeDemo {
 }
 
 extension MemcpyComputeDemo: Example {
-    static func runExample() throws -> ExampleResult {
+    public static func runExample() throws -> ExampleResult {
         try MemcpyComputeDemo.main()
         return .nothing
     }
