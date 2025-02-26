@@ -41,13 +41,12 @@ public struct FlatShader <Content>: Element where Content: Element {
 
 public enum FlatShaderExample: Example {
     @MainActor
-    public static func runExample() throws -> MTLTexture {
+    public static func runExample() throws -> ExampleResult {
         let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
         let textureLoader = MTKTextureLoader(device: device)
         let texture = try textureLoader.newTexture(name: "HD-Testcard-original", scaleFactor: 1, bundle: Bundle.module)
         let samplerDescriptor = MTLSamplerDescriptor()
         let sampler = device.makeSamplerState(descriptor: samplerDescriptor)!
-
         return try MTLCaptureManager.shared().with(enabled: false) {
             let mesh = MTKMesh.unitSphere(inwardNormals: true)
             let root = try Group {
@@ -66,7 +65,8 @@ public enum FlatShaderExample: Example {
                 }
             }
             let offscreenRenderer = try OffscreenRenderer(size: .init(width: 1_024, height: 768))
-            return try offscreenRenderer.render(root).texture
+            let texture = try offscreenRenderer.render(root).texture
+            return .texture(texture)
         }
     }
 }

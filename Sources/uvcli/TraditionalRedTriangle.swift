@@ -3,11 +3,12 @@ import ImageIO
 import Metal
 import simd
 import UniformTypeIdentifiers
+import UltraviolenceExamples
 
 // Render a red triangle using Metal _without_ using any external libraries.
 enum TraditionalRedTriangle {
     // swiftlint:disable:next function_body_length
-    static func main() throws {
+    static func main() throws -> MTLTexture {
         // Normally you'd keep the shader in a .metal file, but for the purposes of this example. The shader code is written in Metal Shading Language, which is a subset of C++. This code runs directly on the GPU.
         let source = """
         #include <metal_stdlib>
@@ -93,17 +94,26 @@ enum TraditionalRedTriangle {
         commandBuffer.commit()
         // But we want to wait for everything to finish before we read the texture data back.
         commandBuffer.waitUntilCompleted()
-        // The rest of the code isn't Metal specific, but of course the above code is useless without it.
-        // This bitmap info matches the specific pixel format we useded to create the texture.
-        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue)
-        // Let's create a venerable CGBitmapContext so we can write the pixels to a file.
-        let context = CGContext(data: nil, width: texture.width, height: texture.height, bitsPerComponent: 8, bytesPerRow: texture.width * 4, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: bitmapInfo.rawValue)!
-        // Copy the pixels out of the texture and into the bitmap context's data.
-        texture.getBytes(context.data!, bytesPerRow: texture.width * 4, from: MTLRegionMake2D(0, 0, texture.width, texture.height), mipmapLevel: 0)
-        // Create a CGImage and write it to disk.
-        let image = context.makeImage()!
-        let imageDestination = CGImageDestinationCreateWithURL(URL(fileURLWithPath: "output.png") as CFURL, UTType.png.identifier as CFString, 1, nil)!
-        CGImageDestinationAddImage(imageDestination, image, nil)
-        CGImageDestinationFinalize(imageDestination)
+
+//        // The rest of the code isn't Metal specific, but of course the above code is useless without it.
+//        // This bitmap info matches the specific pixel format we useded to create the texture.
+//        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue)
+//        // Let's create a venerable CGBitmapContext so we can write the pixels to a file.
+//        let context = CGContext(data: nil, width: texture.width, height: texture.height, bitsPerComponent: 8, bytesPerRow: texture.width * 4, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: bitmapInfo.rawValue)!
+//        // Copy the pixels out of the texture and into the bitmap context's data.
+//        texture.getBytes(context.data!, bytesPerRow: texture.width * 4, from: MTLRegionMake2D(0, 0, texture.width, texture.height), mipmapLevel: 0)
+//        // Create a CGImage and write it to disk.
+//        let image = context.makeImage()!
+//        let imageDestination = CGImageDestinationCreateWithURL(URL(fileURLWithPath: "output.png") as CFURL, UTType.png.identifier as CFString, 1, nil)!
+//        CGImageDestinationAddImage(imageDestination, image, nil)
+//        CGImageDestinationFinalize(imageDestination)
+
+        return texture
+    }
+}
+
+extension TraditionalRedTriangle: Example {
+    static func runExample() throws -> ExampleResult {
+        return .texture(try RedTriangle.main())
     }
 }

@@ -1,6 +1,7 @@
 import Metal
 import Ultraviolence
-internal import UltraviolenceSupport
+import UltraviolenceSupport
+import UltraviolenceExamples
 
 enum MemcpyComputeDemo {
     @MainActor
@@ -35,7 +36,14 @@ enum MemcpyComputeDemo {
                 }
             }
             try compute.compute()
-            print([UInt8](inputBuffer.contents()) == [UInt8](outputBuffer.contents()))
+            assert([UInt8](inputBuffer.contents()) == [UInt8](outputBuffer.contents()))
         }
+    }
+}
+
+extension MemcpyComputeDemo: Example {
+    static func runExample() throws -> ExampleResult {
+        try MemcpyComputeDemo.main()
+        return .nothing
     }
 }

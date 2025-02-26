@@ -5,12 +5,13 @@ import Metal
 import os
 import simd
 import Ultraviolence
-internal import UltraviolenceSupport
+import UltraviolenceExamples
+import UltraviolenceSupport
 import UniformTypeIdentifiers
 
 enum RedTriangle {
     @MainActor
-    static func main() throws {
+    static func main() throws -> MTLTexture{
         let source = """
         #include <metal_stdlib>
         using namespace metal;
@@ -53,11 +54,14 @@ enum RedTriangle {
         }
 
         let offscreenRenderer = try OffscreenRenderer(size: CGSize(width: 1_600, height: 1_200))
-        let image = try offscreenRenderer.render(root).cgImage
-        let url = URL(fileURLWithPath: "output.png")
-        let imageDestination = CGImageDestinationCreateWithURL(url as CFURL, UTType.png.identifier as CFString, 1, nil)!
-        CGImageDestinationAddImage(imageDestination, image, nil)
-        CGImageDestinationFinalize(imageDestination)
-        NSWorkspace.shared.activateFileViewerSelecting([url.absoluteURL])
+        let texture = try offscreenRenderer.render(root).texture
+        return texture
+
+    }
+}
+
+extension RedTriangle: Example {
+    static func runExample() throws -> ExampleResult {
+        return .texture(try RedTriangle.main())
     }
 }

@@ -45,11 +45,12 @@ public struct MixedExample: Element {
     }
 }
 
-// extension MixedExample: Example {
-//    public static func runExample() throws -> MTLTexture {
-//        let size = CGSize(width: 1_600, height: 1_200)
-//        let offscreenRenderer = try OffscreenRenderer(size: size)
-//        let element = MixedExample(modelMatrix: .identity, color: [1, 0, 0, 1], lightDirection: [1, 1, 1])
-//        return try offscreenRenderer.render(element, capture: true).texture
-//    }
-// }
+extension MixedExample: Example {
+    public static func runExample() throws -> ExampleResult {
+        let size = CGSize(width: 1_600, height: 1_200)
+        let offscreenRenderer = try OffscreenRenderer(size: size)
+        let element = MixedExample(modelMatrix: .identity, color: [1, 0, 0], lightDirection: [1, 1, 1])
+        let texture = try offscreenRenderer.render(element).texture
+        return .texture(texture)
+    }
+}
