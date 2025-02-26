@@ -25,15 +25,6 @@ public let package = Package(
                 "UltraviolenceSupport"
             ]
         ),
-        .executableTarget(
-            name: "uvcli",
-            dependencies: [
-                "Ultraviolence",
-                "UltraviolenceExamples",
-                "UltraviolenceSupport"
-            ]
-        ),
-
         .target(
             name: "UltraviolenceExamples",
             dependencies: [
