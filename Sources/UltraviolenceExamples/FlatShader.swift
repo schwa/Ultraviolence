@@ -45,27 +45,28 @@ public enum FlatShaderExample: Example {
         let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
         let textureLoader = MTKTextureLoader(device: device)
         let texture = try textureLoader.newTexture(name: "HD-Testcard-original", scaleFactor: 1, bundle: Bundle.module)
-
         let samplerDescriptor = MTLSamplerDescriptor()
         let sampler = device.makeSamplerState(descriptor: samplerDescriptor)!
 
         return try MTLCaptureManager.shared().with(enabled: false) {
             let mesh = MTKMesh.unitSphere(inwardNormals: true)
-            let renderPass = try RenderPass {
-                let modelMatrix = simd_float4x4(scale: [100, 100, 100])
-                let cameraMatrix = simd_float4x4(translation: [0, 0, 0])
-                let projectionMatrix = PerspectiveProjection().projectionMatrix(for: .init(width: 1_024, height: 768))
-                try FlatShader(modelMatrix: modelMatrix, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix, texture: texture, sampler: sampler) {
-                    Draw { encoder in
-                        encoder.setVertexBuffers(of: mesh)
-                        encoder.draw(mesh)
+            let root = try Group {
+                try RenderPass {
+                    let modelMatrix = simd_float4x4(scale: [100, 100, 100])
+                    let cameraMatrix = simd_float4x4(translation: [0, 0, 0])
+                    let projectionMatrix = PerspectiveProjection().projectionMatrix(for: .init(width: 1_024, height: 768))
+                    try FlatShader(modelMatrix: modelMatrix, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix, texture: texture, sampler: sampler) {
+                        Draw { encoder in
+                            encoder.setVertexBuffers(of: mesh)
+                            encoder.draw(mesh)
+                        }
                     }
+                    .vertexDescriptor(MTLVertexDescriptor(mesh.vertexDescriptor))
+                    .depthCompare(function: .less, enabled: true)
                 }
-                .vertexDescriptor(MTLVertexDescriptor(mesh.vertexDescriptor))
-                .depthCompare(function: .less, enabled: true)
             }
             let offscreenRenderer = try OffscreenRenderer(size: .init(width: 1_024, height: 768))
-            return try offscreenRenderer.render(renderPass).texture
+            return try offscreenRenderer.render(root).texture
         }
     }
 }

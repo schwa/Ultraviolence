@@ -54,7 +54,7 @@
          <EnvironmentVariable
             key = "DEMO"
             value = "MixedExample"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </EnvironmentVariable>
          <EnvironmentVariable
             key = "DEMO"
@@ -79,6 +79,11 @@
          <EnvironmentVariable
             key = "CGBITMAP_CONTEXT_LOG_ERRORS"
             value = "1"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "DEMO"
+            value = "All"
             isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>

@@ -41,6 +41,7 @@ public struct TeapotDemo: Element {
             let cameraPosition = cameraMatrix.translation
             try LambertianShader(color: color, modelMatrix: modelMatrix, cameraMatrix: cameraMatrix, projectionMatrix: PerspectiveProjection().projectionMatrix(for: drawableSize), lightDirection: lightDirection) {
                 Draw { encoder in
+                    encoder.setVertexBuffers(of: mesh)
                     encoder.draw(mesh)
                 }
             }
@@ -56,7 +57,7 @@ public extension TeapotDemo {
     static func main() throws {
         let size = CGSize(width: 1_600, height: 1_200)
         let element = try RenderPass {
-            try Self(modelMatrix: .identity, color: [1, 0, 0, 1], lightDirection: [-1, -2, -1])
+            try Self(modelMatrix: .identity, color: [1, 0, 0], lightDirection: [-1, -2, -1])
         }
         let offscreenRenderer = try OffscreenRenderer(size: size)
         let image = try offscreenRenderer.render(element).cgImage
