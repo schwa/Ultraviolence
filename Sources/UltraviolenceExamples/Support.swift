@@ -1,8 +1,8 @@
 import CoreGraphics
 import ImageIO
 import MetalKit
-import UniformTypeIdentifiers
 import ModelIO
+import UniformTypeIdentifiers
 
 public extension MTLTexture {
     func toCGImage() throws -> CGImage {

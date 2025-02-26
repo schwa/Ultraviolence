@@ -43,8 +43,6 @@ public struct RenderPipeline <Content>: Element, BodylessElement, BodylessConten
         let depthAttachmentTexture = try renderPassDescriptor.depthAttachment.orThrow(.undefined).texture.orThrow(.undefined)
         renderPipelineDescriptor.depthAttachmentPixelFormat = depthAttachmentTexture.pixelFormat
 
-
-
         let device = try device.orThrow(.missingEnvironment(\.device))
         let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: .bindingInfo)
         self.renderPipelineState = renderPipelineState
