@@ -15,15 +15,18 @@ public extension UVEnvironmentValues {
     @UVEntry var computeCommandEncoder: MTLComputeCommandEncoder?
     @UVEntry var computePipelineState: MTLComputePipelineState?
     @UVEntry var reflection: Reflection?
-    @UVEntry var colorAttachment: (MTLTexture, Int)?
+    // TODO: Investigate deprecation
+    @UVEntry var colorAttachment0: (MTLTexture, Int)?
+    // TODO: Investigate deprecation
     @UVEntry var depthAttachment: MTLTexture?
     @UVEntry var currentDrawable: CAMetalDrawable?
     @UVEntry var drawableSize: CGSize?
+    @UVEntry var blitCommandEncoder: MTLBlitCommandEncoder?
 }
 
 public extension Element {
-    func colorAttachment(_ texture: MTLTexture, index: Int) -> some Element {
-        environment(\.colorAttachment, (texture, index))
+    func colorAttachment0(_ texture: MTLTexture, index: Int) -> some Element {
+        environment(\.colorAttachment0, (texture, index))
     }
     func depthAttachment(_ texture: MTLTexture) -> some Element {
         environment(\.depthAttachment, texture)

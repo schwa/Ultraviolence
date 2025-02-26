@@ -36,6 +36,8 @@ public struct RenderPipeline <Content>: Element, BodylessElement, BodylessConten
             throw UltraviolenceError.undefined
         }
         renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
+
+        // TODO: This is copying everything from the render pass descriptor. But really we should be getting this entirely from the enviroment.
         let colorAttachment0Texture = try renderPassDescriptor.colorAttachments[0].texture.orThrow(.undefined)
         renderPipelineDescriptor.colorAttachments[0].pixelFormat = colorAttachment0Texture.pixelFormat
         let depthAttachmentTexture = try renderPassDescriptor.depthAttachment.orThrow(.undefined).texture.orThrow(.undefined)

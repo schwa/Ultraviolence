@@ -31,7 +31,7 @@ public struct MixedExample: Element {
             try RenderPass {
                 try TeapotDemo(modelMatrix: modelMatrix, color: color, lightDirection: lightDirection)
                     // TODO: Next two lines are only needed for the offscreen examples?
-                    .colorAttachment(colorTexture, index: 0)
+                    .colorAttachment0(colorTexture, index: 0)
                     .depthAttachment(depthTexture)
             }
             .renderPassModifier { renderPassDescriptor in
