@@ -11,7 +11,7 @@ import UniformTypeIdentifiers
 
 enum RedTriangle {
     @MainActor
-    static func main() throws -> MTLTexture{
+    static func main() throws -> MTLTexture {
         let source = """
         #include <metal_stdlib>
         using namespace metal;
@@ -54,14 +54,12 @@ enum RedTriangle {
         }
 
         let offscreenRenderer = try OffscreenRenderer(size: CGSize(width: 1_600, height: 1_200))
-        let texture = try offscreenRenderer.render(root).texture
-        return texture
-
+        return try offscreenRenderer.render(root).texture
     }
 }
 
 extension RedTriangle: Example {
     static func runExample() throws -> ExampleResult {
-        return .texture(try RedTriangle.main())
+        .texture(try RedTriangle.main())
     }
 }

@@ -1,7 +1,7 @@
 import Metal
 import Ultraviolence
-import UltraviolenceSupport
 import UltraviolenceExamples
+import UltraviolenceSupport
 
 enum MemcpyComputeDemo {
     @MainActor

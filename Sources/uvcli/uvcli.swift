@@ -1,12 +1,11 @@
 import Foundation
-import UltraviolenceExamples
 import os
+import UltraviolenceExamples
 
 @main
 struct UVCLI {
     @MainActor
     static func main() throws {
-
         let logger = Logger()
 
         let examples: [Example.Type] = [
@@ -15,7 +14,7 @@ struct UVCLI {
             TraditionalRedTriangle.self,
             CheckerboardKernel.self,
             FlatShaderExample.self,
-            MixedExample.self,
+            MixedExample.self
         ]
 
         for example in examples {
@@ -36,4 +35,3 @@ struct UVCLI {
         }
     }
 }
-

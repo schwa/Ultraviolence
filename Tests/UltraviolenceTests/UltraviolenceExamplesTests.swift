@@ -1,9 +1,9 @@
 import CoreGraphics
+import Foundation
 import Testing
 @testable import Ultraviolence
 import UltraviolenceExamples
 import UltraviolenceSupport
-import Foundation
 
 @MainActor
 struct UltraviolenceExampleTests {
@@ -23,7 +23,7 @@ struct UltraviolenceExampleTests {
         let examples: [Example.Type] = [
             CheckerboardKernel.self,
             FlatShaderExample.self,
-            MixedExample.self,
+            MixedExample.self
         ]
         for example in examples {
             let result = try example.runExample()
@@ -36,5 +36,4 @@ struct UltraviolenceExampleTests {
             }
         }
     }
-
 }
