@@ -18,7 +18,7 @@ struct UltraviolenceExampleTests {
         #expect(try imageCompare(image, goldenImage) == true)
     }
 
-    @Test(.disabled("Disabled - likely to fail on CI"))
+    @Test
     func testAllExamples() throws {
         let examples: [Example.Type] = [
             CheckerboardKernel.self,
