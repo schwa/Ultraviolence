@@ -11,6 +11,9 @@ public struct BouncingTeapotsDemoView: View {
     @State
     private var lastUpdate: Date?
 
+    @State
+    private var checkerboardColor: Color = .white
+
     let cameraMatrix: simd_float4x4 = .init(translation: [0, 2, 6])
     let mesh: MTKMesh = .teapot()
     let sphere: MTKMesh = .sphere(extent: [100, 100, 100], inwardNormals: true)
@@ -32,12 +35,15 @@ public struct BouncingTeapotsDemoView: View {
             let colors = simulation.teapots.map(\.color)
             let modelMatrices = simulation.teapots.map(\.matrix)
             RenderView {
+                // Render a checkerboard pattern into a texture
                 try ComputePass {
-                    try CheckerboardKernel(outputTexture: skyboxTexture, checkerSize: [32, 32], backgroundColor: [0, 0, 0, 1], foregroundColor: [1, 1, 1, 1])
+                    try CheckerboardKernel(outputTexture: skyboxTexture, checkerSize: [20, 20], backgroundColor: [0, 0, 0, 1], foregroundColor: .init(color: checkerboardColor))
                 }
-                EnvironmentReader(keyPath: \.drawableSize) { drawableSize in
-                    let projectionMatrix = PerspectiveProjection().projectionMatrix(for: drawableSize.orFatalError())
-                    try RenderPass {
+                try RenderPass {
+                    EnvironmentReader(keyPath: \.drawableSize) { drawableSize in
+                        let projectionMatrix = PerspectiveProjection().projectionMatrix(for: drawableSize.orFatalError())
+
+                        // Draw the checkerboard texture into a skybox
                         try FlatShader(modelMatrix: .identity, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix, texture: skyboxTexture, sampler: skyboxSampler) {
                             Draw { encoder in
                                 encoder.setVertexBuffers(of: sphere)
@@ -46,6 +52,7 @@ public struct BouncingTeapotsDemoView: View {
                         }
                         .vertexDescriptor(MTLVertexDescriptor(sphere.vertexDescriptor))
 
+                        // Teapot party.
                         try LambertianShaderInstanced(colors: colors, modelMatrices: modelMatrices, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix, lightDirection: [-1, -2, -1]) {
                             Draw { encoder in
                                 encoder.setVertexBuffers(of: mesh)
@@ -63,6 +70,11 @@ public struct BouncingTeapotsDemoView: View {
                     simulation.step(duration: now.timeIntervalSince(lastUpdate))
                 }
                 lastUpdate = now
+            }
+            .inspector(isPresented: .constant(true)) {
+                Form {
+                    ColorPicker("Checkerboard Color", selection: $checkerboardColor)
+                }
             }
         }
     }
@@ -139,5 +151,17 @@ extension Teapot {
         matrix *= simd_float4x4(rotation)             // Apply rotation second
         matrix *= simd_float4x4(scale: [0.2, 0.2, 0.2]) // Apply scaling first
         return matrix
+    }
+}
+
+extension SIMD4<Float> {
+    init(color: Color) {
+        let resolved = color.resolve(in: .init())
+        self = [
+            Float(resolved.linearRed),
+            Float(resolved.linearGreen),
+            Float(resolved.linearBlue),
+            Float(1.0) // TODO:
+        ]
     }
 }
