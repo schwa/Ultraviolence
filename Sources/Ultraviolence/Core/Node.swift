@@ -1,5 +1,6 @@
 internal final class Node {
     weak var graph: Graph?
+    weak var parent: Node?
     var children: [Node] = []
     var needsRebuild = true
     var element: (any Element)?

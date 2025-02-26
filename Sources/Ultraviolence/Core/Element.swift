@@ -54,7 +54,11 @@ internal extension Element {
 
         if Body.self != Never.self {
             if node.children.isEmpty {
-                node.children = [graph.makeNode()]
+                let children = [graph.makeNode()]
+                node.children = children
+                children.forEach { child in
+                    child.parent = node
+                }
             }
             try body.expandNode(node.children[0], depth: depth + 1)
         }
@@ -116,4 +120,45 @@ internal extension Element {
             node.stateProperties[label] = prop.erasedValue
         }
     }
+}
+
+extension Node {
+    var ancestors: [Node] {
+        var ancestors: [Node] = []
+        var current: Node = self
+        while let parent = current.parent {
+            ancestors.append(parent)
+            current = parent
+        }
+        return ancestors
+    }
+
+    @MainActor
+    var path: String {
+        let ancestors = self.ancestors
+        let path = ancestors.map(\.debugName).joined(separator: ".")
+        return path + ".\(debugName)"
+    }
+
+    @MainActor
+    var debugName: String {
+        if let name = self.debugLabel {
+            return name
+        }
+        if let element {
+            return "\(element.debugName)"
+        }
+        return "<nil>"
+    }
+}
+
+extension Element {
+    var debugName: String {
+        abbreviatedTypeName(of: self)
+    }
+}
+
+func abbreviatedTypeName<T>(of t: T) -> String {
+    let name = "\(type(of: t))"
+    return String(name[..<name.firstIndex(of: "<")!])
 }
