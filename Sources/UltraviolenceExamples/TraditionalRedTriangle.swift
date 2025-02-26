@@ -4,6 +4,8 @@ import Metal
 import simd
 import UniformTypeIdentifiers
 
+// swiftlint:disable force_unwrapping
+
 // Render a red triangle using Metal _without_ using any external libraries.
 public enum TraditionalRedTriangle {
     // swiftlint:disable:next function_body_length

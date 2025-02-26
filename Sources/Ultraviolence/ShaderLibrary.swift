@@ -17,7 +17,7 @@ public struct ShaderLibrary {
             self.library = library
         }
         else {
-            let url = bundle.url(forResource: "debug", withExtension: "metallib")!
+            let url = try bundle.url(forResource: "debug", withExtension: "metallib").orThrow(.resourceCreationFailure)
             if let library = try? device.makeLibrary(URL: url) {
                 self.library = library
             }

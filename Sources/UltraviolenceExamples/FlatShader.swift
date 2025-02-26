@@ -47,7 +47,7 @@ public enum FlatShaderExample: Example {
         let imageURL = Bundle.module.url(forResource: "HD-Testcard-original", withExtension: "jpg").orFatalError()
         let texture = try textureLoader.newTexture(URL: imageURL)
         let samplerDescriptor = MTLSamplerDescriptor()
-        let sampler = device.makeSamplerState(descriptor: samplerDescriptor)!
+        let sampler = try device.makeSamplerState(descriptor: samplerDescriptor).orThrow(.resourceCreationFailure)
         return try MTLCaptureManager.shared().with(enabled: false) {
             let mesh = MTKMesh.unitSphere(inwardNormals: true)
             let root = try Group {

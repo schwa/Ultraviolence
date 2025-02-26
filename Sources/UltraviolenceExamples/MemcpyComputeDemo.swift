@@ -21,10 +21,10 @@ public enum MemcpyComputeDemo {
         """
 
         try MTLCaptureManager.shared().with(enabled: false) {
-            let device = MTLCreateSystemDefaultDevice()!
+            let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
             let count = 1 * 1_024 * 1_024
             let inputBuffer = try device.makeBuffer(collection: (0..<count).map { index in UInt8(index % 256) }, options: [.storageModeShared])
-            let outputBuffer = device.makeBuffer(length: count, options: [.storageModeShared])!
+            let outputBuffer = try device.makeBuffer(length: count, options: [.storageModeShared]).orThrow(.resourceCreationFailure)
             let kernel = try ComputeKernel(source: source)
             let compute = try ComputePass {
                 ComputePipeline(computeKernel: kernel) {
