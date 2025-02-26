@@ -8,7 +8,7 @@ public extension MTLTexture {
     func toCGImage() throws -> CGImage {
         // TODO: Hack
         assert(self.pixelFormat == .rgba8Unorm || self.pixelFormat == .bgra8Unorm_srgb)
-        var bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
+        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
         let context = try CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: width * 4, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: bitmapInfo.rawValue).orThrow(.resourceCreationFailure)
         let data = try context.data.orThrow(.resourceCreationFailure)
         getBytes(data, bytesPerRow: width * 4, from: MTLRegionMake2D(0, 0, width, height), mipmapLevel: 0)
@@ -34,10 +34,10 @@ public extension URL {
 extension MTKMesh {
     static func teapot() -> MTKMesh {
         do {
-            let device = try MTLCreateSystemDefaultDevice().orFatalError(.resourceCreationFailure)
-            let teapotURL = try Bundle.module.url(forResource: "teapot", withExtension: "obj")
+            let device = MTLCreateSystemDefaultDevice().orFatalError(.resourceCreationFailure)
+            let teapotURL = Bundle.module.url(forResource: "teapot", withExtension: "obj")
             let mdlAsset = MDLAsset(url: teapotURL, vertexDescriptor: nil, bufferAllocator: MTKMeshBufferAllocator(device: device))
-            let mdlMesh = try (mdlAsset.object(at: 0) as? MDLMesh).orFatalError(.resourceCreationFailure)
+            let mdlMesh = (mdlAsset.object(at: 0) as? MDLMesh).orFatalError(.resourceCreationFailure)
             return try MTKMesh(mesh: mdlMesh, device: device)
         }
         catch {

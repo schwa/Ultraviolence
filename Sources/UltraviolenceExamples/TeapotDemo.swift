@@ -37,8 +37,6 @@ public struct TeapotDemo: Element {
     public var body: some Element {
         get throws {
             let drawableSize = SIMD2<Float>(drawableSize.orFatalError())
-            let viewMatrix = cameraMatrix.inverse
-            let cameraPosition = cameraMatrix.translation
             try LambertianShader(color: color, modelMatrix: modelMatrix, cameraMatrix: cameraMatrix, projectionMatrix: PerspectiveProjection().projectionMatrix(for: drawableSize), lightDirection: lightDirection) {
                 Draw { encoder in
                     encoder.setVertexBuffers(of: mesh)
