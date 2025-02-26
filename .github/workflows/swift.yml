@@ -22,4 +22,4 @@ jobs:
       - name: Run tests
         run: swift test -v
       - name: Build Demo
-        run: cd Demo && xcodebuild -scheme UltraviolenceDemo -destination 'platform=iOS Simulator,name=iPhone 16 Plus' build
+        run: cd Demo && xcodebuild -skipPackagePluginValidation -scheme UltraviolenceDemo -destination 'platform=iOS Simulator,name=iPhone 16 Plus' build
