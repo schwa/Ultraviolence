@@ -1,6 +1,7 @@
 import Metal
 import UltraviolenceSupport
 
+// TODO: Rename. Remove element from name. "CommandBuffer" is _not_ a good name though.
 public struct CommandBufferElement <Content>: Element, BodylessContentElement where Content: Element {
     var completion: MTLCommandQueueCompletion
     var content: Content

@@ -31,7 +31,7 @@ public struct MixedExample: Element {
                     .colorAttachment0(colorTexture, index: 0)
                     .depthAttachment(depthTexture)
             }
-            .renderPassModifier { renderPassDescriptor in
+            .renderPassDescriptorModifier { renderPassDescriptor in
                 // TODO: Not this needs to re-run on setup - see https://github.com/schwa/Ultraviolence/issues/36
                 renderPassDescriptor.depthAttachment.storeAction = .store
             }
