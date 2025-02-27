@@ -10,7 +10,7 @@ struct UltraviolenceExampleTests {
         RedTriangleInline.self,
         TraditionalRedTriangle.self,
         CheckerboardKernel.self,
-        // FlatShaderExample.self, // TODO: Currently disabled - fails.
+        FlatShaderExample.self,
         CircleGridKernel.self,
         MixedExample.self
     ] as [any Example.Type])
