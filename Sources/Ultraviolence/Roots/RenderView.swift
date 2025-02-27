@@ -32,6 +32,8 @@ public struct RenderView <Content>: View where Content: Element {
         }
 
         func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
+            // TODO: We may want to actually do graph.processSetup here so that (expensive) setup is not done at render time.
+            needsSetup = true
         }
 
         func draw(in view: MTKView) {
