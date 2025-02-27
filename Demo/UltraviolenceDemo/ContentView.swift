@@ -1,13 +1,18 @@
 import SwiftUI
 import UltraviolenceExamples
 
+protocol DemoView: View {
+    @MainActor init()
+}
+
 struct ContentView: View {
     @State
-    private var demo: Demo?
+    private var page: Page?
 
     var body: some View {
         NavigationSplitView {
-            List(selection: $demo) {
+            List(selection: $page) {
+                row(for: Page(id: "MetalInfo") { AnyView(MetalInfoView()) })
                 row(for: MixedDemoView.self)
                 row(for: TriangleDemoView.self)
                 #if canImport(AppKit)
@@ -17,20 +22,24 @@ struct ContentView: View {
                 row(for: BouncingTeapotsDemoView.self)
             }
         } detail: {
-            if let demo {
-                AnyView(demo.type.init())// .id(currentDemo)
+            if let page {
+                page.content()
             }
         }
     }
 
-    @ViewBuilder
-    func row(for type: any DemoView.Type) -> some View {
-        let demo = Demo(type)
-        NavigationLink(value: demo) {
-            Label(demo.name, systemImage: "puzzlepiece")
+    func row(for page: Page) -> some View {
+        NavigationLink(value: page) {
+            Label(page.id, systemImage: "puzzlepiece")
                 .truncationMode(.tail)
                 .lineLimit(1)
         }
+    }
+
+    func row(for demo: any DemoView.Type) -> some View {
+        let name = "\(type(of: demo))"
+        let page = Page(id: name) { AnyView(demo.init()) }
+        return row(for: page)
     }
 }
 
@@ -38,31 +47,15 @@ struct ContentView: View {
     ContentView()
 }
 
-protocol DemoView: View {
-    @MainActor init()
-}
-
-struct Demo: Hashable {
-    var type: any DemoView.Type
-
-    init <T>(_ type: T.Type) where T: DemoView {
-        self.type = type
-    }
+struct Page: Hashable {
+    let id: String
+    let content: () -> AnyView
 
     static func == (lhs: Self, rhs: Self) -> Bool {
-        ObjectIdentifier(lhs.type) == ObjectIdentifier(rhs.type)
+        lhs.id == rhs.id
     }
 
     func hash(into hasher: inout Hasher) {
-        ObjectIdentifier(type).hash(into: &hasher)
-    }
-
-    var name: String {
-        String(describing: type)
-            .replacingOccurrences(of: "DemoView", with: "")
-            .replacing(#/[A-Z][^A-Z]+/#) { match in
-                String(match.output) + " "
-            }
-            .trimmingCharacters(in: .whitespacesAndNewlines)
+        hasher.combine(id)
     }
 }

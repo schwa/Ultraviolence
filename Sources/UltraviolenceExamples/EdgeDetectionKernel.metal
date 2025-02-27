@@ -8,7 +8,6 @@ kernel void EdgeDetectionKernel(
     texture2d<float, access::read_write> colorTexture [[texture(1)]],
     uint2 gid [[thread_position_in_grid]]
 ) {
-
     uint width = depthTexture.get_width();
     uint height = depthTexture.get_height();
 

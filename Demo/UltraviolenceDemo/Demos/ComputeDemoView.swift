@@ -27,7 +27,7 @@ struct ComputeDemoView: View {
                             ComputeDispatch(threads: .init(width: 1, height: 1, depth: 1), threadsPerThreadgroup: .init(width: 1, height: 1, depth: 1))
                         }
                     }
-                    try compute.compute()
+                    try compute.run()
                     state = .success(())
                 }
                 catch {
