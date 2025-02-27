@@ -45,7 +45,6 @@ struct StencilDemoView: View {
                 }
             }
         }
-        .metalDepthStencilPixelFormat(.depth32Float)
     }
 }
 
