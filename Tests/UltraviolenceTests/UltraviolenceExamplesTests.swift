@@ -23,6 +23,7 @@ struct UltraviolenceExampleTests {
             let image = try texture.toCGImage()
             let goldenImage = goldenImage(named: "\(example)")
             #expect(try imageCompare(image, goldenImage) == true)
+
         default:
             break
         }

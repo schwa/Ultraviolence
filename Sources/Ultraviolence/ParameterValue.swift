@@ -20,12 +20,16 @@ internal extension MTLRenderCommandEncoder {
         switch value {
         case .texture(let texture):
             setTexture(texture, index: index, functionType: functionType)
+
         case .samplerState(let samplerState):
             setSamplerState(samplerState, index: index, functionType: functionType)
+
         case .buffer(let buffer, let offset):
             setBuffer(buffer, offset: offset, index: index, functionType: functionType)
+
         case .array(let array):
             setUnsafeBytes(of: array, index: index, functionType: functionType)
+
         case .value(let value):
             setUnsafeBytes(of: value, index: index, functionType: functionType)
         }
@@ -37,12 +41,15 @@ internal extension MTLComputeCommandEncoder {
         switch value {
         case .texture(let texture):
             setTexture(texture, index: index)
+
         case .samplerState(let samplerState):
             setSamplerState(samplerState, index: index)
+
         case .buffer(let buffer, let offset):
             setBuffer(buffer, offset: offset, index: index) // TODO: OFFSET
         case .array(let array):
             setUnsafeBytes(of: array, index: index)
+
         case .value(let value):
             setUnsafeBytes(of: value, index: index)
         }

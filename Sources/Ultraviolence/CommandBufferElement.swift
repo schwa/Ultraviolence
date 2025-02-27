@@ -22,8 +22,10 @@ public struct CommandBufferElement <Content>: Element, BodylessContentElement wh
         switch completion {
         case .none:
             break
+
         case .commit:
             commandBuffer.commit()
+
         case .commitAndWaitUntilCompleted:
             commandBuffer.commit()
             commandBuffer.waitUntilCompleted()

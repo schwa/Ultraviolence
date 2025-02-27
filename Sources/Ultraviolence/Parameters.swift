@@ -35,20 +35,26 @@ internal struct ParameterElement<Content, T>: Element, BodylessElement, Bodyless
                 switch (vertexIndex, fragmentIndex) {
                 case (.some(let vertexIndex), .some(let fragmentIndex)):
                     preconditionFailure("Ambiguous parameter, found parameter named \(name) in both vertex (index: #\(vertexIndex)) and fragment (index: #\(fragmentIndex)) shaders.")
+
                 case (.some(let vertexIndex), .none):
                     renderCommandEncoder.setValue(value, index: vertexIndex, functionType: .vertex)
+
                 case (.none, .some(let fragmentIndex)):
                     renderCommandEncoder.setValue(value, index: fragmentIndex, functionType: .fragment)
+
                 case (.none, .none):
                     throw UltraviolenceError.missingBinding(name)
                 }
             }
+
         case (nil, .some(let computeCommandEncoder)):
             precondition(functionType == nil || functionType == .kernel)
             let index = try reflection.binding(forType: .kernel, name: name).orThrow(.missingBinding(name))
             computeCommandEncoder.setValue(value, index: index)
+
         case (.some, .some):
             preconditionFailure("Trying to process \(self) with both a render command encoder and a compute command encoder.")
+
         default:
             preconditionFailure("Trying to process `\(self) without a command encoder.")
         }

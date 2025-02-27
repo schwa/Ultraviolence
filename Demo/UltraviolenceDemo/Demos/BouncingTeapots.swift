@@ -2,8 +2,8 @@ import MetalKit
 import simd
 import SwiftUI
 import Ultraviolence
-import UltraviolenceSupport
 import UltraviolenceExamples
+import UltraviolenceSupport
 
 public struct BouncingTeapotsDemoView: View {
     @State
@@ -23,7 +23,7 @@ public struct BouncingTeapotsDemoView: View {
 
     public init() {
         let device = _MTLCreateSystemDefaultDevice()
-        let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm, width: 2048, height: 2048, mipmapped: false)
+        let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm, width: 2_048, height: 2_048, mipmapped: false)
         textureDescriptor.usage = [.shaderRead, .shaderWrite]
         skyboxTexture = device.makeTexture(descriptor: textureDescriptor).orFatalError()
         let samplerDescriptor = MTLSamplerDescriptor()
