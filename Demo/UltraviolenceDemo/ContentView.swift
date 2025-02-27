@@ -12,7 +12,6 @@ struct ContentView: View {
     var body: some View {
         NavigationSplitView {
             List(selection: $page) {
-                row(for: Page(id: "MetalInfo") { AnyView(MetalInfoView()) })
                 row(for: MixedDemoView.self)
                 row(for: TriangleDemoView.self)
                 #if canImport(AppKit)
