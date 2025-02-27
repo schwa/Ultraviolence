@@ -30,6 +30,7 @@ public struct CheckerboardKernel: Element {
     }
 }
 
+// swiftlint:disable:next type_name
 public struct CheckerboardKernel_ushort: Element {
     private var kernel: ComputeKernel
     private var outputTexture: MTLTexture
