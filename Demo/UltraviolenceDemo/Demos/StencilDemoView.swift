@@ -1,5 +1,6 @@
 import SwiftUI
 import Ultraviolence
+import UltraviolenceExamples
 
 struct StencilDemoView: View {
     let source = """
@@ -30,8 +31,24 @@ struct StencilDemoView: View {
     }
     """
 
+    @State
+    private var texture: MTLTexture?
+
+    let depthStencilDescriptor: MTLDepthStencilDescriptor = {
+        let stencilDescriptor = MTLStencilDescriptor(compareFunction: .equal, readMask: 0xFF, writeMask: 0x00)
+        return MTLDepthStencilDescriptor(depthCompareFunction: .always, isDepthWriteEnabled: false, frontFaceStencil: stencilDescriptor, backFaceStencil: stencilDescriptor)
+    }()
+
     var body: some View {
         RenderView {
+            try BlitPass {
+                EnvironmentReader(keyPath: \.renderPassDescriptor) { renderPassDescriptor in
+                    let stencilAttachmentTexture = renderPassDescriptor!.stencilAttachment.texture!
+                    Blit { encoder in
+                        encoder.copy(from: texture!, sourceSlice: 0, sourceLevel: 0, sourceOrigin: .init(x: 0, y: 0, z: 0), sourceSize: .init(width: texture!.width, height: texture!.height, depth: 1), to: stencilAttachmentTexture, destinationSlice: 0, destinationLevel: 0, destinationOrigin: .init(x: 0, y: 0, z: 0))
+                    }
+                }
+            }
             try RenderPass {
                 let vertexShader = try VertexShader(source: source)
                 let fragmentShader = try FragmentShader(source: source)
@@ -41,12 +58,66 @@ struct StencilDemoView: View {
                         encoder.setVertexBytes(vertices, length: MemoryLayout<SIMD2<Float>>.stride * 3, index: 0)
                         encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
                     }
-                    .parameter("color", [1, 0, 0, 1])
+                    .parameter("color", [0.5, 1, 0.5, 1])
                 }
+                .depthStencilDescriptor(depthStencilDescriptor)
+            }
+            .renderPassDescriptorModifier { renderPassDescriptor in
+                renderPassDescriptor.stencilAttachment.loadAction = .load
+            }
+        }
+        .metalClearColor(.init(red: 0.1, green: 0.2, blue: 0.1, alpha: 1.0))
+        .metalDepthStencilPixelFormat(.stencil8)
+        .metalDepthStencilAttachmentTextureUsage([.shaderWrite, .renderTarget])
+        .onDrawableSizeChange { size in
+            do {
+                let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .r8Uint, width: Int(size.width), height: Int(size.height), mipmapped: false)
+                descriptor.usage = [.shaderRead, .shaderWrite]
+
+                let device = MTLCreateSystemDefaultDevice()!
+                let texture = device.makeTexture(descriptor: descriptor)!
+                texture.label = "Faux Stencil Texture"
+                let pass = try ComputePass {
+                    try CheckerboardKernel_ushort(outputTexture: texture, checkerSize: [100, 100], backgroundColor: 0, foregroundColor: 0xFFFF)
+                }
+                try pass.run()
+                self.texture = texture
+            }
+            catch {
+                fatalError("\(error)")
             }
         }
     }
 }
 
 extension StencilDemoView: DemoView {
+}
+
+extension MTLStencilDescriptor {
+    convenience init(compareFunction: MTLCompareFunction = .always, stencilFailureOperation: MTLStencilOperation = .keep, depthFailureOperation: MTLStencilOperation = .keep, stencilPassDepthPassOperation: MTLStencilOperation = .keep, readMask: UInt32 = 0xffffffff, writeMask: UInt32 = 0xffffffff) {
+        self.init()
+        self.stencilCompareFunction = compareFunction
+        self.stencilFailureOperation = stencilFailureOperation
+        self.depthFailureOperation = depthFailureOperation
+        self.depthStencilPassOperation = stencilPassDepthPassOperation
+        self.readMask = readMask
+        self.writeMask = writeMask
+    }
+}
+
+extension MTLDepthStencilDescriptor {
+    convenience init(depthCompareFunction: MTLCompareFunction = .less, isDepthWriteEnabled: Bool = true, frontFaceStencil: MTLStencilDescriptor? = nil, backFaceStencil: MTLStencilDescriptor? = nil, label: String? = nil) {
+        self.init()
+        self.depthCompareFunction = depthCompareFunction
+        self.isDepthWriteEnabled = isDepthWriteEnabled
+        if let frontFaceStencil {
+            self.frontFaceStencil = frontFaceStencil
+        }
+        if let backFaceStencil {
+            self.backFaceStencil = backFaceStencil
+        }
+        if let label {
+            self.label = label
+        }
+    }
 }

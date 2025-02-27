@@ -32,7 +32,6 @@ public struct MixedExample: Element {
                     .depthAttachment(depthTexture)
             }
             .renderPassDescriptorModifier { renderPassDescriptor in
-                // TODO: Not this needs to re-run on setup - see https://github.com/schwa/Ultraviolence/issues/36
                 renderPassDescriptor.depthAttachment.storeAction = .store
             }
             try ComputePass {

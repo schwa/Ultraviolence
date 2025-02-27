@@ -12,7 +12,7 @@ internal struct RenderPassDescriptorModifier<Content>: Element, BodylessContentE
         content
     }
 
-    func setupEnter(_ node: Node) throws {
+    func workloadEnter(_ node: Node) throws {
         if let renderPassDescriptor {
             modify(renderPassDescriptor)
         }

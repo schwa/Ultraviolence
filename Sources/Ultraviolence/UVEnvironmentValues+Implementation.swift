@@ -19,6 +19,9 @@ public extension UVEnvironmentValues {
     @UVEntry var colorAttachment0: (MTLTexture, Int)?
     // TODO: Investigate deprecation
     @UVEntry var depthAttachment: MTLTexture?
+    // TODO: Investigate deprecation
+    @UVEntry var stencilAttachment: MTLTexture?
+
     @UVEntry var currentDrawable: CAMetalDrawable?
     @UVEntry var drawableSize: CGSize?
     @UVEntry var blitCommandEncoder: MTLBlitCommandEncoder?
@@ -30,6 +33,9 @@ public extension Element {
     }
     func depthAttachment(_ texture: MTLTexture) -> some Element {
         environment(\.depthAttachment, texture)
+    }
+    func stencilAttahcment(_ texture: MTLTexture) -> some Element {
+        environment(\.stencilAttachment, texture)
     }
 }
 

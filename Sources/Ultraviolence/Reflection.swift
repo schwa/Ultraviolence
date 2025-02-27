@@ -31,3 +31,9 @@ extension Reflection {
         }
     }
 }
+
+extension Reflection: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        bindings.debugDescription
+    }
+}

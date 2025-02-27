@@ -38,7 +38,7 @@ public struct CheckerboardKernel_ushort: Element {
     private var backgroundColor: UInt16
     private var foregroundColor: UInt16
 
-    init(outputTexture: MTLTexture, checkerSize: SIMD2<Float>, backgroundColor: UInt16, foregroundColor: UInt16) throws {
+    public init(outputTexture: MTLTexture, checkerSize: SIMD2<Float>, backgroundColor: UInt16, foregroundColor: UInt16) throws {
         kernel = try ShaderLibrary(bundle: .module).CheckerboardKernel_ushort
         self.outputTexture = outputTexture
         self.checkerSize = checkerSize

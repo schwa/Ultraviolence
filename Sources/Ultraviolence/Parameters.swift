@@ -23,6 +23,7 @@ internal struct ParameterElement<Content, T>: Element, BodylessElement, Bodyless
         let renderCommandEncoder = node.environmentValues.renderCommandEncoder
         let computeCommandEncoder = node.environmentValues.computeCommandEncoder
 
+        // TODO: We can be a lot better about logging errors here.
         switch (renderCommandEncoder, computeCommandEncoder) {
         case (.some(let renderCommandEncoder), nil):
             if let functionType {
@@ -43,6 +44,7 @@ internal struct ParameterElement<Content, T>: Element, BodylessElement, Bodyless
                     renderCommandEncoder.setValue(value, index: fragmentIndex, functionType: .fragment)
 
                 case (.none, .none):
+                    logger?.info("Parameter \(name) not found in reflection \(reflection.debugDescription).")
                     throw UltraviolenceError.missingBinding(name)
                 }
             }

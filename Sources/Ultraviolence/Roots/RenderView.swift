@@ -13,6 +13,9 @@ public struct RenderView <Content>: View where Content: Element {
     @Environment(\.self)
     private var environment
 
+    @Environment(\.drawableSizeChange)
+    private var drawableSizeChange
+
     @Observable
     class ViewModel: NSObject, MTKViewDelegate {
         var device: MTLDevice
@@ -22,6 +25,7 @@ public struct RenderView <Content>: View where Content: Element {
         var logger: Logger? = Logger()
         var graph: Graph
         var needsSetup = true
+        var drawableSizeChange: ((CGSize) -> Void)?
 
         @MainActor
         init(device: MTLDevice, content: @escaping () throws -> Content) throws {
@@ -34,6 +38,7 @@ public struct RenderView <Content>: View where Content: Element {
         func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
             // TODO: We may want to actually do graph.processSetup here so that (expensive) setup is not done at render time. But this is made a lot more difficult because we are wrapping the content in CommandBufferElement and a ton of .environment setting. https://github.com/schwa/Ultraviolence/issues/45
             needsSetup = true
+            drawableSizeChange?(size)
         }
 
         func draw(in view: MTKView) {
@@ -90,8 +95,20 @@ public struct RenderView <Content>: View where Content: Element {
         }
         update: { _ in
             viewModel.content = content
+            viewModel.drawableSizeChange = drawableSizeChange
         }
         .modifier(RenderViewDebugViewModifier<Content>())
         .environment(viewModel)
+    }
+}
+
+extension EnvironmentValues {
+    @Entry
+    var drawableSizeChange: ((CGSize) -> Void)?
+}
+
+public extension View {
+    func onDrawableSizeChange(perform action: @escaping (CGSize) -> Void) -> some View {
+        environment(\.drawableSizeChange, action)
     }
 }

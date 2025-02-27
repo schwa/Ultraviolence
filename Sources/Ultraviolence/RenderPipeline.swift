@@ -41,7 +41,9 @@ public struct RenderPipeline <Content>: Element, BodylessElement, BodylessConten
         if let depthAttachmentTexture = renderPassDescriptor.depthAttachment?.texture {
             renderPipelineDescriptor.depthAttachmentPixelFormat = depthAttachmentTexture.pixelFormat
         }
-
+        if let stencilAttachmentTexture = renderPassDescriptor.stencilAttachment?.texture {
+            renderPipelineDescriptor.stencilAttachmentPixelFormat = stencilAttachmentTexture.pixelFormat
+        }
         let device = try device.orThrow(.missingEnvironment(\.device))
         let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: .bindingInfo)
         self.reflection = .init(reflection.orFatalError(.resourceCreationFailure("Failed to create reflection.")))

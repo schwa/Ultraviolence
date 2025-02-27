@@ -31,6 +31,7 @@ struct OffscreenDemoView: View {
         .task {
             do {
                 let root = RedTriangle()
+
                 let offscreenRenderer = try OffscreenRenderer(size: CGSize(width: 1_600, height: 1_200))
                 result = .success(try offscreenRenderer.render(root).cgImage)
             }
