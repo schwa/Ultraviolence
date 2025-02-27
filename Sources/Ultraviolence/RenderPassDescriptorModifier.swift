@@ -1,7 +1,7 @@
 import Metal
 
 // TODO: Make into actual Modifier.
-internal struct RenderPassModifier<Content>: Element, BodylessContentElement where Content: Element {
+internal struct RenderPassDescriptorModifier<Content>: Element, BodylessContentElement where Content: Element {
     @UVEnvironment(\.renderPassDescriptor)
     var renderPassDescriptor
 
@@ -20,7 +20,7 @@ internal struct RenderPassModifier<Content>: Element, BodylessContentElement whe
 }
 
 public extension Element {
-    func renderPassModifier(_ modify: @escaping (MTLRenderPassDescriptor) -> Void) -> some Element {
-        RenderPassModifier(content: self, modify: modify)
+    func renderPassDescriptorModifier(_ modify: @escaping (MTLRenderPassDescriptor) -> Void) -> some Element {
+        RenderPassDescriptorModifier(content: self, modify: modify)
     }
 }
