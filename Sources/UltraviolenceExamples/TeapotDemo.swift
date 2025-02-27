@@ -23,10 +23,10 @@ public struct TeapotDemo: Element {
     var drawableSize
 
     public init(modelMatrix: simd_float4x4, color: SIMD3<Float>, lightDirection: SIMD3<Float>) throws {
-        let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
-        let teapotURL = try Bundle.module.url(forResource: "teapot", withExtension: "obj").orThrow(.resourceCreationFailure)
+        let device = _MTLCreateSystemDefaultDevice()
+        let teapotURL = try Bundle.module.url(forResource: "teapot", withExtension: "obj").orThrow(.resourceCreationFailure("Failed to find teapot.obj."))
         let mdlAsset = MDLAsset(url: teapotURL, vertexDescriptor: nil, bufferAllocator: MTKMeshBufferAllocator(device: device))
-        let mdlMesh = try (mdlAsset.object(at: 0) as? MDLMesh).orThrow(.resourceCreationFailure)
+        let mdlMesh = try (mdlAsset.object(at: 0) as? MDLMesh).orThrow(.resourceCreationFailure("Failed to load teapot.obj."))
         mesh = try MTKMesh(mesh: mdlMesh, device: device)
         self.modelMatrix = modelMatrix
         cameraMatrix = simd_float4x4(translation: [0, 2, 6])

@@ -9,7 +9,7 @@ public struct BlitPass <Content>: Element, BodylessElement, BodylessContentEleme
 
     func workloadEnter(_ node: Node) throws {
         let commandBuffer = try node.environmentValues.commandBuffer.orThrow(.missingEnvironment(\.commandBuffer))
-        let blitCommandEncoder = try commandBuffer.makeBlitCommandEncoder().orThrow(.resourceCreationFailure)
+        let blitCommandEncoder = try commandBuffer._makeBlitCommandEncoder()
         node.environmentValues.blitCommandEncoder = blitCommandEncoder
     }
 

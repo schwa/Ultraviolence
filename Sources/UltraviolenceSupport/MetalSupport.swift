@@ -62,7 +62,7 @@ public extension MTLCaptureManager {
         guard enabled else {
             return try body()
         }
-        let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
+        let device = _MTLCreateSystemDefaultDevice()
         let captureScope = makeCaptureScope(device: device)
         let captureDescriptor = MTLCaptureDescriptor()
         captureDescriptor.captureObject = captureScope
@@ -358,7 +358,8 @@ public extension MTLRenderCommandEncoder {
     func setVertexUnsafeBytes(of value: [some Any], index: Int) {
         precondition(index >= 0)
         value.withUnsafeBytes { buffer in
-            setVertexBytes(buffer.baseAddress.orFatalError(.resourceCreationFailure), length: buffer.count, index: index)
+            let baseAddress = buffer.baseAddress.orFatalError(.resourceCreationFailure("No base address."))
+            setVertexBytes(baseAddress, length: buffer.count, index: index)
         }
     }
 
@@ -366,7 +367,8 @@ public extension MTLRenderCommandEncoder {
         precondition(index >= 0)
         assert(isPOD(value))
         withUnsafeBytes(of: value) { buffer in
-            setVertexBytes(buffer.baseAddress.orFatalError(.resourceCreationFailure), length: buffer.count, index: index)
+            let baseAddress = buffer.baseAddress.orFatalError(.resourceCreationFailure("No base address."))
+            setVertexBytes(baseAddress, length: buffer.count, index: index)
         }
     }
 }
@@ -375,7 +377,8 @@ public extension MTLRenderCommandEncoder {
     func setFragmentUnsafeBytes(of value: [some Any], index: Int) {
         precondition(index >= 0)
         value.withUnsafeBytes { buffer in
-            setFragmentBytes(buffer.baseAddress.orFatalError(.resourceCreationFailure), length: buffer.count, index: index)
+            let baseAddress = buffer.baseAddress.orFatalError(.resourceCreationFailure("No base address."))
+            setFragmentBytes(baseAddress, length: buffer.count, index: index)
         }
     }
 
@@ -383,7 +386,8 @@ public extension MTLRenderCommandEncoder {
         precondition(index >= 0)
         assert(isPOD(value))
         withUnsafeBytes(of: value) { buffer in
-            setFragmentBytes(buffer.baseAddress.orFatalError(.resourceCreationFailure), length: buffer.count, index: index)
+            let baseAddress = buffer.baseAddress.orFatalError(.resourceCreationFailure("No base address."))
+            setFragmentBytes(baseAddress, length: buffer.count, index: index)
         }
     }
 }
@@ -452,7 +456,8 @@ public extension MTLComputeCommandEncoder {
     func setUnsafeBytes(of value: [some Any], index: Int) {
         precondition(index >= 0)
         value.withUnsafeBytes { buffer in
-            setBytes(buffer.baseAddress.orFatalError(.resourceCreationFailure), length: buffer.count, index: index)
+            let baseAddress = buffer.baseAddress.orFatalError(.resourceCreationFailure("No base address."))
+            setBytes(baseAddress, length: buffer.count, index: index)
         }
     }
 
@@ -460,7 +465,8 @@ public extension MTLComputeCommandEncoder {
         precondition(index >= 0)
         assert(isPOD(value))
         withUnsafeBytes(of: value) { buffer in
-            setBytes(buffer.baseAddress.orFatalError(.resourceCreationFailure), length: buffer.count, index: index)
+            let baseAddress = buffer.baseAddress.orFatalError(.resourceCreationFailure("No base address."))
+            setBytes(baseAddress, length: buffer.count, index: index)
         }
     }
 }
@@ -470,8 +476,9 @@ public extension MTLDevice {
         assert(isPOD(C.Element.self))
         let buffer = try collection.withContiguousStorageIfAvailable { buffer in
             let raw = UnsafeRawBufferPointer(buffer)
-            guard let buffer = makeBuffer(bytes: raw.baseAddress.orFatalError(), length: raw.count, options: options) else {
-                throw UltraviolenceError.resourceCreationFailure
+            let baseAddress = raw.baseAddress.orFatalError(.resourceCreationFailure("No base address."))
+            guard let buffer = makeBuffer(bytes: baseAddress, length: raw.count, options: options) else {
+                throw UltraviolenceError.resourceCreationFailure("MTLDevice.makeBuffer failed.")
             }
             return buffer
         }
@@ -496,7 +503,7 @@ public extension MTLCommandBufferDescriptor {
     func addDefaultLogging() throws {
         let logStateDescriptor = MTLLogStateDescriptor()
         logStateDescriptor.bufferSize = 16 * 1_024
-        let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
+        let device = _MTLCreateSystemDefaultDevice()
         let logState = try device.makeLogState(descriptor: logStateDescriptor)
         logState.addLogHandler { _, _, _, message in
             print(message)
@@ -508,5 +515,43 @@ public extension MTLCommandBufferDescriptor {
 public extension SIMD2<Float> {
     init(_ size: CGSize) {
         self.init(Float(size.width), Float(size.height))
+    }
+}
+
+public func _MTLCreateSystemDefaultDevice() -> MTLDevice {
+    return MTLCreateSystemDefaultDevice().orFatalError(.unexpectedError(.resourceCreationFailure("Could not create system default device.")))
+}
+
+public extension MTLDevice {
+    func _makeCommandQueue() throws -> MTLCommandQueue {
+        try makeCommandQueue().orThrow(.resourceCreationFailure("Could not create command queue."))
+    }
+
+    func _makeSamplerState(descriptor: MTLSamplerDescriptor) throws -> MTLSamplerState {
+        try makeSamplerState(descriptor: descriptor).orThrow(.resourceCreationFailure("Could not create sampler state."))
+    }
+}
+
+public extension MTLCommandQueue {
+    func _makeCommandBuffer() throws -> MTLCommandBuffer {
+        try makeCommandBuffer().orThrow(.resourceCreationFailure("Could not create command buffer."))
+    }
+
+    func _makeCommandBuffer(descriptor: MTLCommandBufferDescriptor) throws -> MTLCommandBuffer {
+        try makeCommandBuffer(descriptor: descriptor).orThrow(.resourceCreationFailure("Could not create command buffer."))
+    }
+}
+
+public extension MTLCommandBuffer {
+    func _makeBlitCommandEncoder() throws -> MTLBlitCommandEncoder {
+        try makeBlitCommandEncoder().orThrow(.resourceCreationFailure("Could not create blit command encoder."))
+    }
+
+    func _makeComputeCommandEncoder() throws -> MTLComputeCommandEncoder {
+        try makeComputeCommandEncoder().orThrow(.resourceCreationFailure("Could not create compute command encoder."))
+    }
+
+    func _makeRenderCommandEncoder(descriptor: MTLRenderPassDescriptor) throws -> MTLRenderCommandEncoder {
+        try makeRenderCommandEncoder(descriptor: descriptor).orThrow(.resourceCreationFailure("Could not create render command encoder."))
     }
 }

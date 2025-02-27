@@ -5,8 +5,8 @@ public extension ComputePass {
     @MainActor
     func compute() throws {
         // TODO: This has surprisingly little to do with compute. It's basically the same as offscreen renderer. https://github.com/schwa/Ultraviolence/issues/27
-        let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
-        let commandQueue = try device.makeCommandQueue().orThrow(.resourceCreationFailure)
+        let device = _MTLCreateSystemDefaultDevice()
+        let commandQueue = try device._makeCommandQueue()
 
         let content = CommandBufferElement(completion: .commitAndWaitUntilCompleted) {
             self

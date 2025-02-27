@@ -28,20 +28,20 @@ public struct OffscreenRenderer {
         renderPassDescriptor.depthAttachment.storeAction = .store // TODO: This is hardcoded. Should usually be .dontCare but we need to read back in some examples. https://github.com/schwa/Ultraviolence/issues/33
         self.renderPassDescriptor = renderPassDescriptor
 
-        commandQueue = try device.makeCommandQueue().orThrow(.resourceCreationFailure)
+        commandQueue = try device._makeCommandQueue()
     }
 
     // TODO: Most of this belongs on a RenderSession type API. We should be able to render multiple times with the same setup. https://github.com/schwa/Ultraviolence/issues/28
     public init(size: CGSize) throws {
-        let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
+        let device = _MTLCreateSystemDefaultDevice()
         let colorTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm_srgb, width: Int(size.width), height: Int(size.height), mipmapped: false)
         colorTextureDescriptor.usage = [.renderTarget, .shaderRead, .shaderWrite] // TODO: this is all hardcoded :-( https://github.com/schwa/Ultraviolence/issues/33
-        let colorTexture = try device.makeTexture(descriptor: colorTextureDescriptor).orThrow(.resourceCreationFailure)
+        let colorTexture = try device.makeTexture(descriptor: colorTextureDescriptor).orThrow(.textureCreationFailure)
         colorTexture.label = "Color Texture"
 
         let depthTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: Int(size.width), height: Int(size.height), mipmapped: false)
         depthTextureDescriptor.usage = [.renderTarget, .shaderRead] // TODO: this is all hardcoded :-( https://github.com/schwa/Ultraviolence/issues/33
-        let depthTexture = try device.makeTexture(descriptor: depthTextureDescriptor).orThrow(.resourceCreationFailure)
+        let depthTexture = try device.makeTexture(descriptor: depthTextureDescriptor).orThrow(.textureCreationFailure)
         depthTexture.label = "Depth Texture"
 
         try self.init(size: size, colorTexture: colorTexture, depthTexture: depthTexture)
@@ -55,8 +55,8 @@ public struct OffscreenRenderer {
 public extension OffscreenRenderer {
     @MainActor
     func render<Content>(_ content: Content) throws -> Rendering where Content: Element {
-        let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
-        let commandQueue = try device.makeCommandQueue().orThrow(.resourceCreationFailure)
+        let device = _MTLCreateSystemDefaultDevice()
+        let commandQueue = try device._makeCommandQueue()
         let content = CommandBufferElement(completion: .commitAndWaitUntilCompleted) {
             content
         }
@@ -76,10 +76,10 @@ public extension OffscreenRenderer.Rendering {
         get throws {
             var bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.noneSkipFirst.rawValue)
             bitmapInfo.insert(.byteOrder32Little)
-            let context = try CGContext(data: nil, width: texture.width, height: texture.height, bitsPerComponent: 8, bytesPerRow: texture.width * 4, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: bitmapInfo.rawValue).orThrow(.resourceCreationFailure)
-            let data = try context.data.orThrow(.resourceCreationFailure)
+            let context = try CGContext(data: nil, width: texture.width, height: texture.height, bitsPerComponent: 8, bytesPerRow: texture.width * 4, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: bitmapInfo.rawValue).orThrow(.unexpectedError(.resourceCreationFailure("Failed to create CGContext.")))
+            let data = try context.data.orThrow(.unexpectedError(.resourceCreationFailure("Failed to get data from CGContext.")))
             texture.getBytes(data, bytesPerRow: texture.width * 4, from: MTLRegionMake2D(0, 0, texture.width, texture.height), mipmapLevel: 0)
-            return try context.makeImage().orThrow(.resourceCreationFailure)
+            return try context.makeImage().orThrow(.unexpectedError(.resourceCreationFailure("Failed to create CGImage.")))
         }
     }
 }

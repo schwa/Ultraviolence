@@ -21,8 +21,7 @@ public struct BouncingTeapotsDemoView: View {
     let skyboxTexture: MTLTexture
 
     public init() {
-        print("#INIT#")
-        let device = MTLCreateSystemDefaultDevice().orFatalError()
+        let device = _MTLCreateSystemDefaultDevice()
         let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm, width: 512, height: 512, mipmapped: false)
         textureDescriptor.usage = [.shaderRead, .shaderWrite]
         skyboxTexture = device.makeTexture(descriptor: textureDescriptor).orFatalError()

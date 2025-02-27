@@ -1,10 +1,19 @@
-public enum UltraviolenceError: Error {
+public indirect enum UltraviolenceError: Error {
     case undefined
     case generic(String)
     case missingEnvironment(String)
     case missingBinding(String)
-    case resourceCreationFailure
+    case resourceCreationFailure(String)
     case deviceCababilityFailure(String)
+    case textureCreationFailure
+    // TODO: This should be more "impossible" than "unexpected".
+    case unexpectedError(UltraviolenceError)
+}
+
+extension UltraviolenceError {
+    static var resourceCreationFailure: Self {
+        return resourceCreationFailure("Resource creation failure.")
+    }
 }
 
 public extension Optional {

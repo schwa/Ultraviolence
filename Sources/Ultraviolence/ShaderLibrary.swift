@@ -12,17 +12,17 @@ public struct ShaderLibrary {
     }
 
     public init(bundle: Bundle, namespace: String? = nil) throws {
-        let device = MTLCreateSystemDefaultDevice().orFatalError()
+        let device = _MTLCreateSystemDefaultDevice()
         if let library = try? device.makeDefaultLibrary(bundle: bundle) {
             self.library = library
         }
         else {
-            let url = try bundle.url(forResource: "debug", withExtension: "metallib").orThrow(.resourceCreationFailure)
+            let url = try bundle.url(forResource: "debug", withExtension: "metallib").orThrow(.resourceCreationFailure("Failed to find default library in bundle"))
             if let library = try? device.makeLibrary(URL: url) {
                 self.library = library
             }
             else {
-                throw UltraviolenceError.resourceCreationFailure
+                throw UltraviolenceError.resourceCreationFailure("Failed to load default library from bundle.")
             }
         }
         self.namespace = namespace
@@ -31,10 +31,10 @@ public struct ShaderLibrary {
     internal func function(named name: String, type: MTLFunctionType) throws -> MTLFunction {
         let scopedNamed = namespace.map { "\($0)::\(name)" } ?? name
         guard let function = library.makeFunction(name: scopedNamed) else {
-            throw UltraviolenceError.resourceCreationFailure
+            throw UltraviolenceError.resourceCreationFailure("Function \(scopedNamed) not found.")
         }
         if function.functionType != type {
-            throw UltraviolenceError.resourceCreationFailure
+            throw UltraviolenceError.resourceCreationFailure("Function \(scopedNamed) is not of type \(type).")
         }
         return function
     }

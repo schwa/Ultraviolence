@@ -9,11 +9,11 @@ public protocol ShaderProtocol {
 
 internal extension ShaderProtocol {
     init(library: MTLLibrary? = nil, namespace: String? = nil, name: String) throws {
-        let library = try library ?? MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure).makeDefaultLibrary().orThrow(.resourceCreationFailure)
+        let library = try library ?? _MTLCreateSystemDefaultDevice().makeDefaultLibrary().orThrow(.resourceCreationFailure("Failed to create default library"))
         let scopedName = namespace.map { $0 + "::" + name } ?? name
-        let function = try library.makeFunction(name: scopedName).orThrow(.resourceCreationFailure)
+        let function = try library.makeFunction(name: scopedName).orThrow(.resourceCreationFailure("Failed to create function with name \(scopedName)"))
         if function.functionType != Self.functionType {
-            throw UltraviolenceError.resourceCreationFailure
+            throw UltraviolenceError.resourceCreationFailure("Function \(scopedName) is not of type \(Self.functionType)")
         }
         self.init(function)
     }
@@ -21,19 +21,19 @@ internal extension ShaderProtocol {
 
 public extension ShaderProtocol {
     init(source: String, logging: Bool = false) throws {
-        let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
+        let device = _MTLCreateSystemDefaultDevice()
         let options = MTLCompileOptions()
         options.enableLogging = logging
         let library = try device.makeLibrary(source: source, options: options)
-        let function = try library.functionNames.compactMap { library.makeFunction(name: $0) }.first { $0.functionType == Self.functionType }.orThrow(.resourceCreationFailure)
+        let function = try library.functionNames.compactMap { library.makeFunction(name: $0) }.first { $0.functionType == Self.functionType }.orThrow(.resourceCreationFailure("Failed to create function"))
         self.init(function)
     }
 
     init(library: MTLLibrary? = nil, name: String) throws {
-        let library = try library ?? MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure).makeDefaultLibrary().orThrow(.resourceCreationFailure)
-        let function = try library.makeFunction(name: name).orThrow(.resourceCreationFailure)
+        let library = try library ?? _MTLCreateSystemDefaultDevice().makeDefaultLibrary().orThrow(.resourceCreationFailure("Failed to create default library"))
+        let function = try library.makeFunction(name: name).orThrow(.resourceCreationFailure("Failed to create function"))
         if function.functionType != .kernel {
-            throw UltraviolenceError.resourceCreationFailure
+            throw UltraviolenceError.resourceCreationFailure("Function type is not kernel")
         }
         self.init(function)
     }

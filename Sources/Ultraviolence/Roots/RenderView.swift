@@ -7,7 +7,7 @@ import SwiftUI
 import UltraviolenceSupport
 
 public struct RenderView <Content>: View where Content: Element {
-    var device = MTLCreateSystemDefaultDevice().orFatalError(.resourceCreationFailure)
+    var device = _MTLCreateSystemDefaultDevice()
     var content: () throws -> Content
 
     @Observable
@@ -24,7 +24,7 @@ public struct RenderView <Content>: View where Content: Element {
         init(device: MTLDevice, content: @escaping () throws -> Content) throws {
             self.device = device
             self.content = content
-            self.commandQueue = try device.makeCommandQueue().orThrow(.resourceCreationFailure)
+            self.commandQueue = try device._makeCommandQueue()
             self.graph = try Graph(content: EmptyElement())
         }
 
@@ -65,7 +65,7 @@ public struct RenderView <Content>: View where Content: Element {
     private var viewModel: ViewModel
 
     public init(@ElementBuilder content: @escaping () throws -> Content) {
-        self.device = MTLCreateSystemDefaultDevice().orFatalError(.resourceCreationFailure)
+        self.device = _MTLCreateSystemDefaultDevice()
         self.content = content
         do {
             self.viewModel = try ViewModel(device: device, content: content)

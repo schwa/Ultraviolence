@@ -42,12 +42,12 @@ public struct FlatShader <Content>: Element where Content: Element {
 public enum FlatShaderExample: Example {
     @MainActor
     public static func runExample() throws -> ExampleResult {
-        let device = try MTLCreateSystemDefaultDevice().orThrow(.resourceCreationFailure)
+        let device = _MTLCreateSystemDefaultDevice()
         let textureLoader = MTKTextureLoader(device: device)
         let imageURL = Bundle.module.url(forResource: "HD-Testcard-original", withExtension: "jpg").orFatalError()
         let texture = try textureLoader.newTexture(URL: imageURL)
         let samplerDescriptor = MTLSamplerDescriptor()
-        let sampler = try device.makeSamplerState(descriptor: samplerDescriptor).orThrow(.resourceCreationFailure)
+        let sampler = try device._makeSamplerState(descriptor: samplerDescriptor)
         return try MTLCaptureManager.shared().with(enabled: false) {
             let mesh = MTKMesh.sphere(inwardNormals: true)
             let root = try Group {

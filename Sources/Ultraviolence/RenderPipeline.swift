@@ -43,7 +43,7 @@ public struct RenderPipeline <Content>: Element, BodylessElement, BodylessConten
 
         let device = try device.orThrow(.missingEnvironment(\.device))
         let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: .bindingInfo)
-        self.reflection = .init(reflection.orFatalError(.resourceCreationFailure))
+        self.reflection = .init(reflection.orFatalError(.resourceCreationFailure("Failed to create reflection.")))
 
         if environment.depthStencilState == nil, let depthStencilDescriptor = environment.depthStencilDescriptor {
             let depthStencilState = device.makeDepthStencilState(descriptor: depthStencilDescriptor)

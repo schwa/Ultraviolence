@@ -10,7 +10,7 @@ public struct ComputePass <Content>: Element, BodylessElement, BodylessContentEl
 
     func workloadEnter(_ node: Node) throws {
         let commandBuffer = try node.environmentValues.commandBuffer.orThrow(.missingEnvironment(\.commandBuffer))
-        let computeCommandEncoder = try commandBuffer.makeComputeCommandEncoder().orThrow(.resourceCreationFailure)
+        let computeCommandEncoder = try commandBuffer._makeComputeCommandEncoder()
         node.environmentValues.computeCommandEncoder = computeCommandEncoder
     }
 
@@ -36,7 +36,7 @@ public struct ComputePipeline <Content>: Element, BodylessElement, BodylessConte
         let descriptor = MTLComputePipelineDescriptor()
         descriptor.computeFunction = computeKernel.function
         let (computePipelineState, reflection) = try device.makeComputePipelineState(descriptor: descriptor, options: .bindingInfo)
-        node.environmentValues.reflection = Reflection(try reflection.orThrow(.resourceCreationFailure))
+        node.environmentValues.reflection = Reflection(try reflection.orThrow(.resourceCreationFailure("Failed to create reflection.")))
         node.environmentValues.computePipelineState = computePipelineState
     }
 }
