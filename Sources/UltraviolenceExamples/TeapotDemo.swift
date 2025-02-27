@@ -51,7 +51,6 @@ public struct TeapotDemo: Element {
 
 public extension TeapotDemo {
     @MainActor
-    // TODO: Make generic for any RenderPass
     static func main() throws {
         let size = CGSize(width: 1_600, height: 1_200)
         let element = try RenderPass {

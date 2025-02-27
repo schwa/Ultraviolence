@@ -18,7 +18,7 @@ public extension Element where Body == Never {
 
 internal extension Element {
     func expandNode(_ node: Node, context: ExpansionContext) throws {
-        // TODO: Refactor this to make expansion of the node tree distinct from handling observable and state properties. https://github.com/schwa/Ultraviolence/issues/23.
+        // TODO: #23 Refactor this to make expansion of the node tree distinct from handling observable and state properties.
         guard let graph = Graph.current else {
             preconditionFailure("No graph is currently active.")
         }

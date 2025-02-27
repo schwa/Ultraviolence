@@ -384,7 +384,7 @@ public extension MTLVertexFormat {
 
 public extension MTLFunction {
     var vertexDescriptor: MTLVertexDescriptor? {
-        // TODO: Probably better to remove this at this point.
+        // TODO: #53 Probably better to remove this at this point.
         logger?.warning("Creating a vertex descriptor from a function is not recommended.")
         guard let vertexAttributes else {
             return nil
@@ -405,7 +405,7 @@ public extension MTLFunction {
                 totalStride += MemoryLayout<SIMD2<Float>>.stride
 
             default:
-                // TODO: Flesh this out.
+                // TODO: #53 Flesh this out.
                 fatalError("Unimplemented: \(attribute.attributeType)")
             }
         }

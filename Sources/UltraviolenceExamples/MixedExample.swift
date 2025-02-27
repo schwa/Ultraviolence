@@ -20,7 +20,6 @@ public struct MixedExample: Element {
 
     public var body: some Element {
         get throws {
-            // TODO: All these `orThrow` calls are ugly and we need a better way.
             let renderPassDescriptor = try renderPassDescriptor.orThrow(.missingEnvironment("renderPassDescriptor"))
             let colorTexture = try renderPassDescriptor.colorAttachments[0].texture.orThrow(.undefined)
             let depthTexture = try renderPassDescriptor.depthAttachment.texture.orThrow(.undefined)

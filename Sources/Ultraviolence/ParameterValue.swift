@@ -8,10 +8,10 @@ internal enum ParameterValue<T> {
     case value(T)
 }
 
-// TODO: We really need to rethink type safety of ParameterValue. Make this a struct and keep internal enum - still need to worry about <T> though. https://github.com/schwa/Ultraviolence/issues/21
+// TODO: #21 We really need to rethink type safety of ParameterValue. Make this a struct and keep internal enum - still need to worry about <T> though.
 // extension ParameterValue where T == () {
 //    static func texture(_ texture: MTLTexture) -> ParameterValue {
-//        .texture(texture) // TODO: Error. Ambiguous use of 'texture'.
+//        .texture(texture) // Error. Ambiguous use of 'texture'.
 //    }
 // }
 
@@ -46,7 +46,8 @@ internal extension MTLComputeCommandEncoder {
             setSamplerState(samplerState, index: index)
 
         case .buffer(let buffer, let offset):
-            setBuffer(buffer, offset: offset, index: index) // TODO: OFFSET
+            setBuffer(buffer, offset: offset, index: index)
+
         case .array(let array):
             setUnsafeBytes(of: array, index: index)
 

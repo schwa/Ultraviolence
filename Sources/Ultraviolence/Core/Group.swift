@@ -1,4 +1,4 @@
-// TODO: Name overlaps with SwiftUI.Group. Consider renaming.
+// TODO: #48 Name overlaps with SwiftUI.Group. Consider renaming. In practice this doesn't seem to be causing problems for me.
 public struct Group <Content>: Element where Content: Element {
     public typealias Body = Never
 

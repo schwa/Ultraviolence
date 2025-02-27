@@ -31,7 +31,7 @@ public extension UVEnvironmentValues {
             return Key.defaultValue
         }
         set {
-            // TODO: Use isKnownUniquelyReferenced. https://github.com/schwa/Ultraviolence/issues/26
+            // TODO: #26 Use isKnownUniquelyReferenced.
             storage.values[.init(key)] = newValue
         }
     }

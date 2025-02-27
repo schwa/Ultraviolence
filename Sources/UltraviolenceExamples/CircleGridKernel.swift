@@ -20,7 +20,7 @@ public struct CircleGridKernel: Element {
 
     public var body: some Element {
         ComputePipeline(computeKernel: kernel) {
-            // TODO: Compute threads per threadgroup
+            // TODO: #52 Compute threads per threadgroup
             ComputeDispatch(threads: .init(width: outputTexture.width, height: outputTexture.height, depth: 1), threadsPerThreadgroup: .init(width: 32, height: 32, depth: 1))
                 .parameter("outputTexture", texture: outputTexture)
                 .parameter("spacing", value: spacing)

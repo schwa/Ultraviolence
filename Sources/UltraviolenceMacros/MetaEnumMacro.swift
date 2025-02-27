@@ -42,7 +42,7 @@ public struct MetaEnumMacro {
     }
 
     func makeMetaEnum() -> DeclSyntax {
-        // FIXME: Why does this need to be a string to make trailing trivia work properly?
+        // TODO: Why does this need to be a string to make trailing trivia work properly?
         let caseDecls =
             childCases
             .map { childCase in
@@ -59,7 +59,7 @@ public struct MetaEnumMacro {
     }
 
     func makeMetaInit() -> DeclSyntax {
-        // FIXME: Why does this need to be a string to make trailing trivia work properly?
+        // TODO: Why does this need to be a string to make trailing trivia work properly?
         let caseStatements =
             childCases
             .map { childCase in

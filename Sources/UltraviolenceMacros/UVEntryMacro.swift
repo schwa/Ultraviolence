@@ -4,7 +4,7 @@ import SwiftSyntaxMacros
 
 public struct UVEntryMacro: AccessorMacro, PeerMacro {
     public static func expansion(of node: AttributeSyntax, providingAccessorsOf declaration: some DeclSyntaxProtocol, in context: some MacroExpansionContext) throws -> [AccessorDeclSyntax] {
-        // TODO: The real macro complains if we use it wrong: "'@Entry' macro can only attach to var declarations inside extensions of EnvironmentValues, Transaction, ContainerValues, or FocusedValues"
+        // NOTE: The real macro complains if we use it wrong: "'@Entry' macro can only attach to var declarations inside extensions of EnvironmentValues, Transaction, ContainerValues, or FocusedValues"
         guard let binding = declaration.as(VariableDeclSyntax.self)?.bindings.first else {
             return []
         }

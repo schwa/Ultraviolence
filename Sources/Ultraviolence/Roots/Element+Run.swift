@@ -4,7 +4,7 @@ import UltraviolenceSupport
 public extension Element {
     @MainActor
     func run() throws {
-        // TODO: This has surprisingly little to do with compute. It's basically the same as offscreen renderer. https://github.com/schwa/Ultraviolence/issues/27
+        // TODO: #27 This has surprisingly little to do with compute. It's basically the same as offscreen renderer.
         let device = _MTLCreateSystemDefaultDevice()
         let commandQueue = try device._makeCommandQueue()
 
