@@ -11,6 +11,7 @@ struct UltraviolenceExampleTests {
         TraditionalRedTriangle.self,
         CheckerboardKernel.self,
         // FlatShaderExample.self, // TODO: Currently disabled - fails.
+        CircleGridKernel.self,
         MixedExample.self
     ] as [any Example.Type])
     func testExample(_ example: Example.Type) throws {
