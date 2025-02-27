@@ -32,7 +32,7 @@ public struct RenderView <Content>: View where Content: Element {
         }
 
         func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
-            // TODO: We may want to actually do graph.processSetup here so that (expensive) setup is not done at render time.
+            // TODO: We may want to actually do graph.processSetup here so that (expensive) setup is not done at render time. But this is made a lot more difficult because we are wrapping the content in CommandBufferElement and a ton of .environment setting. https://github.com/schwa/Ultraviolence/issues/45
             needsSetup = true
         }
 
@@ -52,7 +52,7 @@ public struct RenderView <Content>: View where Content: Element {
                 .environment(\.currentDrawable, currentDrawable)
                 .environment(\.drawableSize, view.drawableSize)
 
-                // TODO: Find a way to detect if graph has changed and set needsSetup to true
+                // TODO: Find a way to detect if graph has changed and set needsSetup to true. I am assuming we get a whole new graph every time - can we confirm this is true and too much work is being done?
                 try graph.updateContent(content: content)
                 if needsSetup {
                     try graph.processSetup()
