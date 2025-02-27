@@ -113,7 +113,9 @@ internal extension EnvironmentValues {
     @Entry var metalEnableSetNeedsDisplay: Bool?
     @Entry var metalAutoResizeDrawable: Bool?
     @Entry var metalIsPaused: Bool?
+    #if os(macOS)
     @Entry var metalColorspace: CGColorSpace?
+    #endif
     // swiftlint:enable discouraged_optional_boolean
 }
 
@@ -163,9 +165,11 @@ public extension View {
     func metalIsPaused(_ value: Bool) -> some View {
         self.environment(\.metalIsPaused, value)
     }
+    #if os(macOS)
     func metalColorspace(_ value: CGColorSpace?) -> some View {
         self.environment(\.metalColorspace, value)
     }
+    #endif
 }
 
 extension MTKView {
@@ -216,8 +220,10 @@ extension MTKView {
         if let value = environment.metalIsPaused {
             self.isPaused = value
         }
+        #if os(macOS)
         if let value = environment.metalColorspace {
             self.colorspace = value
         }
+        #endif
     }
 }
