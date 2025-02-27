@@ -28,6 +28,7 @@ internal extension IdentifiableBox where Key == ObjectIdentifier, Value: AnyObje
 internal extension Element {
     func _dump() throws {
         let graph = try Graph(content: self)
+        try graph.rebuildIfNeeded()
         try graph.dump()
     }
 }

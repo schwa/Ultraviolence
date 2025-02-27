@@ -52,16 +52,23 @@ public class Graph {
 public extension Graph {
     @MainActor
     func dump() throws {
+        var s = ""
+        try dump(to: &s)
+        print(s, terminator: "")
+    }
+
+    @MainActor
+    func dump(to output: inout some TextOutputStream) throws {
         try visit { depth, node in
             let element = node.element
             let indent = String(repeating: "  ", count: depth)
             if let element {
                 let typeName = String(describing: type(of: element)).split(separator: "<").first ?? ""
-                print("\(indent)\(typeName): \(node.environmentValues)", terminator: "")
-                print("")
+                print("\(indent)\(typeName): \(node.environmentValues)", terminator: "", to: &output)
+                print("", to: &output)
             }
             else {
-                print("\(indent)<no element!>")
+                print("\(indent)<no element!>", to: &output)
             }
         }
         enter: { _ in

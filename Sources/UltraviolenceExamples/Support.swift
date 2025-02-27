@@ -13,7 +13,7 @@ public extension URL {
 }
 #endif
 
-extension MTKMesh {
+public extension MTKMesh {
     static func teapot() -> MTKMesh {
         do {
             let device = _MTLCreateSystemDefaultDevice()
@@ -26,9 +26,7 @@ extension MTKMesh {
             fatalError("\(error)")
         }
     }
-}
 
-extension MTKMesh {
     static func sphere(extent: SIMD3<Float> = [1, 1, 1], inwardNormals: Bool = false) -> MTKMesh {
         do {
             let device = _MTLCreateSystemDefaultDevice()

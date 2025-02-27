@@ -2,7 +2,8 @@ import MetalKit
 import simd
 import SwiftUI
 import Ultraviolence
-internal import UltraviolenceSupport
+import UltraviolenceSupport
+import UltraviolenceExamples
 
 public struct BouncingTeapotsDemoView: View {
     @State
@@ -22,7 +23,7 @@ public struct BouncingTeapotsDemoView: View {
 
     public init() {
         let device = _MTLCreateSystemDefaultDevice()
-        let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm, width: 512, height: 512, mipmapped: false)
+        let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm, width: 2048, height: 2048, mipmapped: false)
         textureDescriptor.usage = [.shaderRead, .shaderWrite]
         skyboxTexture = device.makeTexture(descriptor: textureDescriptor).orFatalError()
         let samplerDescriptor = MTLSamplerDescriptor()
@@ -52,9 +53,11 @@ public struct BouncingTeapotsDemoView: View {
         let colors = simulation.teapots.map(\.color)
         let modelMatrices = simulation.teapots.map(\.matrix)
         RenderView {
-            // Render a checkerboard pattern into a texture
             try ComputePass {
-                try CheckerboardKernel(outputTexture: skyboxTexture, checkerSize: [20, 20], backgroundColor: [0, 0, 0, 1], foregroundColor: .init(color: checkerboardColor))
+                // Render a checkerboard pattern into a texture
+                try CheckerboardKernel(outputTexture: skyboxTexture, checkerSize: [20, 20], backgroundColor: [0, 0, 0, 1], foregroundColor: [1, 1, 1, 1])
+                // And some circles
+                try CircleGridKernel(outputTexture: skyboxTexture, spacing: [128, 128], radius: 32, foregroundColor: .init(color: checkerboardColor))
             }
             try RenderPass {
                 EnvironmentReader(keyPath: \.drawableSize) { drawableSize in
