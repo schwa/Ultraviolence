@@ -19,6 +19,7 @@ struct ContentView: View {
                 #endif
                 row(for: ComputeDemoView.self)
                 row(for: BouncingTeapotsDemoView.self)
+                row(for: StencilDemoView.self)
             }
         } detail: {
             if let page {
