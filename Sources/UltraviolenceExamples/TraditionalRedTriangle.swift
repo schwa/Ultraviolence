@@ -41,7 +41,7 @@ public enum TraditionalRedTriangle {
         }
         """
         // "8-bit normalized unsigned integer components in BGRA order"
-        let pixelFormat = MTLPixelFormat.rgba8Unorm
+        let pixelFormat = MTLPixelFormat.bgra8Unorm
         let device = MTLCreateSystemDefaultDevice()!
         // Start by loading our shaders...
         let library = try device.makeLibrary(source: source, options: nil)
@@ -72,7 +72,7 @@ public enum TraditionalRedTriangle {
         // We need to describe the color attachment in more detail, including the texture we're going to render to, what to do with the texture before rendering (clear it to transparent pixels), and what to do with it after rendering.
         renderPassDescriptor.colorAttachments[0].texture = texture
         renderPassDescriptor.colorAttachments[0].loadAction = .clear
-        renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColor(red: 0, green: 0, blue: 0, alpha: 0)
+        renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColor(red: 0, green: 0, blue: 0, alpha: 1)
         renderPassDescriptor.colorAttachments[0].storeAction = .store
         let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
         // Now we have a render encoder we can tell it about our pipeline that we created earlier.

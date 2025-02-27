@@ -8,15 +8,13 @@ public struct CircleGridKernel: Element {
     private var outputTexture: MTLTexture
     private var spacing: SIMD2<Float>
     private var radius: Float
-    private var backgroundColor: SIMD4<Float>
     private var foregroundColor: SIMD4<Float>
 
-    init(outputTexture: MTLTexture, spacing: SIMD2<Float>, radius: Float, backgroundColor: SIMD4<Float>, foregroundColor: SIMD4<Float>) throws {
+    init(outputTexture: MTLTexture, spacing: SIMD2<Float>, radius: Float, foregroundColor: SIMD4<Float>) throws {
         kernel = try ShaderLibrary(bundle: .module).CircleGridKernel_float4
         self.outputTexture = outputTexture
         self.spacing = spacing
         self.radius = radius
-        self.backgroundColor = backgroundColor
         self.foregroundColor = foregroundColor
     }
 
@@ -27,7 +25,6 @@ public struct CircleGridKernel: Element {
                 .parameter("outputTexture", texture: outputTexture)
                 .parameter("spacing", value: spacing)
                 .parameter("radius", value: radius)
-                .parameter("backgroundColor", value: backgroundColor)
                 .parameter("foregroundColor", value: foregroundColor)
         }
     }
@@ -37,13 +34,13 @@ extension CircleGridKernel: Example {
     @MainActor
     public static func runExample() throws -> ExampleResult {
         let device = _MTLCreateSystemDefaultDevice()
-        let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm, width: 512, height: 512, mipmapped: false)
+        let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm, width: 512, height: 512, mipmapped: false)
         textureDescriptor.usage = [.shaderWrite, .shaderRead]
-        let texture = device.makeTexture(descriptor: textureDescriptor).orFatalError()
+        let texture = try device.makeTexture(descriptor: textureDescriptor, value: UInt32(0xFF000000))
         let pass = try ComputePass {
-            try CircleGridKernel(outputTexture: texture, spacing: [32, 32], radius: 8, backgroundColor: [0, 0, 0, 1], foregroundColor: [1, 1, 1, 1])
+            try CircleGridKernel(outputTexture: texture, spacing: [32, 32], radius: 16, foregroundColor: [1, 1, 1, 1])
         }
-        try pass.compute()
+        try pass.run()
         return .texture(texture)
     }
 }

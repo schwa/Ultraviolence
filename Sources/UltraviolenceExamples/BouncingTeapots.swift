@@ -22,7 +22,7 @@ public struct BouncingTeapotsDemoView: View {
 
     public init() {
         let device = _MTLCreateSystemDefaultDevice()
-        let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm, width: 512, height: 512, mipmapped: false)
+        let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm, width: 512, height: 512, mipmapped: false)
         textureDescriptor.usage = [.shaderRead, .shaderWrite]
         skyboxTexture = device.makeTexture(descriptor: textureDescriptor).orFatalError()
         let samplerDescriptor = MTLSamplerDescriptor()

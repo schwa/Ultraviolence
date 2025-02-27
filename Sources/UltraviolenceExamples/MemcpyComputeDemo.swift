@@ -34,7 +34,7 @@ public enum MemcpyComputeDemo {
                         .parameter("dst", buffer: outputBuffer)
                 }
             }
-            try compute.compute()
+            try compute.run()
             assert([UInt8](inputBuffer.contents()) == [UInt8](outputBuffer.contents()))
         }
     }

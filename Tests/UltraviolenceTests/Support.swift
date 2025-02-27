@@ -91,15 +91,12 @@ func testHistogram() throws {
     let red = try Histogram(image: CGImage.withColor(red: 1, green: 0, blue: 0)).peaks
     #expect(red.alpha == 1)
     #expect(red.red > red.green && red.red > red.blue)
-    print(red)
     let green = try Histogram(image: CGImage.withColor(red: 0, green: 1, blue: 0)).peaks
     #expect(green.alpha == 1)
     #expect(green.green > red.red && green.green > red.blue)
-    print(green)
     let blue = try Histogram(image: CGImage.withColor(red: 0, green: 0, blue: 1)).peaks
     #expect(blue.alpha == 1)
     #expect(blue.blue > red.red && blue.blue > red.green)
-    print(blue)
 }
 
 func goldenImage(named name: String) -> CGImage {

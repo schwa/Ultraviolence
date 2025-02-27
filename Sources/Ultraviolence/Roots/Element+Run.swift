@@ -1,9 +1,9 @@
 import Metal
 import UltraviolenceSupport
 
-public extension ComputePass {
+public extension Element {
     @MainActor
-    func compute() throws {
+    func run() throws {
         // TODO: This has surprisingly little to do with compute. It's basically the same as offscreen renderer. https://github.com/schwa/Ultraviolence/issues/27
         let device = _MTLCreateSystemDefaultDevice()
         let commandQueue = try device._makeCommandQueue()

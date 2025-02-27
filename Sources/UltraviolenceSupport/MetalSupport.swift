@@ -1,9 +1,12 @@
 // swiftlint:disable file_length
 
+import CoreGraphics
+import ImageIO
 import Metal
 import MetalKit
 import ModelIO
 import simd
+import UniformTypeIdentifiers
 
 public extension MTLVertexDescriptor {
     convenience init(vertexAttributes: [MTLVertexAttribute]) {
@@ -530,6 +533,10 @@ public extension MTLDevice {
     func _makeSamplerState(descriptor: MTLSamplerDescriptor) throws -> MTLSamplerState {
         try makeSamplerState(descriptor: descriptor).orThrow(.resourceCreationFailure("Could not create sampler state."))
     }
+
+    func _makeTexture(descriptor: MTLTextureDescriptor) throws -> MTLTexture {
+        try makeTexture(descriptor: descriptor).orThrow(.resourceCreationFailure("Could not create texture."))
+    }
 }
 
 public extension MTLCommandQueue {
@@ -553,5 +560,40 @@ public extension MTLCommandBuffer {
 
     func _makeRenderCommandEncoder(descriptor: MTLRenderPassDescriptor) throws -> MTLRenderCommandEncoder {
         try makeRenderCommandEncoder(descriptor: descriptor).orThrow(.resourceCreationFailure("Could not create render command encoder."))
+    }
+}
+
+public extension MTLDevice {
+    // Deal with your own endian problems.
+    func makeTexture<T>(descriptor: MTLTextureDescriptor, value: T) throws -> MTLTexture {
+        assert(isPOD(value))
+        let numPixels = descriptor.width * descriptor.height
+        let values = [T](repeating: value, count: numPixels)
+        let texture = try _makeTexture(descriptor: descriptor)
+        values.withUnsafeBufferPointer { buffer in
+            let buffer = UnsafeRawBufferPointer(buffer)
+            texture.replace(region: MTLRegionMake2D(0, 0, descriptor.width, descriptor.height), mipmapLevel: 0, withBytes: buffer.baseAddress!, bytesPerRow: descriptor.width * MemoryLayout<T>.stride)
+        }
+        return texture
+    }
+}
+
+public extension MTLTexture {
+    func toCGImage() throws -> CGImage {
+        // TODO: Hack
+        assert(self.pixelFormat == .bgra8Unorm || self.pixelFormat == .bgra8Unorm_srgb)
+        var bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue)
+        bitmapInfo.insert(.byteOrder32Little)
+        let context = try CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: width * 4, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: bitmapInfo.rawValue).orThrow(.resourceCreationFailure("Failed to create context."))
+        let data = try context.data.orThrow(.resourceCreationFailure("Failed to get context data."))
+        getBytes(data, bytesPerRow: width * 4, from: MTLRegionMake2D(0, 0, width, height), mipmapLevel: 0)
+        return try context.makeImage().orThrow(.resourceCreationFailure("Failed to create image."))
+    }
+
+    func write(to url: URL) throws {
+        let image = try toCGImage()
+        let destination = try CGImageDestinationCreateWithURL(url as CFURL, UTType.png.identifier as CFString, 1, nil).orThrow(.resourceCreationFailure("Failed to create image destination"))
+        CGImageDestinationAddImage(destination, image, nil)
+        CGImageDestinationFinalize(destination)
     }
 }

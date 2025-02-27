@@ -5,26 +5,6 @@ import ModelIO
 internal import UltraviolenceSupport
 import UniformTypeIdentifiers
 
-public extension MTLTexture {
-    func toCGImage() throws -> CGImage {
-        // TODO: Hack
-        assert(self.pixelFormat == .rgba8Unorm || self.pixelFormat == .bgra8Unorm_srgb)
-        var bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue)
-        bitmapInfo.insert(.byteOrder32Little)
-        let context = try CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: width * 4, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: bitmapInfo.rawValue).orThrow(.resourceCreationFailure("Failed to create context."))
-        let data = try context.data.orThrow(.resourceCreationFailure("Failed to get context data."))
-        getBytes(data, bytesPerRow: width * 4, from: MTLRegionMake2D(0, 0, width, height), mipmapLevel: 0)
-        return try context.makeImage().orThrow(.resourceCreationFailure("Failed to create image."))
-    }
-
-    func write(to url: URL) throws {
-        let image = try toCGImage()
-        let destination = try CGImageDestinationCreateWithURL(url as CFURL, UTType.png.identifier as CFString, 1, nil).orThrow(.resourceCreationFailure("Failed to create image destination"))
-        CGImageDestinationAddImage(destination, image, nil)
-        CGImageDestinationFinalize(destination)
-    }
-}
-
 #if canImport(AppKit)
 public extension URL {
     func revealInFinder() {
