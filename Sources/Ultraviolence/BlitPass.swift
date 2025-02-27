@@ -26,7 +26,7 @@ public struct Blit: Element, BodylessElement {
         self.block = block
     }
 
-    func _expandNode(_ node: Node, depth: Int) throws {
+    func _expandNode(_ node: Node, context: ExpansionContext) throws {
         // This line intentionally left blank.
     }
 

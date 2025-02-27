@@ -52,7 +52,7 @@ public struct ComputeDispatch: Element, BodylessElement {
         self.threadsPerThreadgroup = threadsPerThreadgroup
     }
 
-    func _expandNode(_ node: Node, depth: Int) throws {
+    func _expandNode(_ node: Node, context: ExpansionContext) throws {
         // This line intentionally left blank.
     }
 

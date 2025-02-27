@@ -5,17 +5,31 @@ internal protocol BodylessContentElement: BodylessElement {
 }
 
 extension BodylessContentElement {
-    func expandNodeHelper(_ node: Node, depth: Int) throws {
+    func expandNodeHelper(_ node: Node, context: ExpansionContext) throws {
         guard let graph = node.graph else {
             preconditionFailure("Cannot build node tree without a graph.")
         }
         if node.children.isEmpty {
             node.children.append(graph.makeNode())
         }
-        try content.expandNode(node.children[0], depth: depth + 1)
+        try content.expandNode(node.children[0], context: context.deeper())
     }
 
-    func _expandNode(_ node: Node, depth: Int) throws {
-        try expandNodeHelper(node, depth: depth)
+    func _expandNode(_ node: Node, context: ExpansionContext) throws {
+        try expandNodeHelper(node, context: context)
+    }
+}
+
+internal struct ExpansionContext {
+    var depth: Int
+
+    init(depth: Int = 0) {
+        self.depth = depth
+    }
+}
+
+internal extension ExpansionContext {
+    func deeper() -> ExpansionContext {
+        ExpansionContext(depth: depth + 1)
     }
 }

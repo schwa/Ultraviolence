@@ -16,7 +16,7 @@ public class Graph {
     internal func updateContent<Content>(content: Content) throws where Content: Element {
         // TODO: We need to somehow detect if the content has changed. https://github.com/schwa/Ultraviolence/issues/25
         Self.current = self
-        try content.expandNode(root, depth: 0)
+        try content.expandNode(root, context: .init())
         Self.current = nil
     }
 
@@ -30,7 +30,7 @@ public class Graph {
         guard let rootElement = root.element else {
             preconditionFailure("Root element is missing.")
         }
-        try rootElement.expandNode(root, depth: 0)
+        try rootElement.expandNode(root, context: .init())
     }
 
     private static let _current = OSAllocatedUnfairLock<Graph?>(uncheckedState: nil)

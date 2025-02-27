@@ -1,7 +1,7 @@
 @MainActor
 internal protocol BodylessElement {
     // TODO: This should be renamed. And it should be differently named than Node.buildNodeTree. https://github.com/schwa/Ultraviolence/issues/12
-    func _expandNode(_ node: Node, depth: Int) throws
+    func _expandNode(_ node: Node, context: ExpansionContext) throws
 
     func setupEnter(_ node: Node) throws
     func setupExit(_ node: Node) throws

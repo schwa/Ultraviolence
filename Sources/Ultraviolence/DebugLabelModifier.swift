@@ -7,8 +7,8 @@ internal struct DebugLabelModifier <Content>: Element, BodylessElement, Bodyless
         self.content = content
     }
 
-    func _expandNode(_ node: Node, depth: Int) throws {
-        try expandNodeHelper(node, depth: depth)
+    func _expandNode(_ node: Node, context: ExpansionContext) throws {
+        try expandNodeHelper(node, context: context)
         node.debugLabel = debugLabel
     }
 }

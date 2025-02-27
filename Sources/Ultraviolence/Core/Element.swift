@@ -17,7 +17,7 @@ public extension Element where Body == Never {
 }
 
 internal extension Element {
-    func expandNode(_ node: Node, depth: Int) throws {
+    func expandNode(_ node: Node, context: ExpansionContext) throws {
         // TODO: Refactor this to make expansion of the node tree distinct from handling observable and state properties. https://github.com/schwa/Ultraviolence/issues/23.
         guard let graph = Graph.current else {
             preconditionFailure("No graph is currently active.")
@@ -41,7 +41,7 @@ internal extension Element {
         restoreStateProperties(node)
 
         if let bodylessElement = self as? any BodylessElement {
-            try bodylessElement._expandNode(node, depth: depth + 1)
+            try bodylessElement._expandNode(node, context: context.deeper())
         }
 
         let shouldRunBody = node.needsRebuild || !equalToPrevious(node)
@@ -60,7 +60,7 @@ internal extension Element {
                     child.parent = node
                 }
             }
-            try body.expandNode(node.children[0], depth: depth + 1)
+            try body.expandNode(node.children[0], context: context.deeper())
         }
 
         storeStateProperties(node)

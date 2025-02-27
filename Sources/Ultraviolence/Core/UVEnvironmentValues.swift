@@ -42,9 +42,9 @@ internal struct EnvironmentWritingModifier<Content: Element>: Element, BodylessE
     var content: Content
     var modify: (inout UVEnvironmentValues) -> Void
 
-    func _expandNode(_ node: Node, depth: Int) throws {
+    func _expandNode(_ node: Node, context: ExpansionContext) throws {
         modify(&node.environmentValues)
-        try content.expandNode(node, depth: depth + 1)
+        try content.expandNode(node, context: context.deeper())
     }
 }
 
@@ -67,9 +67,9 @@ public struct EnvironmentReader<Value, Content: Element>: Element, BodylessEleme
         self.content = content
     }
 
-    func _expandNode(_ node: Node, depth: Int) throws {
+    func _expandNode(_ node: Node, context: ExpansionContext) throws {
         let value = node.environmentValues[keyPath: keyPath]
-        try content(value).expandNode(node, depth: depth + 1)
+        try content(value).expandNode(node, context: context.deeper())
     }
 }
 
