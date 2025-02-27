@@ -519,7 +519,7 @@ public extension SIMD2<Float> {
 }
 
 public func _MTLCreateSystemDefaultDevice() -> MTLDevice {
-    return MTLCreateSystemDefaultDevice().orFatalError(.unexpectedError(.resourceCreationFailure("Could not create system default device.")))
+    MTLCreateSystemDefaultDevice().orFatalError(.unexpectedError(.resourceCreationFailure("Could not create system default device.")))
 }
 
 public extension MTLDevice {

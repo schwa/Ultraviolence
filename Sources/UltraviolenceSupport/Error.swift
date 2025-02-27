@@ -7,12 +7,12 @@ public indirect enum UltraviolenceError: Error {
     case deviceCababilityFailure(String)
     case textureCreationFailure
     // TODO: This should be more "impossible" than "unexpected".
-    case unexpectedError(UltraviolenceError)
+    case unexpectedError(Self)
 }
 
 extension UltraviolenceError {
     static var resourceCreationFailure: Self {
-        return resourceCreationFailure("Resource creation failure.")
+        resourceCreationFailure("Resource creation failure.")
     }
 }
 
