@@ -55,7 +55,7 @@ public struct BouncingTeapotsDemoView: View {
         RenderView {
             try ComputePass {
                 // Render a checkerboard pattern into a texture
-                try CheckerboardKernel(outputTexture: skyboxTexture, checkerSize: [20, 20], backgroundColor: [0, 0, 0, 1], foregroundColor: [1, 1, 1, 1])
+                try CheckerboardKernel(outputTexture: skyboxTexture, checkerSize: [20, 20], foregroundColor: [1, 1, 1, 1])
                 // And some circles
                 try CircleGridKernel(outputTexture: skyboxTexture, spacing: [128, 128], radius: 32, foregroundColor: .init(color: checkerboardColor))
             }

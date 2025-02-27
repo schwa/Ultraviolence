@@ -78,7 +78,7 @@ struct StencilDemoView: View {
                 let texture = device.makeTexture(descriptor: descriptor)!
                 texture.label = "Faux Stencil Texture"
                 let pass = try ComputePass {
-                    try CheckerboardKernel_ushort(outputTexture: texture, checkerSize: [100, 100], backgroundColor: 0, foregroundColor: 0xFFFF)
+                    try CheckerboardKernel_ushort(outputTexture: texture, checkerSize: [100, 100], foregroundColor: 0xFFFF)
                 }
                 try pass.run()
                 self.texture = texture
