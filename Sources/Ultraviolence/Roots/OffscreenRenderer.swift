@@ -74,12 +74,7 @@ public extension OffscreenRenderer {
 public extension OffscreenRenderer.Rendering {
     var cgImage: CGImage {
         get throws {
-            var bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.noneSkipFirst.rawValue)
-            bitmapInfo.insert(.byteOrder32Little)
-            let context = try CGContext(data: nil, width: texture.width, height: texture.height, bitsPerComponent: 8, bytesPerRow: texture.width * 4, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: bitmapInfo.rawValue).orThrow(.unexpectedError(.resourceCreationFailure("Failed to create CGContext.")))
-            let data = try context.data.orThrow(.unexpectedError(.resourceCreationFailure("Failed to get data from CGContext.")))
-            texture.getBytes(data, bytesPerRow: texture.width * 4, from: MTLRegionMake2D(0, 0, texture.width, texture.height), mipmapLevel: 0)
-            return try context.makeImage().orThrow(.unexpectedError(.resourceCreationFailure("Failed to create CGImage.")))
+            try texture.toCGImage()
         }
     }
 }
