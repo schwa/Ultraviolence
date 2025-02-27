@@ -84,8 +84,11 @@ public struct BouncingTeapotsDemoView: View {
                 .depthCompare(function: .less, enabled: true)
             }
         }
+        .metalDepthStencilPixelFormat(.depth32Float)
     }
 }
+
+// MARK: -
 
 internal struct Teapot {
     var position: SIMD3<Float>

@@ -21,6 +21,9 @@ struct MixedDemoView: View {
             RenderView {
                 MixedExample(modelMatrix: modelMatrix, color: color, lightDirection: lightDirection)
             }
+            .metalDepthStencilPixelFormat(.depth32Float)
+            .metalFramebufferOnly(false)
+            .metalDepthStencilAttachmentTextureUsage([.shaderRead, .renderTarget])
             .onChange(of: timeline.date) {
                 let degreesPerSecond = 90.0
                 let angle = Angle(degrees: (degreesPerSecond * timeline.date.timeIntervalSince1970).truncatingRemainder(dividingBy: 360))

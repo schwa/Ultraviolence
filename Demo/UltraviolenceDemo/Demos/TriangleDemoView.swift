@@ -53,6 +53,7 @@ struct TriangleDemoView: View {
                     }
                 }
             }
+            .metalDepthStencilPixelFormat(.depth32Float)
             .onChange(of: timeline.date) { _, new in
                 let timeInterval = new.timeIntervalSince1970
                 let red = (1 + sin(timeInterval * 2 * .pi / 0.3)) / 2
