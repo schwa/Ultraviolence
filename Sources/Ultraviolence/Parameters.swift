@@ -23,7 +23,7 @@ internal struct ParameterElement<Content, T>: Element, BodylessElement, Bodyless
         let renderCommandEncoder = node.environmentValues.renderCommandEncoder
         let computeCommandEncoder = node.environmentValues.computeCommandEncoder
 
-        // TODO: We can be a lot better about logging errors here.
+        // TODO: #51 We can be a lot better about logging errors here.
         switch (renderCommandEncoder, computeCommandEncoder) {
         case (.some(let renderCommandEncoder), nil):
             if let functionType {

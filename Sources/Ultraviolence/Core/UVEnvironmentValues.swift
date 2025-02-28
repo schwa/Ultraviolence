@@ -1,6 +1,6 @@
 public struct UVEnvironmentValues {
     struct Key: Hashable, CustomDebugStringConvertible {
-        var id: ObjectIdentifier // TODO: We don't need to store this. But AnyIdentifgier gets a tad upset.
+        var id: ObjectIdentifier // TODO: #49 We don't need to store this. But AnyIdentifgier gets a tad upset.
         var value: Any.Type
     }
 
@@ -37,7 +37,7 @@ public extension UVEnvironmentValues {
     }
 }
 
-// TODO: Make into actual modifier.
+// TODO: #30 Make into actual modifier.
 internal struct EnvironmentWritingModifier<Content: Element>: Element, BodylessElement {
     var content: Content
     var modify: (inout UVEnvironmentValues) -> Void
@@ -73,7 +73,7 @@ public struct EnvironmentReader<Value, Content: Element>: Element, BodylessEleme
     }
 }
 
-// TODO: SwiftUI.Environment adopts DynamicProperty.
+// TODO: #50 SwiftUI.Environment adopts DynamicProperty.
 // public protocol DynamicProperty {
 //    mutating func update()
 // }

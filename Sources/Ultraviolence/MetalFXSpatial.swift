@@ -25,7 +25,7 @@ public struct MetalFXSpatial: Element {
             }
             .onWorkloadEnter {
                 var scaler = try scaler.orThrow(.undefined)
-                // TODO: Instead of doing this we need to have some kind of "onChange" and merely mark "setupNeeded"
+                // TODO: #55, #70 Instead of doing this we need to have some kind of "onChange" and merely mark "setupNeeded"
                 if scaler.outputWidth != outputTexture.width || scaler.outputHeight != outputTexture.height {
                     scaler = try makeScaler()
                     self.scaler = scaler

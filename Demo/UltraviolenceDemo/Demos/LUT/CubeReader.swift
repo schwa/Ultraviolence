@@ -5,8 +5,8 @@ import Ultraviolence
 import UltraviolenceSupport
 
 struct CubeReader {
-    // TODO: Use https://github.com/fastfloat/fast_float
-    // TODO: This assumes the .cube file has a single 3D lut in it. See here for more: https://resolve.cafe/developers/luts/
+    // NOTE: Use https://github.com/fastfloat/fast_float
+    // NOTE: This assumes the .cube file has a single 3D lut in it. See here for more: https://resolve.cafe/developers/luts/
     var title: String
     var count: Int
     var values: [SIMD3<Float>] = []

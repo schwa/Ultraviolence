@@ -406,7 +406,7 @@ public extension MTLFunction {
                 vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<SIMD2<Float>>.stride
             case .float3:
                 vertexDescriptor.attributes[attribute.attributeIndex].format = .float3
-                vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<Float>.stride * 3 // TODO: We use the packed size here.
+                vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<Float>.stride * 3 // NOTE: We use the packed size here.
             case .float4:
                 vertexDescriptor.attributes[attribute.attributeIndex].format = .float4
                 vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<SIMD4<Float>>.stride
@@ -418,7 +418,7 @@ public extension MTLFunction {
                 vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<SIMD2<UInt16>>.stride
             case .half3:
                 vertexDescriptor.attributes[attribute.attributeIndex].format = .half3
-                vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<UInt16>.stride * 3 // TODO: We use the packed size here.
+                vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<UInt16>.stride * 3 // NOTE: We use the packed size here.
             case .half4:
                 vertexDescriptor.attributes[attribute.attributeIndex].format = .half4
                 vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<SIMD4<UInt16>>.stride
@@ -430,7 +430,7 @@ public extension MTLFunction {
                 vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<SIMD2<Int32>>.stride
             case .int3:
                 vertexDescriptor.attributes[attribute.attributeIndex].format = .int3
-                vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<Int32>.stride * 3 // TODO: We use the packed size here.
+                vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<Int32>.stride * 3 // NOTE: We use the packed size here.
             case .int4:
                 vertexDescriptor.attributes[attribute.attributeIndex].format = .int4
                 vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<SIMD4<Int32>>.stride
@@ -442,7 +442,7 @@ public extension MTLFunction {
                 vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<SIMD2<UInt32>>.stride
             case .uint3:
                 vertexDescriptor.attributes[attribute.attributeIndex].format = .uint3
-                vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<UInt32>.stride * 3 // TODO: We use the packed size here.
+                vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<UInt32>.stride * 3 // NOTE: We use the packed size here.
             case .uint4:
                 vertexDescriptor.attributes[attribute.attributeIndex].format = .uint4
                 vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<SIMD4<UInt32>>.stride
@@ -454,7 +454,7 @@ public extension MTLFunction {
                 vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<SIMD2<Int16>>.stride
             case .short3:
                 vertexDescriptor.attributes[attribute.attributeIndex].format = .short3
-                vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<Int16>.stride * 3 // TODO: We use the packed size here.
+                vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<Int16>.stride * 3 // NOTE: We use the packed size here.
             case .short4:
                 vertexDescriptor.attributes[attribute.attributeIndex].format = .short4
                 vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<SIMD4<Int16>>.stride
@@ -466,7 +466,7 @@ public extension MTLFunction {
                 vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<SIMD2<UInt16>>.stride
             case .ushort3:
                 vertexDescriptor.attributes[attribute.attributeIndex].format = .ushort3
-                vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<UInt16>.stride * 3 // TODO: We use the packed size here.
+                vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<UInt16>.stride * 3 // NOTE: We use the packed size here.
             case .ushort4:
                 vertexDescriptor.attributes[attribute.attributeIndex].format = .ushort4
                 vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<SIMD4<UInt16>>.stride
@@ -478,7 +478,7 @@ public extension MTLFunction {
                 vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<SIMD2<Int8>>.stride
             case .char3:
                 vertexDescriptor.attributes[attribute.attributeIndex].format = .char3
-                vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<Int8>.stride * 3 // TODO: We use the packed size here.
+                vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<Int8>.stride * 3 // NOTE: We use the packed size here.
             case .char4:
                 vertexDescriptor.attributes[attribute.attributeIndex].format = .char4
                 vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<SIMD4<Int8>>.stride
@@ -490,7 +490,7 @@ public extension MTLFunction {
                 vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<SIMD2<UInt8>>.stride
             case .uchar3:
                 vertexDescriptor.attributes[attribute.attributeIndex].format = .uchar3
-                vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<UInt8>.stride * 3 // TODO: We use the packed size here.
+                vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<UInt8>.stride * 3 // NOTE: We use the packed size here.
             case .uchar4:
                 vertexDescriptor.attributes[attribute.attributeIndex].format = .uchar4
                 vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<SIMD4<UInt8>>.stride

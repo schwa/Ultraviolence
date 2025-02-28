@@ -2,7 +2,6 @@
 
 @available(*, deprecated, message: "Incomplete: See issue https://github.com/schwa/ultraviolence/issues/30")
 public protocol ElementModifier {
-    // TODO: Remove reliance on AnyElement?
     typealias Content = AnyElement
     associatedtype Body: Element
 

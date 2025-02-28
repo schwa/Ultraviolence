@@ -3,6 +3,7 @@ import QuartzCore
 import UltraviolenceSupport
 
 public extension UVEnvironmentValues {
+    // TODO: This is messy and needs organisation and possibly deprecation of unused elements.
     @UVEntry var device: MTLDevice?
     @UVEntry var commandQueue: MTLCommandQueue?
     @UVEntry var commandBuffer: MTLCommandBuffer?
@@ -15,13 +16,9 @@ public extension UVEnvironmentValues {
     @UVEntry var computeCommandEncoder: MTLComputeCommandEncoder?
     @UVEntry var computePipelineState: MTLComputePipelineState?
     @UVEntry var reflection: Reflection?
-    // TODO: Investigate deprecation
     @UVEntry var colorAttachment0: (MTLTexture, Int)?
-    // TODO: Investigate deprecation
     @UVEntry var depthAttachment: MTLTexture?
-    // TODO: Investigate deprecation
     @UVEntry var stencilAttachment: MTLTexture?
-
     @UVEntry var currentDrawable: CAMetalDrawable?
     @UVEntry var drawableSize: CGSize?
     @UVEntry var blitCommandEncoder: MTLBlitCommandEncoder?
