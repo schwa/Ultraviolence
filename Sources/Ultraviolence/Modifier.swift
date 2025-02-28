@@ -1,4 +1,4 @@
-// TODO: Stuff like @Environment/@State on modifiers won't work because https://github.com/schwa/ultraviolence/issues/30
+// TODO: #30 Stuff like @Environment/@State on modifiers won't work because.
 
 @available(*, deprecated, message: "Incomplete: See issue https://github.com/schwa/ultraviolence/issues/30")
 public protocol ElementModifier {

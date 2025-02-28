@@ -23,7 +23,7 @@ internal extension Element {
             preconditionFailure("No graph is currently active.")
         }
 
-        // TODO: Avoid this in future https://github.com/schwa/Ultraviolence/issues/35
+        // TODO: #35 Avoid this in future
         let parent = graph.activeNodeStack.last !== node ? graph.activeNodeStack.last : nil
 
         graph.activeNodeStack.append(node)
