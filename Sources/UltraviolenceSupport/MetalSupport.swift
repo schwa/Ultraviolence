@@ -6,9 +6,12 @@ import Metal
 import MetalKit
 import ModelIO
 import simd
+import SwiftUI
 import UniformTypeIdentifiers
 #if canImport(AppKit)
 import AppKit
+#elseif canImport(UIKit)
+import UIKit
 #endif
 
 public extension MTLVertexDescriptor {
@@ -400,10 +403,12 @@ public extension MTLFunction {
                 vertexDescriptor.attributes[attribute.attributeIndex].format = .float2
                 vertexDescriptor.attributes[attribute.attributeIndex].bufferIndex = attribute.attributeIndex
                 vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<SIMD2<Float>>.stride
+
             case .float3:
                 vertexDescriptor.attributes[attribute.attributeIndex].format = .float3
                 vertexDescriptor.attributes[attribute.attributeIndex].bufferIndex = attribute.attributeIndex
                 vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<Float>.stride * 3
+
             default:
                 // TODO: #53 Flesh this out.
                 fatalError("Unimplemented: \(attribute.attributeType)")
@@ -669,6 +674,7 @@ public extension MTLTexture {
 
     func write(to url: URL) throws {
         let image = try toCGImage()
+        // TODO: We're ignoring the file extension.
         let destination = try CGImageDestinationCreateWithURL(url as CFURL, UTType.png.identifier as CFString, 1, nil).orThrow(.resourceCreationFailure("Failed to create image destination"))
         CGImageDestinationAddImage(destination, image, nil)
         CGImageDestinationFinalize(destination)
