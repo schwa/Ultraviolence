@@ -643,7 +643,8 @@ public extension MTLDevice {
         let texture = try _makeTexture(descriptor: descriptor)
         values.withUnsafeBufferPointer { buffer in
             let buffer = UnsafeRawBufferPointer(buffer)
-            texture.replace(region: MTLRegionMake2D(0, 0, descriptor.width, descriptor.height), mipmapLevel: 0, withBytes: buffer.baseAddress!, bytesPerRow: descriptor.width * MemoryLayout<T>.stride)
+            let baseAddress = buffer.baseAddress.orFatalError()
+            texture.replace(region: MTLRegionMake2D(0, 0, descriptor.width, descriptor.height), mipmapLevel: 0, withBytes: baseAddress, bytesPerRow: descriptor.width * MemoryLayout<T>.stride)
         }
         return texture
     }

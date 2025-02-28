@@ -36,6 +36,7 @@ public extension Element {
 @available(*, deprecated, message: "Incomplete: See issue https://github.com/schwa/ultraviolence/issues/30")
 public struct PassthroughModifier: ElementModifier {
     public init() {
+        // This line intentionally left blank.
     }
 
     @MainActor

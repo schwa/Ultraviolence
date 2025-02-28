@@ -7,6 +7,7 @@ import UniformTypeIdentifiers
 
 public struct RedTriangle: Element {
     public init() {
+        // This line intentionally left blank.
     }
 
     public var body: some Element {
