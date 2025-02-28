@@ -2,6 +2,10 @@ import SwiftUI
 import Ultraviolence
 import UltraviolenceExamples
 
+/// A demo that shows the use of a stencil texture.
+/// This view creates a texture, the size of the output drawable, containing a checkerboard pattern. The texture is regenerated when the drawable size changes.
+/// During the render loop it blits the checkerboard texture into the stencil attachment of the render pass descriptor. A better way would be to just set the stencil attachment storeAction to .store but that is too easy for this demo.
+/// It then enables the stencil test and draws a triangle. The resulting triangle should be clipped by the stencil texture.
 struct StencilDemoView: View {
     let source = """
     #include <metal_stdlib>
