@@ -13,8 +13,8 @@ public struct ShaderLibrary {
 
     public init(bundle: Bundle, namespace: String? = nil) throws {
         let device = _MTLCreateSystemDefaultDevice()
-        let url = try bundle.url(forResource: "debug", withExtension: "metallib").orThrow(.resourceCreationFailure("Failed to find default library in bundle"))
-        if let library = try? device.makeLibrary(URL: url) {
+
+        if let url = try bundle.url(forResource: "debug", withExtension: "metallib"), let library = try? device.makeLibrary(URL: url) {
             self.library = library
         }
         else {

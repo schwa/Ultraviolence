@@ -93,31 +93,3 @@ struct StencilDemoView: View {
 extension StencilDemoView: DemoView {
 }
 
-extension MTLStencilDescriptor {
-    convenience init(compareFunction: MTLCompareFunction = .always, stencilFailureOperation: MTLStencilOperation = .keep, depthFailureOperation: MTLStencilOperation = .keep, stencilPassDepthPassOperation: MTLStencilOperation = .keep, readMask: UInt32 = 0xffffffff, writeMask: UInt32 = 0xffffffff) {
-        self.init()
-        self.stencilCompareFunction = compareFunction
-        self.stencilFailureOperation = stencilFailureOperation
-        self.depthFailureOperation = depthFailureOperation
-        self.depthStencilPassOperation = stencilPassDepthPassOperation
-        self.readMask = readMask
-        self.writeMask = writeMask
-    }
-}
-
-extension MTLDepthStencilDescriptor {
-    convenience init(depthCompareFunction: MTLCompareFunction = .less, isDepthWriteEnabled: Bool = true, frontFaceStencil: MTLStencilDescriptor? = nil, backFaceStencil: MTLStencilDescriptor? = nil, label: String? = nil) {
-        self.init()
-        self.depthCompareFunction = depthCompareFunction
-        self.isDepthWriteEnabled = isDepthWriteEnabled
-        if let frontFaceStencil {
-            self.frontFaceStencil = frontFaceStencil
-        }
-        if let backFaceStencil {
-            self.backFaceStencil = backFaceStencil
-        }
-        if let label {
-            self.label = label
-        }
-    }
-}

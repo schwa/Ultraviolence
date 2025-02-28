@@ -10,7 +10,7 @@ public struct CheckerboardKernel: Element {
     private var foregroundColor: SIMD4<Float>
 
     public init(outputTexture: MTLTexture, checkerSize: SIMD2<Float>, foregroundColor: SIMD4<Float>) throws {
-        kernel = try ShaderLibrary(bundle: .module).CheckerboardKernel_float4
+        kernel = try ShaderLibrary(bundle: .module, namespace: "Checkerboard").CheckerboardKernel_float4
         self.outputTexture = outputTexture
         self.checkerSize = checkerSize
         self.foregroundColor = foregroundColor
@@ -35,7 +35,7 @@ public struct CheckerboardKernel_ushort: Element {
     private var foregroundColor: UInt16
 
     public init(outputTexture: MTLTexture, checkerSize: SIMD2<Float>, foregroundColor: UInt16) throws {
-        kernel = try ShaderLibrary(bundle: .module).CheckerboardKernel_ushort
+        kernel = try ShaderLibrary(bundle: .module, namespace: "Checkerboard").CheckerboardKernel_ushort
         self.outputTexture = outputTexture
         self.checkerSize = checkerSize
         self.foregroundColor = foregroundColor

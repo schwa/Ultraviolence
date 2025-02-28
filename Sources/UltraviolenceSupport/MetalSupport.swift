@@ -7,6 +7,9 @@ import MetalKit
 import ModelIO
 import simd
 import UniformTypeIdentifiers
+#if canImport(AppKit)
+import AppKit
+#endif
 
 public extension MTLVertexDescriptor {
     convenience init(vertexAttributes: [MTLVertexAttribute]) {
@@ -391,25 +394,21 @@ public extension MTLFunction {
         }
         let vertexDescriptor = MTLVertexDescriptor()
 
-        var totalStride: Int = 0
         for attribute in vertexAttributes {
             switch attribute.attributeType {
             case .float2:
                 vertexDescriptor.attributes[attribute.attributeIndex].format = .float2
+                vertexDescriptor.attributes[attribute.attributeIndex].bufferIndex = attribute.attributeIndex
                 vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<SIMD2<Float>>.stride
-                totalStride += vertexDescriptor.layouts[attribute.attributeIndex].stride
-
             case .float3:
                 vertexDescriptor.attributes[attribute.attributeIndex].format = .float3
+                vertexDescriptor.attributes[attribute.attributeIndex].bufferIndex = attribute.attributeIndex
                 vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<Float>.stride * 3
-                totalStride += MemoryLayout<SIMD2<Float>>.stride
-
             default:
                 // TODO: #53 Flesh this out.
                 fatalError("Unimplemented: \(attribute.attributeType)")
             }
         }
-        vertexDescriptor.layouts[0].stride = totalStride
         return vertexDescriptor
     }
 }
@@ -657,10 +656,50 @@ public extension MTLTexture {
         return try context.makeImage().orThrow(.resourceCreationFailure("Failed to create image."))
     }
 
+    func toImage() throws -> Image {
+        #if canImport(AppKit)
+        let nsImage = NSImage(cgImage: try toCGImage(), size: CGSize(width: width, height: height))
+        return Image(nsImage: nsImage)
+        #elseif canImport(UIKit)
+        let cgImage = try toCGImage()
+        let uiImage = UIImage(cgImage: cgImage)
+        return Image(uiImage: uiImage)
+        #endif
+    }
+
     func write(to url: URL) throws {
         let image = try toCGImage()
         let destination = try CGImageDestinationCreateWithURL(url as CFURL, UTType.png.identifier as CFString, 1, nil).orThrow(.resourceCreationFailure("Failed to create image destination"))
         CGImageDestinationAddImage(destination, image, nil)
         CGImageDestinationFinalize(destination)
+    }
+}
+
+public extension MTLStencilDescriptor {
+    convenience init(compareFunction: MTLCompareFunction = .always, stencilFailureOperation: MTLStencilOperation = .keep, depthFailureOperation: MTLStencilOperation = .keep, stencilPassDepthPassOperation: MTLStencilOperation = .keep, readMask: UInt32 = 0xffffffff, writeMask: UInt32 = 0xffffffff) {
+        self.init()
+        self.stencilCompareFunction = compareFunction
+        self.stencilFailureOperation = stencilFailureOperation
+        self.depthFailureOperation = depthFailureOperation
+        self.depthStencilPassOperation = stencilPassDepthPassOperation
+        self.readMask = readMask
+        self.writeMask = writeMask
+    }
+}
+
+public extension MTLDepthStencilDescriptor {
+    convenience init(depthCompareFunction: MTLCompareFunction = .less, isDepthWriteEnabled: Bool = true, frontFaceStencil: MTLStencilDescriptor? = nil, backFaceStencil: MTLStencilDescriptor? = nil, label: String? = nil) {
+        self.init()
+        self.depthCompareFunction = depthCompareFunction
+        self.isDepthWriteEnabled = isDepthWriteEnabled
+        if let frontFaceStencil {
+            self.frontFaceStencil = frontFaceStencil
+        }
+        if let backFaceStencil {
+            self.backFaceStencil = backFaceStencil
+        }
+        if let label {
+            self.label = label
+        }
     }
 }
