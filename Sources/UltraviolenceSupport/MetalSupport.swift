@@ -396,9 +396,6 @@ public extension MTLFunction {
             return nil
         }
         let vertexDescriptor = MTLVertexDescriptor()
-
-
-
         for attribute in vertexAttributes {
             switch attribute.attributeType {
             case .float:
