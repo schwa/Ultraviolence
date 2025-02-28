@@ -199,7 +199,7 @@ only_rules:
 #  - statement_position
   - static_operator
   - static_over_final_class
-  - strict_fileprivate
+#  - strict_fileprivate
   - strong_iboutlet
   - superfluous_disable_command
   - superfluous_else
@@ -239,7 +239,7 @@ only_rules:
   - vertical_parameter_alignment
   - vertical_parameter_alignment_on_call
   - vertical_whitespace
-  - vertical_whitespace_between_cases
+#  - vertical_whitespace_between_cases
   - vertical_whitespace_closing_braces
   - vertical_whitespace_opening_braces
   - void_function_in_ternary

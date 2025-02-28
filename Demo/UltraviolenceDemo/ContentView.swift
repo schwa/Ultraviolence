@@ -21,6 +21,7 @@ struct ContentView: View {
                 row(for: BouncingTeapotsDemoView.self)
                 row(for: StencilDemoView.self)
                 row(for: LUTDemoView.self)
+                row(for: MetalFXDemoView.self)
             }
         } detail: {
             if let page {
