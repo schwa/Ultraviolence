@@ -1,3 +1,4 @@
+#if canImport(MetalFX)
 import Metal
 import MetalFX
 import UltraviolenceSupport
@@ -20,22 +21,16 @@ public struct MetalFXSpatial: Element {
     public var body: some Element {
         SetupModifier()
             .onSetupEnter {
-                let descriptor = MTLFXSpatialScalerDescriptor()
-                descriptor.colorTextureFormat = inputTexture.pixelFormat
-                descriptor.outputTextureFormat = outputTexture.pixelFormat
-
-                descriptor.inputWidth = inputTexture.width
-                descriptor.inputHeight = inputTexture.height
-                descriptor.outputWidth = outputTexture.width
-                descriptor.outputHeight = outputTexture.height
-
-                let device = try _MTLCreateSystemDefaultDevice()
-                scaler = descriptor.makeSpatialScaler(device: device)
+                scaler = try makeScaler()
             }
             .onWorkloadEnter {
-                guard let scaler, let commandBuffer else {
-                    fatalError()
+                var scaler = try scaler.orThrow(.undefined)
+                // TODO: Instead of doing this we need to have some kind of "onChange" and merely mark "setupNeeded"
+                if scaler.outputWidth != outputTexture.width || scaler.outputHeight != outputTexture.height {
+                    scaler = try makeScaler()
+                    self.scaler = scaler
                 }
+                let commandBuffer = try commandBuffer.orThrow(.missingEnvironment(\.commandBuffer))
                 scaler.colorTexture = inputTexture
                 scaler.inputContentWidth = inputTexture.width
                 scaler.inputContentHeight = inputTexture.height
@@ -43,8 +38,21 @@ public struct MetalFXSpatial: Element {
                 scaler.encode(commandBuffer: commandBuffer)
             }
     }
+
+    func makeScaler() throws -> MTLFXSpatialScaler {
+        let descriptor = MTLFXSpatialScalerDescriptor()
+        descriptor.colorTextureFormat = inputTexture.pixelFormat
+        descriptor.outputTextureFormat = outputTexture.pixelFormat
+        descriptor.inputWidth = inputTexture.width
+        descriptor.inputHeight = inputTexture.height
+        descriptor.outputWidth = outputTexture.width
+        descriptor.outputHeight = outputTexture.height
+        let device = try _MTLCreateSystemDefaultDevice()
+        return try descriptor.makeSpatialScaler(device: device).orThrow(.undefined)
+    }
 }
 
+// TODO: #64 Experimental solution. Ergonmonics are bad however.
 internal struct SetupModifier: Element, BodylessElement {
     fileprivate var _setupEnter: (() throws -> Void)?
     fileprivate var _setupExit: (() throws -> Void)?
@@ -98,3 +106,4 @@ internal extension SetupModifier {
         return modifier
     }
 }
+#endif

@@ -21,11 +21,13 @@ struct ContentView: View {
                 row(for: BouncingTeapotsDemoView.self)
                 row(for: StencilDemoView.self)
                 row(for: LUTDemoView.self)
+                #if canImport(MetalFX)
                 row(for: MetalFXDemoView.self)
+                #endif
             }
         } detail: {
             if let page {
-                page.content()
+                page.content().navigationTitle(page.name)
             }
         }
     }
@@ -39,7 +41,8 @@ struct ContentView: View {
     }
 
     func row(for demo: any DemoView.Type) -> some View {
-        let name = "\(type(of: demo))"
+        // I'm lazy
+        let name = "\(type(of: demo))".replacingOccurrences(of: ".Type", with: "")
         let page = Page(id: name) { AnyView(demo.init()) }
         return row(for: page)
     }
@@ -51,6 +54,9 @@ struct ContentView: View {
 
 struct Page: Hashable {
     let id: String
+    var name: String {
+        id
+    }
     let content: () -> AnyView
 
     static func == (lhs: Self, rhs: Self) -> Bool {
