@@ -175,3 +175,6 @@ extension SIMD4<Float> {
         ]
     }
 }
+
+extension BouncingTeapotsDemoView: DemoView {
+}

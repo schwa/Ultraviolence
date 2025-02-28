@@ -92,4 +92,3 @@ struct StencilDemoView: View {
 
 extension StencilDemoView: DemoView {
 }
-
