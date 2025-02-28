@@ -32,5 +32,6 @@ jobs:
           with:
             submodules: true
         - run: xcodebuild -project "${{ env.XCODE_PROJECT_PATH }}" -scheme "${{ env.XCODE_SCHEME }}" -destination "generic/platform=macOS" -skipPackagePluginValidation build ARCHS=arm64 ONLY_ACTIVE_ARCH=NO CODE_SIGNING_ALLOWED=NO
-        - run: xcodebuild -project "${{ env.XCODE_PROJECT_PATH }}" -scheme "${{ env.XCODE_SCHEME }}" -destination "generic/platform=iOS" -skipPackagePluginValidation build CODE_SIGNING_ALLOWED=NO
-        - run: xcodebuild -project "${{ env.XCODE_PROJECT_PATH }}" -scheme "${{ env.XCODE_SCHEME }}" -destination "platform=iOS Simulator,name=iPhone 16 Plus" -skipPackagePluginValidation build CODE_SIGNING_ALLOWED=NO
+        # TODO: #71 Disable iOS builds on GitHub Actions because iOS SDK does not seem to be installed.
+        # - run: xcodebuild -project "${{ env.XCODE_PROJECT_PATH }}" -scheme "${{ env.XCODE_SCHEME }}" -destination "generic/platform=iOS" -skipPackagePluginValidation build CODE_SIGNING_ALLOWED=NO
+        # - run: xcodebuild -project "${{ env.XCODE_PROJECT_PATH }}" -scheme "${{ env.XCODE_SCHEME }}" -destination "platform=iOS Simulator,name=iPhone 16 Plus" -skipPackagePluginValidation build CODE_SIGNING_ALLOWED=NO
