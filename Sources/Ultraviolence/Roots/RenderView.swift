@@ -47,13 +47,13 @@ public struct RenderView <Content>: View where Content: Element {
                 defer {
                     currentDrawable.present()
                 }
-                let renderPassDescriptor = try view.currentRenderPassDescriptor.orThrow(.generic("No render pass descriptor available"))
+                let currentRenderPassDescriptor = try view.currentRenderPassDescriptor.orThrow(.generic("No render pass descriptor available"))
                 let content = try CommandBufferElement(completion: .commit) {
                     try self.content()
                 }
                 .environment(\.device, device)
                 .environment(\.commandQueue, commandQueue)
-                .environment(\.renderPassDescriptor, renderPassDescriptor)
+                .environment(\.renderPassDescriptor, currentRenderPassDescriptor)
                 .environment(\.currentDrawable, currentDrawable)
                 .environment(\.drawableSize, view.drawableSize)
 

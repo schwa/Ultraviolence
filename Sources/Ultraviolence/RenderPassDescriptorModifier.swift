@@ -1,21 +1,26 @@
 import Metal
 
 // TODO: #30 Make into actual Modifier.
-internal struct RenderPassDescriptorModifier<Content>: Element, BodylessContentElement where Content: Element {
+internal struct RenderPassDescriptorModifier<Content>: Element where Content: Element {
     @UVEnvironment(\.renderPassDescriptor)
     var renderPassDescriptor
 
     var content: Content
     var modify: (MTLRenderPassDescriptor) -> Void
 
-    func body(content: Content) -> some Element {
-        content
+
+    // TODO: #72 this is pretty bad. We're only modifying it for workload NOT setup. And we're modifying it globally - even for elements further up teh stack.
+    var body: some Element {
+        get throws {
+            content.environment(\.renderPassDescriptor, try modifiedRenderPassDescriptor())
+        }
     }
 
-    func workloadEnter(_ node: Node) throws {
-        if let renderPassDescriptor {
-            modify(renderPassDescriptor)
-        }
+    func modifiedRenderPassDescriptor() throws -> MTLRenderPassDescriptor {
+        let renderPassDescriptor = renderPassDescriptor.orFatalError()
+        var copy = (renderPassDescriptor.copy() as? MTLRenderPassDescriptor).orFatalError()
+        modify(copy)
+        return copy
     }
 }
 
