@@ -24,10 +24,9 @@ struct LUTDemoView: View {
             .origin: MTKTextureLoader.Origin.flippedVertically.rawValue,
             .SRGB: true
         ])
-        print(sourceTexture.pixelFormat.rawValue)
-        let lutTextureURL = Bundle.main.url(forResource: "Linear", withExtension: "png")!
+        let lutTextureURL = Bundle.main.url(forResource: "Sepia Tone", withExtension: "png")!
         let lutTexture2D = try! textureLoader.newTexture(URL: lutTextureURL, options: [
-            .origin: MTKTextureLoader.Origin.flippedVertically.rawValue,
+            .origin: MTKTextureLoader.Origin.topLeft.rawValue,
             .SRGB: true
         ])
 
@@ -43,6 +42,9 @@ struct LUTDemoView: View {
 
         print(sourceTexture.width, sourceTexture.height)
     }
+
+    @State
+    var cubeTexture: MTLTexture?
 
     var body: some View {
         RenderView {
@@ -62,6 +64,11 @@ struct LUTDemoView: View {
                 .padding()
                 .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 10))
                 .padding()
+        }
+        .task {
+            let url = Bundle.main.url(forResource: "Custom_LUT", withExtension: "cube")!
+            let cube = try! CubeReader(url: url)
+            cubeTexture = try! cube.toTexture()
         }
     }
 }
@@ -172,29 +179,14 @@ func create3DLUT(device: MTLDevice, from lut2DTexture: MTLTexture) throws -> MTL
     kernel void lut2DTo3D(texture2d<float, access::read> lut2D [[texture(0)]],
                           texture3d<float, access::write> lut3D [[texture(1)]],
                           uint3 gid [[thread_position_in_grid]]) {
-
         const uint lutSize = 64;
-
-        // Ensure within bounds
         if (gid.x >= lutSize || gid.y >= lutSize || gid.z >= lutSize) return;
-
-        // For a standard 2D LUT layout where:
-        // - The texture contains an 8×8 grid of tiles (for a 64×64×64 LUT)
-        // - Each tile is 64×64 pixels and represents one blue (Z) level
-        // - Within each tile, X varies across, Y varies down
-
-        uint tilesPerRow = 8;  // For a 512×512 texture with 64×64 tiles
-
-        uint tileX = gid.z % tilesPerRow;  // Which tile horizontally
-        uint tileY = gid.z / tilesPerRow;  // Which tile vertically
-
-        uint x = tileX * lutSize + gid.x;  // X position within the 2D texture
-        uint y = tileY * lutSize + gid.y;  // Y position within the 2D texture
-
-        // Read from the 2D LUT
+        uint tilesPerRow = 8;
+        uint tileX = gid.z % tilesPerRow;
+        uint tileY = gid.z / tilesPerRow;
+        uint x = tileX * lutSize + gid.x;
+        uint y = tileY * lutSize + gid.y;
         float4 color = lut2D.read(uint2(x, y));
-
-        // Write to the 3D LUT
         lut3D.write(color, gid);
     }
     """
