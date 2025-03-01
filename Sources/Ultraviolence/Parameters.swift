@@ -6,12 +6,12 @@ import UltraviolenceSupport
 
 // TODO: #62 instead of being typed <T> we need an "AnyParameter" and this needs to take a dictionary of AnyParameters
 // TODO: Rename it to be a modifier?
-internal struct ParameterElement<Content, T>: Element, BodylessElement, BodylessContentElement where Content: Element {
-    var parameter: Parameter<T>
+internal struct ParameterElement<Content>: Element, BodylessElement, BodylessContentElement where Content: Element {
+    var parameters: [String: Parameter]
     var content: Content
 
-    internal init(functionType: MTLFunctionType? = nil, name: String, value: ParameterValue<T>, content: Content) {
-        self.parameter = .init(name: name, functionType: functionType, value: value)
+    internal init<T>(functionType: MTLFunctionType? = nil, name: String, value: ParameterValue<T>, content: Content) {
+        self.parameters = [name: .init(name: name, functionType: functionType, value: value)]
         self.content = content
     }
 
@@ -19,25 +19,33 @@ internal struct ParameterElement<Content, T>: Element, BodylessElement, Bodyless
         let reflection = try node.environmentValues.reflection.orThrow(.missingEnvironment(\.reflection))
         let renderCommandEncoder = node.environmentValues.renderCommandEncoder
         let computeCommandEncoder = node.environmentValues.computeCommandEncoder
-        switch (renderCommandEncoder, computeCommandEncoder) {
-        case (.some(let renderCommandEncoder), nil):
-            try parameter.set(on: renderCommandEncoder, reflection: reflection)
-        case (nil, .some(let computeCommandEncoder)):
-            try parameter.set(on: computeCommandEncoder, reflection: reflection)
-        case (.some, .some):
-            preconditionFailure("Trying to process \(self) with both a render command encoder and a compute command encoder.")
-        default:
-            preconditionFailure("Trying to process `\(self) without a command encoder.")
+        for parameter in parameters.values {
+            switch (renderCommandEncoder, computeCommandEncoder) {
+            case (.some(let renderCommandEncoder), nil):
+                try parameter.set(on: renderCommandEncoder, reflection: reflection)
+            case (nil, .some(let computeCommandEncoder)):
+                try parameter.set(on: computeCommandEncoder, reflection: reflection)
+            case (.some, .some):
+                preconditionFailure("Trying to process \(self) with both a render command encoder and a compute command encoder.")
+            default:
+                preconditionFailure("Trying to process `\(self) without a command encoder.")
+            }
         }
     }
 }
 
 // MARK: -
 
-internal struct Parameter <T> {
+internal struct Parameter {
     var name: String
     var functionType: MTLFunctionType?
-    var value: ParameterValue<T>
+    var value: AnyParameterValue
+
+    init<T>(name: String, functionType: MTLFunctionType? = nil, value: ParameterValue<T>) {
+        self.name = name
+        self.functionType = functionType
+        self.value = AnyParameterValue(value)
+    }
 
     func set(on encoder: MTLRenderCommandEncoder, reflection: Reflection) throws {
         guard functionType == .vertex || functionType == .fragment || functionType == nil else {
