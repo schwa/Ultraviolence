@@ -27,7 +27,7 @@ internal struct RenderViewDebugViewModifier <Root>: ViewModifier where Root: Ele
                     List([NodeListBox(node: viewModel.graph.root)], children: \.children, selection: $selection) { box in
                         let node = box.node
 
-                        Label(node.debugName, systemImage: "cube").font(.caption2).tag(box)
+                        Label(node.name, systemImage: "cube").font(.caption2).tag(box)
                     }
                     if let node = selection?.node {
                         ScrollView {

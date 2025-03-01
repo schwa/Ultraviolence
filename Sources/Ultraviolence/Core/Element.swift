@@ -141,6 +141,14 @@ internal extension Node {
     }
 
     @MainActor
+    var name: String {
+        if let element {
+            return "\(element.debugName)"
+        }
+        return "<nil>"
+    }
+
+    @MainActor
     var debugName: String {
         if let name = self.debugLabel {
             return name

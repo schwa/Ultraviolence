@@ -20,6 +20,7 @@ struct MixedDemoView: View {
         TimelineView(.animation) { timeline in
             RenderView {
                 MixedExample(modelMatrix: modelMatrix, color: color, lightDirection: lightDirection)
+                    .debugLabel("MIXED EXAMPLE")
             }
             .metalDepthStencilPixelFormat(.depth32Float)
             .metalFramebufferOnly(false)

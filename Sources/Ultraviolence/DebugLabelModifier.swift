@@ -8,8 +8,11 @@ internal struct DebugLabelModifier <Content>: Element, BodylessElement, Bodyless
     }
 
     func _expandNode(_ node: Node, context: ExpansionContext) throws {
-        try expandNodeHelper(node, context: context)
+        // TODO: We don't expand a new node - instead of we create expand our child's node. This is subtle and confusing and we really need to clean up all this:
+        //    self._expandNode() vs content.expandNode vs .......
+        //    a lot more nodes COULD work this way.
         node.debugLabel = debugLabel
+        try content.expandNode(node, context: context.deeper())
     }
 }
 
