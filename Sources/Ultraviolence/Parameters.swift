@@ -115,6 +115,6 @@ public extension Element {
             preconditionFailure("Unimplemented.")
         }
         let value = SIMD4<Float>(components[0], components[1], components[2], components[3])
-        return ParameterElement(functionType: functionType, name: name, value: .value(value), content: self)
+        return parameter(name, value, functionType: functionType)
     }
 }
