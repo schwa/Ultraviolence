@@ -18,5 +18,18 @@ public struct ElementBuilder {
         content
     }
 
-    // TODO: #47 Flesh this out (follow ViewBuilder for more)
+    // TODO: #47 Flesh this out (follow ViewBuilder for more). TODO: Still requires unit tests.
+    /// Produces content for a conditional statement in a multi-statement closure when the condition is true.
+    public static func buildEither<TrueContent, FalseContent>(first: TrueContent) -> _ConditionalContent<TrueContent, FalseContent> where TrueContent: Element, FalseContent: Element {
+        _ConditionalContent(first: first)
+    }
+
+    /// Produces content for a conditional statement in a multi-statement closure when the condition is false.
+    public static func buildEither<TrueContent, FalseContent>(second: FalseContent) -> _ConditionalContent<TrueContent, FalseContent> where TrueContent: Element, FalseContent: Element {
+        _ConditionalContent(second: second)
+    }
+
+    public static func buildLimitedAvailability<Content>(_ content: Content) -> AnyElement where Content: Element {
+        AnyElement(content)
+    }
 }

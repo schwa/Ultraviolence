@@ -16,19 +16,19 @@ public struct BouncingTeapotsDemoView: View {
     private var checkerboardColor: Color = .white
 
     @State
-    var offscreenTexture: MTLTexture?
+    private var offscreenTexture: MTLTexture?
 
     @State
-    var offscreenDepthTexture: MTLTexture?
+    private var offscreenDepthTexture: MTLTexture?
 
     @State
-    var upscaledTexture: MTLTexture?
+    private var upscaledTexture: MTLTexture?
 
     @State
-    var drawableSize: CGSize = .zero
+    private var drawableSize: CGSize = .zero
 
     @State
-    var scaleFactor = 1.0
+    private var scaleFactor = 1.0
 
     public init() {
     }
@@ -66,7 +66,7 @@ public struct BouncingTeapotsDemoView: View {
         }
         .metalDepthStencilPixelFormat(.depth32Float)
         .onDrawableSizeChange { size in
-            self.drawableSize = size
+            drawableSize = size
         }
         .onChange(of: drawableSize) {
             regenerateTextures()
@@ -102,7 +102,6 @@ public struct BouncingTeapotsDemoView: View {
 // MARK: -
 
 struct FlyingTeapotsRenderPass: Element {
-
     @UVEnvironment(\.device)
     var device
 
@@ -129,7 +128,7 @@ struct FlyingTeapotsRenderPass: Element {
     let offscreenDepthTexture: MTLTexture
     let upscaledTexture: MTLTexture
 
-    public init(simulation: TeapotSimulation, checkerboardColor: Color, offscreenTexture: MTLTexture, offscreenDepthTexture: MTLTexture, upscaledTexture: MTLTexture) {
+    init(simulation: TeapotSimulation, checkerboardColor: Color, offscreenTexture: MTLTexture, offscreenDepthTexture: MTLTexture, upscaledTexture: MTLTexture) {
         let device = _MTLCreateSystemDefaultDevice()
         let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm, width: 2_048, height: 2_048, mipmapped: false)
         textureDescriptor.usage = [.shaderRead, .shaderWrite]
@@ -176,8 +175,8 @@ struct FlyingTeapotsRenderPass: Element {
             .depthCompare(function: .less, enabled: true)
             #if os(macOS)
             .renderPassDescriptorModifier { descriptor in
-                descriptor.colorAttachments[0].texture = offscreenTexture
-                descriptor.depthAttachment.texture = offscreenDepthTexture
+            descriptor.colorAttachments[0].texture = offscreenTexture
+            descriptor.depthAttachment.texture = offscreenDepthTexture
             }
             #endif
 
