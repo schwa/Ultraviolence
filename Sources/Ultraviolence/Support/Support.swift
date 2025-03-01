@@ -26,10 +26,18 @@ internal extension IdentifiableBox where Key == ObjectIdentifier, Value: AnyObje
 }
 
 internal extension Element {
-    func _dump() throws {
+
+    func _dump(to output: inout some TextOutputStream) throws {
         let graph = try Graph(content: self)
         try graph.rebuildIfNeeded()
-        try graph.dump()
+        try graph.dump(to: &output)
+
+    }
+
+    func _dump() throws {
+        var output = String()
+        try _dump(to: &output)
+        print(output)
     }
 }
 
@@ -37,25 +45,5 @@ internal extension Element {
 internal extension Node {
     var shortDescription: String {
         self.element?.shortDescription ?? "<empty>"
-    }
-}
-
-internal struct TrivialID: Hashable, Sendable {
-    private var rawValue: Int
-    static let nextValue: OSAllocatedUnfairLock<Int> = .init(uncheckedState: 0)
-
-    internal init() {
-        rawValue = Self.nextValue.withLock { value in
-            defer {
-                value += 1
-            }
-            return value
-        }
-    }
-}
-
-extension TrivialID: CustomDebugStringConvertible {
-    var debugDescription: String {
-        "#\(rawValue)"
     }
 }

@@ -10,9 +10,7 @@ public struct TupleElement <each T: Element>: Element {
 
 extension TupleElement: BodylessElement {
     internal func _expandNode(_ node: Node, context: ExpansionContext) throws {
-        guard let graph = node.graph else {
-            preconditionFailure("Cannot build node tree without a graph.")
-        }
+        let graph = try node.graph.orThrow(.noCurrentGraph)
         var index = 0
         for child in repeat (each children) {
             if node.children.count <= index {

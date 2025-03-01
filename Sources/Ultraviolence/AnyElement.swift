@@ -8,9 +8,7 @@ public struct AnyElement: Element, BodylessElement {
     }
 
     internal func _expandNode(_ node: Node, context: ExpansionContext) throws {
-        guard let graph = node.graph else {
-            preconditionFailure("Cannot build node tree without a graph.")
-        }
+        let graph = try node.graph.orThrow(.noCurrentGraph)
         if node.children.isEmpty {
             node.children.append(graph.makeNode())
         }

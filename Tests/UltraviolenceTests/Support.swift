@@ -96,8 +96,7 @@ func testHistogram() throws {
     #expect(green.green > red.red && green.green > red.blue)
     let blue = try Histogram(image: CGImage.withColor(red: 0, green: 0, blue: 1)).peaks
     #expect(blue.alpha == 1)
-    #expect(blue.blue > red.red && blue.blue > red.green)
-}
+    #expect(blue.blue > red.red && blue.blue > red.green)}
 
 func goldenImage(named name: String) -> CGImage {
     let url = Bundle.module.resourceURL!.appendingPathComponent("Golden Images").appendingPathComponent(name).appendingPathExtension("png")

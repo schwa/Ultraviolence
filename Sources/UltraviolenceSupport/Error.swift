@@ -1,4 +1,4 @@
-public indirect enum UltraviolenceError: Error {
+public indirect enum UltraviolenceError: Error, Equatable {
     case undefined
     case generic(String)
     case missingEnvironment(String)
@@ -8,6 +8,7 @@ public indirect enum UltraviolenceError: Error {
     case textureCreationFailure
     // TODO: This should be more "impossible" than "unexpected".
     case unexpectedError(Self)
+    case noCurrentGraph
 }
 
 extension UltraviolenceError {

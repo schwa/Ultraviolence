@@ -490,3 +490,53 @@ struct UltraviolenceStateTests {
         #expect(graph.element(at: [0, 0], type: DemoElement.self).title == "Hello world")
     }
 }
+
+@Test
+func isEqualTests() throws {
+    struct NotEquatable {
+    }
+    #expect(isEqual(1, 1) == true)
+    #expect(isEqual(0, 1) == false)
+    #expect(isEqual(NotEquatable(), 1) == false)
+    #expect(isEqual(1, NotEquatable()) == false)
+    #expect(isEqual(NotEquatable(), NotEquatable()) == false)
+}
+
+@Test
+@MainActor
+func weirdTests() throws {
+    let d = DemoElement("Nope")
+    let any = AnyElement(d)
+    let node = Node()
+    #expect(throws: UltraviolenceError.noCurrentGraph) {
+        try any._expandNode(node, context: .init())
+    }
+}
+
+@Test
+@MainActor
+func testOptionalElement() throws {
+    let element = DemoElement("Hello world") {}
+    let optionalElement = Optional<DemoElement>(element)
+    let graph = try Graph(content: optionalElement)
+    try graph.rebuildIfNeeded()
+    try graph.dump()
+    #expect(graph.element(at: [], type: DemoElement.self).title == "Hello world")
+}
+
+@Test
+@MainActor
+func testElementDump() throws {
+    let element = DemoElement("Hello world") {}
+    var s = ""
+    try element._dump(to: &s)
+    s = s.trimmingCharacters(in: .whitespacesAndNewlines)
+    #expect(s == "DemoElement: (storage: ([], parent: false)))")
+
+    let graph = try Graph(content: element)
+    try graph.rebuildIfNeeded()
+    try graph.dump()
+
+    #expect(graph.root.shortDescription == "DemoElement")
+}
+
