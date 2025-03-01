@@ -85,6 +85,7 @@ public struct BouncingTeapotsDemoView: View {
 
         let offscreenDepthTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: Int(scaleFactor * drawableSize.width), height: Int(scaleFactor * drawableSize.height), mipmapped: false)
         offscreenDepthTextureDescriptor.usage = [.shaderRead, .shaderWrite, .renderTarget]
+        offscreenDepthTextureDescriptor.storageMode = .private
         let offscreenDepthTexture = _MTLCreateSystemDefaultDevice().makeTexture(descriptor: offscreenDepthTextureDescriptor).orFatalError()
         offscreenDepthTexture.label = "Offscreen Depth Texture"
         self.offscreenDepthTexture = offscreenDepthTexture
@@ -172,18 +173,21 @@ struct FlyingTeapotsRenderPass: Element {
                 }
                 .vertexDescriptor(MTLVertexDescriptor(mesh.vertexDescriptor))
             }
+            .depthCompare(function: .less, enabled: true)
+            #if os(macOS)
             .renderPassDescriptorModifier { descriptor in
                 descriptor.colorAttachments[0].texture = offscreenTexture
                 descriptor.depthAttachment.texture = offscreenDepthTexture
             }
-            .depthCompare(function: .less, enabled: true)
+            #endif
 
+            #if os(macOS)
             MetalFXSpatial(inputTexture: offscreenTexture, outputTexture: upscaledTexture)
-
             try RenderPass {
                 try BillboardRenderPipeline(texture: upscaledTexture)
             }
             .depthCompare(function: .always, enabled: false)
+            #endif
         }
     }
 }

@@ -61,6 +61,7 @@ public struct ComputeDispatch: Element, BodylessElement {
             preconditionFailure("No compute command encoder/compute pipeline state found.")
         }
         computeCommandEncoder.setComputePipelineState(computePipelineState)
+        // TODO: Simulator problem `Dispatch Threads with Non-Uniform Threadgroup Size is not supported on this device'
         computeCommandEncoder.dispatchThreads(threads, threadsPerThreadgroup: threadsPerThreadgroup)
     }
 }
