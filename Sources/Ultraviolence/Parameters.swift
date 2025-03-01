@@ -4,17 +4,14 @@ import Metal
 import simd
 import UltraviolenceSupport
 
+// TODO: #62 instead of being typed <T> we need an "AnyParameter" and this needs to take a dictionary of AnyParameters
+// TODO: Rename it to be a modifier?
 internal struct ParameterElement<Content, T>: Element, BodylessElement, BodylessContentElement where Content: Element {
-    var name: String
-
-    var functionType: MTLFunctionType?
-    var value: ParameterValue<T>
+    var parameter: Parameter<T>
     var content: Content
 
     internal init(functionType: MTLFunctionType? = nil, name: String, value: ParameterValue<T>, content: Content) {
-        self.functionType = functionType
-        self.name = name
-        self.value = value
+        self.parameter = .init(name: name, functionType: functionType, value: value)
         self.content = content
     }
 
@@ -22,44 +19,51 @@ internal struct ParameterElement<Content, T>: Element, BodylessElement, Bodyless
         let reflection = try node.environmentValues.reflection.orThrow(.missingEnvironment(\.reflection))
         let renderCommandEncoder = node.environmentValues.renderCommandEncoder
         let computeCommandEncoder = node.environmentValues.computeCommandEncoder
-
-        // TODO: #51 We can be a lot better about logging errors here.
         switch (renderCommandEncoder, computeCommandEncoder) {
         case (.some(let renderCommandEncoder), nil):
-            if let functionType {
-                let index = try reflection.binding(forType: functionType, name: name).orThrow(.missingBinding(name))
-                renderCommandEncoder.setValue(value, index: index, functionType: functionType)
-            }
-            else {
-                let vertexIndex = reflection.binding(forType: .vertex, name: name)
-                let fragmentIndex = reflection.binding(forType: .fragment, name: name)
-                switch (vertexIndex, fragmentIndex) {
-                case (.some(let vertexIndex), .some(let fragmentIndex)):
-                    preconditionFailure("Ambiguous parameter, found parameter named \(name) in both vertex (index: #\(vertexIndex)) and fragment (index: #\(fragmentIndex)) shaders.")
-
-                case (.some(let vertexIndex), .none):
-                    renderCommandEncoder.setValue(value, index: vertexIndex, functionType: .vertex)
-
-                case (.none, .some(let fragmentIndex)):
-                    renderCommandEncoder.setValue(value, index: fragmentIndex, functionType: .fragment)
-
-                case (.none, .none):
-                    logger?.info("Parameter \(name) not found in reflection \(reflection.debugDescription).")
-                    throw UltraviolenceError.missingBinding(name)
-                }
-            }
-
+            try parameter.set(on: renderCommandEncoder, reflection: reflection)
         case (nil, .some(let computeCommandEncoder)):
-            precondition(functionType == nil || functionType == .kernel)
-            let index = try reflection.binding(forType: .kernel, name: name).orThrow(.missingBinding(name))
-            computeCommandEncoder.setValue(value, index: index)
-
+            try parameter.set(on: computeCommandEncoder, reflection: reflection)
         case (.some, .some):
             preconditionFailure("Trying to process \(self) with both a render command encoder and a compute command encoder.")
-
         default:
             preconditionFailure("Trying to process `\(self) without a command encoder.")
         }
+    }
+}
+
+// MARK: -
+
+internal struct Parameter <T> {
+    var name: String
+    var functionType: MTLFunctionType?
+    var value: ParameterValue<T>
+
+    func set(on encoder: MTLRenderCommandEncoder, reflection: Reflection) throws {
+        guard functionType == .vertex || functionType == .fragment || functionType == nil else {
+            throw UltraviolenceError.generic("Invalid function type \(functionType.debugDescription).")
+        }
+        let vertexIndex = reflection.binding(forType: .vertex, name: name)
+        let fragmentIndex = reflection.binding(forType: .fragment, name: name)
+        switch (vertexIndex, fragmentIndex) {
+        case (.some(let vertexIndex), .some(let fragmentIndex)):
+            preconditionFailure("Ambiguous parameter, found parameter named \(name) in both vertex (index: #\(vertexIndex)) and fragment (index: #\(fragmentIndex)) shaders.")
+        case (.some(let vertexIndex), .none):
+            encoder.setValue(value, index: vertexIndex, functionType: .vertex)
+        case (.none, .some(let fragmentIndex)):
+            encoder.setValue(value, index: fragmentIndex, functionType: .fragment)
+        case (.none, .none):
+            logger?.info("Parameter \(name) not found in reflection \(reflection.debugDescription).")
+            throw UltraviolenceError.missingBinding(name)
+        }
+    }
+
+    func set(on encoder: MTLComputeCommandEncoder, reflection: Reflection) throws {
+        guard functionType == .kernel || functionType == nil else {
+            throw UltraviolenceError.generic("Invalid function type \(functionType.debugDescription).")
+        }
+        let index = try reflection.binding(forType: .kernel, name: name).orThrow(.missingBinding(name))
+        encoder.setValue(value, index: index)
     }
 }
 
@@ -74,17 +78,6 @@ public extension Element {
         ParameterElement(functionType: functionType, name: name, value: .value(value), content: self)
     }
 
-    func parameter(_ name: String, color: Color, functionType: MTLFunctionType? = nil) -> some Element {
-        let colorspace = CGColorSpaceCreateDeviceRGB()
-        guard let color = color.resolve(in: .init()).cgColor.converted(to: colorspace, intent: .defaultIntent, options: nil) else {
-            preconditionFailure("Unimplemented.")
-        }
-        guard let components = color.components?.map({ Float($0) }) else {
-            preconditionFailure("Unimplemented.")
-        }
-        let value = SIMD4<Float>(components[0], components[1], components[2], components[3])
-        return ParameterElement(functionType: functionType, name: name, value: .value(value), content: self)
-    }
 
     func parameter(_ name: String, texture: MTLTexture, functionType: MTLFunctionType? = nil) -> some Element {
         ParameterElement(functionType: functionType, name: name, value: ParameterValue<()>.texture(texture), content: self)
@@ -99,12 +92,29 @@ public extension Element {
     }
 
     func parameter(_ name: String, values: [some Any], functionType: MTLFunctionType? = nil) -> some Element {
-        ParameterElement(functionType: functionType, name: name, value: .array(values), content: self)
+        assert(isPODArray(values), "Parameter values must be a POD type.")
+        return ParameterElement(functionType: functionType, name: name, value: .array(values), content: self)
     }
 
     func parameter(_ name: String, value: some Any, functionType: MTLFunctionType? = nil) -> some Element {
-        ParameterElement(functionType: functionType, name: name, value: .value(value), content: self)
+        assert(isPOD(value), "Parameter value must be a POD type.")
+        return ParameterElement(functionType: functionType, name: name, value: .value(value), content: self)
     }
 }
 
-// MARK: -
+// TODO: Move out of here. All SwiftUI stuff needs to be quarantined.
+// Also it could take a SwiftUI environment()
+// Also SRGB?
+public extension Element {
+    func parameter(_ name: String, color: Color, functionType: MTLFunctionType? = nil) -> some Element {
+        let colorspace = CGColorSpaceCreateDeviceRGB()
+        guard let color = color.resolve(in: .init()).cgColor.converted(to: colorspace, intent: .defaultIntent, options: nil) else {
+            preconditionFailure("Unimplemented.")
+        }
+        guard let components = color.components?.map({ Float($0) }) else {
+            preconditionFailure("Unimplemented.")
+        }
+        let value = SIMD4<Float>(components[0], components[1], components[2], components[3])
+        return ParameterElement(functionType: functionType, name: name, value: .value(value), content: self)
+    }
+}

@@ -4,8 +4,8 @@ internal enum ParameterValue<T> {
     case texture(MTLTexture)
     case samplerState(MTLSamplerState)
     case buffer(MTLBuffer, Int)
-    case array([T])
-    case value(T)
+    case array([T]) // TODO: We can replace this with a Swift 6.x Span?
+    case value(T) // TODO: We can replace this with a Swift 6.x Span?
 }
 
 // TODO: #21 We really need to rethink type safety of ParameterValue. Make this a struct and keep internal enum - still need to worry about <T> though.
