@@ -5,7 +5,7 @@ using namespace metal;
 
 kernel void EdgeDetectionKernel(
     texture2d<float, access::read> depthTexture [[texture(0)]],
-    texture2d<float, access::read_write> colorTexture [[texture(1)]],
+    texture2d<float, access::write> colorTexture [[texture(1)]],
     uint2 gid [[thread_position_in_grid]]
 ) {
     uint width = depthTexture.get_width();
@@ -27,13 +27,8 @@ kernel void EdgeDetectionKernel(
 
     float gradient = sqrt(dx * dx + dy * dy);
 
-    // Read current color
-    float4 currentColor = colorTexture.read(gid);
-
     // Edge detection logic
     if (gradient * 800 > 1) {
         colorTexture.write(float4(1.0, 1.0, 1.0, 1.0), gid); // Draw edge in white
-    } else {
-        colorTexture.write(currentColor, gid); // Retain the existing color
     }
 }

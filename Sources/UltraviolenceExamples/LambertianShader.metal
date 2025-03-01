@@ -1,4 +1,6 @@
 #include <metal_stdlib>
+#include <metal_uniform>
+
 using namespace metal;
 
 namespace LambertianShader {    
@@ -26,6 +28,7 @@ namespace LambertianShader {
     ) {
         VertexOut out;
         float4 objectSpace = float4(position, 1.0);
+        // TODO: we should, of course, pre-calculate the matrices and pass them in.
         out.position = projectionMatrix * viewMatrix * modelMatrix * objectSpace;
         out.worldPosition = (modelMatrix * objectSpace).xyz;
         float3x3 normalMatrix = float3x3(modelMatrix[0].xyz, modelMatrix[1].xyz, modelMatrix[2].xyz);
