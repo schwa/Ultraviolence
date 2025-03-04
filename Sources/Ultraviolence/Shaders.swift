@@ -7,18 +7,6 @@ public protocol ShaderProtocol {
     init(_ function: MTLFunction)
 }
 
-internal extension ShaderProtocol {
-    init(library: MTLLibrary? = nil, namespace: String? = nil, name: String) throws {
-        let library = try library ?? _MTLCreateSystemDefaultDevice().makeDefaultLibrary().orThrow(.resourceCreationFailure("Failed to create default library"))
-        let scopedName = namespace.map { $0 + "::" + name } ?? name
-        let function = try library.makeFunction(name: scopedName).orThrow(.resourceCreationFailure("Failed to create function with name \(scopedName)"))
-        if function.functionType != Self.functionType {
-            throw UltraviolenceError.resourceCreationFailure("Function \(scopedName) is not of type \(Self.functionType)")
-        }
-        self.init(function)
-    }
-}
-
 public extension ShaderProtocol {
     init(source: String, logging: Bool = false) throws {
         let device = _MTLCreateSystemDefaultDevice()

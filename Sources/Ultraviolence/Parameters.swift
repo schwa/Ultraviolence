@@ -78,6 +78,7 @@ internal struct Parameter {
 // MARK: -
 
 public extension Element {
+    // TODO: Move functionType to front of the parameter list
     func parameter(_ name: String, _ value: SIMD4<Float>, functionType: MTLFunctionType? = nil) -> some Element {
         ParameterElement(functionType: functionType, name: name, value: .value(value), content: self)
     }
@@ -85,7 +86,6 @@ public extension Element {
     func parameter(_ name: String, _ value: simd_float4x4, functionType: MTLFunctionType? = nil) -> some Element {
         ParameterElement(functionType: functionType, name: name, value: .value(value), content: self)
     }
-
 
     func parameter(_ name: String, texture: MTLTexture, functionType: MTLFunctionType? = nil) -> some Element {
         ParameterElement(functionType: functionType, name: name, value: ParameterValue<()>.texture(texture), content: self)

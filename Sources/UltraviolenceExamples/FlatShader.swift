@@ -3,7 +3,7 @@ import Metal
 import MetalKit
 import simd
 import Ultraviolence
-internal import UltraviolenceSupport
+import UltraviolenceSupport
 
 public struct FlatShader <Content>: Element where Content: Element {
     var modelMatrix: simd_float4x4
@@ -28,13 +28,15 @@ public struct FlatShader <Content>: Element where Content: Element {
     }
 
     public var body: some Element {
-        RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
-            content
-                .parameter("projectionMatrix", value: projectionMatrix)
-                .parameter("viewMatrix", value: cameraMatrix.inverse)
-                .parameter("modelMatrix", value: modelMatrix)
-                .parameter("texture", texture: texture)
-                .parameter("sampler", samplerState: sampler)
+        get throws {
+            try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
+                content
+                    .parameter("projectionMatrix", value: projectionMatrix)
+                    .parameter("viewMatrix", value: cameraMatrix.inverse)
+                    .parameter("modelMatrix", value: modelMatrix)
+                    .parameter("texture", texture: texture)
+                    .parameter("sampler", samplerState: sampler)
+            }
         }
     }
 }

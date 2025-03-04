@@ -68,7 +68,7 @@ extension SIMD3 {
     }
 }
 
-extension SIMD4 {
+public extension SIMD4 {
     var xyz: SIMD3<Scalar> {
         get {
             .init(x, y, z)

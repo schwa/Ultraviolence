@@ -1,5 +1,6 @@
 import Metal
 
+// TODO: this is no different than a EncivonmentReader<RenderCOmmandEncoder>
 public struct Draw: Element, BodylessElement {
     public typealias Body = Never
 

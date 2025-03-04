@@ -2,7 +2,7 @@ import CoreGraphics
 import ImageIO
 import MetalKit
 import ModelIO
-internal import UltraviolenceSupport
+import UltraviolenceSupport
 import UniformTypeIdentifiers
 
 #if canImport(AppKit)

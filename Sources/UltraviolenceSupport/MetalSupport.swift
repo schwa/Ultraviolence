@@ -631,7 +631,24 @@ public extension MTLComputeCommandEncoder {
     }
 }
 
+// TODO: Sanitize
 public extension MTLDevice {
+    func makeBuffer<T>(unsafeBytesOf value: T, options: MTLResourceOptions = []) throws -> MTLBuffer {
+        precondition(isPOD(value))
+        return try withUnsafeBytes(of: value) { buffer in
+            let baseAddress = buffer.baseAddress.orFatalError(.resourceCreationFailure("No base address."))
+            return try makeBuffer(bytes: baseAddress, length: buffer.count, options: options).orThrow(.resourceCreationFailure("TODO"))
+        }
+    }
+
+    func makeBuffer<T>(unsafeBytesOf value: [T], options: MTLResourceOptions = []) throws -> MTLBuffer {
+        precondition(isPODArray(value))
+        return try value.withUnsafeBytes { buffer in
+            let baseAddress = buffer.baseAddress.orFatalError(.resourceCreationFailure("No base address."))
+            return try makeBuffer(bytes: baseAddress, length: buffer.count, options: options).orThrow(.resourceCreationFailure("TODO"))
+        }
+    }
+
     func makeBuffer<C>(collection: C, options: MTLResourceOptions) throws -> MTLBuffer where C: Collection {
         assert(isPOD(C.Element.self))
         let buffer = try collection.withContiguousStorageIfAvailable { buffer in
@@ -666,7 +683,7 @@ public extension MTLCommandBufferDescriptor {
         let device = _MTLCreateSystemDefaultDevice()
         let logState = try device.makeLogState(descriptor: logStateDescriptor)
         logState.addLogHandler { _, _, _, message in
-            print(message)
+            logger?.log("\(message)")
         }
         self.logState = logState
     }
@@ -722,6 +739,7 @@ public extension MTLCommandBuffer {
 
 public extension MTLDevice {
     // Deal with your own endian problems.
+    // TODO: Rename
     func makeTexture<T>(descriptor: MTLTextureDescriptor, value: T) throws -> MTLTexture {
         assert(isPOD(value))
         let numPixels = descriptor.width * descriptor.height
@@ -733,6 +751,14 @@ public extension MTLDevice {
             texture.replace(region: MTLRegionMake2D(0, 0, descriptor.width, descriptor.height), mipmapLevel: 0, withBytes: baseAddress, bytesPerRow: descriptor.width * MemoryLayout<T>.stride)
         }
         return texture
+    }
+
+    func make1PixelTexture(color: SIMD4<Float>) throws -> MTLTexture {
+        let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm, width: 1, height: 1, mipmapped: false)
+        descriptor.usage = [.shaderRead, .shaderWrite, .renderTarget] // TODO: Too much
+        descriptor.storageMode = .shared
+        let value = SIMD4<UInt8>(color * 255.0)
+        return try makeTexture(descriptor: descriptor, value: value)
     }
 }
 
@@ -794,5 +820,86 @@ public extension MTLDepthStencilDescriptor {
         if let label {
             self.label = label
         }
+    }
+}
+
+public extension MTLSamplerDescriptor {
+    convenience init(minFilter: MTLSamplerMinMagFilter? = nil, magFilter: MTLSamplerMinMagFilter? = nil, mipFilter: MTLSamplerMipFilter? = nil, maxAnisotropy: Int? = nil, sAddressMode: MTLSamplerAddressMode? = nil, tAddressMode: MTLSamplerAddressMode? = nil, rAddressMode: MTLSamplerAddressMode? = nil, borderColor: MTLSamplerBorderColor? = nil, normalizedCoordinates: Bool? = nil, lodMinClamp: Float? = nil, lodMaxClamp: Float? = nil, lodAverage: Bool? = nil, compareFunction: MTLCompareFunction? = nil, supportArgumentBuffers: Bool? = nil, label: String? = nil) {
+        self.init()
+        if let minFilter {
+            self.minFilter = minFilter
+        }
+        if let magFilter {
+            self.magFilter = magFilter
+        }
+        if let mipFilter {
+            self.mipFilter = mipFilter
+        }
+        if let maxAnisotropy {
+            self.maxAnisotropy = maxAnisotropy
+        }
+        if let sAddressMode {
+            self.sAddressMode = sAddressMode
+        }
+        if let tAddressMode {
+            self.tAddressMode = tAddressMode
+        }
+        if let rAddressMode {
+            self.rAddressMode = rAddressMode
+        }
+        if let borderColor {
+            self.borderColor = borderColor
+        }
+        if let normalizedCoordinates {
+            self.normalizedCoordinates = normalizedCoordinates
+        }
+        if let lodMinClamp {
+            self.lodMinClamp = lodMinClamp
+        }
+        if let lodMaxClamp {
+            self.lodMaxClamp = lodMaxClamp
+        }
+        if let lodAverage {
+            self.lodAverage = lodAverage
+        }
+        if let compareFunction {
+            self.compareFunction = compareFunction
+        }
+        if let supportArgumentBuffers {
+            self.supportArgumentBuffers = supportArgumentBuffers
+        }
+        if let label {
+            self.label = label
+        }
+    }
+}
+
+public extension MTKMesh {
+    func relabeled(_ label: String) -> MTKMesh {
+        for (index, buffer) in vertexBuffers.enumerated() {
+            buffer.buffer.label = "\(label)-vertexBuffer-\(index)"
+        }
+        for (index, submesh) in submeshes.enumerated() {
+            submesh.indexBuffer.buffer.label = "\(label)-submesh-indexBuffer-\(index)"
+        }
+        return self
+    }
+}
+
+public extension simd_float4x4 {
+    var upperLeft: simd_float3x3 {
+        simd_float3x3(columns: (
+            simd_float3(columns.0.xyz),
+            simd_float3(columns.1.xyz),
+            simd_float3(columns.2.xyz)
+        ))
+    }
+}
+
+public extension MTLBuffer {
+    func gpuAddressAsUnsafeMutablePointer<T>(type: T.Type) -> UnsafeMutablePointer<T>? {
+        precondition(MemoryLayout<Int>.stride == MemoryLayout<UInt64>.stride)
+        let bits = unsafeBitCast(gpuAddress, to: Int.self)
+        return UnsafeMutablePointer<T>(bitPattern: bits)
     }
 }

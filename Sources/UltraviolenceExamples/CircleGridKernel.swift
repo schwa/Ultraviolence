@@ -1,7 +1,7 @@
 import Metal
 import simd
 import Ultraviolence
-internal import UltraviolenceSupport
+import UltraviolenceSupport
 
 public struct CircleGridKernel: Element {
     private var kernel: ComputeKernel

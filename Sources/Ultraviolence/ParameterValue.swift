@@ -64,14 +64,12 @@ struct AnyParameterValue {
     var computeSetValue: (MTLComputeCommandEncoder, Int) -> Void
 
     init<T>(_ value: ParameterValue<T>) {
-
         self.renderSetValue = { encoder, index, functionType in
             encoder.setValue(value, index: index, functionType: functionType)
         }
         self.computeSetValue = { encoder, index in
             encoder.setValue(value, index: index)
         }
-
     }
 }
 

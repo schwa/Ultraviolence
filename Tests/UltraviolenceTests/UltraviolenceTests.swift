@@ -517,7 +517,7 @@ func weirdTests() throws {
 @MainActor
 func testOptionalElement() throws {
     let element = DemoElement("Hello world") {}
-    let optionalElement = Optional<DemoElement>(element)
+    let optionalElement = DemoElement?(element)
     let graph = try Graph(content: optionalElement)
     try graph.rebuildIfNeeded()
     try graph.dump()
@@ -539,4 +539,3 @@ func testElementDump() throws {
 
     #expect(graph.root.shortDescription == "DemoElement")
 }
-

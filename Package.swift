@@ -29,7 +29,8 @@ public let package = Package(
             name: "UltraviolenceExamples",
             dependencies: [
                 "Ultraviolence",
-                "UltraviolenceSupport"
+                "UltraviolenceSupport",
+                "UltraviolenceExampleShaders"
             ],
             exclude: [
                 "EdgeDetectionKernel.metal",
@@ -41,6 +42,14 @@ public let package = Package(
             resources: [
                 .copy("teapot.obj"),
                 .copy("HD-Testcard-original.jpg")
+            ],
+            plugins: [
+                .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
+            ]
+        ),
+        .target(
+            name: "UltraviolenceExampleShaders",
+            exclude: [
             ],
             plugins: [
                 .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")

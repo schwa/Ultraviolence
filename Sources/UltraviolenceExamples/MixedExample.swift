@@ -2,7 +2,7 @@ import Metal
 import simd
 import SwiftUI
 import Ultraviolence
-internal import UltraviolenceSupport
+import UltraviolenceSupport
 
 public struct MixedExample: Element {
     var modelMatrix: simd_float4x4

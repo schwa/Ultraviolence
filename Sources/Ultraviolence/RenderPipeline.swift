@@ -16,10 +16,10 @@ public struct RenderPipeline <Content>: Element, BodylessElement, BodylessConten
     @UVState
     var reflection: Reflection?
 
-    public init(vertexShader: VertexShader, fragmentShader: FragmentShader, @ElementBuilder content: () -> Content) {
+    public init(vertexShader: VertexShader, fragmentShader: FragmentShader, @ElementBuilder content: () throws -> Content) throws {
         self.vertexShader = vertexShader
         self.fragmentShader = fragmentShader
-        self.content = content()
+        self.content = try content()
     }
 
     func setupEnter(_ node: Node) throws {

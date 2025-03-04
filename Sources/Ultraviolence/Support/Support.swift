@@ -7,7 +7,7 @@ internal extension Element {
     }
 }
 
-extension UltraviolenceError {
+public extension UltraviolenceError {
     static func missingEnvironment(_ key: PartialKeyPath<UVEnvironmentValues>) -> Self {
         missingEnvironment("\(key)")
     }

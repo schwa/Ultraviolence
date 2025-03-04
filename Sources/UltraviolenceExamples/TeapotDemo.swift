@@ -8,7 +8,7 @@ import MetalKit
 import ModelIO
 import simd
 import Ultraviolence
-internal import UltraviolenceSupport
+import UltraviolenceSupport
 import UniformTypeIdentifiers
 
 public struct TeapotDemo: Element {

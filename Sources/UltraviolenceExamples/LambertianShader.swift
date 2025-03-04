@@ -1,7 +1,7 @@
 import CoreGraphics
 import simd
 import Ultraviolence
-internal import UltraviolenceSupport
+import UltraviolenceSupport
 
 public struct LambertianShader <Content>: Element where Content: Element {
     var color: SIMD3<Float>
@@ -26,14 +26,16 @@ public struct LambertianShader <Content>: Element where Content: Element {
     }
 
     public var body: some Element {
-        RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
-            content
-                .parameter("color", value: color)
-                .parameter("projectionMatrix", value: projectionMatrix)
-                .parameter("modelMatrix", value: modelMatrix)
-                .parameter("viewMatrix", value: cameraMatrix.inverse)
-                .parameter("lightDirection", value: lightDirection)
-                .parameter("cameraPosition", value: cameraMatrix.translation)
+        get throws {
+            try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
+                content
+                    .parameter("color", value: color)
+                    .parameter("projectionMatrix", value: projectionMatrix)
+                    .parameter("modelMatrix", value: modelMatrix)
+                    .parameter("viewMatrix", value: cameraMatrix.inverse)
+                    .parameter("lightDirection", value: lightDirection)
+                    .parameter("cameraPosition", value: cameraMatrix.translation)
+            }
         }
     }
 }
@@ -62,14 +64,16 @@ public struct LambertianShaderInstanced <Content>: Element where Content: Elemen
     }
 
     public var body: some Element {
-        RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
-            content
-                .parameter("colors", values: colors)
-                .parameter("projectionMatrix", value: projectionMatrix)
-                .parameter("modelMatrices", values: modelMatrices)
-                .parameter("viewMatrix", value: cameraMatrix.inverse)
-                .parameter("lightDirection", value: lightDirection)
-                .parameter("cameraPosition", value: cameraMatrix.translation)
+        get throws {
+            try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
+                content
+                    .parameter("colors", values: colors)
+                    .parameter("projectionMatrix", value: projectionMatrix)
+                    .parameter("modelMatrices", values: modelMatrices)
+                    .parameter("viewMatrix", value: cameraMatrix.inverse)
+                    .parameter("lightDirection", value: lightDirection)
+                    .parameter("cameraPosition", value: cameraMatrix.translation)
+            }
         }
     }
 }

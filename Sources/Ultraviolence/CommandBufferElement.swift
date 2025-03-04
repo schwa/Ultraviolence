@@ -37,7 +37,7 @@ public struct CommandBufferElement <Content>: Element, BodylessContentElement wh
 public extension Element {
     func onCommandBufferScheduled(_ action: @escaping (MTLCommandBuffer) -> Void) -> some Element {
         EnvironmentReader(keyPath: \.commandBuffer) { commandBuffer in
-            self.onWorkloadEnter {
+            self.onWorkloadEnter { _ in
                 if let commandBuffer {
                     commandBuffer.addScheduledHandler { commandBuffer in
                         action(commandBuffer)
@@ -49,7 +49,7 @@ public extension Element {
 
     func onCommandBufferCompleted(_ action: @escaping (MTLCommandBuffer) -> Void) -> some Element {
         EnvironmentReader(keyPath: \.commandBuffer) { commandBuffer in
-            self.onWorkloadEnter {
+            self.onWorkloadEnter { _ in
                 if let commandBuffer {
                     commandBuffer.addCompletedHandler { commandBuffer in
                         action(commandBuffer)
@@ -62,20 +62,20 @@ public extension Element {
 
 internal struct WorkloadModifier <Content>: Element, BodylessElement, BodylessContentElement where Content: Element {
     var content: Content
-    var _workloadEnter: (() throws -> Void)?
+    var _workloadEnter: ((UVEnvironmentValues) throws -> Void)?
 
-    init(content: Content, workloadEnter: (() throws -> Void)? = nil) {
+    init(content: Content, workloadEnter: ((UVEnvironmentValues) throws -> Void)? = nil) {
         self.content = content
         self._workloadEnter = workloadEnter
     }
 
     func workloadEnter(_ node: Node) throws {
-        try _workloadEnter?()
+        try _workloadEnter?(node.environmentValues)
     }
 }
 
 public extension Element {
-    func onWorkloadEnter(_ action: @escaping () throws -> Void) -> some Element {
+    func onWorkloadEnter(_ action: @escaping (UVEnvironmentValues) throws -> Void) -> some Element {
         WorkloadModifier(content: self, workloadEnter: action)
     }
 }

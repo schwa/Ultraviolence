@@ -54,7 +54,7 @@ struct BillboardRenderPipeline: Element {
 
     var body: some Element {
         get throws {
-            RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
+            try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                 Draw { encoder in
                     encoder.setVertexBytes(positions, length: MemoryLayout<SIMD2<Float>>.stride * positions.count, index: 0)
                     encoder.setVertexBytes(textureCoordinates, length: MemoryLayout<SIMD2<Float>>.stride * textureCoordinates.count, index: 1)

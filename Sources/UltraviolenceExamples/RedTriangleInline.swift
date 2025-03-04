@@ -40,7 +40,7 @@ public enum RedTriangleInline {
         let fragmentShader = try FragmentShader(source: source)
 
         let root = try RenderPass {
-            RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
+            try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                 Draw { encoder in
                     let vertices: [SIMD2<Float>] = [[0, 0.75], [-0.75, -0.75], [0.75, -0.75]]
                     encoder.setVertexBytes(vertices, length: MemoryLayout<SIMD2<Float>>.stride * 3, index: 0)
