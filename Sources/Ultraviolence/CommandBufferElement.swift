@@ -33,3 +33,49 @@ public struct CommandBufferElement <Content>: Element, BodylessContentElement wh
         }
     }
 }
+
+public extension Element {
+    func onCommandBufferScheduled(_ action: @escaping (MTLCommandBuffer) -> Void) -> some Element {
+        EnvironmentReader(keyPath: \.commandBuffer) { commandBuffer in
+            self.onWorkloadEnter {
+                if let commandBuffer {
+                    commandBuffer.addScheduledHandler { commandBuffer in
+                        action(commandBuffer)
+                    }
+                }
+            }
+        }
+    }
+
+    func onCommandBufferCompleted(_ action: @escaping (MTLCommandBuffer) -> Void) -> some Element {
+        EnvironmentReader(keyPath: \.commandBuffer) { commandBuffer in
+            self.onWorkloadEnter {
+                if let commandBuffer {
+                    commandBuffer.addCompletedHandler { commandBuffer in
+                        action(commandBuffer)
+                    }
+                }
+            }
+        }
+    }
+}
+
+internal struct WorkloadModifier <Content>: Element, BodylessElement, BodylessContentElement where Content: Element {
+    var content: Content
+    var _workloadEnter: (() throws -> Void)?
+
+    init(content: Content, workloadEnter: (() throws -> Void)? = nil) {
+        self.content = content
+        self._workloadEnter = workloadEnter
+    }
+
+    func workloadEnter(_ node: Node) throws {
+        try _workloadEnter?()
+    }
+}
+
+public extension Element {
+    func onWorkloadEnter(_ action: @escaping () throws -> Void) -> some Element {
+        WorkloadModifier(content: self, workloadEnter: action)
+    }
+}

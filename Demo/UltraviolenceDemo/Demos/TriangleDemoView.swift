@@ -37,6 +37,12 @@ struct TriangleDemoView: View {
     @State
     private var color: SIMD4<Float> = [1, 0, 0, 1]
 
+    @State
+    private var gpuTime: Double = 0
+
+    @State
+    private var kernelTime: Double = 0
+
     var body: some View {
         TimelineView(.animation()) { timeline in
             RenderView {
@@ -52,6 +58,26 @@ struct TriangleDemoView: View {
                         .parameter("color", color)
                     }
                 }
+                .onCommandBufferScheduled { _ in
+                    print("**** onCommandBufferScheduled")
+                }
+                .onCommandBufferCompleted { commandBuffer in
+                    gpuTime = commandBuffer.gpuEndTime - commandBuffer.gpuStartTime
+                    kernelTime = commandBuffer.kernelEndTime - commandBuffer.kernelStartTime
+                }
+            }
+            .overlay(alignment: .topLeading) {
+                Form {
+                    let gpuTime = Measurement(value: gpuTime, unit: UnitDuration.seconds).converted(to: .milliseconds)
+                    let kernelTime = Measurement(value: kernelTime, unit: UnitDuration.seconds).converted(to: .milliseconds)
+                    LabeledContent("GPU Time", value: gpuTime.formatted())
+                    LabeledContent("Kernel Time", value: kernelTime.formatted())
+                }
+                .monospacedDigit()
+                .frame(width: 300)
+                .padding()
+                .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 8))
+                .padding()
             }
             .metalDepthStencilPixelFormat(.depth32Float)
             .onChange(of: timeline.date) { _, new in
