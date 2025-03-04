@@ -15,9 +15,9 @@ public struct BlinnPhongShader<Content>: Element where Content: Element {
         let device = MTLCreateSystemDefaultDevice().orFatalError()
         assert(device.argumentBuffersSupport == .tier2)
         let shaderBundle = Bundle.ultraviolenceExampleShaders().orFatalError()
-        let shaderLibrary = try ShaderLibrary(bundle: shaderBundle)
-        vertexShader = try shaderLibrary.BlinnPhongVertexShader
-        fragmentShader = try shaderLibrary.BlinnPhongFragmentShader
+        let shaderLibrary = try ShaderLibrary(bundle: shaderBundle, namespace: "BlinnPhong")
+        vertexShader = try shaderLibrary.vertex_main
+        fragmentShader = try shaderLibrary.fragment_main
 
         self.content = try content()
     }
