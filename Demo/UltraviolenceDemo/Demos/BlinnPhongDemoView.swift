@@ -9,12 +9,10 @@ struct BlinnPhongDemoView: View {
     @State
     private var drawableSize: CGSize = .zero
 
-//    @State
-//    private var floorMesh = MTKMesh.plane().relabeled("floor")
-
     @State
     private var models: [Model] = [
-        .init(id: "teapot", mesh: MTKMesh.teapot().relabeled("teapot"), modelMatrix: .identity, material: BlinnPhongMaterial(ambient: .color([0.5, 0.5, 0.5]), diffuse: .color([0.5, 0.5, 0.5]), specular: .color([0.5, 0.5, 0.5]), shininess: 1))
+        .init(id: "teapot-1", mesh: MTKMesh.teapot().relabeled("teapot"), modelMatrix: .init(translation: [-2.5, 0, 0]), material: BlinnPhongMaterial(ambient: .color([0.5, 0.5, 0.5]), diffuse: .color([0.5, 0.5, 0.5]), specular: .color([0.5, 0.5, 0.5]), shininess: 1)),
+        .init(id: "teapot-2", mesh: MTKMesh.teapot().relabeled("teapot"), modelMatrix: .init(translation: [2.5, 0, 0]), material: BlinnPhongMaterial(ambient: .color([0.5, 0.5, 0.5]), diffuse: .color([0.5, 0.5, 0.5]), specular: .color([0.5, 0.5, 0.5]), shininess: 1)),
     ]
 
 
@@ -50,16 +48,16 @@ struct BlinnPhongDemoView: View {
     var body: some View {
         TimelineView(.animation) { timeline in
             let projectionMatrix = projection.projectionMatrix(for: drawableSize)
-            let transforms = Transforms(modelMatrix: modelMatrix, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
             RenderView {
                 try RenderPass {
-                    try BlinnPhongShader(transforms: transforms) {
+                    try BlinnPhongShader {
                         try ForEach(models) { model in
                             try Draw { encoder in
                                 encoder.setVertexBuffers(of: model.mesh)
                                 encoder.draw(model.mesh)
                             }
                             .blinnPhongMaterial(model.material)
+                            .blinnPhongTransforms(.init(modelMatrix: model.modelMatrix, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix))
                         }
                         .blinnPhongLighting(lighting)
                     }
@@ -93,4 +91,3 @@ struct Model: Identifiable {
     var modelMatrix: float4x4
     var material: BlinnPhongMaterial
 }
-

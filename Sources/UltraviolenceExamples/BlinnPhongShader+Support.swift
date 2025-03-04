@@ -39,8 +39,7 @@ public struct BlinnPhongMaterial {
     }
 }
 
-// TODO: This is an implementation detail surely?
-public extension BlinnPhongMaterial {
+extension BlinnPhongMaterial {
     func toArgumentBuffer() throws -> BlinnPhongMaterialArgumentBuffer {
         var result = BlinnPhongMaterialArgumentBuffer()
         switch ambient {
