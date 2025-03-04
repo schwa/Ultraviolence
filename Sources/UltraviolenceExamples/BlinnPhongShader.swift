@@ -7,14 +7,12 @@ public struct BlinnPhongShader<Content>: Element where Content: Element {
     var fragmentShader: FragmentShader
     var transforms: Transforms
 
-    var lighting: BlinnPhongLighting
-    var material: BlinnPhongMaterial
     var content: Content
 
     @UVEnvironment(\.device)
     var device
 
-    public init(transforms: Transforms, lighting: BlinnPhongLighting, material: BlinnPhongMaterial, content: () throws -> Content) throws {
+    public init(transforms: Transforms, @ElementBuilder content: () throws -> Content) throws {
         let device = MTLCreateSystemDefaultDevice().orFatalError()
         assert(device.argumentBuffersSupport == .tier2)
         let shaderBundle = Bundle.ultraviolenceExampleShaders().orFatalError()
@@ -22,8 +20,6 @@ public struct BlinnPhongShader<Content>: Element where Content: Element {
         vertexShader = try shaderLibrary.BlinnPhongVertexShader
         fragmentShader = try shaderLibrary.BlinnPhongFragmentShader
         self.transforms = transforms
-        self.lighting = lighting
-        self.material = material
 
         self.content = try content()
     }
@@ -34,15 +30,27 @@ public struct BlinnPhongShader<Content>: Element where Content: Element {
 
             try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                 content
-                    .onWorkloadEnter { environmentValues in
-                        let renderCommandEncoder = environmentValues.renderCommandEncoder.orFatalError()
-                        material.useResource(on: renderCommandEncoder)
-                        lighting.useResource(on: renderCommandEncoder)
-                    }
                     .parameter("transforms", value: transforms)
-                    .parameter("lightingModel", value: try lighting.toArgumentBuffer())
-                    .parameter("material", value: try material.toArgumentBuffer())
             }
         }
+    }
+}
+
+public extension Element {
+    func blinnPhongMaterial(_ material: BlinnPhongMaterial) throws -> some Element {
+        self
+            .parameter("material", value: try material.toArgumentBuffer())
+            .onWorkloadEnter { environmentValues in
+                let renderCommandEncoder = environmentValues.renderCommandEncoder.orFatalError()
+                material.useResource(on: renderCommandEncoder)
+            }
+    }
+    func blinnPhongLighting(_ lighting: BlinnPhongLighting) throws -> some Element {
+        self
+            .parameter("lightingModel", value: try lighting.toArgumentBuffer())
+            .onWorkloadEnter { environmentValues in
+                let renderCommandEncoder = environmentValues.renderCommandEncoder.orFatalError()
+                lighting.useResource(on: renderCommandEncoder)
+            }
     }
 }

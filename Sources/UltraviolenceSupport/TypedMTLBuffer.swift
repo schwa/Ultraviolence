@@ -1,5 +1,6 @@
 import Metal
 
+// TODO: Unit tests.
 public struct TypedMTLBuffer<Element> {
     private var base: MTLBuffer
     public private(set) var count: Int

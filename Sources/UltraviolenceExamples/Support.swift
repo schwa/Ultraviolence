@@ -38,4 +38,16 @@ public extension MTKMesh {
             fatalError("\(error)")
         }
     }
+
+    static func plane(width: Float = 1, height: Float = 1, segments: SIMD2<UInt32> = [2, 2]) -> MTKMesh {
+        do {
+            let device = _MTLCreateSystemDefaultDevice()
+            let allocator = MTKMeshBufferAllocator(device: device)
+            let mdlMesh = MDLMesh(planeWithExtent: [width, height, 0], segments: segments, geometryType: .triangles, allocator: allocator)
+            return try MTKMesh(mesh: mdlMesh, device: device)
+        }
+        catch {
+            fatalError("\(error)")
+        }
+    }
 }

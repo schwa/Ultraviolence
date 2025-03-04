@@ -9,12 +9,17 @@ struct BlinnPhongDemoView: View {
     @State
     private var drawableSize: CGSize = .zero
 
+//    @State
+//    private var floorMesh = MTKMesh.plane().relabeled("floor")
+
     @State
-    private var mesh = MTKMesh.teapot().relabeled("teapot")
+    private var models: [Model] = [
+        .init(id: "teapot", mesh: MTKMesh.teapot().relabeled("teapot"), modelMatrix: .identity, material: BlinnPhongMaterial(ambient: .color([0.5, 0.5, 0.5]), diffuse: .color([0.5, 0.5, 0.5]), specular: .color([0.5, 0.5, 0.5]), shininess: 1))
+    ]
+
+
     @State
     private var lighting: BlinnPhongLighting
-    @State
-    private var material: BlinnPhongMaterial
 
     @State
     private var lightPosition = simd_float3(5, 5, 5)
@@ -36,12 +41,6 @@ struct BlinnPhongDemoView: View {
                 lights: try device.newTypedBuffer(values: lights, options: [])
             )
             self.lighting = lighting
-            self.material = BlinnPhongMaterial(
-                ambient: .color([0.5, 0.5, 0.5]),
-                diffuse: .color([0.5, 0.5, 0.5]),
-                specular: .color([0.5, 0.5, 0.5]),
-                shininess: 0.0
-            )
         }
         catch {
             fatalError()
@@ -54,14 +53,18 @@ struct BlinnPhongDemoView: View {
             let transforms = Transforms(modelMatrix: modelMatrix, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
             RenderView {
                 try RenderPass {
-                    try BlinnPhongShader(transforms: transforms, lighting: lighting, material: material) {
-                        Draw { encoder in
-                            encoder.setVertexBuffers(of: mesh)
-                            encoder.draw(mesh)
+                    try BlinnPhongShader(transforms: transforms) {
+                        try ForEach(models) { model in
+                            try Draw { encoder in
+                                encoder.setVertexBuffers(of: model.mesh)
+                                encoder.draw(model.mesh)
+                            }
+                            .blinnPhongMaterial(model.material)
                         }
+                        .blinnPhongLighting(lighting)
                     }
                 }
-                .vertexDescriptor(MTLVertexDescriptor(mesh.vertexDescriptor))
+                .vertexDescriptor(MTLVertexDescriptor(MTKMesh.teapot().vertexDescriptor)) // TODO: Hack.
                 .depthCompare(function: .less, enabled: true)
             }
             .metalDepthStencilPixelFormat(.depth32Float)
@@ -83,3 +86,11 @@ struct BlinnPhongDemoView: View {
 
 extension BlinnPhongDemoView: DemoView {
 }
+
+struct Model: Identifiable {
+    var id: String
+    var mesh: MTKMesh
+    var modelMatrix: float4x4
+    var material: BlinnPhongMaterial
+}
+
