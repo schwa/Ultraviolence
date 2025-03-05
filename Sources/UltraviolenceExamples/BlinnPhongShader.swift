@@ -51,6 +51,7 @@ public extension Element {
     }
     func blinnPhongTransforms(_ transforms: Transforms) throws -> some Element {
         self
-            .parameter("transforms", value: transforms)
+            .parameter("transforms", value: transforms, functionType: .vertex)
+            .parameter("transforms_f", value: transforms, functionType: .fragment)
     }
 }

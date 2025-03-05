@@ -1,4 +1,3 @@
-
 // TODO: this is going to be complex.
 // TODO: Compare ids to see if they've changed in expandNode.
 
@@ -23,7 +22,6 @@ public extension ForEach {
         self.content = content
     }
 }
-
 
 extension ForEach: BodylessElement {
     internal func _expandNode(_ node: Node, context: ExpansionContext) throws {

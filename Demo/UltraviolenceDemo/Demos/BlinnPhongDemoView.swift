@@ -1,5 +1,6 @@
 import Metal
 import MetalKit
+import simd
 import SwiftUI
 import Ultraviolence
 import UltraviolenceExamples
@@ -13,14 +14,11 @@ struct BlinnPhongDemoView: View {
     private var models: [Model] = [
         .init(id: "teapot-1", mesh: MTKMesh.teapot().relabeled("teapot"), modelMatrix: .init(translation: [-2.5, 0, 0]), material: BlinnPhongMaterial(ambient: .color([0.5, 0.5, 0.5]), diffuse: .color([0.5, 0.5, 0.5]), specular: .color([0.5, 0.5, 0.5]), shininess: 1)),
         .init(id: "teapot-2", mesh: MTKMesh.teapot().relabeled("teapot"), modelMatrix: .init(translation: [2.5, 0, 0]), material: BlinnPhongMaterial(ambient: .color([0.5, 0.5, 0.5]), diffuse: .color([0.5, 0.5, 0.5]), specular: .color([0.5, 0.5, 0.5]), shininess: 1)),
+        .init(id: "floor-1", mesh: MTKMesh.plane(width: 10, height: 10), modelMatrix: .init(xRotation: .degrees(270)), material: .init(ambient: .color([0.5, 0.5, 0.5]), diffuse: .color([0.5, 0.5, 0.5]), specular: .color([0.5, 0.5, 0.5]), shininess: 1))
     ]
-
 
     @State
     private var lighting: BlinnPhongLighting
-
-    @State
-    private var lightPosition = simd_float3(5, 5, 5)
 
     let modelMatrix = simd_float4x4(translation: [0, 0, 0])
     let cameraMatrix = simd_float4x4(translation: [0, 2, 6])
@@ -31,11 +29,11 @@ struct BlinnPhongDemoView: View {
             let device = MTLCreateSystemDefaultDevice()!
 
             let lights = [
-                BlinnPhongLight(lightPosition: [5, 5, 5], lightColor: [1, 1, 1], lightPower: 10)
+                BlinnPhongLight(lightPosition: [5, 5, 0], lightColor: [1, 0, 0], lightPower: 50)
             ]
             let lighting = BlinnPhongLighting(
                 screenGamma: 2.2,
-                ambientLightColor: [1, 1, 1],
+                ambientLightColor: [0, 0, 0],
                 lights: try device.newTypedBuffer(values: lights, options: [])
             )
             self.lighting = lighting
@@ -47,8 +45,8 @@ struct BlinnPhongDemoView: View {
 
     var body: some View {
         TimelineView(.animation) { timeline in
-            let projectionMatrix = projection.projectionMatrix(for: drawableSize)
             RenderView {
+                let projectionMatrix = projection.projectionMatrix(for: drawableSize)
                 try RenderPass {
                     try BlinnPhongShader {
                         try ForEach(models) { model in
@@ -69,14 +67,13 @@ struct BlinnPhongDemoView: View {
             .onDrawableSizeChange { drawableSize = $0 }
             .onChange(of: timeline.date) {
                 let date = timeline.date.timeIntervalSinceReferenceDate
-                let cycleDuration = 5.0
-
-                let d = Float(date.truncatingRemainder(dividingBy: cycleDuration) / cycleDuration)
-
-                let angle = 2 * .pi * d
-                lighting.lights[0].lightPosition = [5 * cos(angle), 5, 5 * sin(angle)]
-
-                lighting.lights[0].lightColor = [d, 1 - d, 0]
+                let angle = LinearTimingFunction().value(time: date, period: 1, in: 0 ... 2 * .pi)
+                lighting.lights[0].lightPosition = simd_quatf(angle: angle, axis: [0, 1, 0]).act([1, 5, 0])
+                lighting.lights[0].lightColor = [
+                    ForwardAndReverseTimingFunction(SinusoidalTimingFunction()).value(time: date, period: 1.0, offset: 0.0, in: 0.5 ... 1.0),
+                    ForwardAndReverseTimingFunction(SinusoidalTimingFunction()).value(time: date, period: 1.2, offset: 0.2, in: 0.5 ... 1.0),
+                    ForwardAndReverseTimingFunction(SinusoidalTimingFunction()).value(time: date, period: 1.4, offset: 0.6, in: 0.5 ... 1.0)
+                ]
             }
         }
     }

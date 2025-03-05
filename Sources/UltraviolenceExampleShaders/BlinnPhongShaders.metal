@@ -12,13 +12,14 @@ using namespace metal;
 namespace BlinnPhong {
 
     float3 CalculateBlinnPhong(float3 modelPosition,
-        float3 interpolatedNormal,
-        constant BlinnPhongLightingModelArgumentBuffer &lightingModel,
-        float shininess,
-        float3 ambientColor,
-        float3 diffuseColor,
-        float3 specularColor
-    );
+                               float3 cameraPosition,
+                               float3 interpolatedNormal,
+                               constant BlinnPhongLightingModelArgumentBuffer &lightingModel,
+                               float shininess,
+                               float3 ambientColor,
+                               float3 diffuseColor,
+                               float3 specularColor
+                               );
 
     // ----------------------------------------------------------------------
 
@@ -40,10 +41,10 @@ namespace BlinnPhong {
 
     [[vertex]]
     Fragment vertex_main(
-        uint instance_id [[instance_id]],
-        Vertex in [[stage_in]],
-        constant Transforms *transforms [[buffer(1)]]
-    )
+                         uint instance_id [[instance_id]],
+                         Vertex in [[stage_in]],
+                         constant Transforms *transforms [[buffer(1)]]
+                         )
     {
         Fragment out;
         const float4 position = float4(in.position, 1.0);
@@ -58,10 +59,11 @@ namespace BlinnPhong {
 
     [[fragment]]
     float4 fragment_main(
-        Fragment in [[stage_in]],
-        constant BlinnPhongLightingModelArgumentBuffer &lightingModel [[buffer(1)]],
-        constant BlinnPhongMaterialArgumentBuffer *material [[buffer(2)]]
-        )
+                         Fragment in [[stage_in]],
+                         constant BlinnPhongLightingModelArgumentBuffer &lightingModel [[buffer(1)]],
+                         constant BlinnPhongMaterialArgumentBuffer *material [[buffer(2)]],
+                         constant Transforms *transforms_f [[buffer(3)]]
+                         )
     {
         uint instance_id = in.instance_id;
 
@@ -89,16 +91,18 @@ namespace BlinnPhong {
             specularColor = material[instance_id].specularTexture.sample(material[instance_id].specularSampler, in.textureCoordinate).rgb;
         }
 
+        auto cameraPosition = transforms_f[instance_id].cameraMatrix.columns[3].xyz;
 
-        float3 color = CalculateBlinnPhong(in.modelPosition, in.interpolatedNormal, lightingModel, material[instance_id].shininess, ambientColor, diffuseColor, specularColor);
-        //    return float4(GammaCorrect(color, lightingModel.screenGamma), 1.0);
+        float3 color = CalculateBlinnPhong(in.modelPosition,
+                                           cameraPosition,
+                                           in.interpolatedNormal, lightingModel, material[instance_id].shininess, ambientColor, diffuseColor, specularColor);
         return float4(color, 1.0);
-        //    return float4(1, 1, 1, 1);
     }
 
     // MARK: Helper Functions
 
     float3 CalculateBlinnPhong(float3 modelPosition,
+                               float3 cameraPosition,
                                float3 interpolatedNormal,
                                constant BlinnPhongLightingModelArgumentBuffer &lightingModel,
                                float shininess,
@@ -122,28 +126,28 @@ namespace BlinnPhong {
             const float lambertian = max(dot(lightDir, normal), 0.0);
             float specular = 0.0;
 
+            float attenuation = 1.0 / (1.0 + 0.09 * distance + 0.032 * distance * distance);
             if (lambertian > 0.0)
             {
-                const float3 viewDir = normalize(-modelPosition);
-                // this is blinn phong
-                //            if (kPhongMode == 0)
-                //            {
-                const float3 halfDir = normalize(lightDir + viewDir);
-                const float specularAngle = max(dot(halfDir, normal), 0.0);
-                specular = pow(specularAngle, shininess);
-                //            }
-                //            else
-                //            {
-                //                // this is phong (for comparison)
-                //                const float3 reflectDir = reflect(-lightDir, normal);
-                //                const float specularAngle = max(dot(reflectDir, viewDir), 0.0);
-                //                // note that the exponent is different here
-                //                specular = pow(specularAngle, shininess / 4.0);
-                //            }
+                const float3 viewDir = normalize(cameraPosition - modelPosition);
+                int kPhongMode = 0;
+                if (kPhongMode == 0)
+                {
+                    const float3 halfDir = normalize(lightDir + viewDir);
+                    const float specularAngle = max(dot(halfDir, normal), 0.0);
+                    specular = pow(specularAngle, shininess);
+                }
+                else
+                {
+                    // this is phong (for comparison)
+                    const float3 reflectDir = reflect(-lightDir, normal);
+                    const float specularAngle = max(dot(reflectDir, viewDir), 0.0);
+                    // note that the exponent is different here
+                    specular = pow(specularAngle, shininess / 4.0);
+                }
             }
-            accumulatedDiffuseColor += diffuseColor * lambertian * light.lightColor * light.lightPower / distance;
-            accumulatedSpecularColor += specularColor * specular * light.lightColor * light.lightPower / distance;
-        }
+            accumulatedDiffuseColor += diffuseColor * lambertian * light.lightColor * light.lightPower * attenuation;
+            accumulatedSpecularColor += specularColor * specular * light.lightColor * light.lightPower * attenuation;        }
 
         float3 finalColor = lightingModel.ambientLightColor * ambientColor + accumulatedDiffuseColor + accumulatedSpecularColor;
         return finalColor;

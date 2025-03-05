@@ -59,7 +59,7 @@ internal extension MTLComputeCommandEncoder {
 
 // MARK: -
 
-struct AnyParameterValue {
+internal struct AnyParameterValue {
     var renderSetValue: (MTLRenderCommandEncoder, Int, MTLFunctionType) -> Void
     var computeSetValue: (MTLComputeCommandEncoder, Int) -> Void
 
