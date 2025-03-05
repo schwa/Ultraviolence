@@ -38,3 +38,14 @@ struct Texture2DSpecifierArgumentBuffer {
     SAMPLER sampler;
 };
 
+/// Universal transforms.
+struct Transforms {
+    simd_float4x4 modelMatrix;
+    simd_float4x4 cameraMatrix;
+    simd_float4x4 viewMatrix;
+    simd_float4x4 projectionMatrix;
+    simd_float4x4 modelViewMatrix;
+    simd_float4x4 modelViewProjectionMatrix;
+    simd_float3x3 modelNormalMatrix; // TODO: Can just get this from the model matrix.
+};
+

@@ -3,23 +3,7 @@ import Ultraviolence
 import UltraviolenceExampleShaders
 import UltraviolenceSupport
 
-public typealias Transforms = UltraviolenceExampleShaders.Transforms
 public typealias BlinnPhongLight = UltraviolenceExampleShaders.BlinnPhongLight
-
-public extension Transforms {
-    init(modelMatrix: simd_float4x4, cameraMatrix: simd_float4x4, projectionMatrix: simd_float4x4) {
-        self.init()
-
-        self.cameraMatrix = cameraMatrix
-        self.modelMatrix = modelMatrix
-        self.viewMatrix = cameraMatrix.inverse
-        self.projectionMatrix = projectionMatrix
-        self.modelViewMatrix = viewMatrix * modelMatrix
-
-        self.modelViewProjectionMatrix = projectionMatrix * viewMatrix * modelMatrix
-        self.modelNormalMatrix = modelMatrix.upperLeft
-    }
-}
 
 public struct BlinnPhongMaterial {
     public enum ColorSource {
@@ -124,10 +108,5 @@ public extension Element {
         self
             .parameter("lightingModel", value: try lighting.toArgumentBuffer())
             .useResource(lighting.lights.unsafeMTLBuffer, usage: .read, stages: .fragment)
-    }
-    func blinnPhongTransforms(_ transforms: Transforms) throws -> some Element {
-        self
-            .parameter("transforms", value: transforms, functionType: .vertex)
-            .parameter("transforms_f", value: transforms, functionType: .fragment)
     }
 }
