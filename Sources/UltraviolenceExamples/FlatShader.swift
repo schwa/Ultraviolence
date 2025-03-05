@@ -12,15 +12,14 @@ public struct FlatShader <Content>: Element where Content: Element {
     var content: Content
     var vertexShader: VertexShader
     var fragmentShader: FragmentShader
-    var texture: MTLTexture
-    var sampler: MTLSamplerState
 
-    public init(modelMatrix: simd_float4x4, cameraMatrix: simd_float4x4, projectionMatrix: simd_float4x4, texture: MTLTexture, sampler: MTLSamplerState, @ElementBuilder content: () -> Content) throws {
+    var textureSpecifier: Texture2DSpecifier
+
+    public init(modelMatrix: simd_float4x4, cameraMatrix: simd_float4x4, projectionMatrix: simd_float4x4, textureSpecifier: Texture2DSpecifier, @ElementBuilder content: () -> Content) throws {
         self.modelMatrix = modelMatrix
         self.cameraMatrix = cameraMatrix
         self.projectionMatrix = projectionMatrix
-        self.texture = texture
-        self.sampler = sampler
+        self.textureSpecifier = textureSpecifier
         self.content = content()
         let shaderBundle = Bundle.ultraviolenceExampleShaders().orFatalError()
         let shaderLibrary = try ShaderLibrary(bundle: shaderBundle, namespace: "FlatShader")
@@ -30,16 +29,15 @@ public struct FlatShader <Content>: Element where Content: Element {
 
     public var body: some Element {
         get throws {
-
-            let colorSource = ColorSource2(source: .texture, color: [0, 0, 0, 0], texture: texture.gpuResourceID, sampler: sampler.gpuResourceID)
+            let textureSpecifierArgumentBuffer = textureSpecifier.toTexture2DSpecifierArgmentBuffer()
 
             try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                 content
                     .parameter("projectionMatrix", value: projectionMatrix)
                     .parameter("viewMatrix", value: cameraMatrix.inverse)
                     .parameter("modelMatrix", value: modelMatrix)
-                    .parameter("colorSource", value: colorSource)
-                    .useResource(texture, usage: .read, stages: .fragment)
+                    .parameter("texture", value: textureSpecifierArgumentBuffer)
+                    .useResource(textureSpecifier.texture, usage: .read, stages: .fragment)
             }
         }
     }
@@ -61,7 +59,7 @@ public enum FlatShaderExample: Example {
                     let modelMatrix = simd_float4x4(scale: [100, 100, 100])
                     let cameraMatrix = simd_float4x4(translation: [0, 0, 0])
                     let projectionMatrix = PerspectiveProjection().projectionMatrix(for: .init(width: 1_024, height: 768))
-                    try FlatShader(modelMatrix: modelMatrix, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix, texture: texture, sampler: sampler) {
+                    try FlatShader(modelMatrix: modelMatrix, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix, textureSpecifier: .texture(texture, sampler)) {
                         Draw { encoder in
                             encoder.setVertexBuffers(of: mesh)
                             encoder.draw(mesh)
