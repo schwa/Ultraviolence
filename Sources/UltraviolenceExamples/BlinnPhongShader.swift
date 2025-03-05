@@ -31,4 +31,3 @@ public struct BlinnPhongShader<Content>: Element where Content: Element {
         }
     }
 }
-

@@ -3,6 +3,7 @@ import Metal
 import MetalKit
 import simd
 import Ultraviolence
+import UltraviolenceExampleShaders
 import UltraviolenceSupport
 
 public struct FlatShader <Content>: Element where Content: Element {
