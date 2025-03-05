@@ -22,9 +22,10 @@ public struct FlatShader <Content>: Element where Content: Element {
         self.texture = texture
         self.sampler = sampler
         self.content = content()
-        let library = try ShaderLibrary(bundle: .module, namespace: "FlatShader")
-        self.vertexShader = try library.vertex_main
-        self.fragmentShader = try library.fragment_main
+        let shaderBundle = Bundle.ultraviolenceExampleShaders().orFatalError()
+        let shaderLibrary = try ShaderLibrary(bundle: shaderBundle, namespace: "FlatShader")
+        self.vertexShader = try shaderLibrary.vertex_main
+        self.fragmentShader = try shaderLibrary.fragment_main
     }
 
     public var body: some Element {

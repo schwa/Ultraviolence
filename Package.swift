@@ -50,6 +50,8 @@ public let package = Package(
         .target(
             name: "UltraviolenceExampleShaders",
             exclude: [
+                "BlinnPhoneShaders.metal",
+                "FlatShader.metal",
             ],
             plugins: [
                 .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
