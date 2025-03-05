@@ -74,7 +74,7 @@ namespace BlinnPhong {
         uint instance_id = in.instance_id;
 
         float3 ambientColor;
-        if (material[instance_id].ambientSource == kColorSourceTexture) {
+        if (material[instance_id].ambientSource == kColorSourceColor) {
             ambientColor = material[instance_id].ambientColor.xyz;
         }
         else {
@@ -82,7 +82,7 @@ namespace BlinnPhong {
         }
 
         float3 diffuseColor;
-        if (material[instance_id].diffuseSource == kColorSourceTexture) {
+        if (material[instance_id].diffuseSource == kColorSourceColor) {
             diffuseColor = material[instance_id].diffuseColor.xyz;
         }
         else {
@@ -90,7 +90,7 @@ namespace BlinnPhong {
         }
 
         float3 specularColor;
-        if (material[instance_id].specularSource == kColorSourceTexture) {
+        if (material[instance_id].specularSource == kColorSourceColor) {
             specularColor = material[instance_id].specularColor.xyz;
         }
         else {
