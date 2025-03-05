@@ -824,7 +824,10 @@ public extension MTLDepthStencilDescriptor {
 }
 
 public extension MTLSamplerDescriptor {
+    // swiftlint:disable discouraged_optional_boolean
+    // swiftlint:disable:next cyclomatic_complexity
     convenience init(minFilter: MTLSamplerMinMagFilter? = nil, magFilter: MTLSamplerMinMagFilter? = nil, mipFilter: MTLSamplerMipFilter? = nil, maxAnisotropy: Int? = nil, sAddressMode: MTLSamplerAddressMode? = nil, tAddressMode: MTLSamplerAddressMode? = nil, rAddressMode: MTLSamplerAddressMode? = nil, borderColor: MTLSamplerBorderColor? = nil, normalizedCoordinates: Bool? = nil, lodMinClamp: Float? = nil, lodMaxClamp: Float? = nil, lodAverage: Bool? = nil, compareFunction: MTLCompareFunction? = nil, supportArgumentBuffers: Bool? = nil, label: String? = nil) {
+        // swiftlint:enable discouraged_optional_boolean
         self.init()
         if let minFilter {
             self.minFilter = minFilter

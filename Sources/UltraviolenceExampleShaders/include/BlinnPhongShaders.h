@@ -6,17 +6,17 @@
 struct BlinnPhongMaterialArgumentBuffer {
     ColorSource ambientSource;
     simd_float3 ambientColor;
-    TEXTURE(float, access::sample) ambientTexture;
+    TEXTURE2D(float, access::sample) ambientTexture;
     SAMPLER ambientSampler;
 
     ColorSource diffuseSource;
     simd_float3 diffuseColor;
-    TEXTURE(float, access::sample) diffuseTexture;
+    TEXTURE2D(float, access::sample) diffuseTexture;
     SAMPLER diffuseSampler;
 
     ColorSource specularSource;
     simd_float3 specularColor;
-    TEXTURE(float, access::sample) specularTexture;
+    TEXTURE2D(float, access::sample) specularTexture;
     SAMPLER specularSampler;
 
     float shininess;

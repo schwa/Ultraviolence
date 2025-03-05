@@ -1,4 +1,6 @@
-#include <metal_stdlib>
+#import <metal_stdlib>
+#import "include/UltraviolenceExampleShaders.h"
+
 using namespace metal;
 
 namespace FlatShader {
@@ -30,11 +32,22 @@ namespace FlatShader {
 
     [[fragment]] float4 fragment_main(
         VertexOut in [[stage_in]],
-        texture2d<float> texture [[texture(0)]],
-        sampler sampler [[sampler(0)]]
+        constant ColorSource2 &colorSource [[buffer(0)]]
+//        texture2d<float> texture [[texture(3)]],
+//        sampler sampler [[sampler(4)]]
     ) {
         // Sample the texture
-        float4 color = texture.sample(sampler, in.textureCoordinate);
-       return color;
+
+        if (colorSource.source == kColorSourceColor) {
+            return colorSource.color;
+        }
+        else if (colorSource.source == kColorSourceTexture) {
+            float4 color = colorSource.texture.sample(colorSource.sampler, in.textureCoordinate);
+            return color;
+        }
+        else {
+            discard_fragment();
+        }
+
     }
 }

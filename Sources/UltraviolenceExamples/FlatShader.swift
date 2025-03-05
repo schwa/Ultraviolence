@@ -30,13 +30,18 @@ public struct FlatShader <Content>: Element where Content: Element {
 
     public var body: some Element {
         get throws {
+
+            let colorSource = ColorSource2(source: .texture, color: [0, 0, 0, 0], texture: texture.gpuResourceID, sampler: sampler.gpuResourceID)
+
             try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                 content
                     .parameter("projectionMatrix", value: projectionMatrix)
                     .parameter("viewMatrix", value: cameraMatrix.inverse)
                     .parameter("modelMatrix", value: modelMatrix)
-                    .parameter("texture", texture: texture)
-                    .parameter("sampler", samplerState: sampler)
+                    .parameter("colorSource", value: colorSource)
+                    .onWorkloadEnter { environment in
+                        environment.renderCommandEncoder?.useResource(texture, usage: .read, stages: .fragment)
+                    }
             }
         }
     }
@@ -49,7 +54,7 @@ public enum FlatShaderExample: Example {
         let textureLoader = MTKTextureLoader(device: device)
         let imageURL = Bundle.module.url(forResource: "HD-Testcard-original", withExtension: "jpg").orFatalError()
         let texture = try textureLoader.newTexture(URL: imageURL)
-        let samplerDescriptor = MTLSamplerDescriptor()
+        let samplerDescriptor = MTLSamplerDescriptor(supportArgumentBuffers: true)
         let sampler = try device._makeSamplerState(descriptor: samplerDescriptor)
         return try MTLCaptureManager.shared().with(enabled: false) {
             let mesh = MTKMesh.sphere(inwardNormals: true)

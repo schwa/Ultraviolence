@@ -133,7 +133,7 @@ struct FlyingTeapotsRenderPass: Element {
         let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm, width: 2_048, height: 2_048, mipmapped: false)
         textureDescriptor.usage = [.shaderRead, .shaderWrite]
         skyboxTexture = device.makeTexture(descriptor: textureDescriptor).orFatalError()
-        let samplerDescriptor = MTLSamplerDescriptor()
+        let samplerDescriptor = MTLSamplerDescriptor(supportArgumentBuffers: true)
         skyboxSampler = device.makeSamplerState(descriptor: samplerDescriptor).orFatalError()
         self.checkerboardColor = checkerboardColor
         self.simulation = simulation

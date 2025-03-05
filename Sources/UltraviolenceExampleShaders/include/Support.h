@@ -5,14 +5,14 @@
 #if defined(__METAL_VERSION__)
 #import <metal_stdlib>
 #define ATTRIBUTE(INDEX) [[attribute(INDEX)]]
-#define TEXTURE(TYPE, ACCESS) texture2d<TYPE, ACCESS>
+#define TEXTURE2D(TYPE, ACCESS) texture2d<TYPE, ACCESS>
 #define SAMPLER sampler
 #define BUFFER(ADDRESS_SPACE, TYPE) ADDRESS_SPACE TYPE
 using namespace metal;
 #else
 #import <Metal/Metal.h>
 #define ATTRIBUTE(INDEX)
-#define TEXTURE(TYPE, ACCESS) MTLResourceID
+#define TEXTURE2D(TYPE, ACCESS) MTLResourceID
 #define SAMPLER MTLResourceID
 #define BUFFER(ADDRESS_SPACE, TYPE) TYPE
 #endif
@@ -25,7 +25,14 @@ using namespace metal;
 #define UV_ENUM(...) __UV_ENUM_GET_MACRO(__VA_ARGS__, __UV_NAMED_ENUM, __UV_ANON_ENUM, )(__VA_ARGS__)
 
 typedef UV_ENUM (int, ColorSource) {
-    kColorSourceTexture = 0,
-    kColorSourceColor = 1,
+    kColorSourceColor = 0,
+    kColorSourceTexture = 1,
+};
+
+struct ColorSource2 {
+    ColorSource source;
+    simd_float4 color;
+    TEXTURE2D(float, access::sample) texture;
+    SAMPLER sampler;
 };
 
