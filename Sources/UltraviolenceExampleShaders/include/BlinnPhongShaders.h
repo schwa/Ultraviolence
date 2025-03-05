@@ -1,27 +1,6 @@
 #pragma once
 
-#import <simd/simd.h>
-
-#if defined(__METAL_VERSION__)
-#import <metal_stdlib>
-#define ATTRIBUTE(INDEX) [[attribute(INDEX)]]
-#define TEXTURE(TYPE, ACCESS) texture2d<TYPE, ACCESS>
-#define SAMPLER sampler
-#define BUFFER(ADDRESS_SPACE, TYPE) ADDRESS_SPACE TYPE
-using namespace metal;
-#else
-#import <Metal/Metal.h>
-#define ATTRIBUTE(INDEX)
-#define TEXTURE(TYPE, ACCESS) MTLResourceID
-#define SAMPLER MTLResourceID
-#define BUFFER(ADDRESS_SPACE, TYPE) TYPE
-#endif
-
-enum ColorSource {
-    texture = 0,
-    color = 1,
-};
-typedef enum ColorSource ColorSource;
+#import "Support.h"
 
 // long ambientTexture, long ambientSampler
 struct BlinnPhongMaterialArgumentBuffer {
@@ -61,12 +40,6 @@ struct BlinnPhongLightingModelArgumentBuffer {
 
 // MARK: -
 
-struct Vertex {
-    simd_float3 position ATTRIBUTE(0);
-    simd_float3 normal ATTRIBUTE(1);
-    simd_float2 textureCoordinate ATTRIBUTE(2);
-};
-
 struct Transforms {
     simd_float4x4 modelMatrix;
     simd_float4x4 cameraMatrix;
@@ -75,6 +48,5 @@ struct Transforms {
     simd_float4x4 modelViewMatrix;
     simd_float4x4 modelViewProjectionMatrix;
     simd_float3x3 modelNormalMatrix;
-
 };
 

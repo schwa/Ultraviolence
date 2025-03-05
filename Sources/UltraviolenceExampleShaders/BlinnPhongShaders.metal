@@ -11,6 +11,12 @@ using namespace metal;
 
 namespace BlinnPhong {
 
+    struct Vertex {
+        simd_float3 position ATTRIBUTE(0);
+        simd_float3 normal ATTRIBUTE(1);
+        simd_float2 textureCoordinate ATTRIBUTE(2);
+    };
+
     float3 CalculateBlinnPhong(float3 modelPosition,
                                float3 cameraPosition,
                                float3 interpolatedNormal,
@@ -68,7 +74,7 @@ namespace BlinnPhong {
         uint instance_id = in.instance_id;
 
         float3 ambientColor;
-        if (material[instance_id].ambientSource == texture) {
+        if (material[instance_id].ambientSource == kColorSourceTexture) {
             ambientColor = material[instance_id].ambientColor.xyz;
         }
         else {
@@ -76,7 +82,7 @@ namespace BlinnPhong {
         }
 
         float3 diffuseColor;
-        if (material[instance_id].diffuseSource == texture) {
+        if (material[instance_id].diffuseSource == kColorSourceTexture) {
             diffuseColor = material[instance_id].diffuseColor.xyz;
         }
         else {
@@ -84,7 +90,7 @@ namespace BlinnPhong {
         }
 
         float3 specularColor;
-        if (material[instance_id].specularSource == texture) {
+        if (material[instance_id].specularSource == kColorSourceTexture) {
             specularColor = material[instance_id].specularColor.xyz;
         }
         else {

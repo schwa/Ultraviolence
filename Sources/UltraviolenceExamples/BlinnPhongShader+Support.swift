@@ -44,28 +44,28 @@ extension BlinnPhongMaterial {
         var result = BlinnPhongMaterialArgumentBuffer()
         switch ambient {
         case .color(let color):
-            result.ambientSource = .init(rawValue: 0)
+            result.ambientSource = UltraviolenceExampleShaders.ColorSource.color
             result.ambientColor = color
         case .texture(let texture, let sampler):
-            result.ambientSource = .init(rawValue: 1)
+            result.ambientSource = UltraviolenceExampleShaders.ColorSource.texture
             result.ambientTexture = texture.gpuResourceID
             result.ambientSampler = sampler.gpuResourceID
         }
         switch diffuse {
         case .color(let color):
-            result.diffuseSource = .init(rawValue: 0)
+            result.diffuseSource = UltraviolenceExampleShaders.ColorSource.color
             result.diffuseColor = color
         case .texture(let texture, let sampler):
-            result.diffuseSource = .init(rawValue: 1)
+            result.diffuseSource = UltraviolenceExampleShaders.ColorSource.texture
             result.diffuseTexture = texture.gpuResourceID
             result.diffuseSampler = sampler.gpuResourceID
         }
         switch specular {
         case .color(let color):
-            result.specularSource = .init(rawValue: 0)
+            result.specularSource = UltraviolenceExampleShaders.ColorSource.color
             result.specularColor = color
         case .texture(let texture, let sampler):
-            result.specularSource = .init(rawValue: 1)
+            result.specularSource = UltraviolenceExampleShaders.ColorSource.texture
             result.specularTexture = texture.gpuResourceID
             result.specularSampler = sampler.gpuResourceID
         }
