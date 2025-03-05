@@ -68,7 +68,7 @@ namespace BlinnPhong {
                          Fragment in [[stage_in]],
                          constant BlinnPhongLightingModelArgumentBuffer &lightingModel [[buffer(1)]],
                          constant BlinnPhongMaterialArgumentBuffer *material [[buffer(2)]],
-                         constant Transforms *transforms_f [[buffer(3)]]
+                         constant Transforms *transforms [[buffer(3)]]
                          )
     {
         uint instance_id = in.instance_id;
@@ -97,7 +97,7 @@ namespace BlinnPhong {
             specularColor = material[instance_id].specularTexture.sample(material[instance_id].specularSampler, in.textureCoordinate).rgb;
         }
 
-        auto cameraPosition = transforms_f[instance_id].cameraMatrix.columns[3].xyz;
+        auto cameraPosition = transforms[instance_id].cameraMatrix.columns[3].xyz;
 
         float3 color = CalculateBlinnPhong(in.modelPosition,
                                            cameraPosition,

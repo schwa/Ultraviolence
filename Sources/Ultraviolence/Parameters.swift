@@ -47,22 +47,33 @@ internal struct Parameter {
         self.value = AnyParameterValue(value)
     }
 
+    @MainActor
     func set(on encoder: MTLRenderCommandEncoder, reflection: Reflection) throws {
-        guard functionType == .vertex || functionType == .fragment || functionType == nil else {
-            throw UltraviolenceError.generic("Invalid function type \(functionType.debugDescription).")
-        }
-        let vertexIndex = reflection.binding(forType: .vertex, name: name)
-        let fragmentIndex = reflection.binding(forType: .fragment, name: name)
-        switch (vertexIndex, fragmentIndex) {
-        case (.some(let vertexIndex), .some(let fragmentIndex)):
-            preconditionFailure("Ambiguous parameter, found parameter named \(name) in both vertex (index: #\(vertexIndex)) and fragment (index: #\(fragmentIndex)) shaders.")
-        case (.some(let vertexIndex), .none):
-            encoder.setValue(value, index: vertexIndex, functionType: .vertex)
-        case (.none, .some(let fragmentIndex)):
-            encoder.setValue(value, index: fragmentIndex, functionType: .fragment)
-        case (.none, .none):
-            logger?.info("Parameter \(name) not found in reflection \(reflection.debugDescription).")
-            throw UltraviolenceError.missingBinding(name)
+        switch functionType {
+        case .vertex:
+            if let index = try reflection.binding(forType: .vertex, name: name) {
+                encoder.setValue(value, index: index, functionType: .vertex)
+            }
+        case .fragment:
+            if let index = try reflection.binding(forType: .fragment, name: name) {
+                encoder.setValue(value, index: index, functionType: .fragment)
+            }
+        case nil:
+            let vertexIndex = reflection.binding(forType: .vertex, name: name)
+            let fragmentIndex = reflection.binding(forType: .fragment, name: name)
+            switch (vertexIndex, fragmentIndex) {
+            case (.some(let vertexIndex), .some(let fragmentIndex)):
+                preconditionFailure("Ambiguous parameter, found parameter named \(name) in both vertex (index: #\(vertexIndex)) and fragment (index: #\(fragmentIndex)) shaders.")
+            case (.some(let vertexIndex), .none):
+                encoder.setValue(value, index: vertexIndex, functionType: .vertex)
+            case (.none, .some(let fragmentIndex)):
+                encoder.setValue(value, index: fragmentIndex, functionType: .fragment)
+            case (.none, .none):
+                logger?.info("Parameter \(name) not found in reflection \(reflection.debugDescription).")
+                throw UltraviolenceError.missingBinding(name)
+            }
+        default:
+            fatalError()
         }
     }
 

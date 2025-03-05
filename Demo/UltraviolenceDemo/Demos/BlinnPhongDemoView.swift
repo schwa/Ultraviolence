@@ -51,12 +51,12 @@ struct BlinnPhongDemoView: View {
                 let projectionMatrix = projection.projectionMatrix(for: drawableSize)
                 try RenderPass {
                     let transforms = Transforms(modelMatrix: .init(translation: lighting.lights[0].lightPosition), cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
-
-                    try FlatShader(transforms: transforms, textureSpecifier: .solidColor(SIMD4<Float>(lighting.lights[0].lightColor, 1))) {
+                    try FlatShader(textureSpecifier: .solidColor(SIMD4<Float>(lighting.lights[0].lightColor, 1))) {
                         Draw { encoder in
                             encoder.setVertexBuffers(of: lightMarker)
                             encoder.draw(lightMarker)
                         }
+                        .transforms(transforms)
                     }
                     try BlinnPhongShader {
                         try ForEach(models) { model in
@@ -65,7 +65,7 @@ struct BlinnPhongDemoView: View {
                                 encoder.draw(model.mesh)
                             }
                             .blinnPhongMaterial(model.material)
-                            .blinnPhongTransforms(.init(modelMatrix: model.modelMatrix, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix))
+                            .transforms(.init(modelMatrix: model.modelMatrix, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix))
                         }
                         .blinnPhongLighting(lighting)
                     }

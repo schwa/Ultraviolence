@@ -7,15 +7,13 @@ import UltraviolenceExampleShaders
 import UltraviolenceSupport
 
 public struct FlatShader <Content>: Element where Content: Element {
-    var transforms: Transforms
     var content: Content
     var vertexShader: VertexShader
     var fragmentShader: FragmentShader
 
     var textureSpecifier: Texture2DSpecifier
 
-    public init(transforms: Transforms, textureSpecifier: Texture2DSpecifier, @ElementBuilder content: () throws -> Content) throws {
-        self.transforms = transforms
+    public init(textureSpecifier: Texture2DSpecifier, @ElementBuilder content: () throws -> Content) throws {
         self.textureSpecifier = textureSpecifier
         self.content = try content()
         let shaderBundle = Bundle.ultraviolenceExampleShaders().orFatalError()
@@ -30,7 +28,6 @@ public struct FlatShader <Content>: Element where Content: Element {
 
             try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                 content
-                    .parameter("transforms", value: transforms)
                     .parameter("texture", value: textureSpecifierArgumentBuffer)
                     .useResource(textureSpecifier.texture, usage: .read, stages: .fragment)
             }
@@ -55,11 +52,12 @@ public enum FlatShaderExample: Example {
                     let cameraMatrix = simd_float4x4(translation: [0, 0, 0])
                     let projectionMatrix = PerspectiveProjection().projectionMatrix(for: .init(width: 1_024, height: 768))
                     let transforms = Transforms(modelMatrix: modelMatrix, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
-                    try FlatShader(transforms: transforms, textureSpecifier: .texture(texture, sampler)) {
-                        Draw { encoder in
+                    try FlatShader(textureSpecifier: .texture(texture, sampler)) {
+                        try Draw { encoder in
                             encoder.setVertexBuffers(of: mesh)
                             encoder.draw(mesh)
                         }
+                        .transforms(transforms)
                     }
                     .vertexDescriptor(MTLVertexDescriptor(mesh.vertexDescriptor))
                     .depthCompare(function: .less, enabled: true)
