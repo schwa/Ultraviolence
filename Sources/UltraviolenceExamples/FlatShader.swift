@@ -15,12 +15,12 @@ public struct FlatShader <Content>: Element where Content: Element {
 
     var textureSpecifier: Texture2DSpecifier
 
-    public init(modelMatrix: simd_float4x4, cameraMatrix: simd_float4x4, projectionMatrix: simd_float4x4, textureSpecifier: Texture2DSpecifier, @ElementBuilder content: () -> Content) throws {
+    public init(modelMatrix: simd_float4x4, cameraMatrix: simd_float4x4, projectionMatrix: simd_float4x4, textureSpecifier: Texture2DSpecifier, @ElementBuilder content: () throws -> Content) throws {
         self.modelMatrix = modelMatrix
         self.cameraMatrix = cameraMatrix
         self.projectionMatrix = projectionMatrix
         self.textureSpecifier = textureSpecifier
-        self.content = content()
+        self.content = try content()
         let shaderBundle = Bundle.ultraviolenceExampleShaders().orFatalError()
         let shaderLibrary = try ShaderLibrary(bundle: shaderBundle, namespace: "FlatShader")
         self.vertexShader = try shaderLibrary.vertex_main

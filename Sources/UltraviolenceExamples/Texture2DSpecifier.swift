@@ -4,6 +4,7 @@ import UltraviolenceExampleShaders
 
 public enum Texture2DSpecifier {
     case texture(MTLTexture, MTLSamplerState)
+    // TODO: Just color - and switch to SIMD3<Float>??
     case solidColor(SIMD4<Float>)
 }
 
