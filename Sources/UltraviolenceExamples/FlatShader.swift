@@ -7,19 +7,15 @@ import UltraviolenceExampleShaders
 import UltraviolenceSupport
 
 public struct FlatShader <Content>: Element where Content: Element {
-    var modelMatrix: simd_float4x4
-    var cameraMatrix: simd_float4x4
-    var projectionMatrix: simd_float4x4
+    var transforms: Transforms
     var content: Content
     var vertexShader: VertexShader
     var fragmentShader: FragmentShader
 
     var textureSpecifier: Texture2DSpecifier
 
-    public init(modelMatrix: simd_float4x4, cameraMatrix: simd_float4x4, projectionMatrix: simd_float4x4, textureSpecifier: Texture2DSpecifier, @ElementBuilder content: () throws -> Content) throws {
-        self.modelMatrix = modelMatrix
-        self.cameraMatrix = cameraMatrix
-        self.projectionMatrix = projectionMatrix
+    public init(transforms: Transforms, textureSpecifier: Texture2DSpecifier, @ElementBuilder content: () throws -> Content) throws {
+        self.transforms = transforms
         self.textureSpecifier = textureSpecifier
         self.content = try content()
         let shaderBundle = Bundle.ultraviolenceExampleShaders().orFatalError()
@@ -34,9 +30,7 @@ public struct FlatShader <Content>: Element where Content: Element {
 
             try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                 content
-                    .parameter("projectionMatrix", value: projectionMatrix)
-                    .parameter("viewMatrix", value: cameraMatrix.inverse)
-                    .parameter("modelMatrix", value: modelMatrix)
+                    .parameter("transforms", value: transforms)
                     .parameter("texture", value: textureSpecifierArgumentBuffer)
                     .useResource(textureSpecifier.texture, usage: .read, stages: .fragment)
             }
@@ -60,7 +54,8 @@ public enum FlatShaderExample: Example {
                     let modelMatrix = simd_float4x4(scale: [100, 100, 100])
                     let cameraMatrix = simd_float4x4(translation: [0, 0, 0])
                     let projectionMatrix = PerspectiveProjection().projectionMatrix(for: .init(width: 1_024, height: 768))
-                    try FlatShader(modelMatrix: modelMatrix, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix, textureSpecifier: .texture(texture, sampler)) {
+                    let transforms = Transforms(modelMatrix: modelMatrix, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
+                    try FlatShader(transforms: transforms, textureSpecifier: .texture(texture, sampler)) {
                         Draw { encoder in
                             encoder.setVertexBuffers(of: mesh)
                             encoder.draw(mesh)

@@ -50,7 +50,9 @@ struct BlinnPhongDemoView: View {
             RenderView {
                 let projectionMatrix = projection.projectionMatrix(for: drawableSize)
                 try RenderPass {
-                    try FlatShader(modelMatrix: .init(translation: lighting.lights[0].lightPosition), cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix, textureSpecifier: .solidColor(SIMD4<Float>(lighting.lights[0].lightColor, 1))) {
+                    let transforms = Transforms(modelMatrix: .init(translation: lighting.lights[0].lightPosition), cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
+
+                    try FlatShader(transforms: transforms, textureSpecifier: .solidColor(SIMD4<Float>(lighting.lights[0].lightColor, 1))) {
                         Draw { encoder in
                             encoder.setVertexBuffers(of: lightMarker)
                             encoder.draw(lightMarker)

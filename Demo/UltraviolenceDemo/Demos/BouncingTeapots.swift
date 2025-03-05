@@ -155,7 +155,7 @@ struct FlyingTeapotsRenderPass: Element {
             }
             try RenderPass {
                 // Draw the checkerboard texture into a skybox
-                try FlatShader(modelMatrix: .identity, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix, textureSpecifier: .texture(skyboxTexture, skyboxSampler)) {
+                try FlatShader(transforms: Transforms(cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix), textureSpecifier: .texture(skyboxTexture, skyboxSampler)) {
                     Draw { encoder in
                         encoder.setVertexBuffers(of: sphere)
                         encoder.draw(sphere)

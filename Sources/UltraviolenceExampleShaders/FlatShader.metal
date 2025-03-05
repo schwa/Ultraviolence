@@ -18,13 +18,11 @@ namespace FlatShader {
     [[vertex]] VertexOut vertex_main(
         uint instance_id [[instance_id]],
         const VertexIn in [[stage_in]],
-        constant float4x4 &projectionMatrix [[buffer(1)]],
-        constant float4x4 &viewMatrix [[buffer(2)]],
-        constant float4x4 &modelMatrix [[buffer(3)]]
+        constant Transforms &transforms [[buffer(1)]]
     ) {
         VertexOut out;
         float4 objectSpace = float4(in.position, 1.0);
-        float4x4 mvp = projectionMatrix * viewMatrix * modelMatrix;
+        float4x4 mvp = transforms.projectionMatrix * transforms.viewMatrix * transforms.modelMatrix;
         out.position = mvp * objectSpace;
         out.textureCoordinate = in.textureCoordinate;
         return out;
