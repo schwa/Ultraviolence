@@ -34,7 +34,6 @@ public let package = Package(
             ],
             exclude: [
                 "EdgeDetectionKernel.metal",
-                "FlatShader.metal",
                 "LambertianShader.metal",
                 "RedTriangle.metal",
                 "CheckerboardKernel.metal"
@@ -50,7 +49,7 @@ public let package = Package(
         .target(
             name: "UltraviolenceExampleShaders",
             exclude: [
-                "BlinnPhoneShaders.metal",
+                "BlinnPhongShaders.metal",
                 "FlatShader.metal",
             ],
             plugins: [
