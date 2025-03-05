@@ -20,6 +20,8 @@ struct BlinnPhongDemoView: View {
     @State
     private var lighting: BlinnPhongLighting
 
+    let lightMarker = MTKMesh.sphere(extent: [0.1, 0.1, 0.1]).relabeled("light-marker-0")
+
     let modelMatrix = simd_float4x4(translation: [0, 0, 0])
     let cameraMatrix = simd_float4x4(translation: [0, 2, 6])
     let projection = PerspectiveProjection()
@@ -48,6 +50,12 @@ struct BlinnPhongDemoView: View {
             RenderView {
                 let projectionMatrix = projection.projectionMatrix(for: drawableSize)
                 try RenderPass {
+                    try FlatShader(modelMatrix: .init(translation: lighting.lights[0].lightPosition), cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix, textureSpecifier: .solidColor(SIMD4<Float>(lighting.lights[0].lightColor, 1))) {
+                        Draw { encoder in
+                            encoder.setVertexBuffers(of: lightMarker)
+                            encoder.draw(lightMarker)
+                        }
+                    }
                     try BlinnPhongShader {
                         try ForEach(models) { model in
                             try Draw { encoder in
