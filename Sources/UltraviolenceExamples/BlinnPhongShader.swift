@@ -32,26 +32,3 @@ public struct BlinnPhongShader<Content>: Element where Content: Element {
     }
 }
 
-public extension Element {
-    func blinnPhongMaterial(_ material: BlinnPhongMaterial) throws -> some Element {
-        self
-            .parameter("material", value: try material.toArgumentBuffer())
-            .onWorkloadEnter { environmentValues in
-                let renderCommandEncoder = environmentValues.renderCommandEncoder.orFatalError()
-                material.useResource(on: renderCommandEncoder)
-            }
-    }
-    func blinnPhongLighting(_ lighting: BlinnPhongLighting) throws -> some Element {
-        self
-            .parameter("lightingModel", value: try lighting.toArgumentBuffer())
-            .onWorkloadEnter { environmentValues in
-                let renderCommandEncoder = environmentValues.renderCommandEncoder.orFatalError()
-                lighting.useResource(on: renderCommandEncoder)
-            }
-    }
-    func blinnPhongTransforms(_ transforms: Transforms) throws -> some Element {
-        self
-            .parameter("transforms", value: transforms, functionType: .vertex)
-            .parameter("transforms_f", value: transforms, functionType: .fragment)
-    }
-}

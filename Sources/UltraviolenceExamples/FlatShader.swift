@@ -39,9 +39,7 @@ public struct FlatShader <Content>: Element where Content: Element {
                     .parameter("viewMatrix", value: cameraMatrix.inverse)
                     .parameter("modelMatrix", value: modelMatrix)
                     .parameter("colorSource", value: colorSource)
-                    .onWorkloadEnter { environment in
-                        environment.renderCommandEncoder?.useResource(texture, usage: .read, stages: .fragment)
-                    }
+                    .useResource(texture, usage: .read, stages: .fragment)
             }
         }
     }

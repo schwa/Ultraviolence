@@ -25,6 +25,20 @@ public struct BlinnPhongMaterial {
     public enum ColorSource {
         case color(SIMD3<Float>)
         case texture(MTLTexture, MTLSamplerState)
+
+        var texture: MTLTexture? {
+            if case let .texture(texture, _) = self {
+                return texture
+            }
+            return nil
+        }
+
+        var sampler: MTLSamplerState? {
+            if case let .texture(_, sampler) = self {
+                return sampler
+            }
+            return nil
+        }
     }
     public var ambient: ColorSource
     public var diffuse: ColorSource
@@ -72,18 +86,6 @@ extension BlinnPhongMaterial {
         result.shininess = shininess
         return result
     }
-
-    func useResource(on renderCommandEncoder: MTLRenderCommandEncoder) {
-        if case let .texture(texture, _) = ambient {
-            renderCommandEncoder.useResource(texture, usage: .read, stages: .fragment)
-        }
-        if case let .texture(texture, _) = diffuse {
-            renderCommandEncoder.useResource(texture, usage: .read, stages: .fragment)
-        }
-        if case let .texture(texture, _) = specular {
-            renderCommandEncoder.useResource(texture, usage: .read, stages: .fragment)
-        }
-    }
 }
 
 public struct BlinnPhongLighting {
@@ -107,8 +109,25 @@ extension BlinnPhongLighting {
             lights: lights.unsafeMTLBuffer.gpuAddressAsUnsafeMutablePointer(type: BlinnPhongLight.self).orFatalError()
         )
     }
+}
 
-    func useResource(on renderCommandEncoder: MTLRenderCommandEncoder) {
-        renderCommandEncoder.useResource(lights.unsafeMTLBuffer, usage: .read, stages: .fragment)
+public extension Element {
+    func blinnPhongMaterial(_ material: BlinnPhongMaterial) throws -> some Element {
+        self
+            .parameter("material", value: try material.toArgumentBuffer())
+            .useResource(material.ambient.texture, usage: .read, stages: .fragment)
+            .useResource(material.diffuse.texture, usage: .read, stages: .fragment)
+            .useResource(material.specular.texture, usage: .read, stages: .fragment)
+    }
+
+    func blinnPhongLighting(_ lighting: BlinnPhongLighting) throws -> some Element {
+        self
+            .parameter("lightingModel", value: try lighting.toArgumentBuffer())
+            .useResource(lighting.lights.unsafeMTLBuffer, usage: .read, stages: .fragment)
+    }
+    func blinnPhongTransforms(_ transforms: Transforms) throws -> some Element {
+        self
+            .parameter("transforms", value: transforms, functionType: .vertex)
+            .parameter("transforms_f", value: transforms, functionType: .fragment)
     }
 }

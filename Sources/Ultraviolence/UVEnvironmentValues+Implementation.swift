@@ -8,9 +8,7 @@ public extension UVEnvironmentValues {
     @UVEntry var commandQueue: MTLCommandQueue?
     @UVEntry var commandBuffer: MTLCommandBuffer?
     @UVEntry var renderCommandEncoder: MTLRenderCommandEncoder?
-
     @UVEntry var renderPassDescriptor: MTLRenderPassDescriptor?
-
     @UVEntry var renderPipelineState: MTLRenderPipelineState?
     @UVEntry var vertexDescriptor: MTLVertexDescriptor?
     @UVEntry var depthStencilDescriptor: MTLDepthStencilDescriptor?
