@@ -36,8 +36,9 @@ public struct RenderPipeline <Content>: Element, BodylessElement, BodylessConten
         renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
 
         // TODO: This is copying everything from the render pass descriptor. But really we should be getting this entirely from the enviroment.
-        let colorAttachment0Texture = try renderPassDescriptor.colorAttachments[0].texture.orThrow(.generic("No color attachment 0 texture"))
-        renderPipelineDescriptor.colorAttachments[0].pixelFormat = colorAttachment0Texture.pixelFormat
+        if let colorAttachment0Texture = try renderPassDescriptor.colorAttachments[0].texture {
+            renderPipelineDescriptor.colorAttachments[0].pixelFormat = colorAttachment0Texture.pixelFormat
+        }
         if let depthAttachmentTexture = renderPassDescriptor.depthAttachment?.texture {
             renderPipelineDescriptor.depthAttachmentPixelFormat = depthAttachmentTexture.pixelFormat
         }
