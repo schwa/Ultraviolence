@@ -49,3 +49,8 @@ struct Transforms {
     simd_float3x3 modelNormalMatrix; // TODO: Can just get this from the model matrix.
 };
 
+#if defined(__METAL_VERSION__)
+inline float square(float x) {
+    return x * x;
+}
+#endif
