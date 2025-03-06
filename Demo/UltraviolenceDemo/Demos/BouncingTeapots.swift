@@ -43,7 +43,7 @@ public struct BouncingTeapotsDemoView: View {
                     }
                     lastUpdate = now
                 }
-                .inspector(isPresented: .constant(true)) {
+                .inspector(isPresented: .constant(false)) {
                     Form {
                         ColorPicker("Checkerboard Color", selection: $checkerboardColor)
                         LabeledContent("MetalFX") {
@@ -173,14 +173,14 @@ struct FlyingTeapotsRenderPass: Element {
                 .vertexDescriptor(MTLVertexDescriptor(mesh.vertexDescriptor))
             }
             .depthCompare(function: .less, enabled: true)
-            #if os(macOS)
+            #if canImport(MetalFX)
             .renderPassDescriptorModifier { descriptor in
             descriptor.colorAttachments[0].texture = offscreenTexture
             descriptor.depthAttachment.texture = offscreenDepthTexture
             }
             #endif
 
-            #if os(macOS)
+            #if canImport(MetalFX)
             MetalFXSpatial(inputTexture: offscreenTexture, outputTexture: upscaledTexture)
             try RenderPass {
                 try BillboardRenderPipeline(texture: upscaledTexture)
