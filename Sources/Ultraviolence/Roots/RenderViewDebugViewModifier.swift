@@ -5,7 +5,7 @@ internal struct RenderViewDebugViewModifier <Root>: ViewModifier where Root: Ele
     @State
     var debugInspectorIsPresented = false
 
-    @Environment(RenderView<Root>.ViewModel.self)
+    @Environment(RenderViewViewModel<Root>.self)
     var viewModel
 
     @State
