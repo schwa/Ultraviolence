@@ -6,8 +6,46 @@ import QuartzCore
 import SwiftUI
 import UltraviolenceSupport
 
+extension EnvironmentValues {
+    @Entry
+    var device: MTLDevice?
+
+    @Entry
+    var commandQueue: MTLCommandQueue?
+
+    @Entry
+    var drawableSizeChange: ((CGSize) -> Void)?
+}
+
+public extension View {
+    func onDrawableSizeChange(perform action: @escaping (CGSize) -> Void) -> some View {
+        environment(\.drawableSizeChange, action)
+    }
+}
+
 public struct RenderView <Content>: View where Content: Element {
-    var device = _MTLCreateSystemDefaultDevice()
+    var content: () throws -> Content
+
+    @Environment(\.device)
+    var device
+
+    @Environment(\.commandQueue)
+    var commandQueue
+
+    public init(@ElementBuilder content: @escaping () throws -> Content) {
+        self.content = content
+    }
+
+    public var body: some View {
+        let device = device ?? _MTLCreateSystemDefaultDevice()
+        let commandQueue = commandQueue ?? device.makeCommandQueue().orFatalError(.resourceCreationFailure("Failed to create command queue."))
+        RenderViewHelper(device: device, commandQueue: commandQueue, content: content)
+    }
+}
+
+internal struct RenderViewHelper <Content>: View where Content: Element {
+    var device: MTLDevice
+    var commandQueue: MTLCommandQueue
     var content: () throws -> Content
 
     @Environment(\.self)
@@ -19,26 +57,26 @@ public struct RenderView <Content>: View where Content: Element {
     @State
     private var viewModel: RenderViewViewModel<Content>
 
-    public init(@ElementBuilder content: @escaping () throws -> Content) {
-        self.device = _MTLCreateSystemDefaultDevice()
-        self.content = content
+    init(device: MTLDevice, commandQueue: MTLCommandQueue, @ElementBuilder content: @escaping () throws -> Content) {
         do {
-            self.viewModel = try RenderViewViewModel(device: device, content: content)
+            self.device = device
+            self.commandQueue = commandQueue
+            self.viewModel = try RenderViewViewModel(device: device, commandQueue: commandQueue, content: content)
+            self.content = content
         }
         catch {
             preconditionFailure("Failed to create RenderView.ViewModel: \(error)")
         }
     }
 
-    public var body: some View {
-        ViewAdaptor {
-            let view = MTKView()
+    var body: some View {
+        ViewAdaptor<MTKView> {
+            MTKView()
+        }
+        update: { view in
             view.device = device
             view.delegate = viewModel
             view.configure(from: environment)
-            return view
-        }
-        update: { _ in
             viewModel.content = content
             viewModel.drawableSizeChange = drawableSizeChange
         }
@@ -47,19 +85,8 @@ public struct RenderView <Content>: View where Content: Element {
     }
 }
 
-extension EnvironmentValues {
-    @Entry
-    var drawableSizeChange: ((CGSize) -> Void)?
-}
-
-public extension View {
-    func onDrawableSizeChange(perform action: @escaping (CGSize) -> Void) -> some View {
-        environment(\.drawableSizeChange, action)
-    }
-}
-
 @Observable
-class RenderViewViewModel <Content>: NSObject, MTKViewDelegate where Content: Element {
+internal class RenderViewViewModel <Content>: NSObject, MTKViewDelegate where Content: Element {
     var device: MTLDevice
     var commandQueue: MTLCommandQueue
     var content: () throws -> Content
@@ -70,10 +97,10 @@ class RenderViewViewModel <Content>: NSObject, MTKViewDelegate where Content: El
     var drawableSizeChange: ((CGSize) -> Void)?
 
     @MainActor
-    init(device: MTLDevice, content: @escaping () throws -> Content) throws {
+    init(device: MTLDevice, commandQueue: MTLCommandQueue, content: @escaping () throws -> Content) throws {
         self.device = device
         self.content = content
-        self.commandQueue = try device._makeCommandQueue()
+        self.commandQueue = commandQueue
         self.graph = try Graph(content: EmptyElement())
     }
 
