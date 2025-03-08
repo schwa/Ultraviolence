@@ -103,9 +103,8 @@ internal struct ArcBall {
 
         if lengthSquared <= (radius * radius) {
             return SIMD3<Float>(point.x, point.y, sqrt(radius * radius - lengthSquared))
-        } else {
-            let normalizedPoint = simd_normalize(point)
-            return SIMD3<Float>(normalizedPoint.x, normalizedPoint.y, 0.0)
         }
+        let normalizedPoint = simd_normalize(point)
+        return SIMD3<Float>(normalizedPoint.x, normalizedPoint.y, 0.0)
     }
 }

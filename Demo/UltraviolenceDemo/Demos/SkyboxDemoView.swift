@@ -1,15 +1,16 @@
+import MetalKit
 import SwiftUI
 import Ultraviolence
 import UltraviolenceSupport
-import MetalKit
+
+typealias Angle = SwiftUI.Angle
 
 struct SkyboxDemoView: View {
+    @State
+    private var texture: MTLTexture?
 
     @State
-    var texture: MTLTexture?
-
-    @State
-    var drawableSize: CGSize = .zero
+    private var drawableSize: CGSize = .zero
 
     var body: some View {
         WorldView { projection, cameraMatrix in
@@ -30,7 +31,7 @@ struct SkyboxDemoView: View {
 
             let device = MTLCreateSystemDefaultDevice().orFatalError()
             let textureLoader = MTKTextureLoader(device: device)
-            let texture = try! textureLoader.newTexture(name: "Skybox", scaleFactor: 1, bundle: .main, options: [:])
+            let texture = try! textureLoader.newTexture(name: "StarfieldSkybox", scaleFactor: 1, bundle: .main, options: [:])
             let size = SIMD2<Int>(texture.width / 4, texture.height / 3)
             let cellWidth = texture.width / 4
             let cellHeight = texture.height / 3
@@ -43,7 +44,7 @@ struct SkyboxDemoView: View {
             let blit = try! BlitPass {
                 Blit { encoder in
                     let origins: [SIMD2<Int>] = [
-                        [2, 1],  [0, 1],  [1, 0],  [1, 2],  [1, 1],  [3, 1],
+                        [2, 1], [0, 1], [1, 0], [1, 2], [1, 1], [3, 1]
                     ]
                     for (slice, origin) in origins.enumerated() {
                         let origin = SIMD2<Int>(origin.x * cellWidth, origin.y * cellHeight)
@@ -86,28 +87,28 @@ struct SkyboxRenderPipeline: Element {
             try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                 let positions: [Packed3<Float>] = [
                     // Front face (z = -1)
-                    [ 1, -1, -1], [-1, -1, -1], [-1,  1, -1],  // Triangle 1 (inward)
-                    [ 1, -1, -1], [-1,  1, -1], [ 1,  1, -1],  // Triangle 2 (inward)
+                    [ 1, -1, -1], [-1, -1, -1], [-1, 1, -1],  // Triangle 1 (inward)
+                    [ 1, -1, -1], [-1, 1, -1], [ 1, 1, -1],  // Triangle 2 (inward)
 
                     // Back face (z = 1)
-                    [ 1, -1,  1], [-1,  1,  1], [-1, -1,  1],  // Triangle 3 (inward)
-                    [ 1, -1,  1], [ 1,  1,  1], [-1,  1,  1],  // Triangle 4 (inward)
+                    [ 1, -1, 1], [-1, 1, 1], [-1, -1, 1],  // Triangle 3 (inward)
+                    [ 1, -1, 1], [ 1, 1, 1], [-1, 1, 1],  // Triangle 4 (inward)
 
                     // Bottom face (y = -1)
-                    [ 1, -1, -1], [ 1, -1,  1], [-1, -1,  1],  // Triangle 5 (inward)
-                    [ 1, -1, -1], [-1, -1,  1], [-1, -1, -1],  // Triangle 6 (inward)
+                    [ 1, -1, -1], [ 1, -1, 1], [-1, -1, 1],  // Triangle 5 (inward)
+                    [ 1, -1, -1], [-1, -1, 1], [-1, -1, -1],  // Triangle 6 (inward)
 
                     // Top face (y = 1)
-                    [ 1,  1, -1], [-1,  1, -1], [-1,  1,  1],  // Triangle 7 (inward)
-                    [ 1,  1, -1], [-1,  1,  1], [ 1,  1,  1],  // Triangle 8 (inward)
+                    [ 1, 1, -1], [-1, 1, -1], [-1, 1, 1],  // Triangle 7 (inward)
+                    [ 1, 1, -1], [-1, 1, 1], [ 1, 1, 1],  // Triangle 8 (inward)
 
                     // Left face (x = -1)
-                    [-1, -1, -1], [-1, -1,  1], [-1,  1,  1],  // Triangle 9 (inward)
-                    [-1, -1, -1], [-1,  1,  1], [-1,  1, -1],  // Triangle 10 (inward)
+                    [-1, -1, -1], [-1, -1, 1], [-1, 1, 1],  // Triangle 9 (inward)
+                    [-1, -1, -1], [-1, 1, 1], [-1, 1, -1],  // Triangle 10 (inward)
 
                     // Right face (x = 1)
-                    [ 1, -1, -1], [ 1,  1, -1], [ 1,  1,  1],  // Triangle 11 (inward)
-                    [ 1, -1, -1], [ 1,  1,  1], [ 1, -1,  1],  // Triangle 12 (inward)
+                    [ 1, -1, -1], [ 1, 1, -1], [ 1, 1, 1],  // Triangle 11 (inward)
+                    [ 1, -1, -1], [ 1, 1, 1], [ 1, -1, 1]  // Triangle 12 (inward)
                 ]
                 Draw { encoder in
                     encoder.setVertexUnsafeBytes(of: positions, index: 0)
@@ -117,38 +118,5 @@ struct SkyboxRenderPipeline: Element {
                 .parameter("texture", texture: texture)
             }
         }
-    }
-}
-
-struct WorldView <Content>: View where Content: View {
-
-    var content: (_ projection: any ProjectionProtocol, _ cameraMatrix: simd_float4x4) -> Content
-
-    var projection: any ProjectionProtocol = PerspectiveProjection()
-
-    @State
-    var cameraMatrix: simd_float4x4 = .identity
-
-    @State
-    var rotation: simd_quatf = simd_quatf(angle: 0, axis: [0, 1, 0])
-
-    var body: some View {
-        content(projection, simd_float4x4(rotation))
-            .arcBallRotationModifier(rotation: $rotation, radius: 0.0001)
-    }
-
-}
-
-struct Packed3<Scalar> where Scalar : SIMDScalar {
-    var x: Scalar
-    var y: Scalar
-    var z: Scalar
-}
-
-extension Packed3: ExpressibleByArrayLiteral {
-    init(arrayLiteral elements: Scalar...) {
-        x = elements[0]
-        y = elements[1]
-        z = elements[2]
     }
 }

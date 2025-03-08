@@ -139,4 +139,3 @@ internal class RenderViewViewModel <Content>: NSObject, MTKViewDelegate where Co
         }
     }
 }
-

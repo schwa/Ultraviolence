@@ -35,17 +35,13 @@ struct BillboardRenderPipeline: Element {
                     encoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: positions.count)
                 }
                 .parameter("input", value: {
-
                     if texture.textureType == .type2D {
                         return 0
                     }
-                    else if texture.textureType == .typeCube {
+                    if texture.textureType == .typeCube {
                         return 1
                     }
-                    else {
-                        return 0
-                    }
-
+                    return 0
                 }())
                 .parameter("slice", value: slice)
                 .parameter("texture2d", texture: texture.textureType == .type2D ? texture : nil)

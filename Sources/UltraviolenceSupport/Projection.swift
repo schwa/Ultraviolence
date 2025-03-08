@@ -16,7 +16,6 @@ public extension ProjectionProtocol {
     }
 }
 
-
 public struct PerspectiveProjection: ProjectionProtocol {
     public var verticalAngleOfView: Angle
     public var zClip: ClosedRange<Float>

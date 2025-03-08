@@ -27,15 +27,14 @@ public extension MTKMesh {
         try self.init(mesh: mdlMesh, device: device)
     }
 
-
     static func teapot() -> MTKMesh {
         do {
             return try MTKMesh(name: "teapot", bundle: .module)
-//            let device = _MTLCreateSystemDefaultDevice()
-//            let teapotURL = Bundle.module.url(forResource: "teapot", withExtension: "obj")
-//            let mdlAsset = MDLAsset(url: teapotURL, vertexDescriptor: nil, bufferAllocator: MTKMeshBufferAllocator(device: device))
-//            let mdlMesh = (mdlAsset.object(at: 0) as? MDLMesh).orFatalError(.resourceCreationFailure("Failed to load teapot mesh."))
-//            return try MTKMesh(mesh: mdlMesh, device: device)
+            //            let device = _MTLCreateSystemDefaultDevice()
+            //            let teapotURL = Bundle.module.url(forResource: "teapot", withExtension: "obj")
+            //            let mdlAsset = MDLAsset(url: teapotURL, vertexDescriptor: nil, bufferAllocator: MTKMeshBufferAllocator(device: device))
+            //            let mdlMesh = (mdlAsset.object(at: 0) as? MDLMesh).orFatalError(.resourceCreationFailure("Failed to load teapot mesh."))
+            //            return try MTKMesh(mesh: mdlMesh, device: device)
         }
         catch {
             fatalError("\(error)")
