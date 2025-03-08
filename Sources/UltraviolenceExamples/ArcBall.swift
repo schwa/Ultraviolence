@@ -25,7 +25,7 @@ internal struct ArcBallRotationModifier: ViewModifier {
             .gesture(
                 DragGesture()
                     .onChanged { gesture in
-                        let point = convertToArcBallCoordinates(gesture.location, in: gesture.startLocation)
+                        let point = convertToArcBallCoordinates(gesture.location)
                         if let startPoint {
                             arcBall.updateRotation(to: point)
                         }
@@ -41,7 +41,7 @@ internal struct ArcBallRotationModifier: ViewModifier {
             )
     }
 
-    private func convertToArcBallCoordinates(_ location: CGPoint, in startLocation: CGPoint) -> SIMD2<Float> {
+    private func convertToArcBallCoordinates(_ location: CGPoint) -> SIMD2<Float> {
         let x = (2.0 * Float(location.x) / Float(size.width)) - 1.0
         let y = 1.0 - (2.0 * Float(location.y) / Float(size.height)) // Flip y to match screen coordinates
         return SIMD2<Float>(x, y)

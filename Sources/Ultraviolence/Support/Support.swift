@@ -14,18 +14,6 @@ public extension UltraviolenceError {
     }
 }
 
-internal struct IdentifiableBox <Key, Value>: Identifiable where Key: Hashable {
-    var id: Key
-    var value: Value
-}
-
-internal extension IdentifiableBox where Key == ObjectIdentifier, Value: AnyObject {
-    init(_ value: Value) {
-        self.id = ObjectIdentifier(value)
-        self.value = value
-    }
-}
-
 internal extension Element {
     func _dump(to output: inout some TextOutputStream) throws {
         let graph = try Graph(content: self)
