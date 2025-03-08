@@ -109,19 +109,3 @@ struct Model: Identifiable {
     var modelMatrix: float4x4
     var material: BlinnPhongMaterial
 }
-
-extension Draw {
-    init(mtkMesh: MTKMesh) {
-        self.init { encoder in
-            encoder.setVertexBuffers(of: mtkMesh)
-            encoder.draw(mtkMesh)
-        }
-    }
-}
-
-extension MTLDevice {
-    func makeTexture(name: String, bundle: Bundle? = nil) throws -> MTLTexture {
-        let textureLoader = MTKTextureLoader(device: self)
-        return try textureLoader.newTexture(name: name, scaleFactor: 1.0, bundle: bundle)
-    }
-}
