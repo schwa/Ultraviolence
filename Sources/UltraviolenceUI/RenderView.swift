@@ -4,6 +4,7 @@ import Observation
 internal import os
 import QuartzCore
 import SwiftUI
+import Ultraviolence
 import UltraviolenceSupport
 
 public extension EnvironmentValues {

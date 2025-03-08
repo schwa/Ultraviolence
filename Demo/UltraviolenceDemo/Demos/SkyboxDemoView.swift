@@ -2,6 +2,7 @@ import MetalKit
 import SwiftUI
 import Ultraviolence
 import UltraviolenceSupport
+import UltraviolenceUI
 
 typealias Angle = SwiftUI.Angle
 

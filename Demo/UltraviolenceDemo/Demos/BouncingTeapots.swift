@@ -4,6 +4,7 @@ import SwiftUI
 import Ultraviolence
 import UltraviolenceExamples
 import UltraviolenceSupport
+import UltraviolenceUI
 
 public struct BouncingTeapotsDemoView: View {
     @State

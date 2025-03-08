@@ -1,7 +1,7 @@
 import CoreGraphics
 import Metal
 
-internal extension Graph {
+public extension Graph {
     @MainActor
     func processSetup() throws {
         try process { element, node in
@@ -19,6 +19,9 @@ internal extension Graph {
             try element.workloadExit(node)
         }
     }
+}
+
+internal extension Graph {
 
     @MainActor
     func process(enter: (any BodylessElement, Node) throws -> Void, exit: (any BodylessElement, Node) throws -> Void) throws {

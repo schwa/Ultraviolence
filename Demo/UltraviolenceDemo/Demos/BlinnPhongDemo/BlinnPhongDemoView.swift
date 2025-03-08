@@ -5,6 +5,7 @@ import SwiftUI
 import Ultraviolence
 import UltraviolenceExamples
 import UltraviolenceSupport
+import UltraviolenceUI
 
 struct BlinnPhongDemoView: View {
     @State

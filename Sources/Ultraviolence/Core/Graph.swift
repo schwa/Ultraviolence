@@ -3,7 +3,7 @@ internal import os
 // TODO: #24 Make Internal
 public class Graph {
     internal var activeNodeStack: [Node] = []
-    private(set) var root: Node
+    public private(set) var root: Node
 
     @MainActor
     public init<Content>(content: Content) throws where Content: Element {
@@ -13,7 +13,7 @@ public class Graph {
     }
 
     @MainActor
-    internal func updateContent<Content>(content: Content) throws where Content: Element {
+    public func updateContent<Content>(content: Content) throws where Content: Element {
         // TODO: #25 We need to somehow detect if the content has changed.
         Self.current = self
         try content.expandNode(root, context: .init())

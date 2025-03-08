@@ -1,13 +1,13 @@
-internal final class Node {
+public final class Node {
     weak var graph: Graph?
     weak var parent: Node?
-    var children: [Node] = []
+    public internal(set) var children: [Node] = []
     var needsRebuild = true
-    var element: (any Element)?
+    public internal(set) var element: (any Element)?
     var previousElement: (any Element)?
-    var stateProperties: [String: Any] = [:]
+    public internal(set) var stateProperties: [String: Any] = [:]
     var environmentValues = UVEnvironmentValues()
-    var debugLabel: String?
+    public internal(set) var debugLabel: String?
 
     init() {
         // This line intentionally left blank.

@@ -122,7 +122,7 @@ internal extension Element {
     }
 }
 
-internal extension Node {
+public extension Node {
     var ancestors: [Node] {
         var ancestors: [Node] = []
         var current: Node = self

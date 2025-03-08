@@ -1,5 +1,6 @@
 import SwiftUI
 import Ultraviolence
+import UltraviolenceUI
 
 struct TextureView: View {
     var texture: MTLTexture

@@ -3,6 +3,7 @@ import MetalKit
 import SwiftUI
 import Ultraviolence
 import UltraviolenceSupport
+import UltraviolenceUI
 
 /// A demo that shows transform images using LUTs.
 /// I got a bit carried away here and it supports LUTs stored as 512x512 PNGs and .cube 3D LUTs: https://resolve.cafe/developers/luts/

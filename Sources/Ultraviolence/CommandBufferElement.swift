@@ -6,7 +6,7 @@ public struct CommandBufferElement <Content>: Element, BodylessContentElement wh
     var completion: MTLCommandQueueCompletion
     var content: Content
 
-    init(completion: MTLCommandQueueCompletion, @ElementBuilder content: () throws -> Content) rethrows {
+    public init(completion: MTLCommandQueueCompletion, @ElementBuilder content: () throws -> Content) rethrows {
         self.completion = completion
         self.content = try content()
     }

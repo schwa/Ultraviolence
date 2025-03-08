@@ -11,6 +11,7 @@ public let package = Package(
     ],
     products: [
         .library(name: "Ultraviolence", targets: ["Ultraviolence"]),
+        .library(name: "UltraviolenceUI", targets: ["UltraviolenceUI"]),
         .library(name: "UltraviolenceExamples", targets: ["UltraviolenceExamples"]),
         .library(name: "UltraviolenceSupport", targets: ["UltraviolenceSupport"])
     ],
@@ -22,6 +23,13 @@ public let package = Package(
         .target(
             name: "Ultraviolence",
             dependencies: [
+                "UltraviolenceSupport"
+            ]
+        ),
+        .target(
+            name: "UltraviolenceUI",
+            dependencies: [
+                "Ultraviolence",
                 "UltraviolenceSupport"
             ]
         ),

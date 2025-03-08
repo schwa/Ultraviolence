@@ -3,6 +3,7 @@ import Metal
 import MetalKit
 import SwiftUI
 import Ultraviolence
+import UltraviolenceUI
 
 struct MetalFXDemoView: View {
     let sourceTexture: MTLTexture
