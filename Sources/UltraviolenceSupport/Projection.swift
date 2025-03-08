@@ -2,8 +2,20 @@ import CoreGraphics
 import simd
 
 public protocol ProjectionProtocol: Equatable, Sendable {
-    func projectionMatrix(for viewSize: SIMD2<Float>) -> simd_float4x4
+    func projectionMatrix(aspectRatio: Float) -> simd_float4x4
 }
+
+public extension ProjectionProtocol {
+    func projectionMatrix(for viewSize: SIMD2<Float>) -> simd_float4x4 {
+        let aspectRatio = viewSize.x / viewSize.y
+        return self.projectionMatrix(aspectRatio: aspectRatio)
+    }
+
+    func projectionMatrix(for viewSize: CGSize) -> simd_float4x4 {
+        projectionMatrix(for: .init(viewSize))
+    }
+}
+
 
 public struct PerspectiveProjection: ProjectionProtocol {
     public var verticalAngleOfView: Angle
@@ -12,15 +24,6 @@ public struct PerspectiveProjection: ProjectionProtocol {
     public init(verticalAngleOfView: Angle = .degrees(90), zClip: ClosedRange<Float> = 0.01 ... 1_000) {
         self.verticalAngleOfView = verticalAngleOfView
         self.zClip = zClip
-    }
-
-    public func projectionMatrix(for viewSize: SIMD2<Float>) -> simd_float4x4 {
-        let aspectRatio = viewSize.x / viewSize.y
-        return self.projectionMatrix(aspectRatio: aspectRatio)
-    }
-
-    public func projectionMatrix(for viewSize: CGSize) -> simd_float4x4 {
-        projectionMatrix(for: .init(viewSize))
     }
 
     public func projectionMatrix(aspectRatio: Float) -> simd_float4x4 {
