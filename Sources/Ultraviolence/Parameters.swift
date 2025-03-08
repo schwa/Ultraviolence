@@ -98,7 +98,7 @@ public extension Element {
         ParameterElement(functionType: functionType, name: name, value: .value(value), content: self)
     }
 
-    func parameter(_ name: String, texture: MTLTexture, functionType: MTLFunctionType? = nil) -> some Element {
+    func parameter(_ name: String, texture: MTLTexture?, functionType: MTLFunctionType? = nil) -> some Element {
         ParameterElement(functionType: functionType, name: name, value: ParameterValue<()>.texture(texture), content: self)
     }
 

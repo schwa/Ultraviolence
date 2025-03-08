@@ -8,7 +8,11 @@ import UltraviolenceSupport
 
 public struct FlatShader <Content>: Element where Content: Element {
     var content: Content
+
+    @UVState
     var vertexShader: VertexShader
+
+    @UVState
     var fragmentShader: FragmentShader
 
     var textureSpecifier: Texture2DSpecifier

@@ -572,7 +572,7 @@ public extension MTLRenderCommandEncoder {
         }
     }
 
-    func setBuffer(_ buffer: MTLBuffer, offset: Int, index: Int, functionType: MTLFunctionType) {
+    func setBuffer(_ buffer: MTLBuffer?, offset: Int, index: Int, functionType: MTLFunctionType) {
         switch functionType {
         case .vertex:
             setVertexBuffer(buffer, offset: offset, index: index)
@@ -585,7 +585,7 @@ public extension MTLRenderCommandEncoder {
         }
     }
 
-    func setTexture(_ texture: MTLTexture, index: Int, functionType: MTLFunctionType) {
+    func setTexture(_ texture: MTLTexture?, index: Int, functionType: MTLFunctionType) {
         switch functionType {
         case .vertex:
             setVertexTexture(texture, index: index)
@@ -598,7 +598,7 @@ public extension MTLRenderCommandEncoder {
         }
     }
 
-    func setSamplerState(_ sampler: MTLSamplerState, index: Int, functionType: MTLFunctionType) {
+    func setSamplerState(_ sampler: MTLSamplerState?, index: Int, functionType: MTLFunctionType) {
         switch functionType {
         case .vertex:
             setVertexSamplerState(sampler, index: index)

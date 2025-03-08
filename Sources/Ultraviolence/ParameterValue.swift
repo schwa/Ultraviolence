@@ -1,9 +1,9 @@
 import Metal
 
 internal enum ParameterValue<T> {
-    case texture(MTLTexture)
-    case samplerState(MTLSamplerState)
-    case buffer(MTLBuffer, Int)
+    case texture(MTLTexture?)
+    case samplerState(MTLSamplerState?)
+    case buffer(MTLBuffer?, Int)
     case array([T])
     case value(T)
 }

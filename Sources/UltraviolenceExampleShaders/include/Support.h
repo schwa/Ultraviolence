@@ -6,6 +6,7 @@
 #import <metal_stdlib>
 #define ATTRIBUTE(INDEX) [[attribute(INDEX)]]
 #define TEXTURE2D(TYPE, ACCESS) texture2d<TYPE, ACCESS>
+#define TEXTURECUBE(TYPE, ACCESS) texturecube<TYPE, ACCESS>
 #define SAMPLER sampler
 #define BUFFER(ADDRESS_SPACE, TYPE) ADDRESS_SPACE TYPE
 using namespace metal;
@@ -13,6 +14,7 @@ using namespace metal;
 #import <Metal/Metal.h>
 #define ATTRIBUTE(INDEX)
 #define TEXTURE2D(TYPE, ACCESS) MTLResourceID
+#define TEXTURECUBE(TYPE, ACCESS) MTLResourceID
 #define SAMPLER MTLResourceID
 #define BUFFER(ADDRESS_SPACE, TYPE) TYPE
 #endif
