@@ -20,6 +20,9 @@ struct BlinnPhongDemoView: View {
     @State
     private var lighting: BlinnPhongLighting
 
+    @State
+    private var skyboxTexture: MTLTexture
+
     let lightMarker = MTKMesh.sphere(extent: [0.1, 0.1, 0.1]).relabeled("light-marker-0")
 
     let modelMatrix = simd_float4x4(translation: [0, 0, 0])
@@ -39,6 +42,8 @@ struct BlinnPhongDemoView: View {
                 lights: try device.newTypedBuffer(values: lights, options: [])
             )
             self.lighting = lighting
+
+            self.skyboxTexture = device.makeTextureCubeFromCrossTexture(texture: try device.makeTexture(name: "Skybox", bundle: .main))
         }
         catch {
             fatalError()
@@ -49,7 +54,10 @@ struct BlinnPhongDemoView: View {
         TimelineView(.animation) { timeline in
             RenderView {
                 let projectionMatrix = projection.projectionMatrix(for: drawableSize)
+
                 try RenderPass {
+                    try SkyboxRenderPipeline(projectionMatrix: projectionMatrix, cameraMatrix: cameraMatrix, texture: skyboxTexture)
+
                     let transforms = Transforms(modelMatrix: .init(translation: lighting.lights[0].lightPosition), cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
                     try FlatShader(textureSpecifier: .solidColor(SIMD4<Float>(lighting.lights[0].lightColor, 1))) {
                         Draw { encoder in
@@ -58,6 +66,9 @@ struct BlinnPhongDemoView: View {
                         }
                         .transforms(transforms)
                     }
+                    .vertexDescriptor(MTLVertexDescriptor(MTKMesh.teapot().vertexDescriptor)) // TODO: Hack.
+                    .depthCompare(function: .less, enabled: true)
+
                     try BlinnPhongShader {
                         try ForEach(models) { model in
                             try Draw { encoder in
@@ -69,9 +80,9 @@ struct BlinnPhongDemoView: View {
                         }
                         .blinnPhongLighting(lighting)
                     }
+                    .vertexDescriptor(MTLVertexDescriptor(MTKMesh.teapot().vertexDescriptor)) // TODO: Hack.
+                    .depthCompare(function: .less, enabled: true)
                 }
-                .vertexDescriptor(MTLVertexDescriptor(MTKMesh.teapot().vertexDescriptor)) // TODO: Hack.
-                .depthCompare(function: .less, enabled: true)
             }
             .metalDepthStencilPixelFormat(.depth32Float)
             .onDrawableSizeChange { drawableSize = $0 }
@@ -105,5 +116,12 @@ extension Draw {
             encoder.setVertexBuffers(of: mtkMesh)
             encoder.draw(mtkMesh)
         }
+    }
+}
+
+extension MTLDevice {
+    func makeTexture(name: String, bundle: Bundle? = nil) throws -> MTLTexture {
+        let textureLoader = MTKTextureLoader(device: self)
+        return try textureLoader.newTexture(name: name, scaleFactor: 1.0, bundle: bundle)
     }
 }
