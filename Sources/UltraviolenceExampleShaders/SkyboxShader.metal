@@ -21,7 +21,7 @@ namespace SkyboxShader {
         float4 objectSpace = float4(in.position, 1.0);
         float4x4 mvp = transforms.projectionMatrix * transforms.viewMatrix * transforms.modelMatrix;
         out.position = mvp * objectSpace;
-        out.textureCoordinate = in.position;
+        out.textureCoordinate = float3(-in.position.x, in.position.y, in.position.z);;
         return out;
     }
 

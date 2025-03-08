@@ -31,16 +31,6 @@ struct MixedDemoView: View {
                 lightDirection = SIMD3<Float>(sin(Float(angle.radians)), -2, cos(Float(angle.radians)))
             }
         }
-        .overlay(alignment: .bottom) {
-            VStack {
-                Slider(value: $angle.radians, in: 0...(.pi * 2))
-            }
-            .controlSize(.small)
-            .frame(maxWidth: 320)
-            .padding()
-            .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 8))
-            .padding()
-        }
     }
 }
 

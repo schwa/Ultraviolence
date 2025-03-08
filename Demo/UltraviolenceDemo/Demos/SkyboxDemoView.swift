@@ -24,37 +24,54 @@ struct SkyboxDemoView: View {
             .onDrawableSizeChange { drawableSize = $0 }
         }
         .task {
-            // Convert a skybox texture stored as a "cross" shape in a 2d texture into a texture cube:
-            //     [5]
-            // [1] [4] [0] [5]
-            //     [2]
+            texture = try! testTexture()
+        }
+    }
 
-            let device = MTLCreateSystemDefaultDevice().orFatalError()
-            let textureLoader = MTKTextureLoader(device: device)
-            let texture = try! textureLoader.newTexture(name: "StarfieldSkybox", scaleFactor: 1, bundle: .main, options: [:])
-            let size = SIMD2<Int>(texture.width / 4, texture.height / 3)
-            let cellWidth = texture.width / 4
-            let cellHeight = texture.height / 3
-            let cubeMapDescriptor = MTLTextureDescriptor()
-            cubeMapDescriptor.textureType = .typeCube
-            cubeMapDescriptor.pixelFormat = texture.pixelFormat
-            cubeMapDescriptor.width = size.x
-            cubeMapDescriptor.height = size.y
-            let cubeMap = device.makeTexture(descriptor: cubeMapDescriptor)!
-            let blit = try! BlitPass {
-                Blit { encoder in
-                    let origins: [SIMD2<Int>] = [
-                        [2, 1], [0, 1], [1, 0], [1, 2], [1, 1], [3, 1]
-                    ]
-                    for (slice, origin) in origins.enumerated() {
-                        let origin = SIMD2<Int>(origin.x * cellWidth, origin.y * cellHeight)
-                        encoder.copy(from: texture, sourceSlice: 0, sourceLevel: 0, sourceOrigin: .init(x: origin.x, y: origin.y, z: 0), sourceSize: .init(width: size.x, height: size.y, depth: 1), to: cubeMap, destinationSlice: slice, destinationLevel: 0, destinationOrigin: .init(x: 0, y: 0, z: 0))
-                    }
+    func testTexture() throws -> MTLTexture {
+        let testView = ZStack {
+            Image("Skybox")
+                .resizable()
+
+            Grid(horizontalSpacing: 0, verticalSpacing: 0) {
+                GridRow {
+                    Spacer()
+                        .frame(width: 1_024, height: 1_024)
+                    Color.green.opacity(0.2)
+                        .overlay(Text("+Y").scaleEffect(10))
+
+                        .frame(width: 1_024, height: 1_024)
+                }
+                GridRow {
+                    Color.blue.opacity(0.2)
+                        .overlay(Text("+X").scaleEffect(10))
+                        .frame(width: 1_024, height: 1_024)
+
+                    Color.red.opacity(0.2)
+                        .overlay(Text("+Z").scaleEffect(10))
+                        .frame(width: 1_024, height: 1_024)
+
+                    Color.blue.opacity(0.2)
+                        .overlay(Text("-X").scaleEffect(10))
+                        .frame(width: 1_024, height: 1_024)
+
+                    Color.red.opacity(0.2)
+                        .overlay(Text("-Z").scaleEffect(10))
+                        .frame(width: 1_024, height: 1_024)
+                }
+                GridRow {
+                    Spacer()
+                        .frame(width: 1_024, height: 1_024)
+                    Color.green.opacity(0.2)
+                        .overlay(Text("-Y").scaleEffect(10))
+                        .frame(width: 1_024, height: 1_024)
                 }
             }
-            try! blit.run()
-            self.texture = cubeMap
         }
+        .frame(width: 1_024 * 4, height: 1_024 * 3)
+        let device = MTLCreateSystemDefaultDevice().orFatalError()
+        let texture2D = try device.makeTexture(content: testView)
+        return device.makeTextureCubeFromCrossTexture(texture: texture2D)
     }
 }
 
@@ -110,6 +127,7 @@ struct SkyboxRenderPipeline: Element {
                     [ 1, -1, -1], [ 1, 1, -1], [ 1, 1, 1],  // Triangle 11 (inward)
                     [ 1, -1, -1], [ 1, 1, 1], [ 1, -1, 1]  // Triangle 12 (inward)
                 ]
+                .map { $0 * 100 }
                 Draw { encoder in
                     encoder.setVertexUnsafeBytes(of: positions, index: 0)
                     encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: positions.count)
