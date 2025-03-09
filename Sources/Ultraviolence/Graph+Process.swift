@@ -22,7 +22,6 @@ public extension Graph {
 }
 
 internal extension Graph {
-
     @MainActor
     func process(enter: (any BodylessElement, Node) throws -> Void, exit: (any BodylessElement, Node) throws -> Void) throws {
         try visit { node in

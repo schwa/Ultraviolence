@@ -889,16 +889,6 @@ public extension MTKMesh {
     }
 }
 
-public extension simd_float4x4 {
-    var upperLeft: simd_float3x3 {
-        simd_float3x3(columns: (
-            simd_float3(columns.0.xyz),
-            simd_float3(columns.1.xyz),
-            simd_float3(columns.2.xyz)
-        ))
-    }
-}
-
 public extension MTLBuffer {
     func gpuAddressAsUnsafeMutablePointer<T>(type: T.Type) -> UnsafeMutablePointer<T>? {
         precondition(MemoryLayout<Int>.stride == MemoryLayout<UInt64>.stride)

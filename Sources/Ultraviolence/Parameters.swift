@@ -119,4 +119,3 @@ public extension Element {
         return ParameterElement(functionType: functionType, name: name, value: .value(value), content: self)
     }
 }
-
