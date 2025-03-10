@@ -12,6 +12,7 @@ struct ContentView: View {
     var body: some View {
         NavigationSplitView {
             List(selection: $page) {
+                row(for: GridShaderDemoView.self)
                 row(for: SkyboxDemoView.self)
                 row(for: BlinnPhongDemoView.self)
                 row(for: MixedDemoView.self)
