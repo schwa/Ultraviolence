@@ -59,6 +59,8 @@ struct BlinnPhongDemoView: View {
                 try RenderPass {
                     try SkyboxRenderPipeline(projectionMatrix: projectionMatrix, cameraMatrix: cameraMatrix, texture: skyboxTexture)
 
+                    GridShader(projectionMatrix: projection.projectionMatrix(for: drawableSize), cameraMatrix: cameraMatrix)
+
                     let transforms = Transforms(modelMatrix: .init(translation: lighting.lights[0].lightPosition), cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
                     try FlatShader(textureSpecifier: .solidColor(SIMD4<Float>(lighting.lights[0].lightColor, 1))) {
                         Draw { encoder in

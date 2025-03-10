@@ -10,15 +10,19 @@ struct GridShaderDemoView: View {
     @State
     private var drawableSize: CGSize = .zero
 
+    @State
+    private var projection: any ProjectionProtocol = PerspectiveProjection()
+
+    @State
+    private var cameraMatrix: simd_float4x4 = .init(translation: [0, 2, 4])
+
     var body: some View {
-        WorldView { projection, cameraMatrix in
-            RenderView {
-                try RenderPass {
-                    GridShader(projectionMatrix: projection.projectionMatrix(for: drawableSize), cameraMatrix: cameraMatrix)
-                }
+        RenderView {
+            try RenderPass {
+                GridShader(projectionMatrix: projection.projectionMatrix(for: drawableSize), cameraMatrix: cameraMatrix)
             }
-            .onDrawableSizeChange { drawableSize = $0 }
         }
+        .onDrawableSizeChange { drawableSize = $0 }
     }
 }
 
@@ -47,7 +51,7 @@ struct GridShader: Element {
     var body: some Element {
         get throws {
             try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
-                let transforms = Transforms(modelMatrix: .init(translation: [0, 0, -10]), cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
+                let transforms = Transforms(modelMatrix: .init(translation: [0, 0, 0]) * .init(xRotation: .degrees(90)), cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
                 Draw { encoder in
                     let positions: [Packed3<Float>] = [
                         [-1, 1, 0], [-1, -1, 0], [1, 1, 0], [1, -1, 0]
