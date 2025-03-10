@@ -12,7 +12,6 @@ public let package = Package(
     products: [
         .library(name: "Ultraviolence", targets: ["Ultraviolence"]),
         .library(name: "UltraviolenceUI", targets: ["UltraviolenceUI"]),
-        .library(name: "UltraviolenceExamples", targets: ["UltraviolenceExamples"]),
         .library(name: "UltraviolenceSupport", targets: ["UltraviolenceSupport"])
     ],
     dependencies: [
@@ -34,37 +33,6 @@ public let package = Package(
             ]
         ),
         .target(
-            name: "UltraviolenceExamples",
-            dependencies: [
-                "Ultraviolence",
-                "UltraviolenceSupport",
-                "UltraviolenceExampleShaders"
-            ],
-            exclude: [
-                "EdgeDetectionKernel.metal",
-                "LambertianShader.metal",
-                "RedTriangle.metal",
-                "CheckerboardKernel.metal"
-            ],
-            resources: [
-                .copy("teapot.obj"),
-                .copy("HD-Testcard-original.jpg")
-            ],
-            plugins: [
-                .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
-            ]
-        ),
-        .target(
-            name: "UltraviolenceExampleShaders",
-            exclude: [
-                "BlinnPhongShaders.metal",
-                "FlatShader.metal",
-            ],
-            plugins: [
-                .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
-            ]
-        ),
-        .target(
             name: "UltraviolenceSupport",
             dependencies: [
                 "UltraviolenceMacros"
@@ -81,7 +49,6 @@ public let package = Package(
             name: "UltraviolenceTests",
             dependencies: [
                 "Ultraviolence",
-                "UltraviolenceExamples",
                 "UltraviolenceSupport",
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax")
             ],

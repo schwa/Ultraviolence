@@ -1,3 +1,5 @@
+/*
+TODO: Re-enable example tests.
 import CoreGraphics
 import Foundation
 import Testing
@@ -29,3 +31,4 @@ struct UltraviolenceExampleTests {
         }
     }
 }
+*/

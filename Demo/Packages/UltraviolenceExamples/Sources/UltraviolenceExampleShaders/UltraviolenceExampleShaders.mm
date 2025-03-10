@@ -12,7 +12,7 @@
     static NSBundle *moduleBundle = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        NSString *bundleName = @"Ultraviolence_UltraviolenceExampleShaders";
+        NSString *bundleName = @"UltraviolenceExamples_UltraviolenceExampleShaders";
 
         NSMutableArray<NSURL *> *overrides = [NSMutableArray array];
 
@@ -44,7 +44,7 @@
         }
 
         @throw [NSException exceptionWithName:NSInternalInconsistencyException
-                                       reason:@"Unable to find bundle named Ultraviolence_UltraviolenceExampleShaders"
+                                       reason:@"Unable to find bundle named UltraviolenceExamples_UltraviolenceExampleShaders"
                                      userInfo:nil];
     });
 
