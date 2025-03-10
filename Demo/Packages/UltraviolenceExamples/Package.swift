@@ -9,11 +9,11 @@ let package = Package(
         .macOS(.v15)
     ],
     products: [
-        .library(name: "UltraviolenceExamples", targets: ["UltraviolenceExamples"]),
+        .library(name: "UltraviolenceExamples", targets: ["UltraviolenceExamples"])
     ],
     dependencies: [
         .package(name: "Ultraviolence", path: "../../.."),
-        .package(url: "https://github.com/schwa/MetalCompilerPlugin", branch: "main"),
+        .package(url: "https://github.com/schwa/MetalCompilerPlugin", branch: "main")
     ],
     targets: [
         .target(
@@ -40,7 +40,7 @@ let package = Package(
             name: "UltraviolenceExampleShaders",
             exclude: [
                 "BlinnPhongShaders.metal",
-                "FlatShader.metal",
+                "FlatShader.metal"
             ],
             plugins: [
                 .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
@@ -49,6 +49,6 @@ let package = Package(
         .testTarget(
             name: "UltraviolenceExamplesTests",
             dependencies: ["UltraviolenceExamples"]
-        ),
+        )
     ]
 )

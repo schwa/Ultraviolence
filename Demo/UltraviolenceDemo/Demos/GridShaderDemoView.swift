@@ -1,15 +1,14 @@
+import simd
 import SwiftUI
 import Ultraviolence
-import UltraviolenceUI
-import UltraviolenceSupport
 import UltraviolenceExamples
 import UltraviolenceExampleShaders
-import simd
+import UltraviolenceSupport
+import UltraviolenceUI
 
 struct GridShaderDemoView: View {
-
     @State
-    var drawableSize: CGSize = .zero
+    private var drawableSize: CGSize = .zero
 
     var body: some View {
         WorldView { projection, cameraMatrix in
@@ -27,7 +26,6 @@ extension GridShaderDemoView: DemoView {
 }
 
 struct GridShader: Element {
-
     @State
     var vertexShader: VertexShader
 
@@ -49,16 +47,16 @@ struct GridShader: Element {
     var body: some Element {
         get throws {
             try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
-                let transforms = Transforms(modelMatrix: .init(translation: [0, 0, -10]) , cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
+                let transforms = Transforms(modelMatrix: .init(translation: [0, 0, -10]), cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
                 Draw { encoder in
                     let positions: [Packed3<Float>] = [
                         [-1, 1, 0], [-1, -1, 0], [1, 1, 0], [1, -1, 0]
                     ]
-                        .map { $0 * 2000 }
+                    .map { $0 * 2_000 }
                     let textureCoordinates: [SIMD2<Float>] = [
                         [0, 1], [0, 0], [1, 1], [1, 0]
                     ]
-//                    encoder.setTriangleFillMode(.lines)
+                    //                    encoder.setTriangleFillMode(.lines)
                     encoder.setVertexUnsafeBytes(of: positions, index: 0)
                     encoder.setVertexUnsafeBytes(of: textureCoordinates, index: 1)
                     encoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: positions.count)

@@ -1,6 +1,6 @@
 ---
 excluded:
-  - ".build"
+  - "**/.build"
   - Package.swift
 force_try: warning
 only_rules:

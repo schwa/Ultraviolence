@@ -1,14 +1,13 @@
 import CoreGraphics
 import ImageIO
-import MetalKit
-import ModelIO
-import UltraviolenceSupport
-import UniformTypeIdentifiers
 import Metal
 import MetalKit
+import ModelIO
 import simd
 import SwiftUI
 import Ultraviolence
+import UltraviolenceSupport
+import UniformTypeIdentifiers
 
 #if canImport(AppKit)
 public extension URL {
