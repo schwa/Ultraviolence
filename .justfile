@@ -24,6 +24,8 @@ push: build test
 format:
     swiftlint --fix --format --quiet
 
+    fd --extension metal --extension h --exec clang-format -i {}
+
 metal-nm:
     swift build --quiet
     xcrun metal-nm .build/arm64-apple-macosx/debug/Ultraviolence_UltraviolenceExamples.bundle/debug.metallib
