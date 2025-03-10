@@ -59,9 +59,8 @@
 		455C18FC2CD483FC009A25A6 = {
 			isa = PBXGroup;
 			children = (
-				451A02482D7F62A200909A2F /* Packages */,
 				455C19072CD483FC009A25A6 /* UltraviolenceDemo */,
-				4562E5172CD6A32E006337E0 /* Frameworks */,
+				451A02482D7F62A200909A2F /* Packages */,
 				455C19062CD483FC009A25A6 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -72,13 +71,6 @@
 				455C19052CD483FC009A25A6 /* UltraviolenceDemo.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		4562E5172CD6A32E006337E0 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

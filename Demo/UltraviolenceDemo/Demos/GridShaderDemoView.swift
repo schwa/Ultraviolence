@@ -2,6 +2,7 @@ import SwiftUI
 import Ultraviolence
 import UltraviolenceUI
 import UltraviolenceSupport
+import UltraviolenceExamples
 import UltraviolenceExampleShaders
 import simd
 

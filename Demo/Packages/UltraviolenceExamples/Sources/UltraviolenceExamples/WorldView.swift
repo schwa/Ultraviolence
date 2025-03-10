@@ -3,7 +3,7 @@ import SwiftUI
 import UltraviolenceExamples
 import UltraviolenceSupport
 
-struct WorldView<Content: View>: View {
+public struct WorldView<Content: View>: View {
     var content: (_ projection: any ProjectionProtocol, _ cameraMatrix: simd_float4x4) -> Content
     var projection: any ProjectionProtocol
 
@@ -13,13 +13,13 @@ struct WorldView<Content: View>: View {
     @State
     private var cameraMatrix: simd_float4x4 = .identity
 
-    init(projection: any ProjectionProtocol = PerspectiveProjection(),
+    public init(projection: any ProjectionProtocol = PerspectiveProjection(),
          @ViewBuilder content: @escaping (_ projection: any ProjectionProtocol, _ cameraMatrix: simd_float4x4) -> Content) {
         self.projection = projection
         self.content = content
     }
 
-    var body: some View {
+    public var body: some View {
         content(projection, cameraMatrix)
             .cameraController(cameraMatrix: $cameraMatrix)
     }

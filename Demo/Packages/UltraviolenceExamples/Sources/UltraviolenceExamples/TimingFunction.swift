@@ -1,10 +1,10 @@
 import SwiftUI
 
-protocol TimingFunction {
+public protocol TimingFunction {
     func solve(_ x: Float) -> Float
 }
 
-extension TimingFunction {
+public extension TimingFunction {
     func value(time: TimeInterval, period: TimeInterval, offset: Float, in range: ClosedRange<Float>) -> Float {
         let t = Float(fmod(time, period) / period) + offset
         return range.lowerBound + solve(t) * (range.upperBound - range.lowerBound)
@@ -16,51 +16,63 @@ extension TimingFunction {
 
 // https://easings.net/#
 
-struct LinearTimingFunction: TimingFunction {
-    func solve(_ x: Float) -> Float {
+public struct LinearTimingFunction: TimingFunction {
+    public init() {
+    }
+
+    public func solve(_ x: Float) -> Float {
         x
     }
 }
 
-struct SinusoidalTimingFunction: TimingFunction {
-    func solve(_ x: Float) -> Float {
+public struct SinusoidalTimingFunction: TimingFunction {
+    public init() {
+    }
+
+    public func solve(_ x: Float) -> Float {
         0.5 * (1 + sin(.pi * x - .pi / 2))
     }
 }
 
-struct EaseInOutTimingFunction: TimingFunction {
-    func solve(_ x: Float) -> Float {
+public struct EaseInOutTimingFunction: TimingFunction {
+    public init() {
+    }
+
+    public func solve(_ x: Float) -> Float {
         let r = CubicBezier(p1x: 0.65, p1y: 0, p2x: 0.35, p2y: 1).solve(for: Double(x)) ?? 0
         return Float(r)
     }
 }
 
-struct EaseInOutTimingFunction2: TimingFunction {
-    func solve(_ x: Float) -> Float {
+public struct EaseInOutTimingFunction2: TimingFunction {
+    public init() {
+    }
+
+    public func solve(_ x: Float) -> Float {
         x < 0.5 ? 4 * x * x * x : 1 - pow(-2 * x + 2, 3) / 2
     }
 }
 
-struct ReversedTimingFunction<T>: TimingFunction where T: TimingFunction {
+public struct ReversedTimingFunction<T>: TimingFunction where T: TimingFunction {
     let other: T
 
-    init(_ other: T) {
+    public init(_ other: T) {
         self.other = other
     }
 
-    func solve(_ x: Float) -> Float {
+    public func solve(_ x: Float) -> Float {
         other.solve(1 - x)
     }
 }
 
-struct ForwardAndReverseTimingFunction<T>: TimingFunction where T: TimingFunction {
+public struct ForwardAndReverseTimingFunction<T>: TimingFunction where T: TimingFunction {
     let other: T
 
-    init(_ other: T) {
+    public init(_ other: T) {
         self.other = other
     }
 
-    func solve(_ x: Float) -> Float {
+    public func solve(_ x: Float) -> Float {
         if x < 0.5 {
             return other.solve(2 * x)
         }
@@ -69,14 +81,14 @@ struct ForwardAndReverseTimingFunction<T>: TimingFunction where T: TimingFunctio
 }
 
 // https://pomax.github.io/bezierinfo/#yforx
-struct CubicBezier {
+internal struct CubicBezier {
     let p1x: Double
     let p1y: Double
     let p2x: Double
     let p2y: Double
 
     // Solve for y given x using Cardano's formula
-    func solve(for x: Double) -> Double? {
+    internal func solve(for x: Double) -> Double? {
         let p0x = 0.0, p0y = 0.0
         let p3x = 1.0, p3y = 1.0
 
