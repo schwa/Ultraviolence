@@ -27,7 +27,9 @@ public struct RTSControllerModifier: ViewModifier {
                     controller?.update(delta: delta)
                 }
         }
+        #if os(macOS)
         .modifier(IgnoreKeysViewModifier())
+        #endif
         .focusable()
         .focusEffectDisabled()
         .onChange(of: controller?.cameraMatrix) {
@@ -192,6 +194,7 @@ class RTSControllerInput {
     }
 }
 
+#if os(macOS)
 struct IgnoreKeysViewModifier: ViewModifier {
     class _View: NSView {
         override func performKeyEquivalent(with event: NSEvent) -> Bool {
@@ -213,3 +216,4 @@ struct IgnoreKeysViewModifier: ViewModifier {
         }
     }
 }
+#endif
