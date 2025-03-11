@@ -20,7 +20,8 @@ let package = Package(
             name: "UltraviolenceExamples",
             dependencies: [
                 "Ultraviolence",
-                "UltraviolenceExampleShaders"
+                "UltraviolenceExampleShaders",
+                .product(name: "UltraviolenceUI", package: "Ultraviolence")
             ],
             exclude: [
                 "EdgeDetectionKernel.metal",
