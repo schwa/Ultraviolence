@@ -66,3 +66,37 @@ public extension Angle {
         lhs.radians /= rhs.radians
     }
 }
+
+public extension Angle {
+    static func + (lhs: Angle, rhs: Float) -> Angle {
+        .init(radians: lhs.radians + rhs)
+    }
+
+    static func += (lhs: inout Angle, rhs: Float) {
+        lhs.radians += rhs
+    }
+
+    static func - (lhs: Angle, rhs: Float) -> Angle {
+        .init(radians: lhs.radians - rhs)
+    }
+
+    static func -= (lhs: inout Angle, rhs: Float) {
+        lhs.radians -= rhs
+    }
+
+    static func * (lhs: Angle, rhs: Float) -> Angle {
+        .init(radians: lhs.radians * rhs)
+    }
+
+    static func *= (lhs: inout Angle, rhs: Float) {
+        lhs.radians *= rhs
+    }
+
+    static func / (lhs: Angle, rhs: Float) -> Angle {
+        .init(radians: lhs.radians / rhs)
+    }
+
+    static func /= (lhs: inout Angle, rhs: Float) {
+        lhs.radians /= rhs
+    }
+}

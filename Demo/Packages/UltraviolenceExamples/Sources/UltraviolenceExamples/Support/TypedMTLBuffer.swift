@@ -84,16 +84,18 @@ public extension TypedMTLBuffer {
         try body(base)
     }
 
-    func withUnsafeBufferPointer(_ body: (inout UnsafeBufferPointer<Element>) throws -> Void) rethrows {
-        // TODO: TODO
-
-        fatalError()
+    func withUnsafeBufferPointer<R>(_ body: (UnsafeBufferPointer<Element>) throws -> R) rethrows -> R {
+        try withUnsafeMTLBuffer { buffer in
+            let buffer = UnsafeRawBufferPointer(start: buffer.contents(), count: count * elementSize)
+            return try buffer.withMemoryRebound(to: Element.self, body)
+        }
     }
 
-    func withUnsafeMutableBufferPointer(_ body: (inout UnsafeMutableBufferPointer<Element>) throws -> Void) rethrows {
-        // TODO: TODO
-
-        fatalError()
+    func withUnsafeMutableBufferPointer(_ body: (UnsafeMutableBufferPointer<Element>) throws -> Void) rethrows {
+        try withUnsafeMTLBuffer { buffer in
+            let buffer = UnsafeMutableRawBufferPointer(start: buffer.contents(), count: count * elementSize)
+            return try buffer.withMemoryRebound(to: Element.self, body)
+        }
     }
 }
 // MARK: -
