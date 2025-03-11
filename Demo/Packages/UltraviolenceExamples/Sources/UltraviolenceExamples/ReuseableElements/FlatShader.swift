@@ -57,7 +57,7 @@ public enum FlatShaderExample: Example {
                     let projectionMatrix = PerspectiveProjection().projectionMatrix(for: .init(width: 1_024, height: 768))
                     let transforms = Transforms(modelMatrix: modelMatrix, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
                     try FlatShader(textureSpecifier: .texture(texture, sampler)) {
-                        try Draw { encoder in
+                        Draw { encoder in
                             encoder.setVertexBuffers(of: mesh)
                             encoder.draw(mesh)
                         }

@@ -83,16 +83,39 @@ public extension TypedMTLBuffer {
     func withUnsafeMTLBuffer<R>(_ body: (MTLBuffer) throws -> R) rethrows -> R {
         try body(base)
     }
+
+    func withUnsafeBufferPointer(_ body: (inout UnsafeBufferPointer<Element>) throws -> Void) rethrows {
+        // TODO: TODO
+
+        fatalError()
+    }
+
+    func withUnsafeMutableBufferPointer(_ body: (inout UnsafeMutableBufferPointer<Element>) throws -> Void) rethrows {
+        // TODO: TODO
+
+        fatalError()
+    }
 }
 // MARK: -
 
 public extension MTLDevice {
-    func newTypedBuffer<Element>(capacity: Int, options: MTLResourceOptions) throws -> TypedMTLBuffer<Element> {
+    func makeTypedBuffer<Element>(element: Element.Type, capacity: Int, options: MTLResourceOptions) throws -> TypedMTLBuffer<Element> {
         let mtlBuffer = try makeBuffer(length: capacity * MemoryLayout<Element>.stride, options: options).orThrow(.undefined)
         return TypedMTLBuffer(buffer: mtlBuffer, count: 0)
     }
-    func newTypedBuffer<Element>(values: [Element], options: MTLResourceOptions) throws -> TypedMTLBuffer<Element> {
+    func makeTypedBuffer<Element>(values: [Element], options: MTLResourceOptions) throws -> TypedMTLBuffer<Element> {
         let mtlBuffer = try makeBuffer(collection: values, options: options)
         return TypedMTLBuffer(buffer: mtlBuffer, count: values.count)
     }
+}
+
+public extension TypedMTLBuffer {
+    func labelled(_ label: String) -> Self {
+        unsafeMTLBuffer.label = label
+        return self
+    }
+}
+
+// TODO: Bad extension. No cookie.
+extension TypedMTLBuffer: @unchecked Sendable where Element: Sendable {
 }

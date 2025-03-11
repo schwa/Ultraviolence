@@ -1,6 +1,5 @@
 import simd
 import SwiftUI
-import UltraviolenceExamples
 import UltraviolenceSupport
 
 public struct WorldView<Content: View>: View {

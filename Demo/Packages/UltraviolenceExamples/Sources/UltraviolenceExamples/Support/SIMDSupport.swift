@@ -101,3 +101,21 @@ public extension simd_float4x4 {
         ))
     }
 }
+
+public extension SIMD3 {
+    func map<T>(_ transform: (Scalar) -> T) -> SIMD3<T> where T: SIMDScalar {
+        .init(transform(x), transform(y), transform(z))
+    }
+}
+
+public extension SIMD4 {
+    func map<T>(_ transform: (Scalar) -> T) -> SIMD4<T> where T: SIMDScalar {
+        .init(transform(x), transform(y), transform(z), transform(w))
+    }
+}
+
+public extension SIMD4 {
+    var scalars: [Scalar] {
+        [x, y, z, w]
+    }
+}
