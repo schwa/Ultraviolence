@@ -124,6 +124,7 @@ internal class RenderViewViewModel <Content>: NSObject, MTKViewDelegate where Co
             .environment(\.device, device)
             .environment(\.commandQueue, commandQueue)
             .environment(\.renderPassDescriptor, currentRenderPassDescriptor)
+            .environment(\.renderPipelineDescriptor, MTLRenderPipelineDescriptor())
             .environment(\.currentDrawable, currentDrawable)
             .environment(\.drawableSize, view.drawableSize)
 
