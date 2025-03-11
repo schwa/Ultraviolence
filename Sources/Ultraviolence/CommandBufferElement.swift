@@ -14,6 +14,7 @@ public struct CommandBufferElement <Content>: Element, BodylessContentElement wh
     func workloadEnter(_ node: Node) throws {
         let commandQueue = try node.environmentValues.commandQueue.orThrow(.missingEnvironment(\.commandQueue))
         let commandBufferDescriptor = MTLCommandBufferDescriptor()
+        // TODO: There isn't an opportunity to modify the descriptor here.
         let commandBuffer = try commandQueue._makeCommandBuffer(descriptor: commandBufferDescriptor)
         node.environmentValues.commandBuffer = commandBuffer
     }
@@ -33,6 +34,8 @@ public struct CommandBufferElement <Content>: Element, BodylessContentElement wh
         }
     }
 }
+
+// MARK: -
 
 public extension Element {
     func onCommandBufferScheduled(_ action: @escaping (MTLCommandBuffer) -> Void) -> some Element {
@@ -57,25 +60,5 @@ public extension Element {
                 }
             }
         }
-    }
-}
-
-internal struct WorkloadModifier <Content>: Element, BodylessElement, BodylessContentElement where Content: Element {
-    var content: Content
-    var _workloadEnter: ((UVEnvironmentValues) throws -> Void)?
-
-    init(content: Content, workloadEnter: ((UVEnvironmentValues) throws -> Void)? = nil) {
-        self.content = content
-        self._workloadEnter = workloadEnter
-    }
-
-    func workloadEnter(_ node: Node) throws {
-        try _workloadEnter?(node.environmentValues)
-    }
-}
-
-public extension Element {
-    func onWorkloadEnter(_ action: @escaping (UVEnvironmentValues) throws -> Void) -> some Element {
-        WorkloadModifier(content: self, workloadEnter: action)
     }
 }

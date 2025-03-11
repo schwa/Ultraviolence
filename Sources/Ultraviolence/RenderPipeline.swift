@@ -25,16 +25,19 @@ public struct RenderPipeline <Content>: Element, BodylessElement, BodylessConten
     func setupEnter(_ node: Node) throws {
         let environment = node.environmentValues
 
-        let renderPassDescriptor = try environment.renderPassDescriptor.orThrow(.missingEnvironment(\.renderPassDescriptor))
-        let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
+        let renderPassDescriptor = try environment.renderPassDescriptor.orThrow(.missingEnvironment(\.renderPassDescriptor)).copyWithType(MTLRenderPassDescriptor.self)
+
+        let renderPipelineDescriptor = try environment.renderPipelineDescriptor.orThrow(.missingEnvironment(\.renderPipelineDescriptor))
         renderPipelineDescriptor.vertexFunction = vertexShader.function
         renderPipelineDescriptor.fragmentFunction = fragmentShader.function
+
         guard let vertexDescriptor = environment.vertexDescriptor ?? vertexShader.vertexDescriptor else {
             // TODO: We were falling back to vertexShader.vertexDescriptor but that seems to be unreliable.
             throw UltraviolenceError.generic("No vertex descriptor")
         }
         renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
 
+        // TODO: We don't want to overwrite anything already set.
         // TODO: This is copying everything from the render pass descriptor. But really we should be getting this entirely from the enviroment.
         if let colorAttachment0Texture = try renderPassDescriptor.colorAttachments[0].texture {
             renderPipelineDescriptor.colorAttachments[0].pixelFormat = colorAttachment0Texture.pixelFormat

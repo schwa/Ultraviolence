@@ -130,6 +130,7 @@ extension UVEnvironmentValues.Storage {
         if let value = values[key] {
             return value
         }
+        // TODO: #76 This can infinite loop if there is a cycle. *WHY* is there a cycle.
         if let parent, let value = parent.get(key) {
             return value
         }

@@ -37,3 +37,32 @@ extension Reflection: CustomDebugStringConvertible {
         bindings.debugDescription
     }
 }
+
+extension Reflection.Key: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        "Key(type: .\(functionType) name: \"\(name)\")"
+    }
+}
+
+extension MTLFunctionType: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        switch self {
+        case .vertex:
+            return "vertex"
+        case .fragment:
+            return "fragment"
+        case .kernel:
+            return "kernel"
+        case .visible:
+            return "visible"
+        case .intersection:
+            return "intersection"
+        case .mesh:
+            return "mesh"
+        case .object:
+            return "object"
+        @unknown default:
+            return "unknown"
+        }
+    }
+}

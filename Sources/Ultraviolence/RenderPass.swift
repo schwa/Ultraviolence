@@ -7,6 +7,11 @@ public struct RenderPass <Content>: Element, BodylessElement, BodylessContentEle
         self.content = try content()
     }
 
+    func setupEnter(_ node: Node) throws {
+        let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
+        node.environmentValues.renderPipelineDescriptor = renderPipelineDescriptor
+    }
+
     func workloadEnter(_ node: Node) throws {
         let commandBuffer = try node.environmentValues.commandBuffer.orThrow(.missingEnvironment(\.commandBuffer))
         let renderPassDescriptor = try node.environmentValues.renderPassDescriptor.orThrow(.missingEnvironment(\.renderPassDescriptor))
