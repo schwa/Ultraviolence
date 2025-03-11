@@ -1,18 +1,18 @@
 #import <Foundation/Foundation.h>
 
-@interface BundleFinder2 : NSObject
+@interface GaussianSplatModuleFinder : NSObject
 @end
 
-@implementation BundleFinder2
+@implementation GaussianSplatModuleFinder
 @end
 
-@implementation NSBundle (Module)
+@implementation NSBundle (GaussianSplatModule)
 
-+ (NSBundle *)ultraviolenceExampleShadersBundle {
++ (NSBundle *)gaussianSplatShadersBundle {
     static NSBundle *moduleBundle = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        NSString *bundleName = @"UltraviolenceExamples_UltraviolenceExampleShaders";
+        NSString *bundleName = @"UltraviolenceExamples_GaussianSplatShaders";
 
         NSMutableArray<NSURL *> *overrides = [NSMutableArray array];
 
@@ -28,7 +28,7 @@
 
         NSArray<NSURL *> *candidates = [overrides arrayByAddingObjectsFromArray:@[
             [NSBundle mainBundle].resourceURL,
-            [[NSBundle bundleForClass:[BundleFinder2 class]] resourceURL],
+            [[NSBundle bundleForClass:[GaussianSplatModuleFinder class]] resourceURL],
             [NSBundle mainBundle].bundleURL
         ]];
 
@@ -44,7 +44,7 @@
         }
 
         @throw [NSException exceptionWithName:NSInternalInconsistencyException
-                                       reason:@"Unable to find bundle named UltraviolenceExamples_UltraviolenceExampleShaders"
+                                       reason:@"Unable to find bundle named UltraviolenceExamples_GaussianSplatShaders"
                                      userInfo:nil];
     });
 

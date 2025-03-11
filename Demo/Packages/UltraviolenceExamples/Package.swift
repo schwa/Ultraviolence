@@ -9,11 +9,12 @@ let package = Package(
         .macOS(.v15)
     ],
     products: [
-        .library(name: "UltraviolenceExamples", targets: ["UltraviolenceExamples"])
+        .library(name: "UltraviolenceExamples", targets: ["UltraviolenceExamples"]),
     ],
     dependencies: [
         .package(name: "Ultraviolence", path: "../../.."),
-        .package(url: "https://github.com/schwa/MetalCompilerPlugin", branch: "jwight/logging")
+        .package(url: "https://github.com/schwa/MetalCompilerPlugin", branch: "jwight/logging"),
+        .package(url: "https://github.com/apple/swift-async-algorithms", from: "1.0.0")
     ],
     targets: [
         .target(
@@ -21,7 +22,9 @@ let package = Package(
             dependencies: [
                 "Ultraviolence",
                 "UltraviolenceExampleShaders",
-                .product(name: "UltraviolenceUI", package: "Ultraviolence")
+                .product(name: "UltraviolenceUI", package: "Ultraviolence"),
+                "GaussianSplatShaders",
+                .product(name: "AsyncAlgorithms", package: "swift-async-algorithms")
             ],
             exclude: [
                 "ReuseableElements/EdgeDetectionKernel.metal",
@@ -47,6 +50,16 @@ let package = Package(
                 .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
             ]
         ),
+
+            .target(
+            name: "GaussianSplatShaders",
+            exclude: [
+            ],
+            plugins: [
+                .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
+            ]
+        ),
+
         .testTarget(
             name: "UltraviolenceExamplesTests",
             dependencies: ["UltraviolenceExamples"]

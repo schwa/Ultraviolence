@@ -12,6 +12,7 @@ struct ContentView: View {
     var body: some View {
         NavigationSplitView {
             List(selection: $page) {
+                row(for: GaussianSplatDemoView.self)
                 row(for: BlinnPhongDemoView.self)
                 row(for: GridShaderDemoView.self)
                 row(for: SkyboxDemoView.self)
@@ -69,4 +70,7 @@ struct Page: Hashable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
+}
+
+extension GaussianSplatDemoView: DemoView {
 }

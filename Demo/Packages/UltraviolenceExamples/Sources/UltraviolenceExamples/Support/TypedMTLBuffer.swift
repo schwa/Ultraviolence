@@ -3,7 +3,7 @@ import Metal
 // TODO: #128 Unit tests.
 public struct TypedMTLBuffer<Element> {
     private var base: MTLBuffer
-    public private(set) var count: Int
+    public var count: Int // TODO: Dangerous makign this settable.
     public var capacity: Int {
         base.length / elementSize
     }
@@ -60,6 +60,11 @@ extension TypedMTLBuffer: Equatable where Element: Equatable {
         guard lhs.count == rhs.count else {
             return false
         }
+
+        if lhs.base === rhs.base {
+            return true
+        }
+
         return zip(lhs, rhs).allSatisfy(==)
     }
 }
@@ -112,7 +117,7 @@ public extension MTLDevice {
 }
 
 public extension TypedMTLBuffer {
-    func labelled(_ label: String) -> Self {
+    func labeled(_ label: String) -> Self {
         unsafeMTLBuffer.label = label
         return self
     }

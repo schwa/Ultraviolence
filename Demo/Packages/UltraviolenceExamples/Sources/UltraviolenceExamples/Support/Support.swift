@@ -144,8 +144,20 @@ public extension Packed3 where Scalar == Float {
     }
 }
 
+public extension Packed3 {
+    init(_ other: Packed3<Scalar>) {
+        self = other
+    }
+    init(_ other: SIMD3<Scalar>) {
+        self.init(x: other.x, y: other.y, z: other.z)
+    }
+}
+
 public extension Packed3 where Scalar == Float16 {
     init(_ other: Packed3<Float>) {
+        self.init(x: Float16(other.x), y: Float16(other.y), z: Float16(other.z))
+    }
+    init(_ other: SIMD3<Float>) {
         self.init(x: Float16(other.x), y: Float16(other.y), z: Float16(other.z))
     }
 }
