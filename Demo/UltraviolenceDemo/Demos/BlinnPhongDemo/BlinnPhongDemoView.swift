@@ -26,9 +26,11 @@ struct BlinnPhongDemoView: View {
 
     let lightMarker = MTKMesh.sphere(extent: [0.1, 0.1, 0.1]).relabeled("light-marker-0")
 
-    let modelMatrix = simd_float4x4(translation: [0, 0, 0])
-    let cameraMatrix = simd_float4x4(translation: [0, 2, 6])
-    let projection = PerspectiveProjection()
+    var modelMatrix = simd_float4x4(translation: [0, 0, 0])
+
+    @State
+    private var cameraMatrix = simd_float4x4(translation: [0, 2, 6])
+    var projection = PerspectiveProjection()
 
     init() {
         do {
@@ -100,6 +102,7 @@ struct BlinnPhongDemoView: View {
                 ]
             }
         }
+        .modifier(RTSControllerModifier(cameraMatrix: $cameraMatrix))
     }
 }
 

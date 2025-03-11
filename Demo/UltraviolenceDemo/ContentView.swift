@@ -12,9 +12,9 @@ struct ContentView: View {
     var body: some View {
         NavigationSplitView {
             List(selection: $page) {
+                row(for: BlinnPhongDemoView.self)
                 row(for: GridShaderDemoView.self)
                 row(for: SkyboxDemoView.self)
-                row(for: BlinnPhongDemoView.self)
                 row(for: MixedDemoView.self)
                 row(for: TriangleDemoView.self)
                 #if canImport(AppKit)

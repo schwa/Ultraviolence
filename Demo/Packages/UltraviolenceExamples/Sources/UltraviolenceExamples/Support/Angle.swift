@@ -32,3 +32,37 @@ public extension Angle {
         self.radians = degrees * .pi / 180
     }
 }
+
+public extension Angle {
+    static func + (lhs: Angle, rhs: Angle) -> Angle {
+        .init(radians: lhs.radians + rhs.radians)
+    }
+
+    static func += (lhs: inout Angle, rhs: Angle) {
+        lhs.radians += rhs.radians
+    }
+
+    static func - (lhs: Angle, rhs: Angle) -> Angle {
+        .init(radians: lhs.radians - rhs.radians)
+    }
+
+    static func -= (lhs: inout Angle, rhs: Angle) {
+        lhs.radians -= rhs.radians
+    }
+
+    static func * (lhs: Angle, rhs: Angle) -> Angle {
+        .init(radians: lhs.radians * rhs.radians)
+    }
+
+    static func *= (lhs: inout Angle, rhs: Angle) {
+        lhs.radians *= rhs.radians
+    }
+
+    static func / (lhs: Angle, rhs: Angle) -> Angle {
+        .init(radians: lhs.radians / rhs.radians)
+    }
+
+    static func /= (lhs: inout Angle, rhs: Angle) {
+        lhs.radians /= rhs.radians
+    }
+}

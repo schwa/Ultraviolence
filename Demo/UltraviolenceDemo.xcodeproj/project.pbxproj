@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4502C9A52D7F647000B3CAE3 /* UltraviolenceExamples in Frameworks */ = {isa = PBXBuildFile; productRef = 4502C9A42D7F647000B3CAE3 /* UltraviolenceExamples */; };
+		450B4C842D7FCAEB0051CFE4 /* AsyncAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 450B4C832D7FCAEB0051CFE4 /* AsyncAlgorithms */; };
 		4555034E2D7CDF9A008EA08C /* UltraviolenceUI in Frameworks */ = {isa = PBXBuildFile; productRef = 4555034D2D7CDF99008EA08C /* UltraviolenceUI */; };
 		459D02CE2D13490D002CDC87 /* Ultraviolence in Frameworks */ = {isa = PBXBuildFile; productRef = 459D02CD2D13490D002CDC87 /* Ultraviolence */; };
 /* End PBXBuildFile section */
@@ -50,6 +51,7 @@
 				4555034E2D7CDF9A008EA08C /* UltraviolenceUI in Frameworks */,
 				4502C9A52D7F647000B3CAE3 /* UltraviolenceExamples in Frameworks */,
 				459D02CE2D13490D002CDC87 /* Ultraviolence in Frameworks */,
+				450B4C842D7FCAEB0051CFE4 /* AsyncAlgorithms in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -98,6 +100,7 @@
 				459D02CD2D13490D002CDC87 /* Ultraviolence */,
 				4555034D2D7CDF99008EA08C /* UltraviolenceUI */,
 				4502C9A42D7F647000B3CAE3 /* UltraviolenceExamples */,
+				450B4C832D7FCAEB0051CFE4 /* AsyncAlgorithms */,
 			);
 			productName = UltraviolenceDemo;
 			productReference = 455C19052CD483FC009A25A6 /* UltraviolenceDemo.app */;
@@ -129,6 +132,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				455C19432CD48474009A25A6 /* XCLocalSwiftPackageReference "../../Ultraviolence" */,
+				450B4C822D7FCAEB0051CFE4 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 455C19062CD483FC009A25A6 /* Products */;
@@ -314,6 +318,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_GCSupportsControllerUserInteraction = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -354,6 +359,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_GCSupportsControllerUserInteraction = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -410,10 +416,26 @@
 		};
 /* End XCLocalSwiftPackageReference section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		450B4C822D7FCAEB0051CFE4 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-async-algorithms.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		4502C9A42D7F647000B3CAE3 /* UltraviolenceExamples */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = UltraviolenceExamples;
+		};
+		450B4C832D7FCAEB0051CFE4 /* AsyncAlgorithms */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 450B4C822D7FCAEB0051CFE4 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */;
+			productName = AsyncAlgorithms;
 		};
 		4555034D2D7CDF99008EA08C /* UltraviolenceUI */ = {
 			isa = XCSwiftPackageProductDependency;
