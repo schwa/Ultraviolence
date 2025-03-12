@@ -18,7 +18,7 @@ test:
     swift test --quiet
     @echo "✅ Test Success"
 
-push: build test
+push: build test periphery-scan
     jj bookmark move main --to @-; jj git push --branch main
 
 format:
@@ -31,3 +31,7 @@ metal-nm:
     xcrun metal-nm .build/arm64-apple-macosx/debug/Ultraviolence_UltraviolenceExamples.bundle/debug.metallib
     #xcrun metal-objdump  --disassemble-all .build/arm64-apple-macosx/debug/Ultraviolence_UltraviolenceExamples.bundle/debug.metallib
     #xcrun metal-source .build/arm64-apple-macosx/debug/Ultraviolence_UltraviolenceExamples.bundle/debug.metallib
+
+periphery-scan:
+    periphery scan --project-root Demo --project UltraviolenceDemo.xcodeproj --schemes UltraviolenceDemo --quiet --baseline .periphery.baseline.json --write-baseline .periphery.baseline.json --strict
+    # --retain-public
