@@ -24,7 +24,6 @@ public struct BlinnPhongShader<Content>: Element where Content: Element {
 
     public var body: some Element {
         get throws {
-            let device = try device.orThrow(.missingEnvironment(\.device))
             try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                 content
             }

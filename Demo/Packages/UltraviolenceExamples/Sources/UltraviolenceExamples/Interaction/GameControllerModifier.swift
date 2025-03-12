@@ -60,7 +60,7 @@ extension GameControllerModifier {
             observationTask = Task {
                 Task {
                     for await event in NotificationCenter.default.notifications(named: .GCControllerDidConnect) {
-                        guard let controller = event.object as? GCController else {
+                        guard event.object is GCController else {
                             continue
                         }
                         updateController()
@@ -68,7 +68,7 @@ extension GameControllerModifier {
                 }
                 Task {
                     for await event in NotificationCenter.default.notifications(named: .GCControllerDidDisconnect) {
-                        guard let controller = event.object as? GCController else {
+                        guard event.object is GCController else {
                             continue
                         }
                         updateController()

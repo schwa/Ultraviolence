@@ -26,7 +26,7 @@ internal struct ArcBallRotationModifier: ViewModifier {
                 DragGesture()
                     .onChanged { gesture in
                         let point = convertToArcBallCoordinates(gesture.location)
-                        if let startPoint {
+                        if startPoint != nil {
                             arcBall.updateRotation(to: point)
                         }
                         else {

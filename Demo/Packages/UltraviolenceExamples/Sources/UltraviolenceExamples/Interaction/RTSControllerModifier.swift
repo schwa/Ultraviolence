@@ -156,7 +156,7 @@ class RTSControllerInput {
             print("Looking for keyboard")
             for await n in NotificationCenter.default.notifications(named: .GCKeyboardDidConnect) {
                 print("Keyboard connected")
-                await self.foundKeyboard(n.object as! GCKeyboard)
+                self.foundKeyboard(n.object as! GCKeyboard)
                 break
             }
         }

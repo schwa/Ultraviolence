@@ -72,7 +72,7 @@ internal struct Parameter {
                 throw UltraviolenceError.missingBinding(name)
             }
         default:
-            fatalError()
+            fatalError("Invalid shader type \(functionType.debugDescription).")
         }
     }
 

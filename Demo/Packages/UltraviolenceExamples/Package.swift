@@ -24,10 +24,10 @@ let package = Package(
                 .product(name: "UltraviolenceUI", package: "Ultraviolence")
             ],
             exclude: [
-                "EdgeDetectionKernel.metal",
-                "LambertianShader.metal",
+                "ReuseableElements/EdgeDetectionKernel.metal",
+                "ReuseableElements/LambertianShader.metal",
                 "RedTriangle.metal",
-                "CheckerboardKernel.metal"
+                "ReuseableElements/CheckerboardKernel.metal"
             ],
             resources: [
                 .copy("teapot.obj"),
