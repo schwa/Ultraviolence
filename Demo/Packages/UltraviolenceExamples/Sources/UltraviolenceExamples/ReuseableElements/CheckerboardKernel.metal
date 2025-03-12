@@ -4,6 +4,7 @@
 using namespace metal;
 
 namespace Checkerboard {
+
     uint2 gid [[thread_position_in_grid]];
 
     bool checkerboard(float2 coord, float2 size) {
@@ -31,4 +32,5 @@ namespace Checkerboard {
             outputTexture.write(foregroundColor, gid);
         }
     }
+
 } // namespace Checkerboard

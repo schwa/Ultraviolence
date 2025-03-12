@@ -2,6 +2,7 @@
 using namespace metal;
 
 namespace RedTriangle {
+
     struct VertexIn {
         float2 position [[attribute(0)]];
     };
@@ -19,4 +20,5 @@ namespace RedTriangle {
     [[fragment]] float4 fragment_main(VertexOut in [[stage_in]], constant float4 &color [[buffer(0)]]) {
         return color;
     }
+
 } // namespace RedTriangle

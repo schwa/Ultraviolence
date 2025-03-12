@@ -4,6 +4,7 @@
 using namespace metal;
 
 namespace SkyboxShader {
+
     struct VertexIn {
         float3 position [[attribute(0)]];
     };
@@ -28,4 +29,5 @@ namespace SkyboxShader {
         constexpr sampler s;
         return texture.sample(s, in.textureCoordinate);
     }
+
 } // namespace SkyboxShader

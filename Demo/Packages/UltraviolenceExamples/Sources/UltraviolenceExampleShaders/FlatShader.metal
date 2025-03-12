@@ -4,6 +4,7 @@
 using namespace metal;
 
 namespace FlatShader {
+
     struct VertexIn {
         float3 position [[attribute(0)]];
         float3 normal [[attribute(1)]];
@@ -38,4 +39,5 @@ namespace FlatShader {
             return float4(0.0, 0.0, 0.0, 0.0);
         }
     }
+
 } // namespace FlatShader

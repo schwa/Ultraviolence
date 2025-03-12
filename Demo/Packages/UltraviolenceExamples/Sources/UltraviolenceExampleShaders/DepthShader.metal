@@ -4,6 +4,7 @@
 using namespace metal;
 
 namespace DepthShader {
+
     struct VertexIn {
         float3 position [[attribute(0)]];
     };
@@ -26,4 +27,5 @@ namespace DepthShader {
         float depth = in.position.z;             // Depth value
         return float4(depth, depth, depth, 1.0); // Encode as grayscale
     }
+
 } // namespace DepthShader

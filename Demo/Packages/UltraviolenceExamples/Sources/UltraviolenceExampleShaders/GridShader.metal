@@ -4,6 +4,7 @@
 using namespace metal;
 
 namespace GridShader {
+
     float pristineGrid(float2 uv, float2 lineWidth);
 
     // Vertex Input
@@ -72,4 +73,5 @@ namespace GridShader {
 
         return mix(gridSmooth.x, 1.0, gridSmooth.y);
     }
+
 } // namespace GridShader
