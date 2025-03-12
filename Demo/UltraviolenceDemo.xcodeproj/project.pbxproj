@@ -85,7 +85,7 @@
 				455C19012CD483FC009A25A6 /* Sources */,
 				455C19022CD483FC009A25A6 /* Frameworks */,
 				455C19032CD483FC009A25A6 /* Resources */,
-				45F58E2A2CD956C6006C2237 /* Run Script */,
+				45F58E2A2CD956C6006C2237 /* swiftlint */,
 			);
 			buildRules = (
 			);
@@ -155,7 +155,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		45F58E2A2CD956C6006C2237 /* Run Script */ = {
+		45F58E2A2CD956C6006C2237 /* swiftlint */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -165,14 +165,14 @@
 			);
 			inputPaths = (
 			);
-			name = "Run Script";
+			name = swiftlint;
 			outputFileListPaths = (
 			);
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#!/bin/bash\n\nswiftlint_paths=(\n    /opt/homebrew/bin/swiftlint\n    /usr/local/bin/swiftlint\n    /usr/bin/swiftlint\n)\n\ncd ..\nfor path in \"${swiftlint_paths[@]}\"\ndo\n    if [ -x \"$path\" ]; then\n        \"$path\" --quiet\n        exit 0\n    fi\ndone\n\necho \"WARNING: swiftlint not found in the specified locations.\"\nexit 0\n";
+			shellScript = "#!/bin/bash\n\nswiftlint_paths=(\n    /opt/homebrew/bin/swiftlint\n    /usr/local/bin/swiftlint\n    /usr/bin/swiftlint\n)\n\ncd ..\nfor path in \"${swiftlint_paths[@]}\"\ndo\n    if [ -x \"$path\" ]; then\n        echo \"Linting with $path at $PWD\"\n        \"$path\" --quiet\n        echo \"Linting done.\"\n        exit 0\n    fi\ndone\n\necho \"WARNING: swiftlint not found in the specified locations.\"\nexit 0\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -317,6 +317,7 @@
 				DEVELOPMENT_TEAM = 6E23EP94PG;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_GCSupportsControllerUserInteraction = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
@@ -358,6 +359,7 @@
 				DEVELOPMENT_TEAM = 6E23EP94PG;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_GCSupportsControllerUserInteraction = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;

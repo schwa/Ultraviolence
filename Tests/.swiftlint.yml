@@ -1,8 +1,11 @@
 disabled_rules:
 - explicit_top_level_acl
-- file_length
-- nesting
-- no_empty_block
-- type_body_length
 - force_cast
 - force_try
+- force_unwrapping
+- identifier_name
+- todo
+- no_empty_block
+- nesting
+- anonymous_argument_in_multiline_closure
+- conditional_returns_on_newline

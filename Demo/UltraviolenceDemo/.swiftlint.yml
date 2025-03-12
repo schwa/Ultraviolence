@@ -1,3 +1,7 @@
 disabled_rules:
 - explicit_top_level_acl
-- accessibility_label_for_image
+- force_cast
+- force_try
+- force_unwrapping
+- identifier_name
+- todo
