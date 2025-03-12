@@ -12,10 +12,16 @@ struct SkyboxDemoView: View {
     private var texture: MTLTexture?
 
     @State
+    private var projection: any ProjectionProtocol = PerspectiveProjection()
+
+    @State
+    private var cameraMatrix: simd_float4x4 = .identity
+
+    @State
     private var drawableSize: CGSize = .zero
 
     var body: some View {
-        WorldView { projection, cameraMatrix in
+        WorldView(projection: $projection, cameraMatrix: $cameraMatrix, targetMatrix: .constant(nil)) {
             RenderView {
                 try RenderPass {
                     if let texture {

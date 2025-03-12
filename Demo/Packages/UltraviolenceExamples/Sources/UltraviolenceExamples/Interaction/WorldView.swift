@@ -3,134 +3,87 @@ import SwiftUI
 import UltraviolenceSupport
 
 public struct WorldView<Content: View>: View {
-    var content: (_ projection: any ProjectionProtocol, _ cameraMatrix: simd_float4x4) -> Content
+    @Binding
     var projection: any ProjectionProtocol
+
+    @Binding
+    private var cameraMatrix: simd_float4x4
+
+    @Binding
+    private var targetMatrix: simd_float4x4?
+
+    var content: Content
 
     @State
     private var cameraController: CameraControllerModifier.CameraController = .arcball
 
     @State
-    private var cameraMatrix: simd_float4x4
+    private var cameraMode: CameraMode = .free
 
-    public init(projection: any ProjectionProtocol = PerspectiveProjection(), camereMatrix: simd_float4x4 = .init(translation: [0, 0, 1]), @ViewBuilder content: @escaping (_ projection: any ProjectionProtocol, _ cameraMatrix: simd_float4x4) -> Content) {
-        self.projection = projection
-        self.cameraMatrix = camereMatrix
-        self.content = content
+    public init(projection: Binding<any ProjectionProtocol>, cameraMatrix: Binding<simd_float4x4>, targetMatrix: Binding<simd_float4x4?> = .constant(nil), content: @escaping () -> Content) {
+        self._projection = projection
+        self._cameraMatrix = cameraMatrix
+        self._targetMatrix = targetMatrix
+        self.content = content()
     }
 
     public var body: some View {
-        content(projection, cameraMatrix)
-            .cameraController(cameraMatrix: $cameraMatrix)
-    }
-}
+        VStack {
+            content
+            //                .cameraController(cameraMatrix: $cameraMatrix)
 
-internal struct CameraControllerModifier: ViewModifier {
-    enum CameraController: CaseIterable {
-        case arcball
-        case sliders
-    }
-
-    @Binding
-    var cameraMatrix: simd_float4x4
-
-    @State
-    var rotation: simd_quatf = .identity
-
-    @State
-    var cameraController: CameraController?
-
-    func body(content: Content) -> some View {
-        Group {
-            switch cameraController {
-            case .none:
-                content
-            case .arcball:
-                content.arcBallRotationModifier(rotation: $rotation, radius: 1)
-            case .sliders:
-                content.slidersOverlayCameraController(rotation: $rotation)
+            Picker("Mode", selection: $cameraMode) {
+                Text("Free").tag(CameraMode.free)
+                Text("Top").tag(CameraMode.fixed(.top))
+                Text("Bottom").tag(CameraMode.fixed(.bottom))
+                Text("Left").tag(CameraMode.fixed(.left))
+                Text("Right").tag(CameraMode.fixed(.right))
+                Text("Front").tag(CameraMode.fixed(.front))
+                Text("Back").tag(CameraMode.fixed(.back))
             }
+            .pickerStyle(.menu)
+            .fixedSize()
         }
-        .onChange(of: rotation) {
-            cameraMatrix = .init(rotation)
-        }
-        .toolbar {
-            Picker("Camera Controller", selection: $cameraController) {
-                Text("None").tag(Optional<CameraController>.none)
-                ForEach(Array(CameraController.allCases.enumerated()), id: \.1) { _, value in
-                    Text(value.description).tag(value).keyboardShortcut(value.keyboardShortcut)
-                }
+        .onChange(of: cameraMode) {
+            switch cameraMode {
+            case .fixed(let cameraAngle):
+                cameraMatrix = cameraAngle.matrix
+            default:
+                break
             }
         }
     }
 }
 
-extension CameraControllerModifier.CameraController: CustomStringConvertible {
-    var description: String {
+public enum CameraMode: Hashable {
+    case free
+    case fixed(CameraAngle)
+}
+
+public enum CameraAngle: Hashable {
+    case top
+    case bottom
+    case left
+    case right
+    case front
+    case back
+}
+
+extension CameraAngle {
+    var matrix: simd_float4x4 {
         switch self {
-        case .arcball:
-            return "Arcball"
-        case .sliders:
-            return "Sliders"
+        case .top:
+            return look(at: [0, 0, 0], from: [0, 1, 0], up: [0, 0, 1])
+        case .bottom:
+            return look(at: [0, 0, 0], from: [0, -1, 0], up: [0, 0, -1])
+        case .left:
+            return look(at: [0, 0, 0], from: [-1, 0, 0], up: [0, 1, 0])
+        case .right:
+            return look(at: [0, 0, 0], from: [1, 0, 0], up: [0, 1, 0])
+        case .front:
+            return look(at: [0, 0, 0], from: [0, 0, 1], up: [0, 1, 0])
+        case .back:
+            return look(at: [0, 0, 0], from: [0, 0, -1], up: [0, 1, 0])
         }
-    }
-}
-
-extension CameraControllerModifier.CameraController {
-    var keyboardShortcut: KeyboardShortcut? {
-        switch self {
-        case .arcball:
-            return KeyboardShortcut(KeyEquivalent("1"), modifiers: .command)
-        case .sliders:
-            return KeyboardShortcut(KeyEquivalent("2"), modifiers: .command)
-        }
-    }
-}
-
-extension View {
-    func cameraController(cameraMatrix: Binding<simd_float4x4>) -> some View {
-        modifier(CameraControllerModifier(cameraMatrix: cameraMatrix))
-    }
-}
-
-internal struct SlidersOverlayCameraController: ViewModifier {
-    @State
-    var pitch: AngleF = .zero
-
-    @State
-    var yaw: AngleF = .zero
-
-    @Binding
-    var rotation: simd_quatf
-
-    func body(content: Content) -> some View {
-        content
-            .overlay(alignment: .bottom) {
-                VStack {
-                    HStack {
-                        Slider(value: $pitch.degrees, in: -90...90) { Text("Pitch") }
-                        TextField("Pitch", value: $pitch.degrees, formatter: NumberFormatter())
-                    }
-                    HStack {
-                        Slider(value: $yaw.degrees, in: 0...360) { Text("Yaw") }
-                        TextField("Yaw", value: $yaw.degrees, formatter: NumberFormatter())
-                    }
-                }
-                .controlSize(.small)
-                .frame(maxWidth: 320)
-                .padding()
-                .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 8))
-                .padding()
-            }
-            .onChange(of: [yaw, pitch], initial: true) {
-                let yaw = simd_quatf(angle: Float(yaw.radians), axis: [0, 1, 0])
-                let pitch = simd_quatf(angle: Float(pitch.radians), axis: [1, 0, 0])
-                rotation = yaw * pitch
-            }
-    }
-}
-
-extension View {
-    func slidersOverlayCameraController(rotation: Binding<simd_quatf>) -> some View {
-        modifier(SlidersOverlayCameraController(rotation: rotation))
     }
 }
