@@ -9,23 +9,23 @@ internal struct AnyBodylessElement: Element, BodylessElement {
         // This line intentionally left blank
     }
 
-    func _expandNode(_ node: Node, context: ExpansionContext) throws {
+    func _expandNode(_: Node, context: ExpansionContext) throws {
         // This line intentionally left blank.
     }
 
-    func setupEnter(_ node: Node) throws {
+    func setupEnter(_: Node) throws {
         try _setupEnter?()
     }
 
-    func setupExit(_ node: Node) throws {
+    func setupExit(_: Node) throws {
         try _setupExit?()
     }
 
-    func workloadEnter(_ node: Node) throws {
+    func workloadEnter(_: Node) throws {
         try _workloadEnter?()
     }
 
-    func workloadExit(_ node: Node) throws {
+    func workloadExit(_: Node) throws {
         try _workloadExit?()
     }
 }
