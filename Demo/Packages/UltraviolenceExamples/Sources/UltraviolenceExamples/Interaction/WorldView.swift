@@ -24,7 +24,7 @@ public struct WorldView<Content: View>: View {
     }
 }
 
-struct CameraControllerModifier: ViewModifier {
+internal struct CameraControllerModifier: ViewModifier {
     enum CameraController: CaseIterable {
         case arcball
         case sliders
@@ -92,7 +92,7 @@ extension View {
     }
 }
 
-struct SlidersOverlayCameraController: ViewModifier {
+internal struct SlidersOverlayCameraController: ViewModifier {
     @State
     var pitch: Angle = .zero
 

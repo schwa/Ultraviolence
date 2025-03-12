@@ -46,10 +46,10 @@ struct BlinnPhongDemoView: View {
             )
             self.lighting = lighting
 
-            self.skyboxTexture = device.makeTextureCubeFromCrossTexture(texture: try device.makeTexture(name: "Skybox", bundle: .main))
+            self.skyboxTexture = try! device.makeTextureCubeFromCrossTexture(texture: try device.makeTexture(name: "Skybox", bundle: .main))
         }
         catch {
-            fatalError()
+            fatalError("\(error)")
         }
     }
 

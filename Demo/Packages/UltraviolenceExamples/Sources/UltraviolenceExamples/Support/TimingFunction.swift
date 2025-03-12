@@ -18,6 +18,7 @@ public extension TimingFunction {
 
 public struct LinearTimingFunction: TimingFunction {
     public init() {
+        // This line intentionally left blank.
     }
 
     public func solve(_ x: Float) -> Float {
@@ -27,6 +28,7 @@ public struct LinearTimingFunction: TimingFunction {
 
 public struct SinusoidalTimingFunction: TimingFunction {
     public init() {
+        // This line intentionally left blank.
     }
 
     public func solve(_ x: Float) -> Float {
@@ -36,6 +38,7 @@ public struct SinusoidalTimingFunction: TimingFunction {
 
 public struct EaseInOutTimingFunction: TimingFunction {
     public init() {
+        // This line intentionally left blank.
     }
 
     public func solve(_ x: Float) -> Float {
@@ -46,6 +49,7 @@ public struct EaseInOutTimingFunction: TimingFunction {
 
 public struct EaseInOutTimingFunction2: TimingFunction {
     public init() {
+        // This line intentionally left blank.
     }
 
     public func solve(_ x: Float) -> Float {

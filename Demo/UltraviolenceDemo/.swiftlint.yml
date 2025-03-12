@@ -5,3 +5,4 @@ disabled_rules:
 - force_unwrapping
 - identifier_name
 - todo
+- accessibility_label_for_image

@@ -73,7 +73,7 @@ struct SkyboxDemoView: View {
         .frame(width: 1_024 * 4, height: 1_024 * 3)
         let device = MTLCreateSystemDefaultDevice().orFatalError()
         let texture2D = try device.makeTexture(content: testView)
-        return device.makeTextureCubeFromCrossTexture(texture: texture2D)
+        return try device.makeTextureCubeFromCrossTexture(texture: texture2D)
     }
 }
 

@@ -92,18 +92,26 @@ public extension Packed3 {
     subscript(i: Int) -> Scalar {
         get {
             switch i {
-            case 0: return x
-            case 1: return y
-            case 2: return z
-            default: fatalError("Index out of bounds.")
+            case 0:
+                return x
+            case 1:
+                return y
+            case 2:
+                return z
+            default:
+                fatalError("Index out of bounds.")
             }
         }
         set {
             switch i {
-            case 0: x = newValue
-            case 1: y = newValue
-            case 2: z = newValue
-            default: fatalError("Index out of bounds.")
+            case 0:
+                x = newValue
+            case 1:
+                y = newValue
+            case 2:
+                z = newValue
+            default:
+                fatalError("Index out of bounds.")
             }
         }
     }
@@ -192,22 +200,24 @@ public extension MTLDevice {
         var cgImage: CGImage?
         let renderer = ImageRenderer(content: content)
         renderer.render { size, callback in
-            let context = CGContext(data: nil, width: Int(size.width), height: Int(size.height), bitsPerComponent: 8, bytesPerRow: 0, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
-
+            guard let context = CGContext(data: nil, width: Int(size.width), height: Int(size.height), bitsPerComponent: 8, bytesPerRow: 0, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else {
+                return
+            }
             callback(context)
-
             cgImage = context.makeImage()
         }
-
         let textureLoader = MTKTextureLoader(device: self)
-        return try textureLoader.newTexture(cgImage: cgImage!, options: [
+        guard let cgImage else {
+            throw UltraviolenceError.generic("Failed to create image.")
+        }
+        return try textureLoader.newTexture(cgImage: cgImage, options: [
             .textureUsage: MTLTextureUsage([.shaderRead, .shaderWrite]).rawValue,
             .SRGB: false
         ])
     }
 
     @MainActor
-    func makeTextureCubeFromCrossTexture(texture: MTLTexture) -> MTLTexture {
+    func makeTextureCubeFromCrossTexture(texture: MTLTexture) throws -> MTLTexture {
         // Convert a skybox texture stored as a "cross" shape in a 2d texture into a texture cube:
         //     [5]
         // [1] [4] [0] [5]
@@ -220,8 +230,10 @@ public extension MTLDevice {
         cubeMapDescriptor.pixelFormat = texture.pixelFormat
         cubeMapDescriptor.width = size.x
         cubeMapDescriptor.height = size.y
-        let cubeMap = makeTexture(descriptor: cubeMapDescriptor)!
-        let blit = try! BlitPass {
+        guard let cubeMap = makeTexture(descriptor: cubeMapDescriptor) else {
+            throw UltraviolenceError.generic("Failed to create texture cube.")
+        }
+        let blit = try BlitPass {
             Blit { encoder in
                 let origins: [SIMD2<Int>] = [
                     [2, 1], [0, 1], [1, 0], [1, 2], [1, 1], [3, 1]
@@ -232,7 +244,7 @@ public extension MTLDevice {
                 }
             }
         }
-        try! blit.run()
+        try blit.run()
         return cubeMap
     }
 }

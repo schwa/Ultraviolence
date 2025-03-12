@@ -1,4 +1,3 @@
-// swiftlint:disable:next type_name
 public struct _ConditionalContent<TrueContent, FalseContent>: Element where TrueContent: Element, FalseContent: Element {
     let first: TrueContent?
     let second: FalseContent?

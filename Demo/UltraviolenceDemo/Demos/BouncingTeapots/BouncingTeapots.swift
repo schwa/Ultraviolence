@@ -32,6 +32,7 @@ public struct BouncingTeapotsDemoView: View {
     private var scaleFactor = 1.0
 
     public init() {
+        // This line intentionally left blank.
     }
 
     public var body: some View {

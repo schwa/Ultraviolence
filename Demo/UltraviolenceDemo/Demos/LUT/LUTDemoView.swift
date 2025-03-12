@@ -60,7 +60,7 @@ struct LUTDemoView: View {
             self.outputTexture = outputTexture
         }
         catch {
-            fatalError()
+            fatalError("\(error)")
         }
     }
 

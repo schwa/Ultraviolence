@@ -8,9 +8,7 @@ func create3DLUT(device: MTLDevice, from lut2DTexture: MTLTexture) throws -> MTL
     #include <metal_stdlib>
     using namespace metal;
 
-    kernel void lut2DTo3D(texture2d<float, access::read> lut2D [[texture(0)]],
-                          texture3d<float, access::write> lut3D [[texture(1)]],
-                          uint3 gid [[thread_position_in_grid]]) {
+    kernel void lut2DTo3D(texture2d<float, access::read> lut2D [[texture(0)]], texture3d<float, access::write> lut3D [[texture(1)]], uint3 gid [[thread_position_in_grid]]) {
         const uint lutSize = 64;
         if (gid.x >= lutSize || gid.y >= lutSize || gid.z >= lutSize) return;
         uint tilesPerRow = 8;

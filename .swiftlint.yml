@@ -1,7 +1,7 @@
 ---
 excluded:
   - "**/.build"
-  - Package.swift
+  - "**/Package.swift"
 force_cast: warning
 force_try: warning
 # line_length:
@@ -156,7 +156,7 @@ only_rules:
   #  - one_declaration_per_file # 32 violations
   - opening_brace
   - operator_usage_whitespace
-  - operator_whitespace
+  # - operator_whitespace
   - optional_data_string_conversion
   - optional_enum_case_matching
   - orphaned_doc_comment

@@ -33,7 +33,9 @@ public struct RTSControllerModifier: ViewModifier {
         .focusable()
         .focusEffectDisabled()
         .onChange(of: controller?.cameraMatrix) {
-            cameraMatrix = controller!.cameraMatrix
+            if let controller {
+                cameraMatrix = controller.cameraMatrix
+            }
         }
         .onAppear {
             controller = RTSController(cameraMatrix: cameraMatrix, floorPlane: floorPlane)
@@ -53,7 +55,7 @@ public struct Plane {
 
 @Observable
 @MainActor
-class RTSController {
+internal class RTSController {
     var input = RTSControllerInput.shared
     var cameraMatrix: simd_float4x4
     var floorPlane: Plane
@@ -110,7 +112,7 @@ class RTSController {
 }
 
 @MainActor
-class RTSControllerInput {
+internal class RTSControllerInput {
     static let shared = RTSControllerInput()
 
     var keyboard: GCKeyboard?
@@ -154,9 +156,12 @@ class RTSControllerInput {
 
         Task {
             print("Looking for keyboard")
-            for await n in NotificationCenter.default.notifications(named: .GCKeyboardDidConnect) {
+            for await notification in NotificationCenter.default.notifications(named: .GCKeyboardDidConnect) {
                 print("Keyboard connected")
-                self.foundKeyboard(n.object as! GCKeyboard)
+                guard let keyboard = notification.object as? GCKeyboard else {
+                    continue
+                }
+                self.foundKeyboard(keyboard)
                 break
             }
         }
@@ -185,7 +190,7 @@ class RTSControllerInput {
         else if self.keyboard == nil {
             self.keyboard = keyboard
         }
-        self.keyboard!.keyboardInput?.keyChangedHandler = { [weak self] _, _, keycode, isPressed in
+        self.keyboard?.keyboardInput?.keyChangedHandler = { [weak self] _, _, keycode, isPressed in
             guard let self else {
                 return
             }
@@ -195,7 +200,7 @@ class RTSControllerInput {
 }
 
 #if os(macOS)
-struct IgnoreKeysViewModifier: ViewModifier {
+internal struct IgnoreKeysViewModifier: ViewModifier {
     class _View: NSView {
         override func performKeyEquivalent(with event: NSEvent) -> Bool {
             if event.modifierFlags.contains(.command) {
@@ -213,6 +218,7 @@ struct IgnoreKeysViewModifier: ViewModifier {
             root.addSubview(hostingView)
             return root
         } update: { _ in
+            // This line is intentionally left blank
         }
     }
 }
