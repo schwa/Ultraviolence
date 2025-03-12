@@ -1,13 +1,13 @@
 {
-  "originHash" : "e80caeab5e22c8eece316642ae417fb2abfa28f062fa773ca2a0badaf6114344",
+  "originHash" : "29068afdf67ceb3a55f61238e1d65b71a8ede5737965a3af33a33aa8d300d39f",
   "pins" : [
     {
       "identity" : "metalcompilerplugin",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/schwa/MetalCompilerPlugin",
       "state" : {
-        "branch" : "main",
-        "revision" : "8eee0b05069520306c93abe7ee9a333740d59007"
+        "branch" : "jwight/logging",
+        "revision" : "86239f9d8a6610e6ab2c335a3ef6e96fdd242e48"
       }
     },
     {

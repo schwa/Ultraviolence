@@ -13,7 +13,7 @@ let package = Package(
     ],
     dependencies: [
         .package(name: "Ultraviolence", path: "../../.."),
-        .package(url: "https://github.com/schwa/MetalCompilerPlugin", branch: "main")
+        .package(url: "https://github.com/schwa/MetalCompilerPlugin", branch: "jwight/logging")
     ],
     targets: [
         .target(
