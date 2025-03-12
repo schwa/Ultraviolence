@@ -60,12 +60,12 @@ internal class RTSController {
     var cameraMatrix: simd_float4x4
     var floorPlane: Plane
 
-    var yaw: Angle = .degrees(0)
-    var pitch: Angle = .degrees(0)
+    var yaw: AngleF = .degrees(0)
+    var pitch: AngleF = .degrees(0)
     var position: SIMD3<Float>
 
     var movementMaxSpeed: Float = 1
-    var rotationMaxSpeed: Angle = .degrees(2)
+    var rotationMaxSpeed: AngleF = .degrees(2)
 
     init(cameraMatrix: simd_float4x4, floorPlane: Plane) {
         self.cameraMatrix = cameraMatrix

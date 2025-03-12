@@ -25,8 +25,8 @@ public struct GameControllerModifier: ViewModifier {
 
                     // adjust camera matrix by controller input
                     let rotation = viewModel.rotation
-                    let yaw = Angle(radians: rotation.x * .pi) * 0.1
-                    let pitch = Angle(radians: rotation.y * .pi) * 0.05
+                    let yaw = AngleF(radians: rotation.x * .pi) * 0.1
+                    let pitch = AngleF(radians: rotation.y * .pi) * 0.05
                     let quaternion = simd_quatf(angle: Float(yaw.radians), axis: [0, 1, 0]) * simd_quatf(angle: Float(pitch.radians), axis: [1, 0, 0])
                     cameraMatrix *= simd_float4x4(quaternion)
                 }

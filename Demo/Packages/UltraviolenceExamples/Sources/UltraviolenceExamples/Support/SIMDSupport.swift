@@ -19,7 +19,7 @@ public extension simd_float4x4 {
         ])
     }
 
-    init(xRotation: Angle) {
+    init(xRotation: AngleF) {
         let radians = Float(xRotation.radians)
         let c = cos(radians)
         let s = sin(radians)
@@ -31,7 +31,7 @@ public extension simd_float4x4 {
         ])
     }
 
-    init(yRotation: Angle) {
+    init(yRotation: AngleF) {
         let radians = Float(yRotation.radians)
         let c = cos(radians)
         let s = sin(radians)
@@ -43,7 +43,7 @@ public extension simd_float4x4 {
         ])
     }
 
-    init(zRotation: Angle) {
+    init(zRotation: AngleF) {
         let radians = Float(zRotation.radians)
         let c = cos(radians)
         let s = sin(radians)

@@ -17,10 +17,10 @@ public extension ProjectionProtocol {
 }
 
 public struct PerspectiveProjection: ProjectionProtocol {
-    public var verticalAngleOfView: Angle
+    public var verticalAngleOfView: AngleF
     public var zClip: ClosedRange<Float>
 
-    public init(verticalAngleOfView: Angle = .degrees(90), zClip: ClosedRange<Float> = 0.01 ... 1_000) {
+    public init(verticalAngleOfView: AngleF = .degrees(90), zClip: ClosedRange<Float> = 0.01 ... 1_000) {
         self.verticalAngleOfView = verticalAngleOfView
         self.zClip = zClip
     }
@@ -29,10 +29,10 @@ public struct PerspectiveProjection: ProjectionProtocol {
         .perspective(aspectRatio: aspectRatio, fovy: Float(verticalAngleOfView.radians), near: zClip.lowerBound, far: zClip.upperBound)
     }
 
-    public func horizontalAngleOfView(aspectRatio: Float) -> Angle {
+    public func horizontalAngleOfView(aspectRatio: Float) -> AngleF {
         let fovy = verticalAngleOfView.radians
         let fovx = 2 * atan(tan(fovy / 2) * aspectRatio)
-        return Angle(radians: fovx)
+        return AngleF(radians: fovx)
     }
 }
 

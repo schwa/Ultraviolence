@@ -1,4 +1,4 @@
-public struct Angle: Equatable, Sendable {
+public struct AngleF: Equatable, Sendable {
     public var radians: Float
 
     static func radians(_ radians: Float) -> Self {
@@ -10,11 +10,11 @@ public struct Angle: Equatable, Sendable {
     }
 }
 
-public extension Angle {
-    static let zero: Angle = .init(radians: 0)
+public extension AngleF {
+    static let zero: AngleF = .init(radians: 0)
 }
 
-public extension Angle {
+public extension AngleF {
     var degrees: Float {
         get {
             radians * 180 / .pi
@@ -24,7 +24,7 @@ public extension Angle {
         }
     }
 
-    static func degrees(_ degrees: Float) -> Angle {
+    static func degrees(_ degrees: Float) -> AngleF {
         .init(degrees: degrees)
     }
 
@@ -33,70 +33,70 @@ public extension Angle {
     }
 }
 
-public extension Angle {
-    static func + (lhs: Angle, rhs: Angle) -> Angle {
+public extension AngleF {
+    static func + (lhs: AngleF, rhs: AngleF) -> AngleF {
         .init(radians: lhs.radians + rhs.radians)
     }
 
-    static func += (lhs: inout Angle, rhs: Angle) {
+    static func += (lhs: inout AngleF, rhs: AngleF) {
         lhs.radians += rhs.radians
     }
 
-    static func - (lhs: Angle, rhs: Angle) -> Angle {
+    static func - (lhs: AngleF, rhs: AngleF) -> AngleF {
         .init(radians: lhs.radians - rhs.radians)
     }
 
-    static func -= (lhs: inout Angle, rhs: Angle) {
+    static func -= (lhs: inout AngleF, rhs: AngleF) {
         lhs.radians -= rhs.radians
     }
 
-    static func * (lhs: Angle, rhs: Angle) -> Angle {
+    static func * (lhs: AngleF, rhs: AngleF) -> AngleF {
         .init(radians: lhs.radians * rhs.radians)
     }
 
-    static func *= (lhs: inout Angle, rhs: Angle) {
+    static func *= (lhs: inout AngleF, rhs: AngleF) {
         lhs.radians *= rhs.radians
     }
 
-    static func / (lhs: Angle, rhs: Angle) -> Angle {
+    static func / (lhs: AngleF, rhs: AngleF) -> AngleF {
         .init(radians: lhs.radians / rhs.radians)
     }
 
-    static func /= (lhs: inout Angle, rhs: Angle) {
+    static func /= (lhs: inout AngleF, rhs: AngleF) {
         lhs.radians /= rhs.radians
     }
 }
 
-public extension Angle {
-    static func + (lhs: Angle, rhs: Float) -> Angle {
+public extension AngleF {
+    static func + (lhs: AngleF, rhs: Float) -> AngleF {
         .init(radians: lhs.radians + rhs)
     }
 
-    static func += (lhs: inout Angle, rhs: Float) {
+    static func += (lhs: inout AngleF, rhs: Float) {
         lhs.radians += rhs
     }
 
-    static func - (lhs: Angle, rhs: Float) -> Angle {
+    static func - (lhs: AngleF, rhs: Float) -> AngleF {
         .init(radians: lhs.radians - rhs)
     }
 
-    static func -= (lhs: inout Angle, rhs: Float) {
+    static func -= (lhs: inout AngleF, rhs: Float) {
         lhs.radians -= rhs
     }
 
-    static func * (lhs: Angle, rhs: Float) -> Angle {
+    static func * (lhs: AngleF, rhs: Float) -> AngleF {
         .init(radians: lhs.radians * rhs)
     }
 
-    static func *= (lhs: inout Angle, rhs: Float) {
+    static func *= (lhs: inout AngleF, rhs: Float) {
         lhs.radians *= rhs
     }
 
-    static func / (lhs: Angle, rhs: Float) -> Angle {
+    static func / (lhs: AngleF, rhs: Float) -> AngleF {
         .init(radians: lhs.radians / rhs)
     }
 
-    static func /= (lhs: inout Angle, rhs: Float) {
+    static func /= (lhs: inout AngleF, rhs: Float) {
         lhs.radians /= rhs
     }
 }

@@ -94,10 +94,10 @@ extension View {
 
 internal struct SlidersOverlayCameraController: ViewModifier {
     @State
-    var pitch: Angle = .zero
+    var pitch: AngleF = .zero
 
     @State
-    var yaw: Angle = .zero
+    var yaw: AngleF = .zero
 
     @Binding
     var rotation: simd_quatf
