@@ -18,10 +18,15 @@ namespace BlinnPhong {
     };
 
     float3 CalculateBlinnPhong(
-        float3 modelPosition, float3 cameraPosition, float3 normal,
+        float3 modelPosition,
+        float3 cameraPosition,
+        float3 normal,
         constant BlinnPhongLightingModelArgumentBuffer &lightingModel,
-        float shininess, float3 ambientColor, float3 diffuseColor,
-        float3 specularColor);
+        float shininess,
+        float3 ambientColor,
+        float3 diffuseColor,
+        float3 specularColor
+    );
 
     // ----------------------------------------------------------------------
 
@@ -41,32 +46,26 @@ namespace BlinnPhong {
 
     // MARK: Shaders
 
-    [[vertex]]
-    Fragment vertex_main(uint instance_id [[instance_id]],
-                         Vertex in [[stage_in]],
-                         constant Transforms *transforms [[buffer(1)]]) {
+    [[vertex]] Fragment vertex_main(
+        uint instance_id [[instance_id]], Vertex in [[stage_in]], constant Transforms *transforms [[buffer(1)]]
+    ) {
         Fragment out;
         const float4 position = float4(in.position, 1.0);
-        const float4 modelVertex =
-            transforms[instance_id].modelViewMatrix * position;
-        out.position =
-            transforms[instance_id].modelViewProjectionMatrix * position;
+        const float4 modelVertex = transforms[instance_id].modelViewMatrix * position;
+        out.position = transforms[instance_id].modelViewProjectionMatrix * position;
         out.worldPosition = float3(modelVertex) / modelVertex.w;
-        out.normal =
-            normalize(transforms[instance_id].modelNormalMatrix * in.normal);
+        out.normal = normalize(transforms[instance_id].modelNormalMatrix * in.normal);
         out.textureCoordinate = in.textureCoordinate;
         out.instance_id = instance_id;
         return out;
     }
 
-    [[fragment]]
-    float4
-    fragment_main(Fragment in [[stage_in]],
-                  constant BlinnPhongLightingModelArgumentBuffer &lightingModel
-                  [[buffer(1)]],
-                  constant BlinnPhongMaterialArgumentBuffer *material
-                  [[buffer(2)]],
-                  constant Transforms *transforms [[buffer(3)]]) {
+    [[fragment]] float4 fragment_main(
+        Fragment in [[stage_in]],
+        constant BlinnPhongLightingModelArgumentBuffer &lightingModel [[buffer(1)]],
+        constant BlinnPhongMaterialArgumentBuffer *material [[buffer(2)]],
+        constant Transforms *transforms [[buffer(3)]]
+    ) {
         uint instance_id = in.instance_id;
 
         float3 ambientColor;
@@ -74,9 +73,7 @@ namespace BlinnPhong {
             ambientColor = material[instance_id].ambientColor.xyz;
         } else {
             ambientColor = material[instance_id]
-                               .ambientTexture
-                               .sample(material[instance_id].ambientSampler,
-                                       in.textureCoordinate)
+                               .ambientTexture.sample(material[instance_id].ambientSampler, in.textureCoordinate)
                                .rgb;
         }
 
@@ -85,9 +82,7 @@ namespace BlinnPhong {
             diffuseColor = material[instance_id].diffuseColor.xyz;
         } else {
             diffuseColor = material[instance_id]
-                               .diffuseTexture
-                               .sample(material[instance_id].diffuseSampler,
-                                       in.textureCoordinate)
+                               .diffuseTexture.sample(material[instance_id].diffuseSampler, in.textureCoordinate)
                                .rgb;
         }
 
@@ -96,19 +91,16 @@ namespace BlinnPhong {
             specularColor = material[instance_id].specularColor.xyz;
         } else {
             specularColor = material[instance_id]
-                                .specularTexture
-                                .sample(material[instance_id].specularSampler,
-                                        in.textureCoordinate)
+                                .specularTexture.sample(material[instance_id].specularSampler, in.textureCoordinate)
                                 .rgb;
         }
 
-        auto cameraPosition =
-            transforms[instance_id].cameraMatrix.columns[3].xyz;
+        auto cameraPosition = transforms[instance_id].cameraMatrix.columns[3].xyz;
 
-        float3 color =
-            CalculateBlinnPhong(in.worldPosition, cameraPosition, in.normal,
-                                lightingModel, material[instance_id].shininess,
-                                ambientColor, diffuseColor, specularColor);
+        float3 color = CalculateBlinnPhong(
+            in.worldPosition, cameraPosition, in.normal, lightingModel, material[instance_id].shininess, ambientColor,
+            diffuseColor, specularColor
+        );
         return float4(color, 1.0);
     }
 
@@ -137,11 +129,15 @@ namespace BlinnPhong {
     /// - Returns: The final computed color at the surface point, incorporating
     /// ambient, diffuse, and specular lighting.
     float3 CalculateBlinnPhong(
-        const float3 modelPosition, const float3 cameraPosition,
+        const float3 modelPosition,
+        const float3 cameraPosition,
         const float3 normal,
         constant BlinnPhongLightingModelArgumentBuffer &lightingModel,
-        const float shininess, const float3 ambientColor,
-        const float3 diffuseColor, const float3 specularColor) {
+        const float shininess,
+        const float3 ambientColor,
+        const float3 diffuseColor,
+        const float3 specularColor
+    ) {
         const bool phongMode = false; // Use Blinn-Phong shading by default
         float3 accumulatedDiffuseColor = float3(0.0);
         float3 accumulatedSpecularColor = float3(0.0);
@@ -174,9 +170,7 @@ namespace BlinnPhong {
             // This is a standard quadratic falloff model: 1 / (a + b*d + c*d²).
             // The constants 0.09 and 0.032 are chosen to approximate realistic
             // light falloff. Higher values make light fall off more quickly.
-            const float attenuation =
-                1.0 / (1.0 + 0.09 * distanceSquared +
-                       0.032 * distanceSquared * distanceSquared);
+            const float attenuation = 1.0 / (1.0 + 0.09 * distanceSquared + 0.032 * distanceSquared * distanceSquared);
 
             float specular = 0.0;
 
@@ -189,8 +183,7 @@ namespace BlinnPhong {
                 // then compared to this halfway vector to determine the
                 // intensity of the specular highlight.
                 // https://en.wikipedia.org/wiki/Blinn–Phong_reflection_model
-                const float3 halfDirection =
-                    normalize(lightDirection + viewDirection);
+                const float3 halfDirection = normalize(lightDirection + viewDirection);
                 specular = pow(max(dot(halfDirection, normal), 0.0), shininess);
             } else {
                 // Phong Specular Reflection: This method explicitly calculates
@@ -199,30 +192,23 @@ namespace BlinnPhong {
                 // L) * N - L. The specular intensity is based on how well the
                 // reflected vector aligns with V.
                 // https://en.wikipedia.org/wiki/Phong_reflection_model
-                const float3 reflectionDirection =
-                    reflect(-lightDirection, normal);
-                specular =
-                    pow(max(dot(reflectionDirection, viewDirection), 0.0),
-                        shininess);
+                const float3 reflectionDirection = reflect(-lightDirection, normal);
+                specular = pow(max(dot(reflectionDirection, viewDirection), 0.0), shininess);
             }
 
             // Scale light intensity based on its color, power, and attenuation
             // factor
-            const float3 lightContribution =
-                light.lightColor * light.lightPower * attenuation;
+            const float3 lightContribution = light.lightColor * light.lightPower * attenuation;
 
             // Accumulate diffuse and specular contributions from this light
             // source
-            accumulatedDiffuseColor +=
-                diffuseColor * lambertian * lightContribution;
-            accumulatedSpecularColor +=
-                specularColor * specular * lightContribution;
+            accumulatedDiffuseColor += diffuseColor * lambertian * lightContribution;
+            accumulatedSpecularColor += specularColor * specular * lightContribution;
         }
 
         // Compute final color by combining ambient, diffuse, and specular
         // components.
-        return lightingModel.ambientLightColor * ambientColor +
-               accumulatedDiffuseColor + accumulatedSpecularColor;
+        return lightingModel.ambientLightColor * ambientColor + accumulatedDiffuseColor + accumulatedSpecularColor;
     }
 
 } // namespace BlinnPhong

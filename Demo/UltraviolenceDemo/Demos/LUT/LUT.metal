@@ -16,17 +16,17 @@ float3 linearToSrgb(float3 c) {
     //    0.0031308);
 }
 
-kernel void applyLUT(texture2d<float, access::read> inputTexture [[texture(0)]],
-                     texture2d<float, access::write> outputTexture
-                     [[texture(1)]],
-                     texture3d<float, access::sample> lutTexture [[texture(2)]],
-                     constant float &blend [[buffer(0)]],
-                     uint2 gid [[thread_position_in_grid]]) {
+kernel void applyLUT(
+    texture2d<float, access::read> inputTexture [[texture(0)]],
+    texture2d<float, access::write> outputTexture [[texture(1)]],
+    texture3d<float, access::sample> lutTexture [[texture(2)]],
+    constant float &blend [[buffer(0)]],
+    uint2 gid [[thread_position_in_grid]]
+) {
     if (gid.x >= inputTexture.get_width() || gid.y >= inputTexture.get_height())
         return;
 
-    constexpr sampler lutSampler(coord::normalized, address::clamp_to_edge,
-                                 filter::linear);
+    constexpr sampler lutSampler(coord::normalized, address::clamp_to_edge, filter::linear);
     float4 color = inputTexture.read(gid);
     //    color.rgb = srgbToLinear(color.rgb); // Ensure input is in linear
     //    space

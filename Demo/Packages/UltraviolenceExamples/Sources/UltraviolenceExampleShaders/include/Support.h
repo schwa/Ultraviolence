@@ -22,13 +22,11 @@ using namespace metal;
 // Copied from <CoreFoundation/CFAvailability.h>
 #define __UV_ENUM_ATTRIBUTES __attribute__((enum_extensibility(open)))
 #define __UV_ANON_ENUM(_type) enum __UV_ENUM_ATTRIBUTES : _type
-#define __UV_NAMED_ENUM(_type, _name)                                          \
-    enum __UV_ENUM_ATTRIBUTES _name : _type _name;                             \
+#define __UV_NAMED_ENUM(_type, _name)                                                                                  \
+    enum __UV_ENUM_ATTRIBUTES _name : _type _name;                                                                     \
     enum _name : _type
 #define __UV_ENUM_GET_MACRO(_1, _2, NAME, ...) NAME
-#define UV_ENUM(...)                                                           \
-    __UV_ENUM_GET_MACRO(__VA_ARGS__, __UV_NAMED_ENUM,                          \
-                        __UV_ANON_ENUM, )(__VA_ARGS__)
+#define UV_ENUM(...) __UV_ENUM_GET_MACRO(__VA_ARGS__, __UV_NAMED_ENUM, __UV_ANON_ENUM, )(__VA_ARGS__)
 
 // TODO: Rename?
 typedef UV_ENUM(int, ColorSource){
@@ -40,7 +38,8 @@ struct Texture2DSpecifierArgumentBuffer {
     ColorSource source;
     // TODO: use a union?
     simd_float4 color;
-    TEXTURE2D(float, access::sample) texture;
+    TEXTURE2D(float, access::sample)
+    texture;
     SAMPLER sampler;
 };
 
@@ -52,10 +51,11 @@ struct Transforms {
     simd_float4x4 projectionMatrix;
     simd_float4x4 modelViewMatrix;
     simd_float4x4 modelViewProjectionMatrix;
-    simd_float3x3
-        modelNormalMatrix; // TODO: Can just get this from the model matrix.
+    simd_float3x3 modelNormalMatrix; // TODO: Can just get this from the model matrix.
 };
 
 #if defined(__METAL_VERSION__)
-inline float square(float x) { return x * x; }
+inline float square(float x) {
+    return x * x;
+}
 #endif

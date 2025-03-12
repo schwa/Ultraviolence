@@ -20,13 +20,14 @@ namespace TextureBillboard {
         return out;
     }
 
-    [[fragment]] float4 fragment_main(VertexOut in [[stage_in]],
-                                      constant int &input [[buffer(0)]],
-                                      constant int &slice [[buffer(1)]],
+    [[fragment]] float4 fragment_main(
+        VertexOut in [[stage_in]],
+        constant int &input [[buffer(0)]],
+        constant int &slice [[buffer(1)]],
 
-                                      texture2d<float> texture2d [[texture(2)]],
-                                      texturecube<float> textureCube
-                                      [[texture(3)]]) {
+        texture2d<float> texture2d [[texture(2)]],
+        texturecube<float> textureCube [[texture(3)]]
+    ) {
         constexpr sampler s;
         if (input == 0) {
             return texture2d.sample(s, in.textureCoordinate);

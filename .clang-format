@@ -1,4 +1,20 @@
 ---
+#BasedOnStyle: LLVM
+AlignAfterOpenBracket: BlockIndent
+AlignTrailingComments: Always
+AllowShortBlocksOnASingleLine: Never
+AllowShortCaseExpressionOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: Never
+BinPackParameters: OnePerLine
+BreakAfterAttributes: Never
+ColumnLimit: 120
+FixNamespaceComments: true
 IndentWidth: 4
-SortIncludes: true
 NamespaceIndentation: All
+PointerAlignment: Right
+ReferenceAlignment: Right
+RemoveBracesLLVM: false
+SortIncludes: true
+WrapNamespaceBodyWithEmptyLines: Always
