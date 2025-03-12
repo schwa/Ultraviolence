@@ -48,31 +48,33 @@ internal struct Parameter {
 
     @MainActor
     func set(on encoder: MTLRenderCommandEncoder, reflection: Reflection) throws {
-        switch functionType {
-        case .vertex:
-            if let index = try reflection.binding(forType: .vertex, name: name) {
-                encoder.setValue(value, index: index, functionType: .vertex)
+        try encoder.withDebugGroup("MTLRenderCommandEncoder(\(encoder.label.quoted)): \(name.quoted) = \(value)") {
+            switch functionType {
+            case .vertex:
+                if let index = try reflection.binding(forType: .vertex, name: name) {
+                    encoder.setValue(value, index: index, functionType: .vertex)
+                }
+            case .fragment:
+                if let index = try reflection.binding(forType: .fragment, name: name) {
+                    encoder.setValue(value, index: index, functionType: .fragment)
+                }
+            case nil:
+                let vertexIndex = reflection.binding(forType: .vertex, name: name)
+                let fragmentIndex = reflection.binding(forType: .fragment, name: name)
+                switch (vertexIndex, fragmentIndex) {
+                case (.some(let vertexIndex), .some(let fragmentIndex)):
+                    preconditionFailure("Ambiguous parameter, found parameter named \(name) in both vertex (index: #\(vertexIndex)) and fragment (index: #\(fragmentIndex)) shaders.")
+                case (.some(let vertexIndex), .none):
+                    encoder.setValue(value, index: vertexIndex, functionType: .vertex)
+                case (.none, .some(let fragmentIndex)):
+                    encoder.setValue(value, index: fragmentIndex, functionType: .fragment)
+                case (.none, .none):
+                    logger?.info("Parameter \(name) not found in reflection \(reflection.debugDescription).")
+                    throw UltraviolenceError.missingBinding(name)
+                }
+            default:
+                fatalError("Invalid shader type \(functionType.debugDescription).")
             }
-        case .fragment:
-            if let index = try reflection.binding(forType: .fragment, name: name) {
-                encoder.setValue(value, index: index, functionType: .fragment)
-            }
-        case nil:
-            let vertexIndex = reflection.binding(forType: .vertex, name: name)
-            let fragmentIndex = reflection.binding(forType: .fragment, name: name)
-            switch (vertexIndex, fragmentIndex) {
-            case (.some(let vertexIndex), .some(let fragmentIndex)):
-                preconditionFailure("Ambiguous parameter, found parameter named \(name) in both vertex (index: #\(vertexIndex)) and fragment (index: #\(fragmentIndex)) shaders.")
-            case (.some(let vertexIndex), .none):
-                encoder.setValue(value, index: vertexIndex, functionType: .vertex)
-            case (.none, .some(let fragmentIndex)):
-                encoder.setValue(value, index: fragmentIndex, functionType: .fragment)
-            case (.none, .none):
-                logger?.info("Parameter \(name) not found in reflection \(reflection.debugDescription).")
-                throw UltraviolenceError.missingBinding(name)
-            }
-        default:
-            fatalError("Invalid shader type \(functionType.debugDescription).")
         }
     }
 
@@ -117,5 +119,22 @@ public extension Element {
     func parameter(_ name: String, value: some Any, functionType: MTLFunctionType? = nil) -> some Element {
         assert(isPOD(value), "Parameter value must be a POD type.")
         return ParameterElement(functionType: functionType, name: name, value: .value(value), content: self)
+    }
+}
+
+extension String {
+    var quoted: String {
+        "\"\(self)\""
+    }
+}
+
+extension Optional<String> {
+    var quoted: String {
+        switch self {
+        case .none:
+            return "nil"
+        case .some(let string):
+            return string.quoted
+        }
     }
 }

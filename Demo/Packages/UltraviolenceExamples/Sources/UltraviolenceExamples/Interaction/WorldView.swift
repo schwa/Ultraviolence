@@ -10,11 +10,11 @@ public struct WorldView<Content: View>: View {
     private var cameraController: CameraControllerModifier.CameraController = .arcball
 
     @State
-    private var cameraMatrix: simd_float4x4 = .identity
+    private var cameraMatrix: simd_float4x4
 
-    public init(projection: any ProjectionProtocol = PerspectiveProjection(),
-                @ViewBuilder content: @escaping (_ projection: any ProjectionProtocol, _ cameraMatrix: simd_float4x4) -> Content) {
+    public init(projection: any ProjectionProtocol = PerspectiveProjection(), camereMatrix: simd_float4x4 = .init(translation: [0, 0, 1]), @ViewBuilder content: @escaping (_ projection: any ProjectionProtocol, _ cameraMatrix: simd_float4x4) -> Content) {
         self.projection = projection
+        self.cameraMatrix = camereMatrix
         self.content = content
     }
 

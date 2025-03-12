@@ -23,6 +23,7 @@ public extension UVEnvironmentValues {
     @UVEntry var currentDrawable: CAMetalDrawable?
     @UVEntry var drawableSize: CGSize?
     @UVEntry var blitCommandEncoder: MTLBlitCommandEncoder?
+    @UVEntry var enableMetalLogging: Bool = false
 }
 
 public extension Element {

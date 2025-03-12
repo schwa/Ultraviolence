@@ -8,6 +8,23 @@ internal enum ParameterValue<T> {
     case value(T)
 }
 
+extension ParameterValue: CustomDebugStringConvertible {
+    var debugDescription: String {
+        switch self {
+        case .texture(let texture):
+            return "Texture"
+        case .samplerState(let samplerState):
+            return "SamplerState"
+        case .buffer(let buffer, let offset):
+            return "Buffer(\(buffer?.label), offset: \(offset)"
+        case .array(let array):
+            return "Array"
+        case .value(let value):
+            return "\(value)"
+        }
+    }
+}
+
 // TODO: #21 We really need to rethink type safety of ParameterValue. Make this a struct and keep internal enum - still need to worry about <T> though.
 // extension ParameterValue where T == () {
 //    static func texture(_ texture: MTLTexture) -> ParameterValue {
@@ -62,6 +79,7 @@ internal extension MTLComputeCommandEncoder {
 internal struct AnyParameterValue {
     var renderSetValue: (MTLRenderCommandEncoder, Int, MTLFunctionType) -> Void
     var computeSetValue: (MTLComputeCommandEncoder, Int) -> Void
+    var _debugDescription: () -> String
 
     init<T>(_ value: ParameterValue<T>) {
         self.renderSetValue = { encoder, index, functionType in
@@ -70,6 +88,18 @@ internal struct AnyParameterValue {
         self.computeSetValue = { encoder, index in
             encoder.setValue(value, index: index)
         }
+        self._debugDescription = {
+            if let value = value as? any CustomDebugStringConvertible {
+                return value.debugDescription
+            }
+            return "\(value)"
+        }
+    }
+}
+
+extension AnyParameterValue: CustomDebugStringConvertible {
+    var debugDescription: String {
+        _debugDescription()
     }
 }
 

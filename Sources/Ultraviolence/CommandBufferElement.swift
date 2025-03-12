@@ -3,6 +3,9 @@ import UltraviolenceSupport
 
 // TODO: #46 Rename. Remove element from name. "CommandBuffer" is _not_ a good name though.
 public struct CommandBufferElement <Content>: Element, BodylessContentElement where Content: Element {
+    @UVEnvironment(\.enableMetalLogging)
+    var enableMetalLogging
+
     var completion: MTLCommandQueueCompletion
     var content: Content
 
@@ -14,6 +17,11 @@ public struct CommandBufferElement <Content>: Element, BodylessContentElement wh
     func workloadEnter(_ node: Node) throws {
         let commandQueue = try node.environmentValues.commandQueue.orThrow(.missingEnvironment(\.commandQueue))
         let commandBufferDescriptor = MTLCommandBufferDescriptor()
+        // TODO: Users cannot modify the environment here. This is a problem.
+        //        if enableMetalLogging {
+        //            print("ENABLING LOGGING")
+        //            try commandBufferDescriptor.addDefaultLogging()
+        //        }
         // TODO: There isn't an opportunity to modify the descriptor here.
         let commandBuffer = try commandQueue._makeCommandBuffer(descriptor: commandBufferDescriptor)
         node.environmentValues.commandBuffer = commandBuffer
