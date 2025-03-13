@@ -15,10 +15,10 @@ public struct WorldView<Content: View>: View {
     var content: Content
 
     @State
-    private var cameraController: CameraControllerModifier.CameraController = .arcball
+    private var cameraMode: CameraMode = .free
 
     @State
-    private var cameraMode: CameraMode = .free
+    private var freeCameraController: CameraController = .turntable
 
     public init(projection: Binding<any ProjectionProtocol>, cameraMatrix: Binding<simd_float4x4>, targetMatrix: Binding<simd_float4x4?> = .constant(nil), content: @escaping () -> Content) {
         self._projection = projection
@@ -30,19 +30,25 @@ public struct WorldView<Content: View>: View {
     public var body: some View {
         VStack {
             content
-            //                .cameraController(cameraMatrix: $cameraMatrix)
+                .modifier(enabled: freeCameraController == .turntable, TurntableCameraController(constraint: TurntableControllerConstraint(target: .zero, radius: 1), transform: $cameraMatrix))
+            HStack {
+                Picker("Mode", selection: $cameraMode) {
+                    Text("Free").tag(CameraMode.free)
+                    ForEach(CameraAngle.allCases, id: \.self) { angle in
+                        Text("\(angle)").tag(CameraMode.fixed(angle))
+                    }
+                }
+                .pickerStyle(.menu)
+                .fixedSize()
 
-            Picker("Mode", selection: $cameraMode) {
-                Text("Free").tag(CameraMode.free)
-                Text("Top").tag(CameraMode.fixed(.top))
-                Text("Bottom").tag(CameraMode.fixed(.bottom))
-                Text("Left").tag(CameraMode.fixed(.left))
-                Text("Right").tag(CameraMode.fixed(.right))
-                Text("Front").tag(CameraMode.fixed(.front))
-                Text("Back").tag(CameraMode.fixed(.back))
+                Picker("Controller", selection: $freeCameraController) {
+                    ForEach(CameraController.allCases, id: \.self) { value in
+                        Text("\(value)").tag(value)
+                    }
+                }
+                .pickerStyle(.menu)
+                .fixedSize()
             }
-            .pickerStyle(.menu)
-            .fixedSize()
         }
         .onChange(of: cameraMode) {
             switch cameraMode {
@@ -55,12 +61,21 @@ public struct WorldView<Content: View>: View {
     }
 }
 
+public enum CameraController: Hashable, CaseIterable {
+    case turntable
+    case arcball
+    case flight
+    case walk
+    case hover
+    case pan
+}
+
 public enum CameraMode: Hashable {
     case free
     case fixed(CameraAngle)
 }
 
-public enum CameraAngle: Hashable {
+public enum CameraAngle: Hashable, CaseIterable {
     case top
     case bottom
     case left
@@ -84,6 +99,30 @@ extension CameraAngle {
             return look(at: [0, 0, 0], from: [0, 0, 1], up: [0, 1, 0])
         case .back:
             return look(at: [0, 0, 0], from: [0, 0, -1], up: [0, 1, 0])
+        }
+    }
+}
+
+extension View {
+
+    @ViewBuilder
+    func modifier(enabled: Bool, _ modifier: (some ViewModifier)) -> some View {
+        if enabled {
+            self.modifier(modifier)
+        }
+        else {
+            self
+        }
+    }
+
+
+    @ViewBuilder
+    func modifier(_ modifier: (some ViewModifier)?) -> some View {
+        if let modifier {
+            self.modifier(modifier)
+        }
+        else {
+            self
         }
     }
 }
