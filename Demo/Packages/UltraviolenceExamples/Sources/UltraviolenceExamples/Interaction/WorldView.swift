@@ -30,7 +30,7 @@ public struct WorldView<Content: View>: View {
     public var body: some View {
         VStack {
             content
-                .modifier(enabled: freeCameraController == .turntable, TurntableCameraController(constraint: TurntableControllerConstraint(target: .zero, radius: 1), transform: $cameraMatrix))
+                .modifier(enabled: freeCameraController == .turntable, TurntableCameraController(constraint: initialTurntableControllerConstraint, transform: $cameraMatrix))
             HStack {
                 Picker("Mode", selection: $cameraMode) {
                     Text("Free").tag(CameraMode.free)
@@ -58,6 +58,13 @@ public struct WorldView<Content: View>: View {
                 break
             }
         }
+    }
+
+    var initialTurntableControllerConstraint: TurntableControllerConstraint {
+        let target = targetMatrix?.translation ?? .zero
+        let camera = cameraMatrix.translation
+        let radius = length(target - camera)
+        return TurntableControllerConstraint(target: target, radius: radius)
     }
 }
 
@@ -104,7 +111,6 @@ extension CameraAngle {
 }
 
 extension View {
-
     @ViewBuilder
     func modifier(enabled: Bool, _ modifier: (some ViewModifier)) -> some View {
         if enabled {
@@ -114,7 +120,6 @@ extension View {
             self
         }
     }
-
 
     @ViewBuilder
     func modifier(_ modifier: (some ViewModifier)?) -> some View {

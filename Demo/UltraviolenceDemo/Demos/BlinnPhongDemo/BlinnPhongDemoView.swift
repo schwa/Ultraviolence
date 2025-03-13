@@ -26,11 +26,13 @@ struct BlinnPhongDemoView: View {
 
     let lightMarker = MTKMesh.sphere(extent: [0.1, 0.1, 0.1]).relabeled("light-marker-0")
 
-    var modelMatrix = simd_float4x4(translation: [0, 0, 0])
+    @State
+    private var projection: any ProjectionProtocol = PerspectiveProjection()
 
     @State
-    private var cameraMatrix = simd_float4x4(translation: [0, 2, 6])
-    var projection = PerspectiveProjection()
+    private var cameraMatrix: simd_float4x4 = .init(translation: [0, 2, 6])
+
+    var modelMatrix = simd_float4x4(translation: [0, 0, 0])
 
     init() {
         do {
@@ -54,55 +56,57 @@ struct BlinnPhongDemoView: View {
     }
 
     var body: some View {
-        TimelineView(.animation) { timeline in
-            RenderView {
-                let projectionMatrix = projection.projectionMatrix(for: drawableSize)
+        WorldView(projection: $projection, cameraMatrix: $cameraMatrix, targetMatrix: .constant(nil)) {
+            TimelineView(.animation) { timeline in
+                RenderView {
+                    let projectionMatrix = projection.projectionMatrix(for: drawableSize)
 
-                try RenderPass {
-                    try SkyboxRenderPipeline(projectionMatrix: projectionMatrix, cameraMatrix: cameraMatrix, texture: skyboxTexture)
+                    try RenderPass {
+                        try SkyboxRenderPipeline(projectionMatrix: projectionMatrix, cameraMatrix: cameraMatrix, texture: skyboxTexture)
 
-                    GridShader(projectionMatrix: projection.projectionMatrix(for: drawableSize), cameraMatrix: cameraMatrix)
+                        GridShader(projectionMatrix: projection.projectionMatrix(for: drawableSize), cameraMatrix: cameraMatrix)
 
-                    let transforms = Transforms(modelMatrix: .init(translation: lighting.lights[0].lightPosition), cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
-                    try FlatShader(textureSpecifier: .solidColor(SIMD4<Float>(lighting.lights[0].lightColor, 1))) {
-                        Draw { encoder in
-                            encoder.setVertexBuffers(of: lightMarker)
-                            encoder.draw(lightMarker)
-                        }
-                        .transforms(transforms)
-                    }
-                    .vertexDescriptor(MTLVertexDescriptor(MTKMesh.teapot().vertexDescriptor)) // TODO: Hack.
-                    .depthCompare(function: .less, enabled: true)
-
-                    try BlinnPhongShader {
-                        try ForEach(models) { model in
-                            try Draw { encoder in
-                                encoder.setVertexBuffers(of: model.mesh)
-                                encoder.draw(model.mesh)
+                        let transforms = Transforms(modelMatrix: .init(translation: lighting.lights[0].lightPosition), cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
+                        try FlatShader(textureSpecifier: .solidColor(SIMD4<Float>(lighting.lights[0].lightColor, 1))) {
+                            Draw { encoder in
+                                encoder.setVertexBuffers(of: lightMarker)
+                                encoder.draw(lightMarker)
                             }
-                            .blinnPhongMaterial(model.material)
-                            .transforms(.init(modelMatrix: model.modelMatrix, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix))
+                            .transforms(transforms)
                         }
-                        .blinnPhongLighting(lighting)
+                        .vertexDescriptor(MTLVertexDescriptor(MTKMesh.teapot().vertexDescriptor)) // TODO: Hack.
+                        .depthCompare(function: .less, enabled: true)
+
+                        try BlinnPhongShader {
+                            try ForEach(models) { model in
+                                try Draw { encoder in
+                                    encoder.setVertexBuffers(of: model.mesh)
+                                    encoder.draw(model.mesh)
+                                }
+                                .blinnPhongMaterial(model.material)
+                                .transforms(.init(modelMatrix: model.modelMatrix, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix))
+                            }
+                            .blinnPhongLighting(lighting)
+                        }
+                        .vertexDescriptor(MTLVertexDescriptor(MTKMesh.teapot().vertexDescriptor)) // TODO: Hack.
+                        .depthCompare(function: .less, enabled: true)
                     }
-                    .vertexDescriptor(MTLVertexDescriptor(MTKMesh.teapot().vertexDescriptor)) // TODO: Hack.
-                    .depthCompare(function: .less, enabled: true)
+                }
+                .metalDepthStencilPixelFormat(.depth32Float)
+                .onDrawableSizeChange { drawableSize = $0 }
+                .onChange(of: timeline.date) {
+                    let date = timeline.date.timeIntervalSinceReferenceDate
+                    let angle = LinearTimingFunction().value(time: date, period: 1, in: 0 ... 2 * .pi)
+                    lighting.lights[0].lightPosition = simd_quatf(angle: angle, axis: [0, 1, 0]).act([1, 5, 0])
+                    lighting.lights[0].lightColor = [
+                        ForwardAndReverseTimingFunction(SinusoidalTimingFunction()).value(time: date, period: 1.0, offset: 0.0, in: 0.5 ... 1.0),
+                        ForwardAndReverseTimingFunction(SinusoidalTimingFunction()).value(time: date, period: 1.2, offset: 0.2, in: 0.5 ... 1.0),
+                        ForwardAndReverseTimingFunction(SinusoidalTimingFunction()).value(time: date, period: 1.4, offset: 0.6, in: 0.5 ... 1.0)
+                    ]
                 }
             }
-            .metalDepthStencilPixelFormat(.depth32Float)
-            .onDrawableSizeChange { drawableSize = $0 }
-            .onChange(of: timeline.date) {
-                let date = timeline.date.timeIntervalSinceReferenceDate
-                let angle = LinearTimingFunction().value(time: date, period: 1, in: 0 ... 2 * .pi)
-                lighting.lights[0].lightPosition = simd_quatf(angle: angle, axis: [0, 1, 0]).act([1, 5, 0])
-                lighting.lights[0].lightColor = [
-                    ForwardAndReverseTimingFunction(SinusoidalTimingFunction()).value(time: date, period: 1.0, offset: 0.0, in: 0.5 ... 1.0),
-                    ForwardAndReverseTimingFunction(SinusoidalTimingFunction()).value(time: date, period: 1.2, offset: 0.2, in: 0.5 ... 1.0),
-                    ForwardAndReverseTimingFunction(SinusoidalTimingFunction()).value(time: date, period: 1.4, offset: 0.6, in: 0.5 ... 1.0)
-                ]
-            }
+            .modifier(RTSControllerModifier(cameraMatrix: $cameraMatrix))
         }
-        .modifier(RTSControllerModifier(cameraMatrix: $cameraMatrix))
     }
 }
 

@@ -1,7 +1,7 @@
-//import simd
-//import SwiftUI
+// import simd
+// import SwiftUI
 //
-//internal struct CameraControllerModifier: ViewModifier {
+// internal struct CameraControllerModifier: ViewModifier {
 //    enum CameraController: CaseIterable {
 //        case arcball
 //        case sliders
@@ -39,9 +39,9 @@
 //            }
 //        }
 //    }
-//}
+// }
 //
-//extension CameraControllerModifier.CameraController: CustomStringConvertible {
+// extension CameraControllerModifier.CameraController: CustomStringConvertible {
 //    var description: String {
 //        switch self {
 //        case .arcball:
@@ -50,9 +50,9 @@
 //            return "Sliders"
 //        }
 //    }
-//}
+// }
 //
-//extension CameraControllerModifier.CameraController {
+// extension CameraControllerModifier.CameraController {
 //    var keyboardShortcut: KeyboardShortcut? {
 //        switch self {
 //        case .arcball:
@@ -61,10 +61,10 @@
 //            return KeyboardShortcut(KeyEquivalent("2"), modifiers: .command)
 //        }
 //    }
-//}
+// }
 //
-//extension View {
+// extension View {
 //    func cameraController(cameraMatrix: Binding<simd_float4x4>) -> some View {
 //        modifier(CameraControllerModifier(cameraMatrix: cameraMatrix))
 //    }
-//}
+// }

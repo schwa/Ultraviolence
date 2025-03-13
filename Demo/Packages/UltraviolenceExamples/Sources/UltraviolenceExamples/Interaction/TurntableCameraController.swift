@@ -12,13 +12,12 @@ public struct TurntableCameraController: ViewModifier {
         self._constraint = State(initialValue: constraint)
         self._transform = transform
         // TODO: compute pitch yaw from transform
-
     }
 
     public func body(content: Content) -> some View {
         content
-            .draggableValue($constraint.pitch.degrees, axis: .vertical, range: constraint.pitchRange.degrees, scale: 0.1, behavior: .clamping)
-            .draggableValue($constraint.yaw.degrees, axis: .horizontal, range: constraint.yawRange.degrees, scale: 0.1, behavior: .wrapping)
+            .draggableValue($constraint.pitch.degrees, axis: .vertical, scale: 0.1, behavior: constraint.pitchBehavior)
+            .draggableValue($constraint.yaw.degrees, axis: .horizontal, scale: 0.1, behavior: constraint.yawBehavior)
             .onChange(of: constraint, initial: true) {
                 transform = constraint.transform
             }
@@ -30,15 +29,18 @@ public struct TurntableCameraController: ViewModifier {
 public struct TurntableControllerConstraint: Equatable {
     public var target: SIMD3<Float>
     public var radius: Float
+    // TODO: Pitch and yaw are NOT constraints and should be in the controller not here.
     public var pitch: Angle = .zero
     public var yaw: Angle = .zero
     public var towards: Bool = true
-    public var pitchRange: ClosedRange<Angle> = .degrees(-90) ... .degrees(90)
-    public var yawRange: ClosedRange<Angle> = .degrees(0) ... .degrees(360)
+    public var pitchBehavior: DraggableValueBehavior
+    public var yawBehavior: DraggableValueBehavior
 
-    public init(target: SIMD3<Float> = .zero, radius: Float) {
+    public init(target: SIMD3<Float> = .zero, radius: Float, pitchBehavior: DraggableValueBehavior = .clamping(-90 ... 90), yawBehavior: DraggableValueBehavior = .linear) {
         self.target = target
         self.radius = radius
+        self.pitchBehavior = pitchBehavior
+        self.yawBehavior = yawBehavior
     }
 
     public var transform: simd_float4x4 {
@@ -54,13 +56,11 @@ public struct TurntableControllerConstraint: Equatable {
     }
 }
 
-import simd
-
 extension simd_float4x4 {
     /// Computes the yaw (rotation about Y-axis) from the transformation matrix.
     /// Assumes no shear and uniform scaling.
     var yaw: Float {
-        return atan2(columns.0.z, columns.2.z)
+        atan2(columns.0.z, columns.2.z)
     }
 
     /// Computes the pitch (rotation about X-axis) from the transformation matrix.
