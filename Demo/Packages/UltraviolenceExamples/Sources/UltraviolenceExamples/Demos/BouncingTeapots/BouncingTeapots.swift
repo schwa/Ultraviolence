@@ -2,7 +2,6 @@ import MetalKit
 import simd
 import SwiftUI
 import Ultraviolence
-import UltraviolenceExamples
 import UltraviolenceSupport
 import UltraviolenceUI
 

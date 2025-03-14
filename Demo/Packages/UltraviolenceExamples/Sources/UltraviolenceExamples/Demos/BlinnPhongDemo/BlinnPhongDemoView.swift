@@ -3,11 +3,10 @@ import MetalKit
 import simd
 import SwiftUI
 import Ultraviolence
-import UltraviolenceExamples
 import UltraviolenceSupport
 import UltraviolenceUI
 
-struct BlinnPhongDemoView: View {
+public struct BlinnPhongDemoView: View {
     @State
     private var drawableSize: CGSize = .zero
 
@@ -34,7 +33,7 @@ struct BlinnPhongDemoView: View {
 
     var modelMatrix = simd_float4x4(translation: [0, 0, 0])
 
-    init() {
+    public init() {
         do {
             let device = MTLCreateSystemDefaultDevice()!
 
@@ -55,7 +54,7 @@ struct BlinnPhongDemoView: View {
         }
     }
 
-    var body: some View {
+    public var body: some View {
         WorldView(projection: $projection, cameraMatrix: $cameraMatrix, targetMatrix: .constant(nil)) {
             TimelineView(.animation) { timeline in
                 RenderView {

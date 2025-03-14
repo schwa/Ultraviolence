@@ -1,13 +1,15 @@
 #if canImport(AppKit)
 import SwiftUI
 import Ultraviolence
-import UltraviolenceExamples
 
-struct OffscreenDemoView: View {
+public struct OffscreenDemoView: View {
     @State
     private var result: Result<CGImage, Error>?
 
-    var body: some View {
+    public init() {
+    }
+
+    public var body: some View {
         ZStack {
             Color.black
             if case let .success(image) = result {

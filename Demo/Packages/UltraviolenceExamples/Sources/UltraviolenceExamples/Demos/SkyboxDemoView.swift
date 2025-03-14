@@ -1,13 +1,9 @@
 import MetalKit
 import SwiftUI
 import Ultraviolence
-import UltraviolenceExamples
-import UltraviolenceSupport
 import UltraviolenceUI
 
-typealias Angle = SwiftUI.Angle
-
-struct SkyboxDemoView: View {
+public struct SkyboxDemoView: View {
     @State
     private var texture: MTLTexture?
 
@@ -20,7 +16,10 @@ struct SkyboxDemoView: View {
     @State
     private var drawableSize: CGSize = .zero
 
-    var body: some View {
+    public init() {
+    }
+
+    public var body: some View {
         WorldView(projection: $projection, cameraMatrix: $cameraMatrix, targetMatrix: .constant(nil)) {
             RenderView {
                 try RenderPass {

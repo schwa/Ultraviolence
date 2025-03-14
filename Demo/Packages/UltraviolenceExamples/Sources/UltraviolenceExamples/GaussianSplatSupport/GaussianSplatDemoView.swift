@@ -138,3 +138,6 @@ public struct GaussianSplatView: View {
         sortManager.requestSort(parameters)
     }
 }
+
+extension GaussianSplatDemoView: DemoView {
+}

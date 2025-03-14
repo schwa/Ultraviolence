@@ -2,11 +2,10 @@ import MetalKit
 import simd
 import SwiftUI
 import Ultraviolence
-import UltraviolenceExamples
 import UltraviolenceSupport
 import UltraviolenceUI
 
-struct TriangleDemoView: View {
+public struct TriangleDemoView: View {
     let source = """
     #include <metal_stdlib>
     using namespace metal;
@@ -44,7 +43,10 @@ struct TriangleDemoView: View {
     @State
     private var kernelTime: Double = 0
 
-    var body: some View {
+    public init() {
+    }
+
+    public var body: some View {
         TimelineView(.animation()) { timeline in
             RenderView {
                 try RenderPass {

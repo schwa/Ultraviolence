@@ -1,11 +1,14 @@
 import SwiftUI
 import Ultraviolence
 
-struct ComputeDemoView: View {
+public struct ComputeDemoView: View {
     @State
     private var state: Result<Void, Error>?
 
-    var body: some View {
+    public init() {
+    }
+
+    public var body: some View {
         Text("\(String(describing: state))")
             .task {
                 let source = """

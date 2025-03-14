@@ -2,11 +2,10 @@ import MetalKit
 import simd
 import SwiftUI
 import Ultraviolence
-import UltraviolenceExamples
 import UltraviolenceSupport
 import UltraviolenceUI
 
-struct MixedDemoView: View {
+public struct MixedDemoView: View {
     @State
     private var angle: SwiftUI.Angle = .zero
 
@@ -16,7 +15,10 @@ struct MixedDemoView: View {
     @State
     private var color: SIMD3<Float> = [1, 0, 0]
 
-    var body: some View {
+    public init() {
+    }
+
+    public var body: some View {
         let modelMatrix = simd_float4x4(yRotation: .init(radians: Float(angle.radians)))
         TimelineView(.animation) { timeline in
             RenderView {

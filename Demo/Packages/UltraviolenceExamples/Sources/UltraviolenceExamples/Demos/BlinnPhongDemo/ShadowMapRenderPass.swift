@@ -1,7 +1,6 @@
 import Metal
 import simd
 import Ultraviolence
-import UltraviolenceExamples
 import UltraviolenceSupport
 
 struct ShadowMapRenderPass <Content>: Element where Content: Element {

@@ -1,10 +1,6 @@
 import SwiftUI
 import UltraviolenceExamples
 
-protocol DemoView: View {
-    @MainActor init()
-}
-
 struct ContentView: View {
     @State
     private var page: Page?
@@ -70,7 +66,4 @@ struct Page: Hashable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
-}
-
-extension GaussianSplatDemoView: DemoView {
 }

@@ -5,7 +5,7 @@ import SwiftUI
 import Ultraviolence
 import UltraviolenceUI
 
-struct MetalFXDemoView: View {
+public struct MetalFXDemoView: View {
     let sourceTexture: MTLTexture
 
     @State
@@ -16,7 +16,7 @@ struct MetalFXDemoView: View {
 
     let imageName = "4.2.03" // Mandrill https://sipi.usc.edu/database/database.php?volume=misc&image=10#top
 
-    init() {
+    public init() {
         let device = MTLCreateSystemDefaultDevice().orFatalError()
         let textureLoader = MTKTextureLoader(device: device)
         sourceTexture = try! textureLoader.newTexture(name: "4.2.03", scaleFactor: 1, bundle: .main, options: [
@@ -26,7 +26,7 @@ struct MetalFXDemoView: View {
         ])
     }
 
-    var body: some View {
+    public var body: some View {
         VStack {
             HStack {
                 Image(imageName)

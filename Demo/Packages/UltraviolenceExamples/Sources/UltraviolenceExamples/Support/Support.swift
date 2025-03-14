@@ -335,6 +335,7 @@ struct URLPicker <Label>: View where Label: View {
     }
 
     var body: some View {
+        #if os(macOS)
         MenuButton(label: label) {
             ForEach(urls, id: \.self) { url in
                 Button(url.lastPathComponent) {
@@ -342,13 +343,14 @@ struct URLPicker <Label>: View where Label: View {
                 }
             }
         }
+        #endif
     }
 }
 
 extension URLPicker {
     init(label: () -> Label, rootURL: URL, utiTypes: [UTType], action: @escaping (URL) -> Void) {
         let urls = (FileManager().enumerator(at: rootURL, includingPropertiesForKeys: [.contentTypeKey])?
-                        .compactMap { $0 as? URL } ?? [])
+            .compactMap { $0 as? URL } ?? [])
             .filter { url in
                 guard let contentType = try? url.resourceValues(forKeys: [.contentTypeKey]).contentType else {
                     return false

@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
     name: "UltraviolenceExamples",
     platforms: [
-        .iOS(.v18),
+        .iOS("18.2"),
         .macOS("15.2")
     ],
     products: [
@@ -51,7 +51,7 @@ let package = Package(
             ]
         ),
 
-            .target(
+        .target(
             name: "GaussianSplatShaders",
             exclude: [
             ],
@@ -64,5 +64,6 @@ let package = Package(
             name: "UltraviolenceExamplesTests",
             dependencies: ["UltraviolenceExamples"]
         )
-    ]
+    ],
+    swiftLanguageModes: [.v6]
 )

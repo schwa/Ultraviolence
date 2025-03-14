@@ -7,7 +7,7 @@ import UltraviolenceUI
 
 /// A demo that shows transform images using LUTs.
 /// I got a bit carried away here and it supports LUTs stored as 512x512 PNGs and .cube 3D LUTs: https://resolve.cafe/developers/luts/
-struct LUTDemoView: View {
+public struct LUTDemoView: View {
     let builtInLUTNames = [
         "Blue Bias.png",
         "65 Point Cube_1.0be85635ffbf1d6253042a9343dcc840542bf5d7ceafcf1e6f4ce96b3f0c66c4.cube",
@@ -39,7 +39,7 @@ struct LUTDemoView: View {
     @State
     private var lutURL: URL
 
-    init() {
+    public init() {
         do {
             let device = MTLCreateSystemDefaultDevice().orFatalError()
             let textureLoader = MTKTextureLoader(device: device)
@@ -64,7 +64,7 @@ struct LUTDemoView: View {
         }
     }
 
-    var body: some View {
+    public var body: some View {
         RenderView {
             try! Group {
                 try ComputePass {
