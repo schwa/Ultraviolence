@@ -1,4 +1,4 @@
-public struct _ConditionalContent<TrueContent, FalseContent>: Element where TrueContent: Element, FalseContent: Element {
+public struct _ConditionalContent<TrueContent, FalseContent>: Element, BodylessElement where TrueContent: Element, FalseContent: Element {
     let first: TrueContent?
     let second: FalseContent?
 

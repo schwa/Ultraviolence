@@ -22,9 +22,8 @@ public struct RTSControllerModifier: ViewModifier {
     public func body(content: Content) -> some View {
         TimelineView(.animation) { timeline in
             content
-                .onChange(of: timeline.date) { old, _ in
-                    let delta = timeline.date.timeIntervalSince(old)
-                    controller?.update(delta: delta)
+                .onChange(of: timeline.date) { _, _ in
+                    controller?.update()
                 }
         }
         #if os(macOS)
@@ -79,7 +78,7 @@ internal class RTSController {
         print("DEINIT)")
     }
 
-    func update(delta: TimeInterval) {
+    func update() {
         let movementState = input.getCurrentActions()
         if movementState.contains(.moveForwards) {
             position += simd_quatf(angle: Float(yaw.radians), axis: [0, 1, 0]).act([0, 0, -movementMaxSpeed])

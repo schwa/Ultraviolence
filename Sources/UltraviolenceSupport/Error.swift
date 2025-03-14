@@ -11,12 +11,6 @@ public indirect enum UltraviolenceError: Error, Equatable {
     case noCurrentGraph
 }
 
-extension UltraviolenceError {
-    static var resourceCreationFailure: Self {
-        resourceCreationFailure("Resource creation failure.")
-    }
-}
-
 public extension Optional {
     func orThrow(_ error: @autoclosure () -> UltraviolenceError) throws -> Wrapped {
         // swiftlint:disable:next self_binding

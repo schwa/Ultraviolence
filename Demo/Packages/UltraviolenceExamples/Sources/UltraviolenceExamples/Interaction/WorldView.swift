@@ -1,6 +1,5 @@
 import simd
 import SwiftUI
-import UltraviolenceSupport
 
 public struct WorldView<Content: View>: View {
     @Binding
@@ -114,16 +113,6 @@ extension View {
     @ViewBuilder
     func modifier(enabled: Bool, _ modifier: (some ViewModifier)) -> some View {
         if enabled {
-            self.modifier(modifier)
-        }
-        else {
-            self
-        }
-    }
-
-    @ViewBuilder
-    func modifier(_ modifier: (some ViewModifier)?) -> some View {
-        if let modifier {
             self.modifier(modifier)
         }
         else {

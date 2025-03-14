@@ -34,9 +34,6 @@ public struct LUTDemoView: View {
     private var outputTexture: MTLTexture
 
     @State
-    private var cubeTexture: MTLTexture?
-
-    @State
     private var lutURL: URL
 
     public init() {

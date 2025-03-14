@@ -8,7 +8,6 @@ internal class CPUSplatRadixSorter <Splat> where Splat: SortableSplatProtocol {
     private var device: MTLDevice
     private var temporaryIndexedDistances: [IndexedDistance]
     private var capacity: Int
-    private var logger: Logger?
 
     internal init(device: MTLDevice, capacity: Int) {
         self.device = device

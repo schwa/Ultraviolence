@@ -8,9 +8,6 @@ public struct BlinnPhongShader<Content>: Element where Content: Element {
 
     var content: Content
 
-    @UVEnvironment(\.device)
-    var device
-
     public init(@ElementBuilder content: () throws -> Content) throws {
         let device = MTLCreateSystemDefaultDevice().orFatalError()
         assert(device.argumentBuffersSupport == .tier2)

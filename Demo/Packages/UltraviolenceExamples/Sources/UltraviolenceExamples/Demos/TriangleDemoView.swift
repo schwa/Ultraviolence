@@ -2,7 +2,6 @@ import MetalKit
 import simd
 import SwiftUI
 import Ultraviolence
-import UltraviolenceSupport
 import UltraviolenceUI
 
 public struct TriangleDemoView: View {

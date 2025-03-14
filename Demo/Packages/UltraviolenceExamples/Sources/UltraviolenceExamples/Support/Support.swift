@@ -285,7 +285,7 @@ public extension FloatingPoint {
     }
 }
 
-extension ClosedRange where Bound == Angle {
+public extension ClosedRange where Bound == Angle {
     var degrees: ClosedRange<Double> {
         lowerBound.degrees ... upperBound.degrees
     }
@@ -308,12 +308,6 @@ struct PopoverButton <Label, Content>: View where Label: View, Content: View {
         .popover(isPresented: $isPopoverPresented) {
             content()
         }
-    }
-}
-
-extension PopoverButton where Label == Text {
-    init(_ titleKey: LocalizedStringKey, @ViewBuilder content: @escaping () -> Content) {
-        self.init(label: { Text(titleKey) }, content: content)
     }
 }
 

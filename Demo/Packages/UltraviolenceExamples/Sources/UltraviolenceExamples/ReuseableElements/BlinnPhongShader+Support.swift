@@ -16,13 +16,6 @@ public struct BlinnPhongMaterial {
             }
             return nil
         }
-
-        var sampler: MTLSamplerState? {
-            if case let .texture(_, sampler) = self {
-                return sampler
-            }
-            return nil
-        }
     }
     public var ambient: ColorSource
     public var diffuse: ColorSource

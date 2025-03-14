@@ -67,7 +67,7 @@ public extension simd_float4x4 {
     static let identity = simd_float4x4(diagonal: [1, 1, 1, 1])
 }
 
-extension SIMD3 {
+public extension SIMD3 {
     var xy: SIMD2<Scalar> {
         get {
             .init(x, y)

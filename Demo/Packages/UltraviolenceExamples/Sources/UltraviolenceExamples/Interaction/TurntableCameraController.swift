@@ -56,7 +56,7 @@ public struct TurntableControllerConstraint: Equatable {
     }
 }
 
-extension simd_float4x4 {
+public extension simd_float4x4 {
     /// Computes the yaw (rotation about Y-axis) from the transformation matrix.
     /// Assumes no shear and uniform scaling.
     var yaw: Float {

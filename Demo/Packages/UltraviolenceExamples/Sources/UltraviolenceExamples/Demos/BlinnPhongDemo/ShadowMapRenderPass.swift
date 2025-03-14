@@ -1,7 +1,6 @@
 import Metal
 import simd
 import Ultraviolence
-import UltraviolenceSupport
 
 struct ShadowMapRenderPass <Content>: Element where Content: Element {
     var lightPosition: SIMD3<Float>

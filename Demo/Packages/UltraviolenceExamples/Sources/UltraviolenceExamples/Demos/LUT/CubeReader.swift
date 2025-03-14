@@ -76,7 +76,7 @@ extension CubeReader {
         outputDescriptor.depth = count
         outputDescriptor.usage = [.shaderRead, .shaderWrite]
         let outputTexture = try device._makeTexture(descriptor: outputDescriptor)
-        outputTexture.label = "Output Texture"
+        outputTexture.label = "Output Texture (\(title))"
         pixels.withUnsafeBytes { buffer in
             let region = MTLRegionMake3D(0, 0, 0, outputTexture.width, outputTexture.height, outputTexture.depth)
             let bytesPerRow = outputTexture.width * MemoryLayout<SIMD4<Float>>.size

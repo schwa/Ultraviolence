@@ -46,7 +46,6 @@ public struct RenderView <Content>: View where Content: Element {
 
 internal struct RenderViewHelper <Content>: View where Content: Element {
     var device: MTLDevice
-    var commandQueue: MTLCommandQueue
     var content: () throws -> Content
 
     @Environment(\.self)
@@ -61,7 +60,6 @@ internal struct RenderViewHelper <Content>: View where Content: Element {
     init(device: MTLDevice, commandQueue: MTLCommandQueue, @ElementBuilder content: @escaping () throws -> Content) {
         do {
             self.device = device
-            self.commandQueue = commandQueue
             self.viewModel = try RenderViewViewModel(device: device, commandQueue: commandQueue, content: content)
             self.content = content
         }

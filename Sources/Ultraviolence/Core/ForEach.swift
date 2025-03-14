@@ -14,12 +14,14 @@ public extension ForEach {
         self.ids = data.map(\.id)
         self.data = data
         self.content = content
+        assert(Set(self.ids).count == self.ids.count)
     }
 
     init(_ data: Data, id: KeyPath<Data.Element, ID>, @ElementBuilder content: @escaping (Data.Element) throws -> Content) where Data: Collection {
         self.ids = data.map { $0[keyPath: id] }
         self.data = data
         self.content = content
+        assert(Set(self.ids).count == self.ids.count)
     }
 }
 

@@ -1,7 +1,6 @@
 import CoreGraphics
 import simd
 import Ultraviolence
-import UltraviolenceSupport
 
 public struct LambertianShader <Content>: Element where Content: Element {
     var color: SIMD3<Float>

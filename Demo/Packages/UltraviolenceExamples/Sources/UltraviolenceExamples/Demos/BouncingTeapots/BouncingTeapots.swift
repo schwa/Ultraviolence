@@ -103,9 +103,6 @@ public struct BouncingTeapotsDemoView: View {
 // MARK: -
 
 struct FlyingTeapotsRenderPass: Element {
-    @UVEnvironment(\.device)
-    var device
-
     @UVEnvironment(\.drawableSize)
     var drawableSize
 

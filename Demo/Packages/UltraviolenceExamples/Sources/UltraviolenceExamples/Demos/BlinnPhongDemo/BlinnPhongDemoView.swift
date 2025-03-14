@@ -31,8 +31,6 @@ public struct BlinnPhongDemoView: View {
     @State
     private var cameraMatrix: simd_float4x4 = .init(translation: [0, 2, 6])
 
-    var modelMatrix = simd_float4x4(translation: [0, 0, 0])
-
     public init() {
         do {
             let device = MTLCreateSystemDefaultDevice()!
