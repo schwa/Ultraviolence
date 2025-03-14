@@ -17,12 +17,12 @@ public struct CommandBufferElement <Content>: Element, BodylessContentElement wh
     func workloadEnter(_ node: Node) throws {
         let commandQueue = try node.environmentValues.commandQueue.orThrow(.missingEnvironment(\.commandQueue))
         let commandBufferDescriptor = MTLCommandBufferDescriptor()
-        // TODO: Users cannot modify the environment here. This is a problem.
+        // TODO: #97 Users cannot modify the environment here. This is a problem.
         //        if enableMetalLogging {
         //            print("ENABLING LOGGING")
         //            try commandBufferDescriptor.addDefaultLogging()
         //        }
-        // TODO: There isn't an opportunity to modify the descriptor here.
+        // TODO: #98 There isn't an opportunity to modify the descriptor here.
         let commandBuffer = try commandQueue._makeCommandBuffer(descriptor: commandBufferDescriptor)
         node.environmentValues.commandBuffer = commandBuffer
     }

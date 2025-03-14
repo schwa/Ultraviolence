@@ -36,7 +36,7 @@ public struct PerspectiveProjection: ProjectionProtocol {
     }
 }
 
-// TODO: Too much duplication here. Deprecate what isn't used.
+// TODO: #130 Too much duplication here. Deprecate what isn't used.
 
 public extension simd_float4x4 {
     static func perspective(aspectRatio: Float, fovy: Float, near: Float, far: Float) -> Self {
@@ -55,7 +55,7 @@ public extension simd_float4x4 {
     }
 }
 
-// TODO: Make an extension on simd_float4x4 instead.
+// TODO: #131 Make an extension on simd_float4x4 instead.
 public func look(at target: SIMD3<Float>, from eye: SIMD3<Float>, up: SIMD3<Float>) -> simd_float4x4 {
     let forward: SIMD3<Float> = (target - eye).normalized
 

@@ -29,7 +29,7 @@ namespace LambertianShader {
     ) {
         VertexOut out;
         float4 objectSpace = float4(position, 1.0);
-        // TODO: we should, of course, pre-calculate the matrices and pass them
+        // TODO: #144 we should, of course, pre-calculate the matrices and pass them
         // in.
         out.position = projectionMatrix * viewMatrix * modelMatrix * objectSpace;
         out.worldPosition = (modelMatrix * objectSpace).xyz;

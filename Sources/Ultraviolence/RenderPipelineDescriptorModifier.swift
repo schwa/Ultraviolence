@@ -1,7 +1,7 @@
 import Metal
 
 // TODO: #30 Make into actual Modifier.
-// TODO: is this actually necessary? Elements just use an environment?
+// TODO: #99 is this actually necessary? Elements just use an environment?
 public struct RenderPipelineDescriptorModifier<Content>: Element where Content: Element {
     @UVEnvironment(\.renderPipelineDescriptor)
     var renderPipelineDescriptor

@@ -17,7 +17,7 @@ public extension View {
     }
 }
 
-// TODO: Make generic for any VectorArithmetic and add a transform closure for axis handling?
+// TODO: #134 Make generic for any VectorArithmetic and add a transform closure for axis handling?
 public struct DraggableValueViewModifier: ViewModifier {
     @Binding
     var value: Double
@@ -66,7 +66,7 @@ public struct DraggableValueViewModifier: ViewModifier {
                 lastEventTime = Date().timeIntervalSinceReferenceDate
             }
             .onEnded { gesture in
-                // TODO: DragGestures' predictions are mostly junk. Refactor to this to keep own prediction logic.
+                // TODO: #135 DragGestures' predictions are mostly junk. Refactor to this to keep own prediction logic.
                 defer {
                     initialValue = nil
                     lastEventTime = nil

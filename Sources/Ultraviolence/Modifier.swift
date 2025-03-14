@@ -44,7 +44,7 @@ public struct PassthroughModifier: ElementModifier {
     }
 }
 
-// TODO: Type system is not letting something as simple as this.
+// TODO: #96 Type system is not letting something as simple as this.
 // public struct AnyModifier: ElementModifier {
 //    private let modify: (Content) -> Body
 //

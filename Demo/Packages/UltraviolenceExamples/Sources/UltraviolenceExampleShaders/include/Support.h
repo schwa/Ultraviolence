@@ -28,7 +28,7 @@ using namespace metal;
 #define __UV_ENUM_GET_MACRO(_1, _2, NAME, ...) NAME
 #define UV_ENUM(...) __UV_ENUM_GET_MACRO(__VA_ARGS__, __UV_NAMED_ENUM, __UV_ANON_ENUM, )(__VA_ARGS__)
 
-// TODO: Rename?
+// TODO: #140 Rename?
 typedef UV_ENUM(int, ColorSource){
     kColorSourceColor = 0,
     kColorSourceTexture = 1,
@@ -36,7 +36,7 @@ typedef UV_ENUM(int, ColorSource){
 
 struct Texture2DSpecifierArgumentBuffer {
     ColorSource source;
-    // TODO: use a union?
+    // TODO: #141 use a union?
     simd_float4 color;
     TEXTURE2D(float, access::sample)
     texture;
@@ -51,7 +51,7 @@ struct Transforms {
     simd_float4x4 projectionMatrix;
     simd_float4x4 modelViewMatrix;
     simd_float4x4 modelViewProjectionMatrix;
-    simd_float3x3 modelNormalMatrix; // TODO: Can just get this from the model matrix.
+    simd_float3x3 modelNormalMatrix; // TODO: #142 Can just get this from the model matrix.
 };
 
 #if defined(__METAL_VERSION__)

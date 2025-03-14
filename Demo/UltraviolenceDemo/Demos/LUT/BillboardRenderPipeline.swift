@@ -2,7 +2,7 @@ import Metal
 import MetalKit
 import Ultraviolence
 
-// TODO: Add code to align the texture correctly in the output.
+// TODO: #138 Add code to align the texture correctly in the output.
 struct BillboardRenderPipeline: Element {
     let texture: MTLTexture
     let slice: Int

@@ -28,7 +28,7 @@ public struct ShaderLibrary {
         self.namespace = namespace
     }
 
-    // TODO: Deprecate this for the type safe equivalent
+    // TODO: #93 Deprecate this for the type safe equivalent
     internal func function(named name: String, type: MTLFunctionType? = nil, constantValues: MTLFunctionConstantValues? = nil) throws -> MTLFunction {
         let scopedNamed = namespace.map { "\($0)::\(name)" } ?? name
         let constantValues = constantValues ?? MTLFunctionConstantValues()
@@ -44,7 +44,7 @@ public struct ShaderLibrary {
         let constantValues = constantValues ?? MTLFunctionConstantValues()
         let function = try library.makeFunction(name: scopedNamed, constantValues: constantValues)
         switch type {
-        // TODO: Clean this up.
+        // TODO: #94 Clean this up.
         case is VertexShader.Type:
             guard function.functionType == .vertex else {
                 throw UltraviolenceError.resourceCreationFailure("Function \(scopedNamed) is not a vertex function.")

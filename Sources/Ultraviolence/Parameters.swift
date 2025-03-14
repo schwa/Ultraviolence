@@ -4,7 +4,7 @@ import simd
 import UltraviolenceSupport
 
 // TODO: #62 instead of being typed <T> we need an "AnyParameter" and this needs to take a dictionary of AnyParameters
-// TODO: Rename it to be a modifier?
+// TODO: #123 Rename it to be a modifier?
 internal struct ParameterElement<Content>: Element, BodylessElement, BodylessContentElement where Content: Element {
     var parameters: [String: Parameter]
     var content: Content
@@ -90,7 +90,7 @@ internal struct Parameter {
 // MARK: -
 
 public extension Element {
-    // TODO: Move functionType to front of the parameter list
+    // TODO: #124 Move functionType to front of the parameter list
     func parameter(_ name: String, _ value: SIMD4<Float>, functionType: MTLFunctionType? = nil) -> some Element {
         ParameterElement(functionType: functionType, name: name, value: .value(value), content: self)
     }

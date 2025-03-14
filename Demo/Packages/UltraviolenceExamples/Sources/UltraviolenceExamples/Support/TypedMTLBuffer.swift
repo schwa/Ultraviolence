@@ -1,6 +1,6 @@
 import Metal
 
-// TODO: Unit tests.
+// TODO: #128 Unit tests.
 public struct TypedMTLBuffer<Element> {
     private var base: MTLBuffer
     public private(set) var count: Int
@@ -118,6 +118,6 @@ public extension TypedMTLBuffer {
     }
 }
 
-// TODO: Bad extension. No cookie.
+// TODO: #129 Bad extension. No cookie.
 extension TypedMTLBuffer: @unchecked Sendable where Element: Sendable {
 }

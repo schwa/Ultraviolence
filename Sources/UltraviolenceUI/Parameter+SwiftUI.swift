@@ -1,7 +1,7 @@
 import SwiftUI
 import Ultraviolence
 
-// TODO: Also it could take a SwiftUI environment(). Also SRGB?
+// TODO: #110 Also it could take a SwiftUI environment(). Also SRGB?
 public extension Element {
     func parameter(_ name: String, color: Color, functionType: MTLFunctionType? = nil) -> some Element {
         let colorspace = CGColorSpaceCreateDeviceRGB()

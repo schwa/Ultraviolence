@@ -36,8 +36,8 @@ internal extension Node {
 }
 
 public extension Element {
-    // TODO: Not keen on this being optional.
-    // TODO: Need a compute variant of this.
+    // TODO: #104 Not keen on this being optional.
+    // TODO: #105 Need a compute variant of this.
     func useResource(_ resource: (any MTLResource)?, usage: MTLResourceUsage, stages: MTLRenderStages) -> some Element {
         onWorkloadEnter { environmentValues in
             if let resource {

@@ -35,7 +35,7 @@ struct BlinnPhongLight {
 typedef struct BlinnPhongLight BlinnPhongLight;
 
 struct BlinnPhongLightingModelArgumentBuffer {
-    float screenGamma; // TODO: Move
+    float screenGamma; // TODO: #143 Move
     int lightCount;
     simd_float3 ambientLightColor; // TODO
     BUFFER(constant, BlinnPhongLight *)

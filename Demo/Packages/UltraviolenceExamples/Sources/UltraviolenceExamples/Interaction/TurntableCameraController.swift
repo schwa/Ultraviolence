@@ -11,7 +11,7 @@ public struct TurntableCameraController: ViewModifier {
     public init(constraint: TurntableControllerConstraint, transform: Binding<simd_float4x4>) {
         self._constraint = State(initialValue: constraint)
         self._transform = transform
-        // TODO: compute pitch yaw from transform
+        // TODO: #132 compute pitch yaw from transform
     }
 
     public func body(content: Content) -> some View {
@@ -29,7 +29,7 @@ public struct TurntableCameraController: ViewModifier {
 public struct TurntableControllerConstraint: Equatable {
     public var target: SIMD3<Float>
     public var radius: Float
-    // TODO: Pitch and yaw are NOT constraints and should be in the controller not here.
+    // TODO: #133 Pitch and yaw are NOT constraints and should be in the controller not here.
     public var pitch: Angle = .zero
     public var yaw: Angle = .zero
     public var towards: Bool = true

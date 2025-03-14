@@ -67,6 +67,4 @@ create-todo-tickets:
         ' "$FILE_PATH" > "$TEMP_FILE" && mv "$TEMP_FILE" "$FILE_PATH"
 
         echo "Updated TODO in $FILE_PATH to reference issue #$ISSUE_NUMBER"
-
-        exit
     end

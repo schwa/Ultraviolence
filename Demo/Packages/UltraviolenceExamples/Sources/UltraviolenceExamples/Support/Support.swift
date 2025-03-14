@@ -132,7 +132,7 @@ extension Packed3: Equatable where Scalar: Equatable {
 }
 
 public extension Packed3 where Scalar: Numeric {
-    // TODO: Flesh this out.
+    // TODO: #137 Flesh this out.
     static func *(lhs: Self, rhs: Scalar) -> Self {
         Self(x: lhs.x * rhs, y: lhs.y * rhs, z: lhs.z * rhs)
     }

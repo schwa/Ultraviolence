@@ -23,7 +23,7 @@ public extension Element {
     func transforms(_ transforms: Transforms) -> some Element {
         self
             .parameter("transforms", value: transforms, functionType: .vertex)
-            // TODO: Fix same parameter name with both shaders.
+            // TODO: #127 Fix same parameter name with both shaders.
             .parameter("transforms", value: transforms, functionType: .fragment)
     }
 }
