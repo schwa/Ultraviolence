@@ -17,6 +17,9 @@ public struct GaussianSplatDemoView: View {
     @State
     private var debugMode: GaussianSplatRenderPipeline.DebugMode = .off
 
+    @State
+    private var isDropTargeted: Bool = false
+
     public init() {
         // This line intentionally left blank.
     }
@@ -28,6 +31,9 @@ public struct GaussianSplatDemoView: View {
                     process(splats: splats[0])
                     return true
                 }
+                isTargeted: { isTargeted in
+                    isDropTargeted = isTargeted
+                }
             if let splatCloud {
                 WorldView(projection: $projection, cameraMatrix: $cameraMatrix, targetMatrix: .constant(nil)) {
                     GaussianSplatView(splatCloud: splatCloud, projection: projection, cameraMatrix: cameraMatrix, debugMode: debugMode)
@@ -35,27 +41,37 @@ public struct GaussianSplatDemoView: View {
                 }
             }
         }
+        .border(Color.blue, width: isDropTargeted ? 5 : 0)
         .toolbar {
-            Picker("debug mode", selection: $debugMode) {
-                ForEach(GaussianSplatRenderPipeline.DebugMode.allCases, id: \.self) { mode in
-                    Text("\(mode)").tag(mode)
+            PopoverButton("Utilities", systemImage: "gear") {
+                Form {
+                    Picker("Debug Mode", selection: $debugMode) {
+                        ForEach(GaussianSplatRenderPipeline.DebugMode.allCases, id: \.self) { mode in
+                            Text("\(String(describing: mode).camelCaseToTitleCase)").tag(mode)
+                        }
+                    }
+                    URLPicker(title: "Splats", rootURL: Bundle.main.resourceURL!, utiTypes: [.antimatter15Splat, .json]) { url in
+                        Task {
+                            splatCloud = try! await load(url: url)
+                        }
+                    }
                 }
+                .padding()
+                .frame(width: 320)
+                .frame(minHeight: 240)
             }
         }
         .task {
             let url = Bundle.main.url(forResource: "centered_lastchance", withExtension: "splat")!
-            let data = try! Data(contentsOf: url)
-            let splats = data.withUnsafeBytes { buffer in
-                buffer.withMemoryRebound(to: Antimatter15Splat.self, Array.init)
-            }
-            process(splats: splats)
-
-            //            let url = Bundle.main.url(forResource: "6Splats", withExtension: "json")!
-            //            let data = try! Data(contentsOf: url)
-            //            let splats = try! JSONDecoder().decode([GenericSplat].self, from: data)
-            //                .map(Antimatter15Splat.init)
-            //            process(splats: splats)
+            splatCloud = try! await load(url: url)
         }
+    }
+
+    func load(url: URL) async throws -> SplatCloud<GPUSplat> {
+        let antimatterSplats = try await [Antimatter15Splat](importing: url, contentType: nil)
+        let gpuSplats = antimatterSplats.map(GPUSplat.init)
+        let device = MTLCreateSystemDefaultDevice()!
+        return try SplatCloud(device: device, splats: gpuSplats, cameraMatrix: cameraMatrix, modelMatrix: .identity)
     }
 
     func process(splats: [Antimatter15Splat]) {
@@ -120,15 +136,5 @@ public struct GaussianSplatView: View {
         }
         let parameters = SortParameters(camera: cameraMatrix, model: modelMatrix)
         sortManager.requestSort(parameters)
-    }
-}
-
-extension Array: @retroactive Transferable where Element == Antimatter15Splat {
-    public static var transferRepresentation: some TransferRepresentation {
-        DataRepresentation(importedContentType: .antimatter15Splat) { data in
-            data.withUnsafeBytes { buffer in
-                buffer.withMemoryRebound(to: Antimatter15Splat.self, Array.init)
-            }
-        }
     }
 }

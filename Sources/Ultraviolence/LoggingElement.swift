@@ -8,7 +8,7 @@ public struct LoggingElement: Element, BodylessElement {
     }
 
     func setupEnter(_ node: Node) throws {
-        logger!.log("setupEnter")
+        logger?.log("setupEnter")
     }
 
     func setupExit(_ node: Node) throws {
