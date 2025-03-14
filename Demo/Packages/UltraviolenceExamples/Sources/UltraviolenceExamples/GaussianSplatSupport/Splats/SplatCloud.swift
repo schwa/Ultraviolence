@@ -4,8 +4,8 @@ import Metal
 internal import os
 import simd
 
-// TODO: @unchecked Sendable
-public final class SplatCloud <Splat>: Equatable, @unchecked Sendable where Splat: SplatProtocol {
+// TODO: #146 Dangerous `@unchecked Sendable` usage in SplatCloud.
+public final class SplatCloud <Splat>: Equatable, @unchecked Sendable where Splat: SortableSplatProtocol {
     public private(set) var splats: TypedMTLBuffer<Splat>
     internal var indexedDistances: SplatIndices
     public var label: String?

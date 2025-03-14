@@ -3,7 +3,7 @@ import Metal
 // TODO: #128 Unit tests.
 public struct TypedMTLBuffer<Element> {
     private var base: MTLBuffer
-    public var count: Int // TODO: Dangerous makign this settable.
+    public private(set) var count: Int
     public var capacity: Int {
         base.length / elementSize
     }

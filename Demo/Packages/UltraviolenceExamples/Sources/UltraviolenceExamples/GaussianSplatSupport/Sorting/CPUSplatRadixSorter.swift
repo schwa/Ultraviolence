@@ -4,7 +4,7 @@ import GaussianSplatShaders
 internal import os
 import simd
 
-internal class CPUSplatRadixSorter <Splat> where Splat: SplatProtocol {
+internal class CPUSplatRadixSorter <Splat> where Splat: SortableSplatProtocol {
     private var device: MTLDevice
     private var temporaryIndexedDistances: [IndexedDistance]
     private var capacity: Int
@@ -37,7 +37,7 @@ extension Date {
 // MARK: -
 
 // swiftlint:disable:next function_parameter_count
-private func cpuRadixSort<Splat>(splats: TypedMTLBuffer<Splat>, indexedDistances: inout TypedMTLBuffer<IndexedDistance>, temporaryIndexedDistances: inout [IndexedDistance], camera: simd_float4x4, model: simd_float4x4, reversed: Bool) where Splat: SplatProtocol {
+private func cpuRadixSort<Splat>(splats: TypedMTLBuffer<Splat>, indexedDistances: inout TypedMTLBuffer<IndexedDistance>, temporaryIndexedDistances: inout [IndexedDistance], camera: simd_float4x4, model: simd_float4x4, reversed: Bool) where Splat: SortableSplatProtocol {
     guard !splats.isEmpty else {
         return
     }
@@ -63,8 +63,6 @@ private func cpuRadixSort<Splat>(splats: TypedMTLBuffer<Splat>, indexedDistances
             RadixSortCPU<IndexedDistance>().radixSort(input: indexedDistances, temp: temporaryIndexedDistances)
         }
     }
-    // TODO: SPLATS
-    indexedDistances.count = splats.count
 }
 
 // MARK: -

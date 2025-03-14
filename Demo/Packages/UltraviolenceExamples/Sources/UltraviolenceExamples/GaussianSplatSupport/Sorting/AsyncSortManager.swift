@@ -4,7 +4,7 @@ import GaussianSplatShaders
 internal import os
 import simd
 
-internal actor AsyncSortManager <Splat> where Splat: SplatProtocol {
+internal actor AsyncSortManager <Splat> where Splat: SortableSplatProtocol {
     private var splatCloud: SplatCloud<Splat>
     private var _sortRequestChannel: AsyncChannel<SortParameters> = .init()
     private var _sortedIndicesChannel: AsyncChannel<SplatIndices> = .init()
@@ -55,16 +55,5 @@ internal actor AsyncSortManager <Splat> where Splat: SplatProtocol {
             }
             await self._sortedIndicesChannel.send(.init(parameters: parameters, indices: currentIndexedDistances))
         }
-    }
-}
-
-// MARK: -
-
-// TODO: This really doesn't belong in AsyncSortManager considering it's NOT async.
-internal extension AsyncSortManager {
-    static func sort(device: MTLDevice, splats: TypedMTLBuffer<Splat>, camera: simd_float4x4, model: simd_float4x4, reversed: Bool) throws -> SplatIndices {
-        let sorter = CPUSplatRadixSorter<Splat>(device: device, capacity: splats.count)
-        let indices = try sorter.sort(splats: splats, camera: camera, model: model, reversed: reversed)
-        return .init(parameters: .init(camera: camera, model: model, reversed: reversed), indices: indices)
     }
 }

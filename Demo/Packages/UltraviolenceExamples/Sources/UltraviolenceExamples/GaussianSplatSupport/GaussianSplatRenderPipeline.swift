@@ -34,13 +34,13 @@ public struct GaussianSplatRenderPipeline: Element {
         self.drawableSize = drawableSize
         self.debugMode = debugMode
 
-        // TODO: Fix bundle
         let shaderLibrary = try ShaderLibrary(bundle: Bundle.gaussianSplatShaders(), namespace: "GaussianSplatAntimatter15RenderShaders")
 
-        // TODO: Make purty.
+        // TODO: #147 Give MTLFunctionConstantValues a nice type safe API.
         let constantValues = MTLFunctionConstantValues()
         withUnsafePointer(to: debugMode.rawValue) { pointer in
-            constantValues.setConstantValue(pointer, type: .int, index: 2) // TODO: Hardcoded index
+            // TODO: #148 We've hard coded the index here. Introspect the shader to get the index.
+            constantValues.setConstantValue(pointer, type: .int, index: 2)
         }
         self.vertexShader = try shaderLibrary.function(named: "vertex_main", type: VertexShader.self, constantValues: constantValues)
         self.fragmentShader = try shaderLibrary.function(named: "fragment_main", type: FragmentShader.self, constantValues: constantValues)

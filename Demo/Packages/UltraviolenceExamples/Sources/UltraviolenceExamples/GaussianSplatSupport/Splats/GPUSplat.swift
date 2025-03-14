@@ -30,7 +30,7 @@ extension GPUSplat: @retroactive CustomDebugStringConvertible {
     }
 }
 
-extension GPUSplat: SplatProtocol {
+extension GPUSplat: SortableSplatProtocol {
     public var floatPosition: SIMD3<Float> {
         SIMD3<Float>(position)
     }
