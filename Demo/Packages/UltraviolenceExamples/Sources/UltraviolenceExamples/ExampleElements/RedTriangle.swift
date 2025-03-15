@@ -12,7 +12,7 @@ public struct RedTriangle: Element {
 
     public var body: some Element {
         get throws {
-            let library = try ShaderLibrary(bundle: .module, namespace: "RedTriangle")
+            let library = try ShaderLibrary(bundle: .ultraviolenceExampleShaders(), namespace: "RedTriangle")
             let vertexShader: VertexShader = try library.vertex_main
             let fragmentShader: FragmentShader = try library.fragment_main
 

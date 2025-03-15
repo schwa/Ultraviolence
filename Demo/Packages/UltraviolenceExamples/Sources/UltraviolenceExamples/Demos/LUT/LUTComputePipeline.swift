@@ -23,7 +23,7 @@ struct LUTComputePipeline: Element {
         self.lutTexture = lutTexture
         self.blend = blend
         self.outputTexture = outputTexture
-        kernel = try Ultraviolence.ShaderLibrary(bundle: .main).applyLUT
+        kernel = try Ultraviolence.ShaderLibrary(bundle: .ultraviolenceExampleShaders()).applyLUT
     }
 
     var body: some Element {

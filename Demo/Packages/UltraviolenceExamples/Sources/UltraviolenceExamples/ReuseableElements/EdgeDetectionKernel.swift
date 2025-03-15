@@ -7,7 +7,7 @@ public struct EdgeDetectionKernel: Element {
     var colorTexture: MTLTexture
 
     public init(depthTexture: MTLTexture, colorTexture: MTLTexture) throws {
-        kernel = try ShaderLibrary(bundle: .module).EdgeDetectionKernel
+        kernel = try ShaderLibrary(bundle: .ultraviolenceExampleShaders()).EdgeDetectionKernel
         self.depthTexture = depthTexture
         self.colorTexture = colorTexture
     }

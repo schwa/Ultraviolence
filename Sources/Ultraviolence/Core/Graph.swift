@@ -15,12 +15,16 @@ public class Graph {
     @MainActor
     public func updateContent<Content>(content: Content) throws where Content: Element {
         // TODO: #25 We need to somehow detect if the content has changed.
+        let saved = Self.current
         Self.current = self
+        defer {
+            Self.current = saved
+        }
         try content.expandNode(root, context: .init())
-        Self.current = nil
     }
 
     @MainActor
+    // TODO: #149 `rebuildIfNeeded` is no longer being called. Which is worrying.
     internal func rebuildIfNeeded() throws {
         let saved = Self.current
         Self.current = self

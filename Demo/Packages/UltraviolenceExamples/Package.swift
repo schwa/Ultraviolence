@@ -25,19 +25,6 @@ let package = Package(
                 .product(name: "UltraviolenceUI", package: "Ultraviolence"),
                 "GaussianSplatShaders",
                 .product(name: "AsyncAlgorithms", package: "swift-async-algorithms")
-            ],
-            exclude: [
-                "ReuseableElements/EdgeDetectionKernel.metal",
-                "ReuseableElements/LambertianShader.metal",
-                "RedTriangle.metal",
-                "ReuseableElements/CheckerboardKernel.metal"
-            ],
-            resources: [
-                .copy("teapot.obj"),
-                .copy("HD-Testcard-original.jpg")
-            ],
-            plugins: [
-                .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
             ]
         ),
         .target(

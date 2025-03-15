@@ -77,9 +77,9 @@ public struct LUTDemoView: View {
         .overlay(alignment: .bottom) {
             VStack {
                 Picker("LUT", selection: $lutURL) {
-                    let resourceURL = Bundle.main.resourceURL!
+                    let resourceURL = Bundle.main.resourceURL.orFatalError()
                     ForEach(builtInLUTNames, id: \.self) { name in
-                        let url = resourceURL.appendingPathComponent(name)
+                        let url = resourceURL.appendingPathComponent(name).assertFileExists()
                         Text(name).tag(url)
                     }
                 }
@@ -122,4 +122,13 @@ public struct LUTDemoView: View {
 }
 
 extension LUTDemoView: DemoView {
+}
+
+extension URL {
+    func assertFileExists() -> URL {
+        guard FileManager.default.fileExists(atPath: path) else {
+            fatalError("File does not exist: \(path)")
+        }
+        return self
+    }
 }

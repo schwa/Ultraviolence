@@ -11,7 +11,7 @@ public struct CircleGridKernel: Element {
     private var foregroundColor: SIMD4<Float>
 
     public init(outputTexture: MTLTexture, spacing: SIMD2<Float>, radius: Float, foregroundColor: SIMD4<Float>) throws {
-        kernel = try ShaderLibrary(bundle: .module).CircleGridKernel_float4
+        kernel = try ShaderLibrary(bundle: .ultraviolenceExampleShaders()).CircleGridKernel_float4
         self.outputTexture = outputTexture
         self.spacing = spacing
         self.radius = radius

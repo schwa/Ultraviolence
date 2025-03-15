@@ -18,7 +18,7 @@ public struct LambertianShader <Content>: Element where Content: Element {
         self.cameraMatrix = cameraMatrix
         self.projectionMatrix = projectionMatrix
         self.lightDirection = lightDirection
-        let library = try ShaderLibrary(bundle: .module, namespace: "LambertianShader")
+        let library = try ShaderLibrary(bundle: .ultraviolenceExampleShaders(), namespace: "LambertianShader")
         self.vertexShader = try library.vertex_main
         self.fragmentShader = try library.fragment_main
         self.content = content()
@@ -56,7 +56,7 @@ public struct LambertianShaderInstanced <Content>: Element where Content: Elemen
         self.projectionMatrix = projectionMatrix
         self.lightDirection = lightDirection
 
-        let library = try ShaderLibrary(bundle: .module, namespace: "LambertianShader")
+        let library = try ShaderLibrary(bundle: .ultraviolenceExampleShaders(), namespace: "LambertianShader")
         self.vertexShader = try library.vertex_instanced
         self.fragmentShader = try library.fragment_main
         self.content = content()
