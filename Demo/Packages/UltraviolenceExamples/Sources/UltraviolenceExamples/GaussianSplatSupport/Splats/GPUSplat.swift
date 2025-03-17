@@ -9,6 +9,9 @@ import simd
 //     simd_half2 u2;        // 4
 //     simd_half2 u3;        // 4
 //     simd_uchar4 color;    // 4
+//
+// Metal debugger: float3 position, uint32_t padding, half2 u1, half2 u2, half2 u3, uchar4 Color
+//
 // };
 
 extension GPUSplat: @unchecked @retroactive Sendable {
