@@ -5,15 +5,15 @@ import Ultraviolence
 import UltraviolenceSupport
 
 public struct MixedExample: Element {
-    var modelMatrix: simd_float4x4
+    var transforms: Transforms
     var color: SIMD3<Float>
     var lightDirection: SIMD3<Float>
 
     @UVEnvironment(\.renderPassDescriptor)
     var renderPassDescriptor
 
-    public init(modelMatrix: simd_float4x4, color: SIMD3<Float>, lightDirection: SIMD3<Float>) {
-        self.modelMatrix = modelMatrix
+    public init(transforms: Transforms, color: SIMD3<Float>, lightDirection: SIMD3<Float>) {
+        self.transforms = transforms
         self.color = color
         self.lightDirection = lightDirection
     }
@@ -25,7 +25,7 @@ public struct MixedExample: Element {
             let depthTexture = try renderPassDescriptor.depthAttachment.texture.orThrow(.undefined)
 
             try RenderPass {
-                try TeapotDemo(modelMatrix: modelMatrix, color: color, lightDirection: lightDirection)
+                try TeapotDemo(transforms: transforms, color: color, lightDirection: lightDirection)
                     // TODO: #136 Next two lines are only needed for the offscreen examples?
                     .colorAttachment0(colorTexture, index: 0)
                     .depthAttachment(depthTexture)
@@ -37,15 +37,5 @@ public struct MixedExample: Element {
                 try EdgeDetectionKernel(depthTexture: depthTexture, colorTexture: colorTexture)
             }
         }
-    }
-}
-
-extension MixedExample: Example {
-    public static func runExample() throws -> ExampleResult {
-        let size = CGSize(width: 1_600, height: 1_200)
-        let offscreenRenderer = try OffscreenRenderer(size: size)
-        let element = MixedExample(modelMatrix: .identity, color: [1, 0, 0], lightDirection: [1, 1, 1])
-        let texture = try offscreenRenderer.render(element).texture
-        return .texture(texture)
     }
 }

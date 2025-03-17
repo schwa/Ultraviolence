@@ -19,7 +19,7 @@ public struct WorldView<Content: View>: View {
     @State
     private var freeCameraController: CameraController = .turntable
 
-    public init(projection: Binding<any ProjectionProtocol>, cameraMatrix: Binding<simd_float4x4>, targetMatrix: Binding<simd_float4x4?> = .constant(nil), content: @escaping () -> Content) {
+    public init(projection: Binding<any ProjectionProtocol>, cameraMatrix: Binding<simd_float4x4>, targetMatrix: Binding<simd_float4x4?> = .constant(nil), @ViewBuilder content: @escaping () -> Content) {
         self._projection = projection
         self._cameraMatrix = cameraMatrix
         self._targetMatrix = targetMatrix

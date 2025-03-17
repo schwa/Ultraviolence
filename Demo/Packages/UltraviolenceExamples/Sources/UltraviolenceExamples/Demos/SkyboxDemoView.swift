@@ -11,7 +11,7 @@ public struct SkyboxDemoView: View {
     private var projection: any ProjectionProtocol = PerspectiveProjection()
 
     @State
-    private var cameraMatrix: simd_float4x4 = .identity
+    private var cameraMatrix: simd_float4x4 = .init(translation: [0, 0, 1])
 
     @State
     private var drawableSize: CGSize = .zero

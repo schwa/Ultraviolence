@@ -7,8 +7,6 @@ import UltraviolenceSupport
 import UltraviolenceUI
 
 public struct BlinnPhongDemoView: View {
-    @State
-    private var drawableSize: CGSize = .zero
 
     @State
     private var models: [Model] = [
@@ -30,6 +28,9 @@ public struct BlinnPhongDemoView: View {
 
     @State
     private var cameraMatrix: simd_float4x4 = .init(translation: [0, 2, 6])
+
+    @State
+    private var drawableSize: CGSize = .zero
 
     public init() {
         do {

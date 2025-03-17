@@ -3,20 +3,16 @@ import simd
 import Ultraviolence
 
 public struct LambertianShader <Content>: Element where Content: Element {
+    var transforms: Transforms
     var color: SIMD3<Float>
-    var modelMatrix: simd_float4x4
-    var cameraMatrix: simd_float4x4
-    var projectionMatrix: simd_float4x4
     var vertexShader: VertexShader
     var fragmentShader: FragmentShader
     var lightDirection: SIMD3<Float>
     var content: Content
 
-    public init(color: SIMD3<Float>, modelMatrix: simd_float4x4, cameraMatrix: simd_float4x4, projectionMatrix: simd_float4x4, lightDirection: SIMD3<Float>, @ElementBuilder content: () -> Content) throws {
+    public init(transforms: Transforms, color: SIMD3<Float>, lightDirection: SIMD3<Float>, @ElementBuilder content: () -> Content) throws {
+        self.transforms = transforms
         self.color = color
-        self.modelMatrix = modelMatrix
-        self.cameraMatrix = cameraMatrix
-        self.projectionMatrix = projectionMatrix
         self.lightDirection = lightDirection
         let library = try ShaderLibrary(bundle: .ultraviolenceExampleShaders(), namespace: "LambertianShader")
         self.vertexShader = try library.vertex_main
@@ -29,31 +25,29 @@ public struct LambertianShader <Content>: Element where Content: Element {
             try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                 content
                     .parameter("color", value: color)
-                    .parameter("projectionMatrix", value: projectionMatrix)
-                    .parameter("modelMatrix", value: modelMatrix)
-                    .parameter("viewMatrix", value: cameraMatrix.inverse)
+                    .parameter("projectionMatrix", value: transforms.projectionMatrix)
+                    .parameter("modelMatrix", value: transforms.modelMatrix)
+                    .parameter("viewMatrix", value: transforms.viewMatrix)
                     .parameter("lightDirection", value: lightDirection)
-                    .parameter("cameraPosition", value: cameraMatrix.translation)
+                    .parameter("cameraPosition", value: transforms.cameraMatrix.translation)
             }
         }
     }
 }
 
 public struct LambertianShaderInstanced <Content>: Element where Content: Element {
+    var transforms: Transforms
     var colors: [SIMD3<Float>]
     var modelMatrices: [simd_float4x4]
-    var cameraMatrix: simd_float4x4
-    var projectionMatrix: simd_float4x4
     var vertexShader: VertexShader
     var fragmentShader: FragmentShader
     var lightDirection: SIMD3<Float>
     var content: Content
 
-    public init(colors: [SIMD3<Float>], modelMatrices: [simd_float4x4], cameraMatrix: simd_float4x4, projectionMatrix: simd_float4x4, lightDirection: SIMD3<Float>, @ElementBuilder content: () -> Content) throws {
+    public init(transforms: Transforms, colors: [SIMD3<Float>], modelMatrices: [simd_float4x4], lightDirection: SIMD3<Float>, @ElementBuilder content: () -> Content) throws {
+        self.transforms = transforms
         self.colors = colors
         self.modelMatrices = modelMatrices
-        self.cameraMatrix = cameraMatrix
-        self.projectionMatrix = projectionMatrix
         self.lightDirection = lightDirection
 
         let library = try ShaderLibrary(bundle: .ultraviolenceExampleShaders(), namespace: "LambertianShader")
@@ -67,11 +61,11 @@ public struct LambertianShaderInstanced <Content>: Element where Content: Elemen
             try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                 content
                     .parameter("colors", values: colors)
-                    .parameter("projectionMatrix", value: projectionMatrix)
+                    .parameter("projectionMatrix", value: transforms.projectionMatrix)
                     .parameter("modelMatrices", values: modelMatrices)
-                    .parameter("viewMatrix", value: cameraMatrix.inverse)
+                    .parameter("viewMatrix", value: transforms.viewMatrix)
                     .parameter("lightDirection", value: lightDirection)
-                    .parameter("cameraPosition", value: cameraMatrix.translation)
+                    .parameter("cameraPosition", value: transforms.cameraMatrix.translation)
             }
         }
     }
