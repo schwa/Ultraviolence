@@ -43,6 +43,7 @@ public struct TriangleDemoView: View {
     private var kernelTime: Double = 0
 
     public init() {
+        // This line intentionally left blank.
     }
 
     public var body: some View {

@@ -16,6 +16,7 @@ public struct GridShaderDemoView: View {
     private var cameraMatrix: simd_float4x4 = .init(translation: [0, 2, 4])
 
     public init() {
+        // This line intentionally left blank.
     }
 
     public var body: some View {

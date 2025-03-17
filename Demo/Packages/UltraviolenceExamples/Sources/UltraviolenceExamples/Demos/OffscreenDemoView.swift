@@ -7,6 +7,7 @@ public struct OffscreenDemoView: View {
     private var result: Result<CGImage, Error>?
 
     public init() {
+        // This line intentionally left blank.
     }
 
     public var body: some View {

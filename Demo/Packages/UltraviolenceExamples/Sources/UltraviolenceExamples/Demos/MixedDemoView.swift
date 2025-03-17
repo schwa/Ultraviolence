@@ -24,6 +24,7 @@ public struct MixedDemoView: View {
     private var drawableSize: CGSize = .zero
 
     public init() {
+        // This line intentionally left blank.
     }
 
     public var body: some View {

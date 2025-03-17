@@ -45,6 +45,7 @@ public struct StencilDemoView: View {
     }()
 
     public init() {
+        // This line intentionally left blank.
     }
 
     public var body: some View {
@@ -53,7 +54,7 @@ public struct StencilDemoView: View {
                 EnvironmentReader(keyPath: \.renderPassDescriptor) { renderPassDescriptor in
                     let stencilAttachmentTexture = renderPassDescriptor!.stencilAttachment.texture!
                     Blit { encoder in
-                        encoder.copy(from: texture!, sourceSlice: 0, sourceLevel: 0, sourceOrigin: .init(x: 0, y: 0, z: 0), sourceSize: .init(width: texture!.width, height: texture!.height, depth: 1), to: stencilAttachmentTexture, destinationSlice: 0, destinationLevel: 0, destinationOrigin: .init(x: 0, y: 0, z: 0))
+                        encoder.copy(from: try texture.orThrow(.resourceCreationFailure("texture")), sourceSlice: 0, sourceLevel: 0, sourceOrigin: .init(x: 0, y: 0, z: 0), sourceSize: .init(width: texture!.width, height: texture!.height, depth: 1), to: stencilAttachmentTexture, destinationSlice: 0, destinationLevel: 0, destinationOrigin: .init(x: 0, y: 0, z: 0))
                     }
                 }
             }

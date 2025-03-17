@@ -34,7 +34,6 @@ public struct TeapotDemo: Element {
 
     public var body: some Element {
         get throws {
-            let drawableSize = SIMD2<Float>(drawableSize.orFatalError())
             try LambertianShader(transforms: transforms, color: color, lightDirection: lightDirection) {
                 Draw { encoder in
                     encoder.setVertexBuffers(of: mesh)

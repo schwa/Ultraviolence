@@ -2,7 +2,6 @@ import Metal
 import Ultraviolence
 import UltraviolenceExampleShaders
 import UltraviolenceSupport
-import UltraviolenceExampleShaders
 
 public struct BlinnPhongShader<Content>: Element where Content: Element {
     var vertexShader: VertexShader
