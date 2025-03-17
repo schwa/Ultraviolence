@@ -7,7 +7,6 @@ import UltraviolenceSupport
 import UltraviolenceUI
 
 public struct BlinnPhongDemoView: View {
-
     @State
     private var models: [Model] = [
         .init(id: "teapot-1", mesh: MTKMesh.teapot().relabeled("teapot"), modelMatrix: .init(translation: [-2.5, 0, 0]), material: BlinnPhongMaterial(ambient: .color([0.5, 0.5, 0.5]), diffuse: .color([0.5, 0.5, 0.5]), specular: .color([0.5, 0.5, 0.5]), shininess: 1)),

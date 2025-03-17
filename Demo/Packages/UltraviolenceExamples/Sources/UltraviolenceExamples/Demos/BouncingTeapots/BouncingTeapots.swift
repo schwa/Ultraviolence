@@ -179,20 +179,20 @@ struct FlyingTeapotsRenderPass: Element {
                 .vertexDescriptor(MTLVertexDescriptor(mesh.vertexDescriptor))
             }
             .depthCompare(function: .less, enabled: true)
-#if canImport(MetalFX)
+            #if canImport(MetalFX)
             .renderPassDescriptorModifier { descriptor in
-                descriptor.colorAttachments[0].texture = offscreenTexture
-                descriptor.depthAttachment.texture = offscreenDepthTexture
+            descriptor.colorAttachments[0].texture = offscreenTexture
+            descriptor.depthAttachment.texture = offscreenDepthTexture
             }
-#endif
+            #endif
 
-#if canImport(MetalFX)
+            #if canImport(MetalFX)
             MetalFXSpatial(inputTexture: offscreenTexture, outputTexture: upscaledTexture)
             try RenderPass {
                 try BillboardRenderPipeline(texture: upscaledTexture)
             }
             .depthCompare(function: .always, enabled: false)
-#endif
+            #endif
         }
     }
 }
