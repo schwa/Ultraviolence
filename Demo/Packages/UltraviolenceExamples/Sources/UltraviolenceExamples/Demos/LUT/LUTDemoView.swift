@@ -38,7 +38,7 @@ public struct LUTDemoView: View {
 
     public init() {
         do {
-            let device = MTLCreateSystemDefaultDevice().orFatalError()
+            let device = _MTLCreateSystemDefaultDevice()
             let textureLoader = MTKTextureLoader(device: device)
             let inputTextureURL = Bundle.main.url(forResource: "DJSI3956", withExtension: "JPG").orFatalError()
             let sourceTexture = try textureLoader.newTexture(URL: inputTextureURL, options: [
@@ -51,7 +51,7 @@ public struct LUTDemoView: View {
             let lutTexture = try Self.make3DLUTTexture(from: lutTextureURL)
             let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm_srgb, width: sourceTexture.width, height: sourceTexture.height, mipmapped: false)
             descriptor.usage = [.shaderRead, .shaderWrite]
-            let outputTexture = device.makeTexture(descriptor: descriptor)!
+            let outputTexture = try device._makeTexture(descriptor: descriptor)
             self.sourceTexture = sourceTexture
             self.lutTexture = lutTexture
             self.outputTexture = outputTexture
@@ -63,12 +63,12 @@ public struct LUTDemoView: View {
 
     public var body: some View {
         RenderView {
-            try! Group {
+            try Group {
                 try ComputePass {
                     try LUTComputePipeline(inputTexture: sourceTexture, lutTexture: lutTexture, blend: blend, outputTexture: outputTexture)
                 }
-                try! RenderPass {
-                    try! BillboardRenderPipeline(texture: outputTexture)
+                try RenderPass {
+                    try BillboardRenderPipeline(texture: outputTexture)
                 }
             }
         }
@@ -107,13 +107,13 @@ public struct LUTDemoView: View {
             return try cube.toTexture()
 
         case "png":
-            let device = MTLCreateSystemDefaultDevice()!
+            let device = _MTLCreateSystemDefaultDevice()
             let textureLoader = MTKTextureLoader(device: device)
-            let lutTexture2D = try! textureLoader.newTexture(URL: url, options: [
+            let lutTexture2D = try textureLoader.newTexture(URL: url, options: [
                 .origin: MTKTextureLoader.Origin.topLeft.rawValue,
                 .SRGB: true
             ])
-            return try! create3DLUT(device: device, from: lutTexture2D)!
+            return try create3DLUT(device: device, from: lutTexture2D)!
 
         default:
             throw UltraviolenceError.undefined

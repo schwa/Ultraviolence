@@ -33,7 +33,7 @@ public struct BlinnPhongDemoView: View {
 
     public init() {
         do {
-            let device = MTLCreateSystemDefaultDevice()!
+            let device = _MTLCreateSystemDefaultDevice()
 
             let lights = [
                 BlinnPhongLight(lightPosition: [5, 5, 0], lightColor: [1, 0, 0], lightPower: 50)

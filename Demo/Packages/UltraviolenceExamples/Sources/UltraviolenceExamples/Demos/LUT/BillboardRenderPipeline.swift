@@ -1,6 +1,7 @@
 import Metal
 import MetalKit
 import Ultraviolence
+import UltraviolenceSupport
 
 // TODO: #138 Add code to align the texture correctly in the output.
 struct BillboardRenderPipeline: Element {
@@ -15,7 +16,7 @@ struct BillboardRenderPipeline: Element {
     init(texture: MTLTexture, slice: Int = 0) throws {
         self.texture = texture
         self.slice = slice
-        let device = MTLCreateSystemDefaultDevice().orFatalError()
+        let device = _MTLCreateSystemDefaultDevice()
         assert(device.argumentBuffersSupport == .tier2)
         let shaderBundle = Bundle.ultraviolenceExampleShaders().orFatalError()
         let shaderLibrary = try ShaderLibrary(bundle: shaderBundle, namespace: "TextureBillboard")

@@ -1,6 +1,7 @@
 import MetalKit
 import SwiftUI
 import Ultraviolence
+import UltraviolenceSupport
 import UltraviolenceUI
 
 public struct SkyboxDemoView: View {
@@ -17,6 +18,7 @@ public struct SkyboxDemoView: View {
     private var drawableSize: CGSize = .zero
 
     public init() {
+        // This line intentionally left blank.
     }
 
     public var body: some View {
@@ -31,7 +33,12 @@ public struct SkyboxDemoView: View {
             .onDrawableSizeChange { drawableSize = $0 }
         }
         .task {
-            texture = try! testTexture()
+            do {
+                texture = try testTexture()
+            }
+            catch {
+                fatalError("Failed to create skybox texture: \(error)")
+            }
         }
     }
 
@@ -75,7 +82,7 @@ public struct SkyboxDemoView: View {
             }
         }
         .frame(width: 1_024 * 4, height: 1_024 * 3)
-        let device = MTLCreateSystemDefaultDevice().orFatalError()
+        let device = _MTLCreateSystemDefaultDevice()
         let texture2D = try device.makeTexture(content: testView)
         return try device.makeTextureCubeFromCrossTexture(texture: texture2D)
     }

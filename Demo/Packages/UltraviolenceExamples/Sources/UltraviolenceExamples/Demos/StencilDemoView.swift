@@ -1,5 +1,6 @@
 import SwiftUI
 import Ultraviolence
+import UltraviolenceSupport
 import UltraviolenceUI
 
 /// A demo that shows the use of a stencil texture.
@@ -81,7 +82,7 @@ public struct StencilDemoView: View {
                 let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .r8Uint, width: Int(size.width), height: Int(size.height), mipmapped: false)
                 descriptor.usage = [.shaderRead, .shaderWrite]
 
-                let device = MTLCreateSystemDefaultDevice()!
+                let device = _MTLCreateSystemDefaultDevice()
                 let texture = device.makeTexture(descriptor: descriptor)!
                 texture.label = "Faux Stencil Texture"
                 let pass = try ComputePass {

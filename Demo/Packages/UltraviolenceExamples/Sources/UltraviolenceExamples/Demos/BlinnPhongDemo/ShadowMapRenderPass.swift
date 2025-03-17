@@ -1,6 +1,7 @@
 import Metal
 import simd
 import Ultraviolence
+import UltraviolenceSupport
 
 struct ShadowMapRenderPass <Content>: Element where Content: Element {
     var lightPosition: SIMD3<Float>
@@ -21,7 +22,7 @@ struct ShadowMapRenderPass <Content>: Element where Content: Element {
         descriptor.usage = [.renderTarget]
         descriptor.storageMode = .memoryless
 
-        let device = MTLCreateSystemDefaultDevice()!
+        let device = _MTLCreateSystemDefaultDevice()
         depthTexture = device.makeTexture(descriptor: descriptor)!
     }
 

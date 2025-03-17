@@ -2,6 +2,7 @@ import GaussianSplatShaders
 internal import os
 import SwiftUI
 import Ultraviolence
+import UltraviolenceSupport
 import UltraviolenceUI
 
 public struct GaussianSplatDemoView: View {
@@ -76,7 +77,7 @@ public struct GaussianSplatDemoView: View {
 
     func process(splats: [Antimatter15Splat]) {
         let splats = splats.map(GPUSplat.init)
-        let device = MTLCreateSystemDefaultDevice()!
+        let device = _MTLCreateSystemDefaultDevice()
         splatCloud = try! SplatCloud(device: device, splats: splats, cameraMatrix: cameraMatrix, modelMatrix: .identity)
     }
 }
@@ -111,7 +112,7 @@ public struct GaussianSplatView: View {
         }
         .onDrawableSizeChange { drawableSize = $0 }
         .onChange(of: splatCloud, initial: true) {
-            sortManager = try! AsyncSortManager(device: MTLCreateSystemDefaultDevice()!, splatCloud: splatCloud, capacity: splatCloud.count, logger: logger)
+            sortManager = try! AsyncSortManager(device: _MTLCreateSystemDefaultDevice(), splatCloud: splatCloud, capacity: splatCloud.count, logger: logger)
             Task {
                 let channel = await sortManager!.sortedIndicesChannel()
                 for await sort in channel {

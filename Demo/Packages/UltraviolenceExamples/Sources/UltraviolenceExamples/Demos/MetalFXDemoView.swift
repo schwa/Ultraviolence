@@ -3,6 +3,7 @@ import Metal
 import MetalKit
 import SwiftUI
 import Ultraviolence
+import UltraviolenceSupport
 import UltraviolenceUI
 
 public struct MetalFXDemoView: View {
@@ -17,7 +18,7 @@ public struct MetalFXDemoView: View {
     let imageName = "4.2.03" // Mandrill https://sipi.usc.edu/database/database.php?volume=misc&image=10#top
 
     public init() {
-        let device = MTLCreateSystemDefaultDevice().orFatalError()
+        let device = _MTLCreateSystemDefaultDevice()
         let textureLoader = MTKTextureLoader(device: device)
         sourceTexture = try! textureLoader.newTexture(name: "4.2.03", scaleFactor: 1, bundle: .main, options: [
             .textureUsage: MTLTextureUsage([.shaderRead, .shaderWrite]).rawValue,
@@ -80,7 +81,7 @@ public struct MetalFXDemoView: View {
             .padding()
         }
         .onChange(of: scaleFactor, initial: true) {
-            let device = MTLCreateSystemDefaultDevice().orFatalError()
+            let device = _MTLCreateSystemDefaultDevice()
             let upscaledTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: sourceTexture.pixelFormat, width: Int(Double(sourceTexture.width) * scaleFactor), height: Int(Double(sourceTexture.height) * scaleFactor), mipmapped: false)
             upscaledTextureDescriptor.usage = [.shaderRead, .shaderWrite, .renderTarget]
             upscaledTextureDescriptor.storageMode = .private

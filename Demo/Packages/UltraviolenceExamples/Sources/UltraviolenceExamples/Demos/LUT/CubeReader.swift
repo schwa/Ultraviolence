@@ -66,7 +66,7 @@ struct CubeReader {
 extension CubeReader {
     @MainActor
     func toTexture() throws -> MTLTexture {
-        let device = MTLCreateSystemDefaultDevice()!
+        let device = _MTLCreateSystemDefaultDevice()
         let pixels = values.map { SIMD4<Float>($0, 1) }
         let outputDescriptor = MTLTextureDescriptor()
         outputDescriptor.textureType = .type3D
