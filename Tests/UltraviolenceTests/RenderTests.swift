@@ -6,6 +6,7 @@ import Testing
 @testable import Ultraviolence
 import UltraviolenceSupport
 import UltraviolenceUI
+
 @Test
 @MainActor
 func testRendering() throws {
@@ -37,9 +38,11 @@ func testRendering() throws {
     }
     """
 
-    var color: SIMD4<Float> = [1, 0, 0, 1]
-    var gpuTime: Double = 0
-    var kernelTime: Double = 0
+    let color: SIMD4<Float> = [1, 0, 0, 1]
+    var gpuTime: Double = -.greatestFiniteMagnitude
+    var kernelTime: Double = -.greatestFiniteMagnitude
+    var gotScheduled = false
+    var gotCompleted = false
 
     let renderPass = try RenderPass {
         let vertexShader = try VertexShader(source: source)
@@ -53,16 +56,25 @@ func testRendering() throws {
             .parameter("color", color)
         }
     }
+
+    // TODO: OffscreenRenderer creates own command buffer without giving us a chance to intercept
     .onCommandBufferScheduled { _ in
         print("**** onCommandBufferScheduled")
+        gotScheduled = true
     }
     .onCommandBufferCompleted { commandBuffer in
         gpuTime = commandBuffer.gpuEndTime - commandBuffer.gpuStartTime
         kernelTime = commandBuffer.kernelEndTime - commandBuffer.kernelStartTime
+        gotCompleted = true
     }
 
     let offscreenRenderer = try OffscreenRenderer(size: CGSize(width: 1_600, height: 1_200))
     let image = try offscreenRenderer.render(renderPass).cgImage
-
     #expect(try image.isEqualToGoldenImage(named: "RedTriangle"))
+
+    // See above TODO.
+//    #expect(gotScheduled == true)
+//    #expect(gotCompleted == true)
+//    #expect(gpuTime >= 0)
+//    #expect(kernelTime >= 0)
 }
