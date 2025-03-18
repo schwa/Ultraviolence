@@ -5,9 +5,53 @@ import CoreImage
 import CoreImage.CIFilterBuiltins
 import Testing
 @testable import Ultraviolence
+import UltraviolenceSupport
 import UniformTypeIdentifiers
 
 // swiftlint:disable force_unwrapping
+
+extension CGImage {
+    func isEqualToGoldenImage(named name: String) throws -> Bool {
+        do {
+            let goldenImage = try goldenImage(named: name)
+            guard try imageCompare(self, goldenImage) else {
+                throw UltraviolenceError.generic("Images are not equal")
+            }
+            return true
+        }
+        catch {
+            let url = URL(fileURLWithPath: "/tmp/\(name).png")
+            try self.write(to: url)
+            print("Wrote image to \(url)")
+            return false
+        }
+    }
+}
+
+func goldenImage(named name: String) throws -> CGImage {
+    let url = Bundle.module.resourceURL!.appendingPathComponent("Golden Images").appendingPathComponent(name).appendingPathExtension("png")
+    let data = try Data(contentsOf: url)
+    let imageSource = try CGImageSourceCreateWithData(data as CFData, nil).orThrow(.generic("TODO"))
+    return try CGImageSourceCreateImageAtIndex(imageSource, 0, nil).orThrow(.generic("TODO"))
+}
+
+func imageCompare(_ image1: CGImage, _ image2: CGImage) throws -> Bool {
+    let ciContext = CIContext()
+
+    let ciImage1 = CIImage(cgImage: image1)
+    let ciImage2 = CIImage(cgImage: image2)
+
+    let difference = CIFilter.differenceBlendMode()
+    difference.setValue(ciImage1, forKey: kCIInputImageKey)
+    difference.setValue(ciImage2, forKey: kCIInputBackgroundImageKey)
+
+    let differenceImage = difference.outputImage!
+    let differenceCGImage = ciContext.createCGImage(differenceImage, from: differenceImage.extent)!
+
+    let histogram = try Histogram(image: differenceCGImage)
+    assert(histogram.relativeAlpha[255] == 1.0)
+    return histogram.relativeRed[0] == 1.0 && histogram.relativeGreen[0] == 1.0 && histogram.relativeBlue[0] == 1.0
+}
 
 extension Graph {
     func element<V>(at path: [Int], type: V.Type) -> V {
@@ -86,6 +130,8 @@ struct Histogram {
     }
 }
 
+// MARK: -
+
 @Test
 func testHistogram() throws {
     let red = try Histogram(image: CGImage.withColor(red: 1, green: 0, blue: 0)).peaks
@@ -96,29 +142,5 @@ func testHistogram() throws {
     #expect(green.green > red.red && green.green > red.blue)
     let blue = try Histogram(image: CGImage.withColor(red: 0, green: 0, blue: 1)).peaks
     #expect(blue.alpha == 1)
-    #expect(blue.blue > red.red && blue.blue > red.green)}
-
-func goldenImage(named name: String) -> CGImage {
-    let url = Bundle.module.resourceURL!.appendingPathComponent("Golden Images").appendingPathComponent(name).appendingPathExtension("png")
-    let data = try! Data(contentsOf: url)
-    let imageSource = CGImageSourceCreateWithData(data as CFData, nil)!
-    return CGImageSourceCreateImageAtIndex(imageSource, 0, nil)!
-}
-
-func imageCompare(_ image1: CGImage, _ image2: CGImage) throws -> Bool {
-    let ciContext = CIContext()
-
-    let ciImage1 = CIImage(cgImage: image1)
-    let ciImage2 = CIImage(cgImage: image2)
-
-    let difference = CIFilter.differenceBlendMode()
-    difference.setValue(ciImage1, forKey: kCIInputImageKey)
-    difference.setValue(ciImage2, forKey: kCIInputBackgroundImageKey)
-
-    let differenceImage = difference.outputImage!
-    let differenceCGImage = ciContext.createCGImage(differenceImage, from: differenceImage.extent)!
-
-    let histogram = try Histogram(image: differenceCGImage)
-    assert(histogram.relativeAlpha[255] == 1.0)
-    return histogram.relativeRed[0] == 1.0 && histogram.relativeGreen[0] == 1.0 && histogram.relativeBlue[0] == 1.0
+    #expect(blue.blue > red.red && blue.blue > red.green)
 }
