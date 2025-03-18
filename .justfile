@@ -7,7 +7,6 @@ default: list
 list:
     just --list
 
-
 build:
     swift build --quiet
     @echo "✅ Build Success"
@@ -70,3 +69,8 @@ create-todo-tickets:
 
         echo "Updated TODO in $FILE_PATH to reference issue #$ISSUE_NUMBER"
     end
+
+build-docs:
+    xcrun xcodebuild docbuild -scheme Ultraviolence -derivedDataPath /tmp/ultraviolence-docbuild -destination platform=macOS,arch=arm64
+    cp -r /tmp/ultraviolence-docbuild/Build/Products/Debug/Ultraviolence.doccarchive ~/Desktop
+    xcrun docc process-archive transform-for-static-hosting ~/Desktop/Ultraviolence.doccarchive --hosting-base-path / --output-path ~/Desktop/Ultraviolence-HTML/
