@@ -47,7 +47,7 @@ public struct MetalFXSpatial: Element {
         descriptor.inputHeight = inputTexture.height
         descriptor.outputWidth = outputTexture.width
         descriptor.outputHeight = outputTexture.height
-        let device = try _MTLCreateSystemDefaultDevice()
+        let device = _MTLCreateSystemDefaultDevice()
         return try descriptor.makeSpatialScaler(device: device).orThrow(.undefined)
     }
 }

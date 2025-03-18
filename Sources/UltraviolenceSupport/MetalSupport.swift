@@ -892,7 +892,7 @@ public extension MTKMesh {
 public extension MTLBuffer {
     func gpuAddressAsUnsafeMutablePointer<T>(type: T.Type) -> UnsafeMutablePointer<T>? {
         precondition(MemoryLayout<Int>.stride == MemoryLayout<UInt64>.stride)
-        let bits = unsafeBitCast(gpuAddress, to: Int.self)
+        let bits = Int(Int64(bitPattern: gpuAddress))
         return UnsafeMutablePointer<T>(bitPattern: bits)
     }
 }

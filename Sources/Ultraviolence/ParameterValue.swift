@@ -16,7 +16,7 @@ extension ParameterValue: CustomDebugStringConvertible {
         case .samplerState(let samplerState):
             return "SamplerState"
         case .buffer(let buffer, let offset):
-            return "Buffer(\(buffer?.label), offset: \(offset)"
+            return "Buffer(\(String(describing: buffer?.label)), offset: \(offset)"
         case .array(let array):
             return "Array"
         case .value(let value):
@@ -89,10 +89,7 @@ internal struct AnyParameterValue {
             encoder.setValue(value, index: index)
         }
         self._debugDescription = {
-            if let value = value as? any CustomDebugStringConvertible {
-                return value.debugDescription
-            }
-            return "\(value)"
+            value.debugDescription
         }
     }
 }

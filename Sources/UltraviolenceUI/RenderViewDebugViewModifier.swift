@@ -38,7 +38,7 @@ internal struct RenderViewDebugViewModifier <Root>: ViewModifier where Root: Ele
                                 LabeledContent("Debug Label", value: "\(node.debugLabel ?? "")")
                                 LabeledContent("Children", value: "\(node.children.count)")
                                 LabeledContent("# State", value: "\(node.stateProperties.count)")
-                                LabeledContent("Element", value: "\(node.element)")
+                                LabeledContent("Element", value: "\(String(describing: node.element))")
                                 //                            LabeledContent("# Environment", value: "\(node.environmentValues.count)")
                             }
                         }

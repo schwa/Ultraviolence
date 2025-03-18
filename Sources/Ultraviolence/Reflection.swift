@@ -44,7 +44,7 @@ extension Reflection.Key: CustomDebugStringConvertible {
     }
 }
 
-extension MTLFunctionType: CustomDebugStringConvertible {
+extension MTLFunctionType: @retroactive CustomDebugStringConvertible {
     public var debugDescription: String {
         switch self {
         case .vertex:

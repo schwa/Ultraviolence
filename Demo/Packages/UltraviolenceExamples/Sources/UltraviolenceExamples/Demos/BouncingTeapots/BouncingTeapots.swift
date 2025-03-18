@@ -181,8 +181,8 @@ struct FlyingTeapotsRenderPass: Element {
             .depthCompare(function: .less, enabled: true)
             #if canImport(MetalFX)
             .renderPassDescriptorModifier { descriptor in
-            descriptor.colorAttachments[0].texture = offscreenTexture
-            descriptor.depthAttachment.texture = offscreenDepthTexture
+                descriptor.colorAttachments[0].texture = offscreenTexture
+                descriptor.depthAttachment.texture = offscreenDepthTexture
             }
             #endif
 

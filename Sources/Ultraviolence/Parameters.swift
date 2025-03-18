@@ -51,11 +51,11 @@ internal struct Parameter {
         try encoder.withDebugGroup("MTLRenderCommandEncoder(\(encoder.label.quoted)): \(name.quoted) = \(value)") {
             switch functionType {
             case .vertex:
-                if let index = try reflection.binding(forType: .vertex, name: name) {
+                if let index = reflection.binding(forType: .vertex, name: name) {
                     encoder.setValue(value, index: index, functionType: .vertex)
                 }
             case .fragment:
-                if let index = try reflection.binding(forType: .fragment, name: name) {
+                if let index = reflection.binding(forType: .fragment, name: name) {
                     encoder.setValue(value, index: index, functionType: .fragment)
                 }
             case nil:
