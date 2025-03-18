@@ -18,9 +18,6 @@ public struct GaussianSplatDemoView: View {
     @State
     private var debugMode: GaussianSplatRenderPipeline.DebugMode = .off
 
-    @State
-    private var isDropTargeted: Bool = false
-
     public init() {
         // This line intentionally left blank.
     }
@@ -28,13 +25,6 @@ public struct GaussianSplatDemoView: View {
     public var body: some View {
         ZStack {
             Color.black
-                .dropDestination(for: Array<Antimatter15Splat>.self) { splats, _ in
-                    process(splats: splats[0])
-                    return true
-                }
-                isTargeted: { isTargeted in
-                    isDropTargeted = isTargeted
-                }
             if let splatCloud {
                 WorldView(projection: $projection, cameraMatrix: $cameraMatrix, targetMatrix: .constant(nil)) {
                     GaussianSplatView(splatCloud: splatCloud, projection: projection, cameraMatrix: cameraMatrix, debugMode: debugMode)
@@ -42,7 +32,12 @@ public struct GaussianSplatDemoView: View {
                 }
             }
         }
-        .border(Color.blue, width: isDropTargeted ? 5 : 0)
+        .modifier(SuperFilePickerModifier<[Antimatter15Splat]> { result in
+            guard case let .success(items) = result else {
+                return
+            }
+            process(splats: items[0])
+        })
         .toolbar {
             PopoverButton("Utilities", systemImage: "gear") {
                 Form {
@@ -141,4 +136,55 @@ public struct GaussianSplatView: View {
 }
 
 extension GaussianSplatDemoView: DemoView {
+}
+
+struct SuperFilePickerModifier <T>: ViewModifier where T: Transferable & Sendable {
+    @State
+    private var isDropTargeted: Bool = false
+
+    @State
+    private var isFileImporterPresented: Bool = false
+
+    var callback: (Result<[T], Error>) throws -> Void
+
+    init(callback: @escaping (Result<[T], Error>) throws -> Void) {
+        self.callback = callback
+    }
+
+    func body(content: Content) -> some View {
+        content
+        .border(Color.blue, width: isDropTargeted ? 5 : 0)
+        .toolbar {
+            Button("Open…") {
+                isFileImporterPresented = true
+            }
+        }
+        .dropDestination(for: T.self) { items, _ in
+            do {
+                try callback(.success(items))
+                return true
+            } catch {
+                return false
+            }
+        }
+        isTargeted: { isTargeted in
+            isDropTargeted = isTargeted
+        }
+        .fileImporter(isPresented: $isFileImporterPresented, allowedContentTypes: T.importedContentTypes()) { result in
+            switch result {
+            case .success(let url):
+                Task {
+                    do {
+                        let items = try await T(importing: url, contentType: nil)
+                        try callback(.success([items]))
+                    }
+                    catch {
+                        _ = try? callback(.failure(error))
+                    }
+                }
+            case .failure(let error):
+                _ = try? callback(.failure(error))
+            }
+        }
+    }
 }

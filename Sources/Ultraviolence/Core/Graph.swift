@@ -4,6 +4,8 @@ internal import os
 public class Graph {
     internal var activeNodeStack: [Node] = []
     public private(set) var root: Node
+    internal var signpostID = signposter?.makeSignpostID()
+
 
     @MainActor
     public init<Content>(content: Content) throws where Content: Element {
@@ -13,14 +15,17 @@ public class Graph {
     }
 
     @MainActor
-    public func updateContent<Content>(content: Content) throws where Content: Element {
-        // TODO: #25 We need to somehow detect if the content has changed.
-        let saved = Self.current
-        Self.current = self
-        defer {
-            Self.current = saved
+    public func update<Content>(content: Content) throws where Content: Element {
+        try signposter?.withIntervalSignpost("Graph.updateContent()") {
+
+            // TODO: #25 We need to somehow detect if the content has changed.
+            let saved = Self.current
+            Self.current = self
+            defer {
+                Self.current = saved
+            }
+            try content.expandNode(root, context: .init())
         }
-        try content.expandNode(root, context: .init())
     }
 
     @MainActor
@@ -50,36 +55,5 @@ public class Graph {
 
     internal func makeNode() -> Node {
         Node(graph: self)
-    }
-}
-
-public extension Graph {
-    @MainActor
-    func dump() throws {
-        var s = ""
-        try dump(to: &s)
-        print(s, terminator: "")
-    }
-
-    @MainActor
-    func dump(to output: inout some TextOutputStream) throws {
-        try visit { depth, node in
-            let element = node.element
-            let indent = String(repeating: "  ", count: depth)
-            if let element {
-                let typeName = String(describing: type(of: element)).split(separator: "<").first ?? ""
-                print("\(indent)\(typeName): \(node.environmentValues)", terminator: "", to: &output)
-                print("", to: &output)
-            }
-            else {
-                print("\(indent)<no element!>", to: &output)
-            }
-        }
-        enter: { _ in
-            // This line intentionally left blank.
-        }
-        exit: { _ in
-            // This line intentionally left blank.
-        }
     }
 }

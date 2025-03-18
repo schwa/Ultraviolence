@@ -29,6 +29,11 @@ internal extension Graph {
 }
 
 internal extension Node {
+    func visit(depth: Int = 0, _ visitor: (Int, Node) throws -> Void) rethrows {
+        // swiftlint:disable:next no_empty_block
+        try visit(depth: depth, visitor, enter: { _ in }, exit: { _ in })
+    }
+
     func visit(depth: Int = 0, _ visitor: (Int, Node) throws -> Void, enter: (Node) throws -> Void, exit: (Node) throws -> Void) rethrows {
         try enter(self)
         try visitor(depth, self)

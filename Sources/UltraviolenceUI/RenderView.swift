@@ -86,14 +86,28 @@ internal struct RenderViewHelper <Content>: View where Content: Element {
 
 @Observable
 internal class RenderViewViewModel <Content>: NSObject, MTKViewDelegate where Content: Element {
+    @ObservationIgnored
     var device: MTLDevice
+
+    @ObservationIgnored
     var commandQueue: MTLCommandQueue
+
+    @ObservationIgnored
+
     var content: () throws -> Content
     var lastError: Error?
-    var logger: Logger? = Logger()
+
+    @ObservationIgnored
     var graph: Graph
+
+    @ObservationIgnored
     var needsSetup = true
+
+    @ObservationIgnored
     var drawableSizeChange: ((CGSize) -> Void)?
+
+    @ObservationIgnored
+    var signpostID = signposter?.makeSignpostID()
 
     @MainActor
     init(device: MTLDevice, commandQueue: MTLCommandQueue, content: @escaping () throws -> Content) throws {
@@ -111,28 +125,30 @@ internal class RenderViewViewModel <Content>: NSObject, MTKViewDelegate where Co
 
     func draw(in view: MTKView) {
         do {
-            let currentDrawable = try view.currentDrawable.orThrow(.generic("No drawable available"))
-            defer {
-                currentDrawable.present()
-            }
-            let currentRenderPassDescriptor = try view.currentRenderPassDescriptor.orThrow(.generic("No render pass descriptor available"))
-            let content = try CommandBufferElement(completion: .commit) {
-                try self.content()
-            }
-            .environment(\.device, device)
-            .environment(\.commandQueue, commandQueue)
-            .environment(\.renderPassDescriptor, currentRenderPassDescriptor)
-            .environment(\.renderPipelineDescriptor, MTLRenderPipelineDescriptor())
-            .environment(\.currentDrawable, currentDrawable)
-            .environment(\.drawableSize, view.drawableSize)
+            try signposter.withIntervalSignpost("RenderViewViewModel.draw()", id: signpostID) {
+                let currentDrawable = try view.currentDrawable.orThrow(.generic("No drawable available"))
+                defer {
+                    currentDrawable.present()
+                }
+                let currentRenderPassDescriptor = try view.currentRenderPassDescriptor.orThrow(.generic("No render pass descriptor available"))
+                let content = try CommandBufferElement(completion: .commit) {
+                    try self.content()
+                }
+                    .environment(\.device, device)
+                    .environment(\.commandQueue, commandQueue)
+                    .environment(\.renderPassDescriptor, currentRenderPassDescriptor)
+                    .environment(\.renderPipelineDescriptor, MTLRenderPipelineDescriptor())
+                    .environment(\.currentDrawable, currentDrawable)
+                    .environment(\.drawableSize, view.drawableSize)
 
-            // TODO: #25 Find a way to detect if graph has changed and set needsSetup to true. I am assuming we get a whole new graph every time - can we confirm this is true and too much work is being done?
-            try graph.updateContent(content: content)
-            if needsSetup {
-                try graph.processSetup()
-                needsSetup = false
+                // TODO: #25 Find a way to detect if graph has changed and set needsSetup to true. I am assuming we get a whole new graph every time - can we confirm this is true and too much work is being done?
+                try graph.update(content: content)
+                if needsSetup {
+                    try graph.processSetup()
+                    needsSetup = false
+                }
+                try graph.processWorkload()
             }
-            try graph.processWorkload()
         } catch {
             logger?.error("Error when drawing: \(error)")
             lastError = error

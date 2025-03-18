@@ -6,6 +6,7 @@ disabled_rules:
 - force_cast
 - force_try
 - force_unwrapping
+- function_body_length
 - identifier_name
 - nesting
 - no_empty_block

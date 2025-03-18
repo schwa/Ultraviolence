@@ -90,7 +90,7 @@ struct UltraviolenceStateTests {
         @MainActor struct Nested: Element {
             var body: some Element {
                 nestedBodyCount += 1
-                return DemoElement("Nested DemoElement") {}
+                return DemoElement("Nested DemoElement")
             }
         }
 
@@ -127,7 +127,7 @@ struct UltraviolenceStateTests {
             var counter: Int
             var body: some Element {
                 nestedBodyCount += 1
-                return DemoElement("Nested DemoElement") {}
+                return DemoElement("Nested DemoElement")
             }
         }
 
@@ -164,7 +164,7 @@ struct UltraviolenceStateTests {
             var isLarge: Bool = false
             var body: some Element {
                 nestedBodyCount += 1
-                return DemoElement("Nested DemoElement") {}
+                return DemoElement("Nested DemoElement")
             }
         }
 
@@ -201,7 +201,7 @@ struct UltraviolenceStateTests {
             @UVObservedObject var model = nestedModel
             var body: some Element {
                 nestedBodyCount += 1
-                return DemoElement("Nested DemoElement") {}
+                return DemoElement("Nested DemoElement")
             }
         }
 
@@ -238,7 +238,7 @@ struct UltraviolenceStateTests {
             @UVBinding var counter: Int
             var body: some Element {
                 nestedBodyCount += 1
-                return DemoElement("Nested DemoElement") {}
+                return DemoElement("Nested DemoElement")
             }
         }
 
@@ -399,7 +399,7 @@ struct UltraviolenceStateTests {
         struct Sample: Element {
             @UVState private var counter = 0
             var body: some Element {
-                DemoElement("\(counter)") {}
+                DemoElement("\(counter)")
                 Nested(counter: $counter)
                     .debug { sampleBodyCount += 1 }
             }
@@ -476,7 +476,7 @@ struct UltraviolenceStateTests {
 
     @Test
     func testAnyElement() throws {
-        let e = DemoElement("Hello world") {}.eraseToAnyElement()
+        let e = DemoElement("Hello world").eraseToAnyElement()
         let graph = try Graph(content: e)
         try graph.rebuildIfNeeded()
         #expect(graph.element(at: [0], type: DemoElement.self).title == "Hello world")
@@ -484,7 +484,7 @@ struct UltraviolenceStateTests {
 
     @Test
     func testModifier() throws {
-        let root = DemoElement("Hello world") {}.modifier(PassthroughModifier())
+        let root = DemoElement("Hello world").modifier(PassthroughModifier())
         let graph = try Graph(content: root)
         try graph.rebuildIfNeeded()
         #expect(graph.element(at: [0, 0], type: DemoElement.self).title == "Hello world")
@@ -516,7 +516,7 @@ func weirdTests() throws {
 @Test
 @MainActor
 func testOptionalElement() throws {
-    let element = DemoElement("Hello world") {}
+    let element = DemoElement("Hello world")
     let optionalElement = DemoElement?(element)
     let graph = try Graph(content: optionalElement)
     try graph.rebuildIfNeeded()
@@ -527,15 +527,41 @@ func testOptionalElement() throws {
 @Test
 @MainActor
 func testElementDump() throws {
-    let element = DemoElement("Hello world") {}
+    let element = DemoElement("Hello world")
     var s = ""
-    try element._dump(to: &s)
+    try element.dump(to: &s)
     s = s.trimmingCharacters(in: .whitespacesAndNewlines)
-    #expect(s == "DemoElement: (storage: ([], parent: false)))")
+    #expect(s == "DemoElement")
+}
 
-    let graph = try Graph(content: element)
-    try graph.rebuildIfNeeded()
-    try graph.dump()
+@Test
+@MainActor
+func testGraphDump() throws {
+    let root = DemoElement("Hello world")
+    let graph = try Graph(content: root)
+    var s = ""
+    try graph.dump(to: &s)
+    s = s.trimmingCharacters(in: .whitespacesAndNewlines)
+    #expect(s == "DemoElement")
+}
 
-    #expect(graph.root.shortDescription == "DemoElement")
+@Test
+@MainActor
+func testComplexGraphDump() throws {
+    let root = try Group {
+        DemoElement("1")
+        DemoElement("2")
+        DemoElement("3")
+        try Group {
+            DemoElement("4")
+            try Group {
+                DemoElement("5")
+            }
+        }
+    }
+    let graph = try Graph(content: root)
+    var s = ""
+    try graph.dump(options: [.dumpElement, .dumpNode], to: &s)
+    s = s.trimmingCharacters(in: .whitespacesAndNewlines)
+    print(s)
 }

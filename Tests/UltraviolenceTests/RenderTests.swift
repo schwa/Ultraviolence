@@ -57,7 +57,7 @@ func testRendering() throws {
         }
     }
 
-    // TODO: OffscreenRenderer creates own command buffer without giving us a chance to intercept
+    // TODO: #150 OffscreenRenderer creates own command buffer without giving us a chance to intercept
     .onCommandBufferScheduled { _ in
         print("**** onCommandBufferScheduled")
         gotScheduled = true
