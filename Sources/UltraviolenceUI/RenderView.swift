@@ -134,12 +134,12 @@ internal class RenderViewViewModel <Content>: NSObject, MTKViewDelegate where Co
                 let content = try CommandBufferElement(completion: .commit) {
                     try self.content()
                 }
-                    .environment(\.device, device)
-                    .environment(\.commandQueue, commandQueue)
-                    .environment(\.renderPassDescriptor, currentRenderPassDescriptor)
-                    .environment(\.renderPipelineDescriptor, MTLRenderPipelineDescriptor())
-                    .environment(\.currentDrawable, currentDrawable)
-                    .environment(\.drawableSize, view.drawableSize)
+                .environment(\.device, device)
+                .environment(\.commandQueue, commandQueue)
+                .environment(\.renderPassDescriptor, currentRenderPassDescriptor)
+                .environment(\.renderPipelineDescriptor, MTLRenderPipelineDescriptor())
+                .environment(\.currentDrawable, currentDrawable)
+                .environment(\.drawableSize, view.drawableSize)
 
                 // TODO: #25 Find a way to detect if graph has changed and set needsSetup to true. I am assuming we get a whole new graph every time - can we confirm this is true and too much work is being done?
                 try graph.update(content: content)

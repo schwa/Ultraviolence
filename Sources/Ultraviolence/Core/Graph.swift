@@ -6,7 +6,6 @@ public class Graph {
     public private(set) var root: Node
     internal var signpostID = signposter?.makeSignpostID()
 
-
     @MainActor
     public init<Content>(content: Content) throws where Content: Element {
         root = Node()
@@ -17,7 +16,6 @@ public class Graph {
     @MainActor
     public func update<Content>(content: Content) throws where Content: Element {
         try signposter?.withIntervalSignpost("Graph.updateContent()") {
-
             // TODO: #25 We need to somehow detect if the content has changed.
             let saved = Self.current
             Self.current = self

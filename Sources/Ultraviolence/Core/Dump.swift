@@ -23,7 +23,7 @@ public extension Node {
                 node.previousElement == nil ? "no previous element" : nil,
                 "state: \(node.stateProperties.keys.joined(separator: "|"))",
                 "env: \(node.environmentValues.storage.values.keys.map { "\($0)" }.joined(separator: "|"))",
-                node.debugLabel == nil ? nil : "debug: \(node.debugLabel!)"
+                node.debugLabel == nil ? nil : "debug: \(node.debugLabel ?? "")"
             ]
             return elements.compactMap(\.self).joined(separator: ", ")
         }

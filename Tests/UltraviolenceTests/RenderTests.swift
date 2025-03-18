@@ -73,8 +73,8 @@ func testRendering() throws {
     #expect(try image.isEqualToGoldenImage(named: "RedTriangle"))
 
     // See above TODO.
-//    #expect(gotScheduled == true)
-//    #expect(gotCompleted == true)
-//    #expect(gpuTime >= 0)
-//    #expect(kernelTime >= 0)
+    //    #expect(gotScheduled == true)
+    //    #expect(gotCompleted == true)
+    //    #expect(gpuTime >= 0)
+    //    #expect(kernelTime >= 0)
 }

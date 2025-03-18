@@ -1,5 +1,5 @@
-internal import os.log
 internal import Foundation
+internal import os.log
 import UltraviolenceSupport
 
 internal let logger: Logger? = {
