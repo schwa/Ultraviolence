@@ -1,11 +1,17 @@
 internal import Foundation
 internal import os
+import UltraviolenceSupport
 
 internal let logger: Logger? = {
-    guard let logging = ProcessInfo.processInfo.environment["LOGGING"] else {
+    guard ProcessInfo.processInfo.loggingEnabled else {
         return nil
     }
-    return Logger(subsystem: "io.schwa.ultraviolence", category: "default")
+    return .init(subsystem: "io.schwa.ultraviolence", category: "default")
 }()
 
-internal let signposter: OSSignposter? = .init(subsystem: "io.schwa.ultraviolence", category: OSLog.Category.pointsOfInterest)
+internal let signposter: OSSignposter? = {
+    guard ProcessInfo.processInfo.loggingEnabled else {
+        return nil
+    }
+    return .init(subsystem: "io.schwa.ultraviolence", category: OSLog.Category.pointsOfInterest)
+}()
