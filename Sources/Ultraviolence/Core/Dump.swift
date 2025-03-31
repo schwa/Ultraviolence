@@ -7,7 +7,7 @@ public struct DumpOptions: OptionSet, Sendable {
 
     public static let `default`: DumpOptions = [.dumpElement]
     public static let dumpElement = Self(rawValue: 1 << 0)
-    public static let dumpNode = Self(rawValue: 1 << 0)
+    public static let dumpNode = Self(rawValue: 1 << 1)
 }
 
 public extension Node {

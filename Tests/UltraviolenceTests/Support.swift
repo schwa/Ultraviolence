@@ -7,6 +7,9 @@ import Testing
 @testable import Ultraviolence
 import UltraviolenceSupport
 import UniformTypeIdentifiers
+#if canImport(AppKit)
+import AppKit
+#endif
 
 // swiftlint:disable force_unwrapping
 
@@ -15,6 +18,10 @@ extension CGImage {
         do {
             let goldenImage = try goldenImage(named: name)
             guard try imageCompare(self, goldenImage) else {
+                let url = URL(fileURLWithPath: "/tmp/\(name).png")
+                try self.write(to: url)
+                url.revealInFinder()
+
                 throw UltraviolenceError.generic("Images are not equal")
             }
             return true
@@ -144,3 +151,11 @@ func testHistogram() throws {
     #expect(blue.alpha == 1)
     #expect(blue.blue > red.red && blue.blue > red.green)
 }
+
+#if canImport(AppKit)
+public extension URL {
+    func revealInFinder() {
+        NSWorkspace.shared.activateFileViewerSelecting([self])
+    }
+}
+#endif

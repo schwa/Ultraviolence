@@ -53,7 +53,9 @@ internal struct SuperDownloadWidget <Label>: View where Label: View {
                                             try! await download(url: url)
                                         }
                                     }
+                                    #if os(macOS)
                                     .buttonStyle(.link)
+                                    #endif
                                 }
                             }
                         }
@@ -63,7 +65,9 @@ internal struct SuperDownloadWidget <Label>: View where Label: View {
                                     Button(url.lastPathComponent) {
                                         callback(.success(url))
                                     }
+                                    #if os(macOS)
                                     .buttonStyle(.link)
+                                    #endif
                                 }
                             }
                         }
