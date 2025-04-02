@@ -1,3 +1,4 @@
+#if os(macOS) && !arch(x86_64)
 import simd
 
 public struct GenericSplat: Equatable {
@@ -60,3 +61,4 @@ extension simd_quatf {
         [vector.w, vector.x, vector.y, vector.z]
     }
 }
+#endif // os(macOS) && !arch(x86_64)

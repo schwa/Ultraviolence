@@ -1,3 +1,4 @@
+#if os(macOS) && !arch(x86_64)
 import CoreTransferable
 
 extension Array: @retroactive Transferable where Element == Antimatter15Splat {
@@ -13,3 +14,4 @@ extension Array: @retroactive Transferable where Element == Antimatter15Splat {
         }
     }
 }
+#endif // os(macOS) && !arch(x86_64)

@@ -133,18 +133,19 @@ public extension Packed3 where Scalar: Numeric {
     }
 }
 
-public extension Packed3 where Scalar == Float {
-    init(_ other: Packed3<Float16>) {
-        self.init(x: Float(other.x), y: Float(other.y), z: Float(other.z))
-    }
-}
-
 public extension Packed3 {
     init(_ other: Packed3<Scalar>) {
         self = other
     }
     init(_ other: SIMD3<Scalar>) {
         self.init(x: other.x, y: other.y, z: other.z)
+    }
+}
+
+#if os(macOS) && !arch(x86_64)
+public extension Packed3 where Scalar == Float {
+    init(_ other: Packed3<Float16>) {
+        self.init(x: Float(other.x), y: Float(other.y), z: Float(other.z))
     }
 }
 
@@ -156,6 +157,7 @@ public extension Packed3 where Scalar == Float16 {
         self.init(x: Float16(other.x), y: Float16(other.y), z: Float16(other.z))
     }
 }
+#endif // os(macOS) && !arch(x86_64)
 
 public extension SIMD3 {
     init(_ packed: Packed3<Scalar>) {

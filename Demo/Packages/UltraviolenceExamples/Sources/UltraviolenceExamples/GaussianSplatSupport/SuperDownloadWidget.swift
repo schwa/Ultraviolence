@@ -1,3 +1,4 @@
+#if os(macOS) && !arch(x86_64)
 import SwiftUI
 
 internal struct SuperDownloadWidget <Label>: View where Label: View {
@@ -150,3 +151,4 @@ extension UserDefaults {
         set(urls.map(\.absoluteString), forKey: key)
     }
 }
+#endif // os(macOS) && !arch(x86_64)

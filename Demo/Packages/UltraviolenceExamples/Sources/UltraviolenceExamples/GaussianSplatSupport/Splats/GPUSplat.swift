@@ -1,3 +1,4 @@
+#if os(macOS) && !arch(x86_64)
 import GaussianSplatShaders
 import simd
 
@@ -38,3 +39,4 @@ extension GPUSplat: SortableSplatProtocol {
         SIMD3<Float>(position)
     }
 }
+#endif // os(macOS) && !arch(x86_64)

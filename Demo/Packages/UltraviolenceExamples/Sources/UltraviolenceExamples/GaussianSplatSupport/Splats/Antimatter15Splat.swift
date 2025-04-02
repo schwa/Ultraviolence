@@ -1,3 +1,4 @@
+#if os(macOS) && !arch(x86_64)
 import GaussianSplatShaders
 import UniformTypeIdentifiers
 
@@ -77,3 +78,4 @@ public extension GPUSplat {
         )
     }
 }
+#endif // !arch(x86_64)

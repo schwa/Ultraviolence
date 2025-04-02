@@ -8,7 +8,9 @@ struct ContentView: View {
     var body: some View {
         NavigationSplitView {
             List(selection: $page) {
+#if os(macOS) && !arch(x86_64)
                 row(for: GaussianSplatDemoView.self)
+#endif // os(macOS) && !arch(x86_64)
                 row(for: BlinnPhongDemoView.self)
                 row(for: GridShaderDemoView.self)
                 row(for: SkyboxDemoView.self)
