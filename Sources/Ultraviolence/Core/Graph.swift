@@ -1,4 +1,5 @@
 internal import os
+import UltraviolenceSupport
 
 // TODO: #24 Make Internal
 public class Graph {
@@ -15,7 +16,7 @@ public class Graph {
 
     @MainActor
     public func update<Content>(content: Content) throws where Content: Element {
-        try signposter?.withIntervalSignpost("Graph.updateContent()") {
+        try withIntervalSignpost(signposter, name: "Graph.updateContent()", id: signpostID) {
             // TODO: #25 We need to somehow detect if the content has changed.
             let saved = Self.current
             Self.current = self

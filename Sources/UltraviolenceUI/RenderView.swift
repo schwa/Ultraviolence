@@ -125,7 +125,7 @@ internal class RenderViewViewModel <Content>: NSObject, MTKViewDelegate where Co
 
     func draw(in view: MTKView) {
         do {
-            try signposter.withIntervalSignpost("RenderViewViewModel.draw()", id: signpostID) {
+            try withIntervalSignpost(signposter, name: "RenderViewViewModel.draw()", id: signpostID) {
                 let currentDrawable = try view.currentDrawable.orThrow(.generic("No drawable available"))
                 defer {
                     currentDrawable.present()

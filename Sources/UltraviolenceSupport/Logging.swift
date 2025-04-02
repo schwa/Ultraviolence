@@ -15,15 +15,11 @@ internal let signposter: OSSignposter? = {
     return .init(subsystem: "io.schwa.ultraviolence-support", category: OSLog.Category.pointsOfInterest)
 }()
 
-public extension Optional where Wrapped == OSSignposter {
-    func withIntervalSignpost<T>(_ name: StaticString, id: OSSignpostID?, around task: () throws -> T) rethrows -> T {
-        switch (self, id) {
-        case (.some(let signposter), .some(let id)):
-            return try signposter.withIntervalSignpost(name, id: id, around: task)
-        default:
-            return try task()
-        }
+public func withIntervalSignpost<T>(_ signposter: OSSignposter?, name: StaticString, id: OSSignpostID? = nil, around task: () throws -> T) rethrows -> T {
+    guard let signposter else {
+        return try task()
     }
+    return try signposter.withIntervalSignpost(name, id: id ?? .exclusive, around: task)
 }
 
 public extension ProcessInfo {

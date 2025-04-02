@@ -1,10 +1,11 @@
 import CoreGraphics
 import Metal
+import UltraviolenceSupport
 
 public extension Graph {
     @MainActor
     func processSetup() throws {
-        try signposter?.withIntervalSignpost("Graph.processSetup()") {
+        try withIntervalSignpost(signposter, name: "Graph.processSetup()") {
             try process { element, node in
                 try element.setupEnter(node)
             } exit: { element, node in
@@ -15,7 +16,7 @@ public extension Graph {
 
     @MainActor
     func processWorkload() throws {
-        try signposter?.withIntervalSignpost("Graph.processWorkload()") {
+        try withIntervalSignpost(signposter, name: "Graph.processWorkload()") {
             try process { element, node in
                 try element.workloadEnter(node)
             } exit: { element, node in
