@@ -1,4 +1,4 @@
-XCODE_PROJECT_PATH := "./Demo/UltraviolenceDemo.xcodeproj"
+# XCODE_PROJECT_PATH := "./Demo/UltraviolenceDemo.xcodeproj"
 XCODE_SCHEME := "UltraviolenceDemo"
 CONFIGURATION := "Debug"
 
@@ -10,9 +10,6 @@ list:
 
 build:
     swift build --quiet
-    xcodebuild -project "{{XCODE_PROJECT_PATH}}" -scheme "{{XCODE_SCHEME}}" -destination "generic/platform=macOS" -quiet -skipPackagePluginValidation build ARCHS=arm64 ONLY_ACTIVE_ARCH=NO CODE_SIGNING_ALLOWED=NO -configuration "{{ CONFIGURATION }}"
-    xcodebuild -project "{{XCODE_PROJECT_PATH}}" -scheme "{{XCODE_SCHEME}}" -destination "generic/platform=iOS" -quiet -skipPackagePluginValidation build CODE_SIGNING_ALLOWED=NO -configuration "{{ CONFIGURATION }}"
-    xcodebuild -project "{{XCODE_PROJECT_PATH}}" -scheme "{{XCODE_SCHEME}}" -destination "platform=iOS Simulator,name=iPhone 16 Plus" -quiet -skipPackagePluginValidation build CODE_SIGNING_ALLOWED=NO -configuration "{{ CONFIGURATION }}"
     @echo "✅ Build Success"
 
 test:
@@ -29,16 +26,17 @@ format:
 
 metal-nm:
     swift build --quiet
-    xcrun metal-nm .build/arm64-apple-macosx/debug/Ultraviolence_UltraviolenceExamples.bundle/debug.metallib
+    # xcrun metal-nm .build/arm64-apple-macosx/debug/Ultraviolence_UltraviolenceExamples.bundle/debug.metallib
     #xcrun metal-objdump  --disassemble-all .build/arm64-apple-macosx/debug/Ultraviolence_UltraviolenceExamples.bundle/debug.metallib
     #xcrun metal-source .build/arm64-apple-macosx/debug/Ultraviolence_UltraviolenceExamples.bundle/debug.metallib
 
-periphery-scan-clean:
-    periphery scan --project-root Demo --project UltraviolenceDemo.xcodeproj --schemes UltraviolenceDemo --quiet --write-baseline .periphery.baseline.json --retain-public
+# periphery-scan-clean:
+#     periphery scan --project-root Demo --project UltraviolenceDemo.xcodeproj --schemes UltraviolenceDemo --quiet --write-baseline .periphery.baseline.json --retain-public
 
 periphery-scan:
-    periphery scan --project-root Demo --project UltraviolenceDemo.xcodeproj --schemes UltraviolenceDemo --quiet --baseline .periphery.baseline.json --write-baseline .periphery.baseline.json --strict --retain-public
-    @echo "✅ periphery-scan Success"
+    #     periphery scan --project-root Demo --project UltraviolenceDemo.xcodeproj --schemes UltraviolenceDemo --quiet --baseline .periphery.baseline.json --write-baseline .periphery.baseline.json --strict --retain-public
+    # @echo "✅ periphery-scan Success"
+    @echo "‼️ periphery-scan Skipped"
 
 create-todo-tickets:
     #!/usr/bin/env fish

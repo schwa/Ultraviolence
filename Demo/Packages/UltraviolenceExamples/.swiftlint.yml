@@ -1,6 +1,0 @@
-disabled_rules:
-- explicit_top_level_acl
-- accessibility_label_for_image
-# TODO: Temporarily disable lint rules that slow down the demo dev
-- force_try
-- force_unwrapping
