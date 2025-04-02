@@ -48,6 +48,7 @@ public let package = Package(
             name: "UltraviolenceTests",
             dependencies: [
                 "Ultraviolence",
+                "UltraviolenceUI",
                 "UltraviolenceSupport",
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax")
             ],

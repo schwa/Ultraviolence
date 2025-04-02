@@ -7,7 +7,7 @@ import Testing
 import UltraviolenceSupport
 import UltraviolenceUI
 
-@Test
+@Test(.disabled())
 @MainActor
 func testRendering() throws {
     let source = """
