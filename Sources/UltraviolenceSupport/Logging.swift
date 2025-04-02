@@ -28,9 +28,10 @@ public extension Optional where Wrapped == OSSignposter {
 
 public extension ProcessInfo {
     var loggingEnabled: Bool {
-        guard let value = environment["LOGGING"]?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() else {
-            return false
-        }
-        return ["yes", "true", "y", "1", "on"].contains(value)
+        return true
+//        guard let value = environment["LOGGING"]?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() else {
+//            return false
+//        }
+//        return ["yes", "true", "y", "1", "on"].contains(value)
     }
 }
