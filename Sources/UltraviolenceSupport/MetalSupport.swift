@@ -631,7 +631,6 @@ public extension MTLComputeCommandEncoder {
     }
 }
 
-// TODO: #118 Sanitize
 public extension MTLDevice {
     func makeBuffer<T>(unsafeBytesOf value: T, options: MTLResourceOptions = []) throws -> MTLBuffer {
         precondition(isPOD(value))
