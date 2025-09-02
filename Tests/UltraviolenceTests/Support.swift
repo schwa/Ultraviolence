@@ -38,8 +38,8 @@ extension CGImage {
 func goldenImage(named name: String) throws -> CGImage {
     let url = Bundle.module.resourceURL!.appendingPathComponent("Golden Images").appendingPathComponent(name).appendingPathExtension("png")
     let data = try Data(contentsOf: url)
-    let imageSource = try CGImageSourceCreateWithData(data as CFData, nil).orThrow(.generic("TODO"))
-    return try CGImageSourceCreateImageAtIndex(imageSource, 0, nil).orThrow(.generic("TODO"))
+    let imageSource = try CGImageSourceCreateWithData(data as CFData, nil).orThrow(.generic("Failed to create image source from data"))
+    return try CGImageSourceCreateImageAtIndex(imageSource, 0, nil).orThrow(.generic("Failed to create image from source"))
 }
 
 func imageCompare(_ image1: CGImage, _ image2: CGImage) throws -> Bool {

@@ -637,7 +637,7 @@ public extension MTLDevice {
         precondition(isPOD(value))
         return try withUnsafeBytes(of: value) { buffer in
             let baseAddress = buffer.baseAddress.orFatalError(.resourceCreationFailure("No base address."))
-            return try makeBuffer(bytes: baseAddress, length: buffer.count, options: options).orThrow(.resourceCreationFailure("TODO"))
+            return try makeBuffer(bytes: baseAddress, length: buffer.count, options: options).orThrow(.resourceCreationFailure("Failed to create buffer from bytes"))
         }
     }
 
@@ -645,7 +645,7 @@ public extension MTLDevice {
         precondition(isPODArray(value))
         return try value.withUnsafeBytes { buffer in
             let baseAddress = buffer.baseAddress.orFatalError(.resourceCreationFailure("No base address."))
-            return try makeBuffer(bytes: baseAddress, length: buffer.count, options: options).orThrow(.resourceCreationFailure("TODO"))
+            return try makeBuffer(bytes: baseAddress, length: buffer.count, options: options).orThrow(.resourceCreationFailure("Failed to create buffer from array bytes"))
         }
     }
 
