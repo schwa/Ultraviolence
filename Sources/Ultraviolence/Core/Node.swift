@@ -1,5 +1,5 @@
 public final class Node {
-    weak var graph: Graph?
+    weak var graph: ElementGraph?
     weak var parent: Node?
     public internal(set) var children: [Node] = []
     var needsRebuild = true
@@ -13,7 +13,7 @@ public final class Node {
         // This line intentionally left blank.
     }
 
-    init(graph: Graph?) {
+    init(graph: ElementGraph?) {
         assert(graph != nil)
         self.graph = graph
     }

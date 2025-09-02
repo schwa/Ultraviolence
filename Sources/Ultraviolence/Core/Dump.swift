@@ -56,7 +56,7 @@ public extension Node {
 
 // MARK: -
 
-public extension Graph {
+public extension ElementGraph {
     @MainActor
     func dump(options: DumpOptions = .default, to output: inout some TextOutputStream) throws {
         try rebuildIfNeeded()
@@ -75,7 +75,7 @@ public extension Graph {
 
 public extension Element {
     func dump(options: DumpOptions = .default, to output: inout some TextOutputStream) throws {
-        let graph = try Graph(content: self)
+        let graph = try ElementGraph(content: self)
         try graph.rebuildIfNeeded()
         try graph.dump(options: options, to: &output)
     }

@@ -1,12 +1,12 @@
 internal final class StateBox<Wrapped> {
     private var _value: Wrapped
-    private weak var _graph: Graph?
+    private weak var _graph: ElementGraph?
     private var dependencies: [WeakBox<Node>] = []
 
-    private var graph: Graph? {
+    private var graph: ElementGraph? {
         if _graph == nil {
-            _graph = Graph.current
-            assert(_graph != nil, "StateBox must be used within a Graph.")
+            _graph = ElementGraph.current
+            assert(_graph != nil, "StateBox must be used within a ElementGraph.")
         }
         return _graph
     }

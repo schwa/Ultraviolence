@@ -2,10 +2,10 @@ import CoreGraphics
 import Metal
 import UltraviolenceSupport
 
-public extension Graph {
+public extension ElementGraph {
     @MainActor
     func processSetup() throws {
-        try withIntervalSignpost(signposter, name: "Graph.processSetup()") {
+        try withIntervalSignpost(signposter, name: "ElementGraph.processSetup()") {
             try process { element, node in
                 try element.setupEnter(node)
             } exit: { element, node in
@@ -16,7 +16,7 @@ public extension Graph {
 
     @MainActor
     func processWorkload() throws {
-        try withIntervalSignpost(signposter, name: "Graph.processWorkload()") {
+        try withIntervalSignpost(signposter, name: "ElementGraph.processWorkload()") {
             try process { element, node in
                 try element.workloadEnter(node)
             } exit: { element, node in
@@ -26,7 +26,7 @@ public extension Graph {
     }
 }
 
-internal extension Graph {
+internal extension ElementGraph {
     @MainActor
     func process(enter: (any BodylessElement, Node) throws -> Void, exit: (any BodylessElement, Node) throws -> Void) throws {
         try visit { node in

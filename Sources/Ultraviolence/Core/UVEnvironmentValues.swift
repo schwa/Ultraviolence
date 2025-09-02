@@ -87,8 +87,8 @@ public struct EnvironmentReader<Value, Content: Element>: Element, BodylessEleme
 @propertyWrapper
 public struct UVEnvironment <Value> {
     public var wrappedValue: Value {
-        guard let graph = Graph.current else {
-            preconditionFailure("Environment must be used within a Graph.")
+        guard let graph = ElementGraph.current else {
+            preconditionFailure("Environment must be used within a ElementGraph.")
         }
         guard let currentNode = graph.activeNodeStack.last else {
             preconditionFailure("Environment must be used within a Node.")

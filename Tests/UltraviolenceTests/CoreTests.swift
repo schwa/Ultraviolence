@@ -72,7 +72,7 @@ struct UltraviolenceStateTests {
     func testUpdate() throws {
         let v = ContentRenderPass()
 
-        let graph = try Graph(content: v)
+        let graph = try ElementGraph(content: v)
         try graph.rebuildIfNeeded()
         var demoElement: DemoElement {
             graph.element(at: [0], type: DemoElement.self)
@@ -108,7 +108,7 @@ struct UltraviolenceStateTests {
         }
 
         let v = ContentRenderPass()
-        let graph = try Graph(content: v)
+        let graph = try ElementGraph(content: v)
         try graph.rebuildIfNeeded()
         #expect(contentRenderPassBodyCount == 1)
         #expect(nestedBodyCount == 1)
@@ -145,7 +145,7 @@ struct UltraviolenceStateTests {
         }
 
         let v = ContentRenderPass()
-        let graph = try Graph(content: v)
+        let graph = try ElementGraph(content: v)
         try graph.rebuildIfNeeded()
         #expect(contentRenderPassBodyCount == 1)
         #expect(nestedBodyCount == 1)
@@ -182,7 +182,7 @@ struct UltraviolenceStateTests {
         }
 
         let v = ContentRenderPass()
-        let graph = try Graph(content: v)
+        let graph = try ElementGraph(content: v)
         try graph.rebuildIfNeeded()
         #expect(contentRenderPassBodyCount == 1)
         #expect(nestedBodyCount == 1)
@@ -219,7 +219,7 @@ struct UltraviolenceStateTests {
         }
 
         let v = ContentRenderPass()
-        let graph = try Graph(content: v)
+        let graph = try ElementGraph(content: v)
         try graph.rebuildIfNeeded()
         #expect(contentRenderPassBodyCount == 1)
         #expect(nestedBodyCount == 1)
@@ -256,7 +256,7 @@ struct UltraviolenceStateTests {
         }
 
         let v = ContentRenderPass()
-        let graph = try Graph(content: v)
+        let graph = try ElementGraph(content: v)
         try graph.rebuildIfNeeded()
         #expect(contentRenderPassBodyCount == 1)
         #expect(nestedBodyCount == 1)
@@ -290,7 +290,7 @@ struct UltraviolenceStateTests {
         }
 
         let v = ContentRenderPass()
-        let graph = try Graph(content: v)
+        let graph = try ElementGraph(content: v)
         try graph.rebuildIfNeeded()
         var demoElement: DemoElement {
             graph.element(at: [0, 0], type: DemoElement.self)
@@ -329,7 +329,7 @@ struct UltraviolenceStateTests {
         }
 
         let s = Sample()
-        let graph = try Graph(content: s)
+        let graph = try ElementGraph(content: s)
         try graph.rebuildIfNeeded()
         var demoElement: DemoElement {
             graph.element(at: [0, 0], type: DemoElement.self)
@@ -372,7 +372,7 @@ struct UltraviolenceStateTests {
         }
 
         let s = Sample()
-        let graph = try Graph(content: s)
+        let graph = try ElementGraph(content: s)
         try graph.rebuildIfNeeded()
         var nestedDemoElement: DemoElement {
             graph.element(at: [0, 0], type: DemoElement.self)
@@ -406,7 +406,7 @@ struct UltraviolenceStateTests {
         }
 
         let s = Sample()
-        let graph = try Graph(content: s)
+        let graph = try ElementGraph(content: s)
         try graph.rebuildIfNeeded()
         var nestedDemoElement: DemoElement {
             graph.element(at: [0, 1, 0], type: DemoElement.self)
@@ -440,7 +440,7 @@ struct UltraviolenceStateTests {
         }
 
         let s = Example1()
-        let graph = try Graph(content: s)
+        let graph = try ElementGraph(content: s)
         try graph.rebuildIfNeeded()
         #expect(graph.element(at: [0], type: Example2.self).value == "Hello world")
     }
@@ -469,7 +469,7 @@ struct UltraviolenceStateTests {
             }
         }
 
-        let g1 = try Graph(content: Example1())
+        let g1 = try ElementGraph(content: Example1())
         try g1.rebuildIfNeeded()
         #expect(g1.element(at: [0, 0], type: Example3.self).value == "Hello world")
     }
@@ -477,7 +477,7 @@ struct UltraviolenceStateTests {
     @Test
     func testAnyElement() throws {
         let e = DemoElement("Hello world").eraseToAnyElement()
-        let graph = try Graph(content: e)
+        let graph = try ElementGraph(content: e)
         try graph.rebuildIfNeeded()
         #expect(graph.element(at: [0], type: DemoElement.self).title == "Hello world")
     }
@@ -485,7 +485,7 @@ struct UltraviolenceStateTests {
     @Test
     func testModifier() throws {
         let root = DemoElement("Hello world").modifier(PassthroughModifier())
-        let graph = try Graph(content: root)
+        let graph = try ElementGraph(content: root)
         try graph.rebuildIfNeeded()
         #expect(graph.element(at: [0, 0], type: DemoElement.self).title == "Hello world")
     }
@@ -518,7 +518,7 @@ func weirdTests() throws {
 func testOptionalElement() throws {
     let element = DemoElement("Hello world")
     let optionalElement = DemoElement?(element)
-    let graph = try Graph(content: optionalElement)
+    let graph = try ElementGraph(content: optionalElement)
     try graph.rebuildIfNeeded()
     try graph.dump()
     #expect(graph.element(at: [], type: DemoElement.self).title == "Hello world")
@@ -538,7 +538,7 @@ func testElementDump() throws {
 @MainActor
 func testGraphDump() throws {
     let root = DemoElement("Hello world")
-    let graph = try Graph(content: root)
+    let graph = try ElementGraph(content: root)
     var s = ""
     try graph.dump(to: &s)
     s = s.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -559,7 +559,7 @@ func testComplexGraphDump() throws {
             }
         }
     }
-    let graph = try Graph(content: root)
+    let graph = try ElementGraph(content: root)
     var s = ""
     try graph.dump(options: [.dumpElement, .dumpNode], to: &s)
     s = s.trimmingCharacters(in: .whitespacesAndNewlines)
