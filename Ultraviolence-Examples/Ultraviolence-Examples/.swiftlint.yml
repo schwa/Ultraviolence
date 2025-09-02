@@ -1,0 +1,8 @@
+disabled_rules:
+- explicit_top_level_acl
+- force_cast
+- force_try
+- force_unwrapping
+- identifier_name
+- todo
+- accessibility_label_for_image

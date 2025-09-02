@@ -1,6 +1,33 @@
 {
-  "originHash" : "b11b2f81704cc903c109a059777eb465eecf799c6b2bc255c5635b5e5c7bc500",
+  "originHash" : "1aa344c5b0beb57b6210ff088e1000ed97fd2af38564ddb1334bc11c7a7b45a6",
   "pins" : [
+    {
+      "identity" : "metalcompilerplugin",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/schwa/MetalCompilerPlugin",
+      "state" : {
+        "revision" : "1db3b5dcabd648e0316f3a472646e72af24a5bde",
+        "version" : "0.1.0"
+      }
+    },
+    {
+      "identity" : "swift-async-algorithms",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-async-algorithms",
+      "state" : {
+        "revision" : "042e1c4d9d19748c9c228f8d4ebc97bb1e339b0b",
+        "version" : "1.0.4"
+      }
+    },
+    {
+      "identity" : "swift-collections",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-collections.git",
+      "state" : {
+        "revision" : "8c0c0a8b49e080e54e5e328cc552821ff07cd341",
+        "version" : "1.2.1"
+      }
+    },
     {
       "identity" : "swift-syntax",
       "kind" : "remoteSourceControl",

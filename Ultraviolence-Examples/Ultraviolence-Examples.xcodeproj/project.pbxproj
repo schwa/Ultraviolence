@@ -1,0 +1,335 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		45D9A56A2E67A7BE00B03138 /* UltraviolenceSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 45D9A5692E67A7BE00B03138 /* UltraviolenceSupport */; };
+		45D9A56C2E67A7BE00B03138 /* UltraviolenceUI in Frameworks */ = {isa = PBXBuildFile; productRef = 45D9A56B2E67A7BE00B03138 /* UltraviolenceUI */; };
+		45D9A5A92E67A93900B03138 /* Ultraviolence in Frameworks */ = {isa = PBXBuildFile; productRef = 45D9A5A82E67A93900B03138 /* Ultraviolence */; };
+		45D9A5AB2E67A93900B03138 /* UltraviolenceExamples in Frameworks */ = {isa = PBXBuildFile; productRef = 45D9A5AA2E67A93900B03138 /* UltraviolenceExamples */; };
+		45D9A5AD2E67A93900B03138 /* UltraviolenceSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 45D9A5AC2E67A93900B03138 /* UltraviolenceSupport */; };
+		45D9A5AF2E67A93900B03138 /* UltraviolenceUI in Frameworks */ = {isa = PBXBuildFile; productRef = 45D9A5AE2E67A93900B03138 /* UltraviolenceUI */; };
+		45E0A14D2D9DAF420091ED9E /* UltraviolenceExamples in Frameworks */ = {isa = PBXBuildFile; productRef = 45E0A14C2D9DAF420091ED9E /* UltraviolenceExamples */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		45D660672D8377EA00CD91F5 /* Project-Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Project-Debug.xcconfig"; sourceTree = "<group>"; };
+		45D660682D8377EA00CD91F5 /* Project-Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Project-Release.xcconfig"; sourceTree = "<group>"; };
+		45D660692D8377EA00CD91F5 /* Project-Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Project-Shared.xcconfig"; sourceTree = "<group>"; };
+		45D6606A2D8377EA00CD91F5 /* Ultraviolence-Examples-Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Ultraviolence-Examples-Debug.xcconfig"; sourceTree = "<group>"; };
+		45D6606B2D8377EA00CD91F5 /* Ultraviolence-Examples-Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Ultraviolence-Examples-Release.xcconfig"; sourceTree = "<group>"; };
+		45D6606C2D8377EA00CD91F5 /* Ultraviolence-Examples-Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Ultraviolence-Examples-Shared.xcconfig"; sourceTree = "<group>"; };
+		45E0A1122D9DAF2D0091ED9E /* Ultraviolence-Examples.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Ultraviolence-Examples.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		45C0EEDC2D9DB0FB0076D9DF /* Exceptions for "Ultraviolence-Examples" folder in "Ultraviolence-Examples" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Assets.xcassets,
+				ContentView.swift,
+				"Preview Content/Preview Assets.xcassets",
+				Resources/Images/DJSI3956.JPG,
+				"Resources/Images/HD-Testcard-original.jpg",
+				"Resources/Sample Splats/1Splat.json",
+				"Resources/Sample Splats/2Splats.json",
+				"Resources/Sample Splats/3Splats.json",
+				"Resources/Sample Splats/6Splats.json",
+				"Resources/Sample Splats/centered_lastchance.splat",
+				"Resources/Sample Splats/train.splat",
+				"Resources/Samples/65 Point Cube_1.0be85635ffbf1d6253042a9343dcc840542bf5d7ceafcf1e6f4ce96b3f0c66c4.cube",
+				"Resources/Samples/Blue Bias.png",
+				Resources/Samples/Custom_LUT.cube,
+				"Resources/Samples/Hollywood_-_Cinecom.cube",
+				Resources/Samples/Linear.png,
+				Resources/Samples/My_Canon_CLog3_Lut_7.A002C019_2207021U_CANON.cube,
+				"Resources/Samples/neutral-lut.png",
+				"Resources/Samples/Sepia Tone.png",
+				Resources/Samples/Transfer.png,
+				Resources/Samples/tweaked.png,
+				Resources/teapot.obj,
+				UltraviolenceExamplesApp.swift,
+			);
+			target = 45E0A1112D9DAF2D0091ED9E /* Ultraviolence-Examples */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		455C19072CD483FC009A25A6 /* Ultraviolence-Examples */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				45C0EEDC2D9DB0FB0076D9DF /* Exceptions for "Ultraviolence-Examples" folder in "Ultraviolence-Examples" target */,
+			);
+			path = "Ultraviolence-Examples";
+			sourceTree = "<group>";
+		};
+		458B57A22D9DB77F008ADACC /* ci_scripts */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ci_scripts;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		45E0A10F2D9DAF2D0091ED9E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				45D9A56C2E67A7BE00B03138 /* UltraviolenceUI in Frameworks */,
+				45D9A5AF2E67A93900B03138 /* UltraviolenceUI in Frameworks */,
+				45D9A56A2E67A7BE00B03138 /* UltraviolenceSupport in Frameworks */,
+				45D9A5AD2E67A93900B03138 /* UltraviolenceSupport in Frameworks */,
+				45D9A5A92E67A93900B03138 /* Ultraviolence in Frameworks */,
+				45D9A5AB2E67A93900B03138 /* UltraviolenceExamples in Frameworks */,
+				45E0A14D2D9DAF420091ED9E /* UltraviolenceExamples in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		455C18FC2CD483FC009A25A6 = {
+			isa = PBXGroup;
+			children = (
+				458B57A22D9DB77F008ADACC /* ci_scripts */,
+				45D6606D2D8377EA00CD91F5 /* xcconfig */,
+				455C19072CD483FC009A25A6 /* Ultraviolence-Examples */,
+				45E0A14B2D9DAF420091ED9E /* Frameworks */,
+				455C19062CD483FC009A25A6 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		455C19062CD483FC009A25A6 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				45E0A1122D9DAF2D0091ED9E /* Ultraviolence-Examples.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		45D6606D2D8377EA00CD91F5 /* xcconfig */ = {
+			isa = PBXGroup;
+			children = (
+				45D660672D8377EA00CD91F5 /* Project-Debug.xcconfig */,
+				45D660682D8377EA00CD91F5 /* Project-Release.xcconfig */,
+				45D660692D8377EA00CD91F5 /* Project-Shared.xcconfig */,
+				45D6606A2D8377EA00CD91F5 /* Ultraviolence-Examples-Debug.xcconfig */,
+				45D6606B2D8377EA00CD91F5 /* Ultraviolence-Examples-Release.xcconfig */,
+				45D6606C2D8377EA00CD91F5 /* Ultraviolence-Examples-Shared.xcconfig */,
+			);
+			path = xcconfig;
+			sourceTree = "<group>";
+		};
+		45E0A14B2D9DAF420091ED9E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		45E0A1112D9DAF2D0091ED9E /* Ultraviolence-Examples */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 45E0A11B2D9DAF2E0091ED9E /* Build configuration list for PBXNativeTarget "Ultraviolence-Examples" */;
+			buildPhases = (
+				45E0A10E2D9DAF2D0091ED9E /* Sources */,
+				45E0A10F2D9DAF2D0091ED9E /* Frameworks */,
+				45E0A1102D9DAF2D0091ED9E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				45C0EEDE2D9DB10A0076D9DF /* PBXTargetDependency */,
+			);
+			name = "Ultraviolence-Examples";
+			packageProductDependencies = (
+				45E0A14C2D9DAF420091ED9E /* UltraviolenceExamples */,
+				45D9A5692E67A7BE00B03138 /* UltraviolenceSupport */,
+				45D9A56B2E67A7BE00B03138 /* UltraviolenceUI */,
+				45D9A5A82E67A93900B03138 /* Ultraviolence */,
+				45D9A5AA2E67A93900B03138 /* UltraviolenceExamples */,
+				45D9A5AC2E67A93900B03138 /* UltraviolenceSupport */,
+				45D9A5AE2E67A93900B03138 /* UltraviolenceUI */,
+			);
+			productName = UltraviolenceExamples;
+			productReference = 45E0A1122D9DAF2D0091ED9E /* Ultraviolence-Examples.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		455C18FD2CD483FC009A25A6 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1630;
+				LastUpgradeCheck = 1620;
+				TargetAttributes = {
+					45E0A1112D9DAF2D0091ED9E = {
+						CreatedOnToolsVersion = 16.3;
+					};
+				};
+			};
+			buildConfigurationList = 455C19002CD483FC009A25A6 /* Build configuration list for PBXProject "Ultraviolence-Examples" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 455C18FC2CD483FC009A25A6;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				450B4C822D7FCAEB0051CFE4 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */,
+				45D9A5A72E67A93900B03138 /* XCLocalSwiftPackageReference "../../Ultraviolence" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 455C19062CD483FC009A25A6 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				45E0A1112D9DAF2D0091ED9E /* Ultraviolence-Examples */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		45E0A1102D9DAF2D0091ED9E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		45E0A10E2D9DAF2D0091ED9E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		45C0EEDE2D9DB10A0076D9DF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 45C0EEDD2D9DB10A0076D9DF /* UltraviolenceExamples */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		455C19282CD483FD009A25A6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 45D660672D8377EA00CD91F5 /* Project-Debug.xcconfig */;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		455C19292CD483FD009A25A6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 45D660682D8377EA00CD91F5 /* Project-Release.xcconfig */;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		45E0A11C2D9DAF2E0091ED9E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 45D6606A2D8377EA00CD91F5 /* Ultraviolence-Examples-Debug.xcconfig */;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		45E0A11D2D9DAF2E0091ED9E /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 45D6606B2D8377EA00CD91F5 /* Ultraviolence-Examples-Release.xcconfig */;
+			buildSettings = {
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		455C19002CD483FC009A25A6 /* Build configuration list for PBXProject "Ultraviolence-Examples" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				455C19282CD483FD009A25A6 /* Debug */,
+				455C19292CD483FD009A25A6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		45E0A11B2D9DAF2E0091ED9E /* Build configuration list for PBXNativeTarget "Ultraviolence-Examples" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				45E0A11C2D9DAF2E0091ED9E /* Debug */,
+				45E0A11D2D9DAF2E0091ED9E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		45D9A5A72E67A93900B03138 /* XCLocalSwiftPackageReference "../../Ultraviolence" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../Ultraviolence;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		450B4C822D7FCAEB0051CFE4 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-async-algorithms.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		45C0EEDD2D9DB10A0076D9DF /* UltraviolenceExamples */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = UltraviolenceExamples;
+		};
+		45D9A5692E67A7BE00B03138 /* UltraviolenceSupport */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = UltraviolenceSupport;
+		};
+		45D9A56B2E67A7BE00B03138 /* UltraviolenceUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = UltraviolenceUI;
+		};
+		45D9A5A82E67A93900B03138 /* Ultraviolence */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Ultraviolence;
+		};
+		45D9A5AA2E67A93900B03138 /* UltraviolenceExamples */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = UltraviolenceExamples;
+		};
+		45D9A5AC2E67A93900B03138 /* UltraviolenceSupport */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = UltraviolenceSupport;
+		};
+		45D9A5AE2E67A93900B03138 /* UltraviolenceUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = UltraviolenceUI;
+		};
+		45E0A14C2D9DAF420091ED9E /* UltraviolenceExamples */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = UltraviolenceExamples;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 455C18FD2CD483FC009A25A6 /* Project object */;
+}
