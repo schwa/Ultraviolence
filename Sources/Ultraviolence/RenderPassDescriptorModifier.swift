@@ -8,7 +8,7 @@ internal struct RenderPassDescriptorModifier<Content>: Element where Content: El
     var content: Content
     var modify: (MTLRenderPassDescriptor) -> Void
 
-    // TODO: #72 this is pretty bad. We're only modifying it for workload NOT setup. And we're modifying it globally - even for elements further up teh stack.
+    // TODO: #72 this is pretty bad. We're only modifying it for workload NOT setup. And we're modifying it globally - even for elements further up the stack.
     var body: some Element {
         get throws {
             content.environment(\.renderPassDescriptor, try modifiedRenderPassDescriptor())

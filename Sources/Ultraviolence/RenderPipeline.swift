@@ -38,7 +38,7 @@ public struct RenderPipeline <Content>: Element, BodylessElement, BodylessConten
         renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
 
         // TODO: #102 We don't want to overwrite anything already set.
-        // TODO: #103 This is copying everything from the render pass descriptor. But really we should be getting this entirely from the enviroment.
+        // TODO: #103 This is copying everything from the render pass descriptor. But really we should be getting this entirely from the environment.
         if let colorAttachment0Texture = renderPassDescriptor.colorAttachments[0].texture {
             renderPipelineDescriptor.colorAttachments[0].pixelFormat = colorAttachment0Texture.pixelFormat
         }
