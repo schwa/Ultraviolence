@@ -28,7 +28,7 @@ public struct ShaderLibrary {
         self.namespace = namespace
     }
 
-    // TODO: #93 Deprecate this for the type safe equivalent
+    @available(*, deprecated, message: "Use the type-safe function<T>(named:type:constantValues:) method instead")
     internal func function(named name: String, type: MTLFunctionType? = nil, constantValues: MTLFunctionConstantValues? = nil) throws -> MTLFunction {
         let scopedNamed = namespace.map { "\($0)::\(name)" } ?? name
         let constantValues = constantValues ?? MTLFunctionConstantValues()
@@ -69,22 +69,19 @@ public struct ShaderLibrary {
 public extension ShaderLibrary {
     subscript(dynamicMember name: String) -> ComputeKernel {
         get throws {
-            let function = try function(named: name, type: .kernel)
-            return ComputeKernel(function)
+            try function(named: name, type: ComputeKernel.self)
         }
     }
 
     subscript(dynamicMember name: String) -> VertexShader {
         get throws {
-            let function = try function(named: name, type: .vertex)
-            return VertexShader(function)
+            try function(named: name, type: VertexShader.self)
         }
     }
 
     subscript(dynamicMember name: String) -> FragmentShader {
         get throws {
-            let function = try function(named: name, type: .fragment)
-            return FragmentShader(function)
+            try function(named: name, type: FragmentShader.self)
         }
     }
 }
