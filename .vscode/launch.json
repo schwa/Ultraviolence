@@ -17,6 +17,24 @@
             "name": "Release uvcli",
             "program": "${workspaceFolder:Ultraviolence}/.build/release/uvcli",
             "preLaunchTask": "swift: Build Release uvcli"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:Ultraviolence}",
+            "name": "Debug UltraviolenceCLI",
+            "program": "${workspaceFolder:Ultraviolence}/.build/debug/UltraviolenceCLI",
+            "preLaunchTask": "swift: Build Debug UltraviolenceCLI"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:Ultraviolence}",
+            "name": "Release UltraviolenceCLI",
+            "program": "${workspaceFolder:Ultraviolence}/.build/release/UltraviolenceCLI",
+            "preLaunchTask": "swift: Build Release UltraviolenceCLI"
         }
     ]
 }
