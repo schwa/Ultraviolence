@@ -1,6 +1,6 @@
 public struct UVEnvironmentValues {
     struct Key: Hashable, CustomDebugStringConvertible {
-        var id: ObjectIdentifier // TODO: #49 We don't need to store this. But AnyIdentifier gets a tad upset.
+        var id: ObjectIdentifier
         var value: Any.Type
     }
 
