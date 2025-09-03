@@ -73,15 +73,6 @@ public struct EnvironmentReader<Value, Content: Element>: Element, BodylessEleme
     }
 }
 
-// TODO: #50 SwiftUI.Environment adopts DynamicProperty.
-// public protocol DynamicProperty {
-//    mutating func update()
-// }
-//
-// extension DynamicProperty {
-//    public mutating func update()
-// }
-
 // MARK: -
 
 @propertyWrapper
