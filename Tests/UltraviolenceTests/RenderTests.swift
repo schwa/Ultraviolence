@@ -50,6 +50,7 @@ func testRendering() throws {
             }
             .parameter("color", value: color)
         }
+        .vertexDescriptor(vertexShader.inferredVertexDescriptor()!)
     }
     let offscreenRenderer = try OffscreenRenderer(size: CGSize(width: 1_600, height: 1_200))
     let image = try offscreenRenderer.render(renderPass).cgImage

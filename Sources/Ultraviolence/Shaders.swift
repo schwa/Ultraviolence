@@ -50,8 +50,8 @@ public struct VertexShader: ShaderProtocol {
 }
 
 public extension VertexShader {
-    var vertexDescriptor: MTLVertexDescriptor? {
-        function.vertexDescriptor
+    func inferredVertexDescriptor() -> MTLVertexDescriptor? {
+        function.inferredVertexDescriptor()
     }
 }
 

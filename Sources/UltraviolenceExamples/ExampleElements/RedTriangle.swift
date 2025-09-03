@@ -25,6 +25,7 @@ public struct RedTriangle: Element {
                     }
                     .parameter("color", value: SIMD4<Float>([1, 0, 0, 1]))
                 }
+                .vertexDescriptor(vertexShader.inferredVertexDescriptor()!)
             }
         }
     }
