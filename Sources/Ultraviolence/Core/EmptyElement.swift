@@ -7,7 +7,7 @@ public struct EmptyElement: Element {
 }
 
 extension EmptyElement: BodylessElement {
-    internal func _expandNode(_ node: Node, context: ExpansionContext) throws {
+    internal func expandIntoNode(_ node: Node, context: ExpansionContext) throws {
         // This line intentionally left blank.
     }
 }

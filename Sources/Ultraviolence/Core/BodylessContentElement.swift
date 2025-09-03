@@ -13,7 +13,7 @@ extension BodylessContentElement {
         try content.expandNode(node.children[0], context: context.deeper())
     }
 
-    func _expandNode(_ node: Node, context: ExpansionContext) throws {
+    func expandIntoNode(_ node: Node, context: ExpansionContext) throws {
         try expandNodeHelper(node, context: context)
     }
 }

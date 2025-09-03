@@ -1,6 +1,6 @@
 import Metal
 
-// TODO: #100 this is no different than a EncivonmentReader<RenderCOmmandEncoder>
+// TODO: #100 this is no different than a EnvironmentReader<RenderCommandEncoder>
 public struct Draw: Element, BodylessElement {
     public typealias Body = Never
 
@@ -10,7 +10,7 @@ public struct Draw: Element, BodylessElement {
         self.encodeGeometry = encodeGeometry
     }
 
-    func _expandNode(_ node: Node, context: ExpansionContext) throws {
+    func expandIntoNode(_ node: Node, context: ExpansionContext) throws {
         // This line intentionally left blank.
     }
 

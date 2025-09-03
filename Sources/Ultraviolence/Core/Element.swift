@@ -41,7 +41,7 @@ internal extension Element {
         restoreStateProperties(node)
 
         if let bodylessElement = self as? any BodylessElement {
-            try bodylessElement._expandNode(node, context: context.deeper())
+            try bodylessElement.expandIntoNode(node, context: context.deeper())
         }
 
         let shouldRunBody = node.needsRebuild || !equalToPrevious(node)

@@ -7,7 +7,7 @@ public struct AnyElement: Element, BodylessElement {
         }
     }
 
-    internal func _expandNode(_ node: Node, context: ExpansionContext) throws {
+    internal func expandIntoNode(_ node: Node, context: ExpansionContext) throws {
         let graph = try node.graph.orThrow(.noCurrentGraph)
         if node.children.isEmpty {
             node.children.append(graph.makeNode())

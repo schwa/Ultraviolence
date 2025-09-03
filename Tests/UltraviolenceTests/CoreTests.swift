@@ -16,7 +16,7 @@ struct DemoElement: Element, BodylessElement {
         self.action = action
     }
 
-    func _expandNode(_ node: Node, context: ExpansionContext) throws {
+    func expandIntoNode(_ node: Node, context: ExpansionContext) throws {
         // This line intentionally left blank.
     }
 }
@@ -435,7 +435,7 @@ struct UltraviolenceStateTests {
         struct Example2: Element, BodylessElement {
             typealias Body = Never
             var value: String
-            func _expandNode(_ node: Node, context: ExpansionContext) throws {
+            func expandIntoNode(_ node: Node, context: ExpansionContext) throws {
             }
         }
 
@@ -465,7 +465,7 @@ struct UltraviolenceStateTests {
         struct Example3: Element, BodylessElement {
             typealias Body = Never
             var value: String
-            func _expandNode(_ node: Node, context: ExpansionContext) throws {
+            func expandIntoNode(_ node: Node, context: ExpansionContext) throws {
             }
         }
 

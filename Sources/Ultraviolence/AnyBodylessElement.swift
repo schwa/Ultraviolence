@@ -9,7 +9,7 @@ internal struct AnyBodylessElement: Element, BodylessElement {
         // This line intentionally left blank
     }
 
-    func _expandNode(_: Node, context: ExpansionContext) throws {
+    func expandIntoNode(_: Node, context: ExpansionContext) throws {
         // This line intentionally left blank.
     }
 

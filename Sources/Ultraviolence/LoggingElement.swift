@@ -3,7 +3,7 @@ public struct LoggingElement: Element, BodylessElement {
         // This line intentionally left blank.
     }
 
-    func _expandNode(_ node: Node, context: ExpansionContext) throws {
+    func expandIntoNode(_ node: Node, context: ExpansionContext) throws {
         // This line intentionally left blank.
     }
 

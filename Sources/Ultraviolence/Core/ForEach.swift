@@ -23,7 +23,7 @@ public extension ForEach {
 }
 
 extension ForEach: BodylessElement {
-    internal func _expandNode(_ node: Node, context: ExpansionContext) throws {
+    internal func expandIntoNode(_ node: Node, context: ExpansionContext) throws {
         let graph = try node.graph.orThrow(.noCurrentGraph)
         var index = 0
 

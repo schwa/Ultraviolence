@@ -12,7 +12,7 @@ public struct _ConditionalContent<TrueContent, FalseContent>: Element, BodylessE
         self.second = second
     }
 
-    internal func _expandNode(_ node: Node, context: ExpansionContext) throws {
+    internal func expandIntoNode(_ node: Node, context: ExpansionContext) throws {
         if let first {
             try first.expandNode(node, context: context.deeper())
         }

@@ -9,7 +9,7 @@ public struct TupleElement <each T: Element>: Element {
 }
 
 extension TupleElement: BodylessElement {
-    internal func _expandNode(_ node: Node, context: ExpansionContext) throws {
+    internal func expandIntoNode(_ node: Node, context: ExpansionContext) throws {
         let graph = try node.graph.orThrow(.noCurrentGraph)
         var index = 0
         for child in repeat (each children) {
