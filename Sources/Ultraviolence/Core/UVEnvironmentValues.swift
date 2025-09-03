@@ -31,7 +31,12 @@ public extension UVEnvironmentValues {
             return Key.defaultValue
         }
         set {
-            // TODO: #26 Use isKnownUniquelyReferenced.
+            if !isKnownUniquelyReferenced(&storage) {
+                let newStorage = Storage()
+                newStorage.parent = storage.parent
+                newStorage.values = storage.values
+                storage = newStorage
+            }
             storage.values[.init(key)] = newValue
         }
     }
