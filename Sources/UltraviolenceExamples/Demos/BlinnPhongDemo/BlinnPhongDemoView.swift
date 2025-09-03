@@ -39,7 +39,6 @@ public struct BlinnPhongDemoView: View {
                 BlinnPhongLight(lightPosition: [5, 5, 0], lightColor: [1, 0, 0], lightPower: 50)
             ]
             let lighting = BlinnPhongLighting(
-                screenGamma: 2.2,
                 ambientLightColor: [0, 0, 0],
                 lights: try device.makeTypedBuffer(values: lights, options: [])
             )

@@ -66,12 +66,10 @@ extension BlinnPhongMaterial {
 }
 
 public struct BlinnPhongLighting {
-    public var screenGamma: Float
     public var ambientLightColor: simd_float3
     public var lights: TypedMTLBuffer<BlinnPhongLight>
 
-    public init(screenGamma: Float, ambientLightColor: simd_float3, lights: TypedMTLBuffer<BlinnPhongLight>) {
-        self.screenGamma = screenGamma
+    public init(ambientLightColor: simd_float3, lights: TypedMTLBuffer<BlinnPhongLight>) {
         self.ambientLightColor = ambientLightColor
         self.lights = lights
     }
@@ -80,7 +78,6 @@ public struct BlinnPhongLighting {
 extension BlinnPhongLighting {
     func toArgumentBuffer() throws -> BlinnPhongLightingModelArgumentBuffer {
         BlinnPhongLightingModelArgumentBuffer(
-            screenGamma: screenGamma,
             lightCount: Int32(lights.count),
             ambientLightColor: ambientLightColor,
             lights: lights.unsafeMTLBuffer.gpuAddressAsUnsafeMutablePointer(type: BlinnPhongLight.self).orFatalError()
