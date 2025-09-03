@@ -1,21 +1,4 @@
-//
-//  File.swift
-//  Ultraviolence
-//
-//  Created by Jonathan Wight on 9/2/25.
-//
-
-
-public func clamp<T>(_ value: T, to range: ClosedRange<T>) -> T where T: Comparable {
-    min(max(value, range.lowerBound), range.upperBound)
-}
-
-public extension FloatingPoint {
-    func clamped(to range: ClosedRange<Self>) -> Self {
-        clamp(self, to: range)
-    }
-}
-
+@available(*, deprecated, message: "Use FloatingPoint.wrapped(to:) instead")
 public func wrap(_ value: Double, to range: ClosedRange<Double>) -> Double {
     let size = range.upperBound - range.lowerBound
     let normalized = value - range.lowerBound

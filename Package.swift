@@ -69,7 +69,6 @@ public let package = Package(
                 "UltraviolenceExampleShaders",
                 "UltraviolenceUI",
                 "UltraviolenceGaussianSplats",
-                .product(name: "AsyncAlgorithms", package: "swift-async-algorithms")
             ],
             swiftSettings: [
                 .defaultIsolation(nil)
@@ -97,18 +96,19 @@ public let package = Package(
             ]
         ),
         .target(
-            name: "GaussianSplatShaders",
-            plugins: [
-                .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
-            ]
-        ),
-        .target(
             name: "UltraviolenceGaussianSplats",
             dependencies: [
                 "Ultraviolence",
                 "UltraviolenceSupport",
-                "GaussianSplatShaders",
-                "UltraviolenceUI"
+                "UltraviolenceGaussianSplatShaders",
+                "UltraviolenceUI",
+                .product(name: "AsyncAlgorithms", package: "swift-async-algorithms")
+            ]
+        ),
+        .target(
+            name: "UltraviolenceGaussianSplatShaders",
+            plugins: [
+                .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
             ]
         ),
         .target(
@@ -122,6 +122,7 @@ public let package = Package(
             name: "UltraviolenceExamplesTests",
             dependencies: ["UltraviolenceExamples"]
         ),
+
     ],
     swiftLanguageModes: [.v6]
 )

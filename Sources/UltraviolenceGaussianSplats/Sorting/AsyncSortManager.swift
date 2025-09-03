@@ -1,5 +1,5 @@
 internal import AsyncAlgorithms
-import GaussianSplatShaders
+import UltraviolenceGaussianSplatShaders
 @preconcurrency import Metal
 internal import os
 import simd

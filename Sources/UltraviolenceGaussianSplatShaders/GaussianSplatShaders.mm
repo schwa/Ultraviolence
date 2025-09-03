@@ -8,7 +8,7 @@
 
 @implementation NSBundle (GaussianSplatModule)
 
-+ (NSBundle *)ultraviolenceGaussianSplatShadersShadersBundle {
++ (NSBundle *)ultraviolenceGaussianSplatShaders {
     static NSBundle *moduleBundle = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -44,7 +44,7 @@
         }
 
         @throw [NSException exceptionWithName:NSInternalInconsistencyException
-                                       reason:@"Unable to find bundle named UltraviolenceExamples_UltraviolenceGaussianSplatShaders"
+                                       reason:@"Unable to find bundle named Ultraviolence_UltraviolenceGaussianSplatShaders"
                                      userInfo:nil];
     });
 

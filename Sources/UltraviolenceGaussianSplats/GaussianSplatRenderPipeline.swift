@@ -1,6 +1,6 @@
 #if os(iOS) || (os(macOS) && !arch(x86_64))
 import Foundation
-import GaussianSplatShaders
+import UltraviolenceGaussianSplatShaders
 import Metal
 import Ultraviolence
 
@@ -35,7 +35,7 @@ public struct GaussianSplatRenderPipeline: Element {
         self.drawableSize = drawableSize
         self.debugMode = debugMode
 
-        let shaderLibrary = try ShaderLibrary(bundle: Bundle.gaussianSplatShaders(), namespace: "GaussianSplatAntimatter15RenderShaders")
+        let shaderLibrary = try ShaderLibrary(bundle: Bundle.ultraviolenceGaussianSplatShaders(), namespace: "GaussianSplatAntimatter15RenderShaders")
 
         // TODO: #147 Give MTLFunctionConstantValues a nice type safe API.
         let constantValues = MTLFunctionConstantValues()

@@ -1,5 +1,5 @@
 #if os(iOS) || (os(macOS) && !arch(x86_64))
-import GaussianSplatShaders
+import UltraviolenceGaussianSplatShaders
 import UniformTypeIdentifiers
 import UltraviolenceSupport
 
