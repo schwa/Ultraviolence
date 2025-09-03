@@ -28,7 +28,6 @@ using namespace metal;
 #define __UV_ENUM_GET_MACRO(_1, _2, NAME, ...) NAME
 #define UV_ENUM(...) __UV_ENUM_GET_MACRO(__VA_ARGS__, __UV_NAMED_ENUM, __UV_ANON_ENUM, )(__VA_ARGS__)
 
-// TODO: #140 Rename?
 typedef UV_ENUM(int, ColorSource){
     kColorSourceColor = 0,
     kColorSourceTexture = 1,
@@ -38,8 +37,7 @@ struct Texture2DSpecifierArgumentBuffer {
     ColorSource source;
     // TODO: #141 use a union?
     simd_float3 color;
-    TEXTURE2D(float, access::sample)
-    texture;
+    TEXTURE2D(float, access::sample) texture;
     SAMPLER sampler;
 };
 
