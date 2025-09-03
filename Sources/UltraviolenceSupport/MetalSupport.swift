@@ -449,9 +449,7 @@ public extension MTLVertexFormat {
 }
 
 public extension MTLFunction {
-    var vertexDescriptor: MTLVertexDescriptor? {
-        // TODO: #53 Probably better to remove this at this point.
-        logger?.warning("Creating a vertex descriptor from a function is not recommended.")
+    func inferredVertexDescriptor() -> MTLVertexDescriptor? {
         guard let vertexAttributes else {
             return nil
         }
