@@ -6,7 +6,6 @@ public indirect enum UltraviolenceError: Error, Equatable {
     case resourceCreationFailure(String)
     case deviceCababilityFailure(String)
     case textureCreationFailure
-    // TODO: #92 This should be more "impossible" than "unexpected".
     case unexpectedError(Self)
     case noCurrentGraph
 }
