@@ -245,9 +245,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 45D6606A2D8377EA00CD91F5 /* Ultraviolence-Examples-Debug.xcconfig */;
 			buildSettings = {
-				IPHONEOS_DEPLOYMENT_TARGET = 26;
-				MACOSX_DEPLOYMENT_TARGET = 26;
-				XROS_DEPLOYMENT_TARGET = 26;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
+				MACOSX_DEPLOYMENT_TARGET = 15.6;
+				XROS_DEPLOYMENT_TARGET = 2.6;
 			};
 			name = Debug;
 		};
@@ -255,9 +255,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 45D6606B2D8377EA00CD91F5 /* Ultraviolence-Examples-Release.xcconfig */;
 			buildSettings = {
-				IPHONEOS_DEPLOYMENT_TARGET = 26;
-				MACOSX_DEPLOYMENT_TARGET = 26;
-				XROS_DEPLOYMENT_TARGET = 26;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
+				MACOSX_DEPLOYMENT_TARGET = 15.6;
+				XROS_DEPLOYMENT_TARGET = 2.6;
 			};
 			name = Release;
 		};
