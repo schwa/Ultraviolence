@@ -7,7 +7,7 @@ import Testing
 import UltraviolenceSupport
 import UltraviolenceUI
 
-@Test(.disabled())
+@Test
 @MainActor
 func testRendering() throws {
     let source = """
@@ -39,8 +39,8 @@ func testRendering() throws {
     """
 
     let color: SIMD4<Float> = [1, 0, 0, 1]
-    var gpuTime: Double = -.greatestFiniteMagnitude
-    var kernelTime: Double = -.greatestFiniteMagnitude
+    var gpuTime: Double = 0
+    var kernelTime: Double = 0
     var gotScheduled = false
     var gotCompleted = false
 
@@ -73,8 +73,8 @@ func testRendering() throws {
     #expect(try image.isEqualToGoldenImage(named: "RedTriangle"))
 
     // See above TODO.
-    //    #expect(gotScheduled == true)
-    //    #expect(gotCompleted == true)
-    //    #expect(gpuTime >= 0)
-    //    #expect(kernelTime >= 0)
+    #expect(gotScheduled == true)
+    #expect(gotCompleted == true)
+    #expect(gpuTime > 0)
+    #expect(kernelTime > 0)
 }
