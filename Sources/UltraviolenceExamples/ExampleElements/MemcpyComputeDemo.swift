@@ -28,8 +28,8 @@ public enum MemcpyComputeDemo {
             let outputBuffer = try device.makeBuffer(length: count, options: [.storageModeShared]).orThrow(.resourceCreationFailure("Failed to create output buffer."))
             let kernel = try ComputeKernel(source: source)
             let compute = try ComputePass {
-                ComputePipeline(computeKernel: kernel) {
-                    ComputeDispatch(threads: .init(width: count, height: 1, depth: 1), threadsPerThreadgroup: .init(width: 1_024, height: 1, depth: 1))
+                try ComputePipeline(computeKernel: kernel) {
+                    try ComputeDispatch(threadsPerGrid: .init(width: count, height: 1, depth: 1), threadsPerThreadgroup: .init(width: 1_024, height: 1, depth: 1))
                         .parameter("src", buffer: inputBuffer)
                         .parameter("dst", buffer: outputBuffer)
                 }

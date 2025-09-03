@@ -27,15 +27,17 @@ struct LUTComputePipeline: Element {
     }
 
     var body: some Element {
-        ComputePipeline(computeKernel: kernel) {
-            let threads = MTLSize(width: inputTexture.width, height: inputTexture.height, depth: 1)
-            let threadsPerThreadgroup = MTLSize(width: 32, height: 32, depth: 1)
-            // TODO: #52 Compute threads per threadgroup
-            ComputeDispatch(threads: threads, threadsPerThreadgroup: threadsPerThreadgroup)
-                .parameter("inputTexture", texture: inputTexture)
-                .parameter("lutTexture", texture: lutTexture)
-                .parameter("outputTexture", texture: outputTexture)
-                .parameter("blend", value: blend)
+        get throws {
+            try ComputePipeline(computeKernel: kernel) {
+                let threads = MTLSize(width: inputTexture.width, height: inputTexture.height, depth: 1)
+                let threadsPerThreadgroup = MTLSize(width: 32, height: 32, depth: 1)
+                // TODO: #52 Compute threads per threadgroup
+                try ComputeDispatch(threadsPerGrid: threads, threadsPerThreadgroup: threadsPerThreadgroup)
+                    .parameter("inputTexture", texture: inputTexture)
+                    .parameter("lutTexture", texture: lutTexture)
+                    .parameter("outputTexture", texture: outputTexture)
+                    .parameter("blend", value: blend)
+            }
         }
     }
 }
