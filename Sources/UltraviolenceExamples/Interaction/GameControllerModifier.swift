@@ -35,7 +35,7 @@ public struct GameControllerModifier: ViewModifier {
         .overlay(alignment: .bottom) {
             VStack {
                 Text("Game Controller")
-                Text("Movement: \(viewModel.movement)")
+                Text("Movement: \(String(describing: viewModel.movement))")
             }
             .padding()
             .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 8))

@@ -35,7 +35,7 @@ public struct WorldView<Content: View>: View {
                 Picker("Mode", selection: $cameraMode) {
                     Text("Free").tag(CameraMode.free)
                     ForEach(CameraAngle.allCases, id: \.self) { angle in
-                        Text("\(angle)").tag(CameraMode.fixed(angle))
+                        Text("\(String(describing: angle))").tag(CameraMode.fixed(angle))
                     }
                 }
                 .pickerStyle(.menu)
@@ -43,7 +43,7 @@ public struct WorldView<Content: View>: View {
 
                 Picker("Controller", selection: $freeCameraController) {
                     ForEach(CameraController.allCases, id: \.self) { value in
-                        Text("\(value)").tag(value)
+                        Text("\(String(describing: value))").tag(value)
                     }
                 }
                 .pickerStyle(.menu)
