@@ -18,6 +18,7 @@ public protocol Element {
 ```
 
 Elements compose hierarchically to form a rendering tree. Each element can either:
+
 - Return other elements via its `body` property (compositional elements)
 - Perform actual Metal operations (bodyless elements)
 
@@ -49,7 +50,7 @@ The `ElementGraph` manages the internal representation of the element tree:
 ```swift
 public class ElementGraph {
     public private(set) var root: Node
-    
+
     public init<Content>(content: Content) throws where Content: Element
     public func update<Content>(content: Content) throws where Content: Element
     public func processSetup() throws
@@ -62,25 +63,33 @@ public class ElementGraph {
 Ultraviolence provides SwiftUI-like property wrappers for state management:
 
 #### @UVState
+
 Local state within an element:
+
 ```swift
 @UVState private var rotation: Float = 0
 ```
 
 #### @UVBinding
+
 Two-way binding to external state:
+
 ```swift
 @UVBinding var isEnabled: Bool
 ```
 
 #### @UVObservedObject
+
 Observe changes in external objects:
+
 ```swift
 @UVObservedObject var viewModel: MyViewModel
 ```
 
 #### @UVEnvironment
+
 Access values from the environment:
+
 ```swift
 @UVEnvironment(\.device) var device
 ```
@@ -107,6 +116,7 @@ Elements can read from and modify the environment for their children.
 ### Core Framework (Ultraviolence)
 
 The main framework containing:
+
 - Element protocol and core types
 - State management system
 - Environment system
@@ -116,6 +126,7 @@ The main framework containing:
 ### UI Integration (UltraviolenceUI)
 
 SwiftUI integration components:
+
 - `RenderView`: SwiftUI view for Metal rendering
 - `MTKView` integration
 - SwiftUI environment bridging
@@ -123,6 +134,7 @@ SwiftUI integration components:
 ### Support Utilities (UltraviolenceSupport)
 
 Supporting utilities and extensions:
+
 - Metal helpers and extensions
 - Error types
 - Logging utilities
@@ -131,12 +143,14 @@ Supporting utilities and extensions:
 ### Macros (UltraviolenceMacros)
 
 Swift macros for code generation:
+
 - `@UVEntry`: Generates boilerplate for shader parameters
 - Automatic struct alignment for Metal-Swift interop
 
 ### Examples (UltraviolenceExamples)
 
 Example implementations and demos:
+
 - Sample rendering pipelines
 - Shader implementations
 - Interaction patterns
@@ -145,6 +159,7 @@ Example implementations and demos:
 ### Shaders
 
 Metal shader libraries:
+
 - **UltraviolenceExampleShaders**: Common shaders for examples
 - **GaussianSplatShaders**: Specialized Gaussian splatting shaders
 
@@ -190,7 +205,10 @@ The node expansion process transforms the declarative Element tree into an execu
 
 #### expandNode vs expandIntoNode
 
+_Note: The similarity of these names has been identified as confusing (see [issue #159](https://github.com/schwa/Ultraviolence/issues/159))._
+
 - **`expandNode`**: The orchestrator method that manages the full expansion process
+
   - Sets up the environment for the node
   - Manages state boxes and property wrappers
   - Calls body getter for compositional elements
@@ -206,16 +224,19 @@ The node expansion process transforms the declarative Element tree into an execu
 #### Expansion Sequence
 
 1. **Initial Expansion**: Starting from the root element
+
    ```
    ElementGraph.init(content:) → root.expandNode()
    ```
 
 2. **Recursive Descent**: Each element expands its children
+
    ```
    Element.expandNode() → body.getter → child.expandNode()
    ```
 
 3. **Bodyless Terminal**: Bodyless elements terminate recursion
+
    ```
    BodylessElement.expandNode() → expandIntoNode()
    ```
@@ -263,11 +284,13 @@ The command buffer coordinates GPU work submission:
 #### Creation and Management
 
 1. **Creation**: Command buffers are typically created per frame
+
    - Created by `CommandBufferElement` or render system
    - Stored in environment for child elements to access
    - Reused throughout the frame's render graph
 
 2. **Command Encoding**: Different phases encode commands
+
    ```
    CommandBuffer
    ├── RenderCommandEncoder (RenderPass)
@@ -280,6 +303,7 @@ The command buffer coordinates GPU work submission:
    ```
 
 3. **Scheduling**: Handlers can be attached for events
+
    - **Scheduled Handler**: Called when GPU starts processing
    - **Completed Handler**: Called when GPU finishes all work
 
@@ -379,6 +403,7 @@ Parameters(vertex: transforms, fragment: materials)
 ### Resource Management
 
 Automatic resource lifecycle management:
+
 - Textures loaded on demand
 - Buffers allocated as needed
 - Pipeline states cached and reused
@@ -390,9 +415,12 @@ Automatic resource lifecycle management:
 - **GPU**: Actual rendering execution
 
 The framework ensures thread safety through:
+
 - `@MainActor` annotations for UI updates
 - Synchronized access to shared resources
 - Command buffer scheduling
+
+_Note: There are ongoing concurrency safety improvements tracked in [issue #146](https://github.com/schwa/Ultraviolence/issues/146) (Sendable conformance)._
 
 ## Performance Considerations
 
@@ -462,22 +490,22 @@ extension UVEnvironmentValues {
 
 ## Comparison with SwiftUI
 
-| Aspect | SwiftUI | Ultraviolence |
-|--------|---------|---------------|
-| Core Protocol | View | Element |
-| Composition | Views | Elements |
-| State | @State, @Binding | @UVState, @UVBinding |
-| Environment | @Environment | @UVEnvironment |
-| Output | UI Elements | Metal Commands |
-| Rebuild | Diffing | Selective Node Updates |
+| Aspect        | SwiftUI          | Ultraviolence          |
+| ------------- | ---------------- | ---------------------- |
+| Core Protocol | View             | Element                |
+| Composition   | Views            | Elements               |
+| State         | @State, @Binding | @UVState, @UVBinding   |
+| Environment   | @Environment     | @UVEnvironment         |
+| Output        | UI Elements      | Metal Commands         |
+| Rebuild       | Diffing          | Selective Node Updates |
 
 ## Future Directions
 
-- **Mesh Shaders**: Support for Metal 3 mesh shaders
-- **Ray Tracing**: Integration with Metal ray tracing
-- **Shader Graph**: Visual shader composition
+- **Mesh Shaders**: Support for Metal 3 mesh shaders ([issue #68](https://github.com/schwa/Ultraviolence/issues/68))
+- **Ray Tracing**: Integration with Metal ray tracing ([issue #86](https://github.com/schwa/Ultraviolence/issues/86))
+- **Shader Graph**: Visual shader composition ([issue #67](https://github.com/schwa/Ultraviolence/issues/67))
 - **Performance Tools**: Built-in profiling and debugging
-- **More Platforms**: visionOS and iOS optimization
+- **More Platforms**: visionOS and iOS optimization ([issue #82](https://github.com/schwa/Ultraviolence/issues/82))
 
 ## Related Documentation
 
