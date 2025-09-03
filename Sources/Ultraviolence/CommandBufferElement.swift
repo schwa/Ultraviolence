@@ -1,7 +1,6 @@
 import Metal
 import UltraviolenceSupport
 
-// TODO: #46 Rename. Remove element from name. "CommandBuffer" is _not_ a good name though.
 public struct CommandBufferElement <Content>: Element, BodylessContentElement where Content: Element {
     // @UVEnvironment(\.enableMetalLogging)
     // var enableMetalLogging
