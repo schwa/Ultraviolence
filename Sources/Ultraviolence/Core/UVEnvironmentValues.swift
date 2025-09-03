@@ -25,7 +25,7 @@ public protocol UVEnvironmentKey {
 public extension UVEnvironmentValues {
     subscript<Key: UVEnvironmentKey>(key: Key.Type) -> Key.Value {
         get {
-            if let value = storage.get(.init(key)) as? Key.Value {
+            if let value = storage[.init(key)] as? Key.Value {
                 return value
             }
             return Key.defaultValue
@@ -116,13 +116,12 @@ extension UVEnvironmentValues.Key {
 }
 
 extension UVEnvironmentValues.Storage {
-    // TODO: #115 Replace with subscript.
-    func get(_ key: UVEnvironmentValues.Key) -> Any? {
+    subscript(key: UVEnvironmentValues.Key) -> Any? {
         if let value = values[key] {
             return value
         }
         // TODO: #76 This can infinite loop if there is a cycle. *WHY* is there a cycle.
-        if let parent, let value = parent.get(key) {
+        if let parent, let value = parent[key] {
             return value
         }
         return nil

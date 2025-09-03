@@ -2,7 +2,6 @@ import CoreGraphics
 import Metal
 import UltraviolenceSupport
 
-// TODO: #111 Rename.
 public struct OffscreenRenderer {
     public var device: MTLDevice
     public var size: CGSize
