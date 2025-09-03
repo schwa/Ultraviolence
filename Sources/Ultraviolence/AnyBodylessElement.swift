@@ -1,4 +1,3 @@
-// TODO: #64 Experimental solution. Ergonomics are bad however.
 internal struct AnyBodylessElement: Element, BodylessElement {
     fileprivate var _setupEnter: (() throws -> Void)?
     fileprivate var _setupExit: (() throws -> Void)?
