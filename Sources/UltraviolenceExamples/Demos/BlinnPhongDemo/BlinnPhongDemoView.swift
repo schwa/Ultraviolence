@@ -70,7 +70,7 @@ public struct BlinnPhongDemoView: View {
                             }
                             .transforms(transforms)
                         }
-                        .vertexDescriptor(MTLVertexDescriptor(MTKMesh.teapot().vertexDescriptor)) // TODO: #125 Hack.
+                        .vertexDescriptor(MTLVertexDescriptor(lightMarker.vertexDescriptor))
                         .depthCompare(function: .less, enabled: true)
 
                         try BlinnPhongShader {
@@ -84,7 +84,7 @@ public struct BlinnPhongDemoView: View {
                             }
                             .blinnPhongLighting(lighting)
                         }
-                        .vertexDescriptor(MTLVertexDescriptor(MTKMesh.teapot().vertexDescriptor)) // TODO: #125 Hack.
+                        .vertexDescriptor(MTLVertexDescriptor(models.first!.mesh.vertexDescriptor))
                         .depthCompare(function: .less, enabled: true)
                     }
                 }
