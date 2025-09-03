@@ -27,7 +27,6 @@ public class ElementGraph {
     }
 
     @MainActor
-    // TODO: #149 `rebuildIfNeeded` is no longer being called. Which is worrying.
     internal func rebuildIfNeeded() throws {
         let saved = Self.current
         Self.current = self
