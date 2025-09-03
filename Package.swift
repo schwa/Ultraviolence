@@ -57,7 +57,8 @@ public let package = Package(
                 "Ultraviolence",
                 "UltraviolenceUI",
                 "UltraviolenceSupport",
-                .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax")
+                .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
+                .product(name: "SwiftCompilerPlugin", package: "swift-syntax")
             ],
             resources: [
                 .copy("Golden Images")
