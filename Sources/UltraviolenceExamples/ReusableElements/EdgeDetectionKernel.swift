@@ -13,11 +13,13 @@ public struct EdgeDetectionKernel: Element {
     }
 
     public var body: some Element {
-        ComputePipeline(computeKernel: kernel) {
-            // TODO: #52 Compute threads per threadgroup
-            ComputeDispatch(threads: .init(width: depthTexture.width, height: depthTexture.height, depth: 1), threadsPerThreadgroup: .init(width: 32, height: 32, depth: 1))
-                .parameter("depthTexture", texture: depthTexture)
-                .parameter("colorTexture", texture: colorTexture)
+        get throws {
+            try ComputePipeline(computeKernel: kernel) {
+                // TODO: #52 Compute threads per threadgroup
+                try ComputeDispatch(threadsPerGrid: .init(width: depthTexture.width, height: depthTexture.height, depth: 1), threadsPerThreadgroup: .init(width: 32, height: 32, depth: 1))
+                    .parameter("depthTexture", texture: depthTexture)
+                    .parameter("colorTexture", texture: colorTexture)
+            }
         }
     }
 }

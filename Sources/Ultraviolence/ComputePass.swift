@@ -26,9 +26,9 @@ public struct ComputePipeline <Content>: Element, BodylessElement, BodylessConte
     var computeKernel: ComputeKernel
     var content: Content
 
-    public init(computeKernel: ComputeKernel, @ElementBuilder content: () -> Content) {
+    public init(computeKernel: ComputeKernel, @ElementBuilder content: () throws -> Content) throws {
         self.computeKernel = computeKernel
-        self.content = content()
+        self.content = try content()
     }
 
     func setupEnter(_ node: Node) throws {
@@ -44,11 +44,26 @@ public struct ComputePipeline <Content>: Element, BodylessElement, BodylessConte
 // MARK: -
 
 public struct ComputeDispatch: Element, BodylessElement {
-    var threads: MTLSize
-    var threadsPerThreadgroup: MTLSize
 
-    public init(threads: MTLSize, threadsPerThreadgroup: MTLSize) {
-        self.threads = threads
+    private enum Dimensions {
+        case threadgroupsPerGrid(MTLSize)
+        case threadsPerGrid(MTLSize)
+    }
+
+    private var dimensions: Dimensions
+    private var threadsPerThreadgroup: MTLSize
+
+    public init(threadgroups: MTLSize, threadsPerThreadgroup: MTLSize) throws {
+        self.dimensions = .threadgroupsPerGrid(threadgroups)
+        self.threadsPerThreadgroup = threadsPerThreadgroup
+    }
+    
+    public init(threadsPerGrid: MTLSize, threadsPerThreadgroup: MTLSize) throws {
+        let device = _MTLCreateSystemDefaultDevice()
+        guard device.supportsFamily(.apple4) else {
+            throw UltraviolenceError.deviceCababilityFailure("Non-uniform threadgroup sizes require Apple GPU Family 4+ (A11 or later)")
+        }
+        self.dimensions = .threadsPerGrid(threadsPerGrid)
         self.threadsPerThreadgroup = threadsPerThreadgroup
     }
 
@@ -61,7 +76,12 @@ public struct ComputeDispatch: Element, BodylessElement {
             preconditionFailure("No compute command encoder/compute pipeline state found.")
         }
         computeCommandEncoder.setComputePipelineState(computePipelineState)
-        // TODO: #117 Simulator problem `Dispatch Threads with Non-Uniform Threadgroup Size is not supported on this device'
-        computeCommandEncoder.dispatchThreads(threads, threadsPerThreadgroup: threadsPerThreadgroup)
+        
+        switch dimensions {
+        case .threadgroupsPerGrid(let threadgroupCount):
+            computeCommandEncoder.dispatchThreadgroups(threadgroupCount, threadsPerThreadgroup: threadsPerThreadgroup)
+        case .threadsPerGrid(let threads):
+            computeCommandEncoder.dispatchThreads(threads, threadsPerThreadgroup: threadsPerThreadgroup)
+        }
     }
 }
