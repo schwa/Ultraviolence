@@ -21,8 +21,8 @@ jobs:
       - run: swift test -v
   xcode-build:
     env:
-      XCODE_PROJECT: "UltraviolenceExamples/UltraviolenceExamples.xcodeproj"
-      XCODE_SCHEME: "UltraviolenceExamples"
+      XCODE_PROJECT: "Ultraviolence-Examples/Ultraviolence-Examples.xcodeproj"
+      XCODE_SCHEME: "Ultraviolence-Examples"
       XCODE_CONFIGURATION: "Release"
     runs-on: macos-15 # macos-latest
     steps:
