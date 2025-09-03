@@ -1,4 +1,3 @@
-// TODO: #106 this is going to be complex.
 // TODO: #107 Compare ids to see if they've changed in expandNode.
 
 public struct ForEach <Data, ID, Content>: Element where Data: RandomAccessCollection, ID: Hashable, Content: Element {
