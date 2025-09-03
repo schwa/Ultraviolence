@@ -17,9 +17,19 @@ public struct ElementBuilder {
     public static func buildOptional<Content>(_ content: Content?) -> some Element where Content: Element {
         content
     }
+    
+    /// Builds an expression within the builder.
+    public static func buildExpression<Content>(_ content: Content) -> Content where Content: Element {
+        content
+    }
+    
+    /// Produces an optional view for conditional statements in multi-statement
+    /// closures that's only visible when the condition evaluates to true.
+    public static func buildIf<Content>(_ content: Content?) -> Content? where Content: Element {
+        content
+    }
 
-    // TODO: #108 #47 Flesh this out (follow ViewBuilder for more).
-    // TODO: #145 Add unit tests for `ElementBuilder.buildEither`.
+    // TODO: #145 Add unit tests for `ElementBuilder`.
     /// Produces content for a conditional statement in a multi-statement closure when the condition is true.
     public static func buildEither<TrueContent, FalseContent>(first: TrueContent) -> _ConditionalContent<TrueContent, FalseContent> where TrueContent: Element, FalseContent: Element {
         _ConditionalContent(first: first)
