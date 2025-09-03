@@ -1,7 +1,8 @@
 #if os(iOS) || (os(macOS) && !arch(x86_64))
 import simd
+import UltraviolenceSupport
 
-public struct GenericSplat: Equatable {
+public struct GenericSplat: Equatable, Sendable {
     public var position: SIMD3<Float>
     public var scale: SIMD3<Float>
     public var color: SIMD4<Float>

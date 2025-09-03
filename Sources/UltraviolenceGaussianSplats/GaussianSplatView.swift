@@ -5,6 +5,9 @@ import SwiftUI
 import Ultraviolence
 import UltraviolenceSupport
 import UltraviolenceUI
+internal import os
+
+let logger: Logger? = Logger(subsystem: "gaussian-splats", category: "gaussian-splats")
 
 public struct GaussianSplatView: View {
     private var splatCloud: SplatCloud<GPUSplat>

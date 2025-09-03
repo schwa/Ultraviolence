@@ -1,5 +1,6 @@
 import Foundation
 import simd
+import UltraviolenceSupport
 
 internal struct TeapotSimulation {
     var teapots: [Teapot] = []

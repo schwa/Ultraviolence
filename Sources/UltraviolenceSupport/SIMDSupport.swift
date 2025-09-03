@@ -119,3 +119,9 @@ public extension SIMD4 {
         [x, y, z, w]
     }
 }
+
+public extension simd_quatf {
+    static var identity: simd_quatf {
+        simd_quatf(angle: 0, axis: [0, 1, 0]) // No rotation
+    }
+}

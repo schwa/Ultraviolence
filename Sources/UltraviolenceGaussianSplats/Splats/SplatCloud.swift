@@ -3,6 +3,7 @@ import GaussianSplatShaders
 import Metal
 internal import os
 import simd
+import UltraviolenceSupport
 
 // TODO: #146 Dangerous `@unchecked Sendable` usage in SplatCloud.
 public final class SplatCloud <Splat>: Equatable, @unchecked Sendable where Splat: SortableSplatProtocol {
@@ -17,12 +18,12 @@ public final class SplatCloud <Splat>: Equatable, @unchecked Sendable where Spla
         self.indexedDistances = indexedDistances
     }
 
-    convenience init(device: MTLDevice, splats: TypedMTLBuffer<Splat>, cameraMatrix: simd_float4x4, modelMatrix: simd_float4x4) throws {
+    public convenience init(device: MTLDevice, splats: TypedMTLBuffer<Splat>, cameraMatrix: simd_float4x4, modelMatrix: simd_float4x4) throws {
         let indexedDistances = try CPUSplatRadixSorter.sort(device: device, splats: splats, camera: cameraMatrix, model: modelMatrix, reversed: false)
         self.init(splats: splats, indexedDistances: indexedDistances)
     }
 
-    convenience init(device: MTLDevice, splats: [Splat], cameraMatrix: simd_float4x4, modelMatrix: simd_float4x4) throws {
+    public convenience init(device: MTLDevice, splats: [Splat], cameraMatrix: simd_float4x4, modelMatrix: simd_float4x4) throws {
         let splats = try device.makeTypedBuffer(values: splats, options: [])
         try self.init(device: device, splats: splats, cameraMatrix: cameraMatrix, modelMatrix: modelMatrix)
     }

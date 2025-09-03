@@ -3,6 +3,7 @@ import GaussianSplatShaders
 @preconcurrency import Metal
 internal import os
 import simd
+import UltraviolenceSupport
 
 private let signposter: OSSignposter = .init(subsystem: "io.schwa.ultraviolence-examples", category: OSLog.Category.pointsOfInterest)
 

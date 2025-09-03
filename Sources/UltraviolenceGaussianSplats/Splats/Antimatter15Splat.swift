@@ -1,8 +1,9 @@
 #if os(iOS) || (os(macOS) && !arch(x86_64))
 import GaussianSplatShaders
 import UniformTypeIdentifiers
+import UltraviolenceSupport
 
-extension UTType {
+public extension UTType {
     // An buffer of Antimatter15Splat in little endian format.
     static let antimatter15Splat = UTType(filenameExtension: "splat")!
 }

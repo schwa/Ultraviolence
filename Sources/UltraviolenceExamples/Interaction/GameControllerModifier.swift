@@ -2,6 +2,7 @@ import GameController
 import Observation
 import simd
 import SwiftUI
+import UltraviolenceSupport
 
 public struct GameControllerModifier: ViewModifier {
     @State

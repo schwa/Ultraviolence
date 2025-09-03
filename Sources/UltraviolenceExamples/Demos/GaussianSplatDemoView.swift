@@ -5,6 +5,7 @@ import SwiftUI
 import Ultraviolence
 import UltraviolenceSupport
 import UltraviolenceUI
+import UltraviolenceGaussianSplats
 
 public struct GaussianSplatDemoView: View {
     @State
@@ -89,14 +90,5 @@ public struct GaussianSplatDemoView: View {
 }
 
 extension GaussianSplatDemoView: DemoView {
-}
-
-// MARK: -
-
-// MARK: -
-
-extension EnvironmentValues {
-    @Entry
-    var superdownloadWidgetBookmarks: [URL] = []
 }
 #endif

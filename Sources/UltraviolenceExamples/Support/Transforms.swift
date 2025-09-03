@@ -1,5 +1,6 @@
 import Ultraviolence
 import UltraviolenceExampleShaders
+import UltraviolenceSupport
 
 public typealias Transforms = UltraviolenceExampleShaders.Transforms
 

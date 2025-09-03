@@ -1,4 +1,4 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 6.2
 
 import CompilerPluginSupport
 import PackageDescription
@@ -27,7 +27,7 @@ public let package = Package(
         .target(
             name: "Ultraviolence",
             dependencies: [
-                "UltraviolenceSupport"
+                "UltraviolenceSupport",
             ]
         ),
         .target(
@@ -68,8 +68,11 @@ public let package = Package(
                 "Ultraviolence",
                 "UltraviolenceExampleShaders",
                 "UltraviolenceUI",
-                "GaussianSplatShaders",
+                "UltraviolenceGaussianSplats",
                 .product(name: "AsyncAlgorithms", package: "swift-async-algorithms")
+            ],
+            swiftSettings: [
+                .defaultIsolation(nil)
             ]
         ),
         .target(
@@ -104,7 +107,8 @@ public let package = Package(
             dependencies: [
                 "Ultraviolence",
                 "UltraviolenceSupport",
-                "GaussianSplatShaders"
+                "GaussianSplatShaders",
+                "UltraviolenceUI"
             ]
         ),
         .target(
@@ -117,7 +121,7 @@ public let package = Package(
         .testTarget(
             name: "UltraviolenceExamplesTests",
             dependencies: ["UltraviolenceExamples"]
-        )
+        ),
     ],
     swiftLanguageModes: [.v6]
 )

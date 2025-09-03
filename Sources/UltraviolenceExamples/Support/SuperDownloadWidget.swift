@@ -157,3 +157,8 @@ extension UserDefaults {
     }
 }
 #endif // os(iOS) || (os(macOS) && !arch(x86_64))
+
+extension EnvironmentValues {
+    @Entry
+    var superdownloadWidgetBookmarks: [URL] = []
+}

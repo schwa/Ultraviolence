@@ -3,6 +3,7 @@ import simd
 import SwiftUI
 import Ultraviolence
 import UltraviolenceUI
+import UltraviolenceSupport
 
 public struct MixedDemoView: View {
     @State
