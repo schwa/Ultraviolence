@@ -184,6 +184,124 @@ graph.processWorkload()
 4. **Workload Processing**: Per-frame rendering operations
 5. **State Updates**: Property changes trigger selective rebuilding
 
+### 4. Node Expansion Process
+
+The node expansion process transforms the declarative Element tree into an executable Node graph:
+
+#### expandNode vs expandIntoNode
+
+- **`expandNode`**: The orchestrator method that manages the full expansion process
+  - Sets up the environment for the node
+  - Manages state boxes and property wrappers
+  - Calls body getter for compositional elements
+  - Handles the node stack during traversal
+  - Propagates environment values to children
+
+- **`expandIntoNode`**: The implementation method for BodylessElements
+  - Called by `expandNode` for elements that don't have a body
+  - Performs the actual Metal-related setup
+  - Populates the node with rendering operations
+  - Does not manage environment or state
+
+#### Expansion Sequence
+
+1. **Initial Expansion**: Starting from the root element
+   ```
+   ElementGraph.init(content:) → root.expandNode()
+   ```
+
+2. **Recursive Descent**: Each element expands its children
+   ```
+   Element.expandNode() → body.getter → child.expandNode()
+   ```
+
+3. **Bodyless Terminal**: Bodyless elements terminate recursion
+   ```
+   BodylessElement.expandNode() → expandIntoNode()
+   ```
+
+4. **Node Population**: Nodes are populated during expansion with:
+   - Element reference
+   - Environment snapshot
+   - State boxes
+   - Child nodes
+
+### 5. Environment Propagation
+
+Environment values flow down the element tree during expansion:
+
+#### Propagation Mechanics
+
+1. **Inheritance**: Child nodes inherit parent's environment
+2. **Modification**: Elements can modify environment for descendants
+3. **Isolation**: Siblings don't affect each other's environment
+4. **Snapshot**: Each node captures its environment at expansion time
+
+#### Environment Flow Example
+
+```
+RootElement (env: device, commandQueue)
+├── RenderPass (env: + renderPassDescriptor)
+│   ├── Draw (env: + renderEncoder)
+│   │   └── Parameters (env: unchanged)
+│   └── Draw (env: + renderEncoder)
+└── ComputePass (env: + computeEncoder)
+```
+
+#### Key Environment Values
+
+- **Device & Queue**: Set at the root level
+- **Command Buffer**: Created per frame
+- **Encoders**: Created by pass elements
+- **Descriptors**: Modified by modifier elements
+- **Custom Values**: User-defined values
+
+### 6. Command Buffer Lifecycle
+
+The command buffer coordinates GPU work submission:
+
+#### Creation and Management
+
+1. **Creation**: Command buffers are typically created per frame
+   - Created by `CommandBufferElement` or render system
+   - Stored in environment for child elements to access
+   - Reused throughout the frame's render graph
+
+2. **Command Encoding**: Different phases encode commands
+   ```
+   CommandBuffer
+   ├── RenderCommandEncoder (RenderPass)
+   │   ├── Draw commands
+   │   └── Parameters/textures
+   ├── ComputeCommandEncoder (ComputePass)
+   │   └── Dispatch commands
+   └── BlitCommandEncoder (BlitPass)
+       └── Copy operations
+   ```
+
+3. **Scheduling**: Handlers can be attached for events
+   - **Scheduled Handler**: Called when GPU starts processing
+   - **Completed Handler**: Called when GPU finishes all work
+
+4. **Submission**: Final commit to command queue
+   ```
+   processWorkload() → encode commands → commit() → GPU execution
+   ```
+
+#### Synchronization Points
+
+- **Between Passes**: Encoder ends before next begins
+- **Resource Hazards**: Metal tracks read/write dependencies
+- **Frame Boundaries**: Wait for previous frame if needed
+- **Completion**: Handlers signal when safe to reuse resources
+
+#### Error Handling
+
+- Command buffer errors surface through handlers
+- Setup phase validates pipeline states early
+- Workload phase handles encoding failures
+- Debug labels help identify failure points
+
 ## Key Patterns
 
 ### Composition
