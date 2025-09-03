@@ -67,7 +67,7 @@ public struct StencilDemoView: View {
                         encoder.setVertexBytes(vertices, length: MemoryLayout<SIMD2<Float>>.stride * 3, index: 0)
                         encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
                     }
-                    .parameter("color", [0.5, 1, 0.5, 1])
+                    .parameter("color", value: SIMD4<Float>([0.5, 1, 0.5, 1]))
                 }
                 .depthStencilDescriptor(depthStencilDescriptor)
             }

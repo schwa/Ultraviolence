@@ -23,7 +23,7 @@ public struct RedTriangle: Element {
                         encoder.setVertexBytes(vertices, length: MemoryLayout<SIMD2<Float>>.stride * 3, index: 0)
                         encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
                     }
-                    .parameter("color", SIMD4<Float>([1, 0, 0, 1]))
+                    .parameter("color", value: SIMD4<Float>([1, 0, 0, 1]))
                 }
             }
         }

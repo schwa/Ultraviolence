@@ -90,33 +90,32 @@ internal struct Parameter {
 // MARK: -
 
 public extension Element {
-    // TODO: #124 Move functionType to front of the parameter list
-    func parameter(_ name: String, _ value: SIMD4<Float>, functionType: MTLFunctionType? = nil) -> some Element {
+    func parameter(_ name: String, functionType: MTLFunctionType? = nil, value: SIMD4<Float>) -> some Element {
         ParameterElement(functionType: functionType, name: name, value: .value(value), content: self)
     }
 
-    func parameter(_ name: String, _ value: simd_float4x4, functionType: MTLFunctionType? = nil) -> some Element {
+    func parameter(_ name: String, functionType: MTLFunctionType? = nil, value: simd_float4x4) -> some Element {
         ParameterElement(functionType: functionType, name: name, value: .value(value), content: self)
     }
 
-    func parameter(_ name: String, texture: MTLTexture?, functionType: MTLFunctionType? = nil) -> some Element {
+    func parameter(_ name: String, functionType: MTLFunctionType? = nil, texture: MTLTexture?) -> some Element {
         ParameterElement(functionType: functionType, name: name, value: ParameterValue<()>.texture(texture), content: self)
     }
 
-    func parameter(_ name: String, samplerState: MTLSamplerState, functionType: MTLFunctionType? = nil) -> some Element {
+    func parameter(_ name: String, functionType: MTLFunctionType? = nil, samplerState: MTLSamplerState) -> some Element {
         ParameterElement(functionType: functionType, name: name, value: ParameterValue<()>.samplerState(samplerState), content: self)
     }
 
-    func parameter(_ name: String, buffer: MTLBuffer, offset: Int = 0, functionType: MTLFunctionType? = nil) -> some Element {
+    func parameter(_ name: String, functionType: MTLFunctionType? = nil, buffer: MTLBuffer, offset: Int = 0) -> some Element {
         ParameterElement(functionType: functionType, name: name, value: ParameterValue<()>.buffer(buffer, offset), content: self)
     }
 
-    func parameter(_ name: String, values: [some Any], functionType: MTLFunctionType? = nil) -> some Element {
+    func parameter(_ name: String, functionType: MTLFunctionType? = nil, values: [some Any]) -> some Element {
         assert(isPODArray(values), "Parameter values must be a POD type.")
         return ParameterElement(functionType: functionType, name: name, value: .array(values), content: self)
     }
 
-    func parameter(_ name: String, value: some Any, functionType: MTLFunctionType? = nil) -> some Element {
+    func parameter(_ name: String, functionType: MTLFunctionType? = nil, value: some Any) -> some Element {
         assert(isPOD(value), "Parameter value must be a POD type.")
         return ParameterElement(functionType: functionType, name: name, value: .value(value), content: self)
     }
