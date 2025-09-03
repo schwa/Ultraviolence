@@ -798,8 +798,7 @@ public extension MTLCommandBuffer {
 
 public extension MTLDevice {
     // Deal with your own endian problems.
-    // TODO: #119 Rename
-    func makeTexture<T>(descriptor: MTLTextureDescriptor, value: T) throws -> MTLTexture {
+    func makeTexture<T>(descriptor: MTLTextureDescriptor, repeating value: T) throws -> MTLTexture {
         assert(isPOD(value))
         let numPixels = descriptor.width * descriptor.height
         let values = [T](repeating: value, count: numPixels)
@@ -817,7 +816,7 @@ public extension MTLDevice {
         descriptor.usage = [.shaderRead, .shaderWrite, .renderTarget] // TODO: #120 Too much
         descriptor.storageMode = .shared
         let value = SIMD4<UInt8>(color * 255.0)
-        return try makeTexture(descriptor: descriptor, value: value)
+        return try makeTexture(descriptor: descriptor, repeating: value)
     }
 }
 
