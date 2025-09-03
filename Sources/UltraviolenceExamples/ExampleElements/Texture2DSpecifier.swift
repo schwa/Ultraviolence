@@ -4,8 +4,8 @@ import UltraviolenceExampleShaders
 
 public enum Texture2DSpecifier {
     case texture(MTLTexture, MTLSamplerState)
-    // TODO: #139 Just color - and switch to SIMD3<Float>??
-    case solidColor(SIMD4<Float>)
+    // TODO: #139 Switch to SIMD3<Float>??
+    case color(SIMD3<Float>)
 }
 
 public extension Texture2DSpecifier {
@@ -23,8 +23,8 @@ public extension Texture2DSpecifier {
         return nil
     }
 
-    var solidColor: SIMD4<Float>? {
-        if case let .solidColor(color) = self {
+    var color: SIMD3<Float>? {
+        if case let .color(color) = self {
             return color
         }
         return nil
@@ -39,7 +39,7 @@ public extension Texture2DSpecifier {
             result.source = .texture
             result.texture = texture.gpuResourceID
             result.sampler = sampler.gpuResourceID
-        case .solidColor(let color):
+        case .color(let color):
             result.source = .color
             result.color = color
         }

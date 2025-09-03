@@ -30,7 +30,7 @@ namespace FlatShader {
     [[fragment]] float4
     fragment_main(VertexOut in [[stage_in]], constant Texture2DSpecifierArgumentBuffer &texture [[buffer(0)]]) {
         if (texture.source == kColorSourceColor) {
-            return texture.color;
+            return float4(texture.color, 1);
         } else if (texture.source == kColorSourceTexture) {
             float4 color = texture.texture.sample(texture.sampler, in.textureCoordinate);
             return color;

@@ -1,6 +1,6 @@
 import Metal
 
-// TODO: #100 this is no different than a EnvironmentReader<RenderCommandEncoder>
+// Note: Cannot use EnvironmentReader here because Draw needs to execute during the workload phase when the render command encoder is available, not during the tree expansion phase where EnvironmentReader operates.
 public struct Draw: Element, BodylessElement {
     public typealias Body = Never
 

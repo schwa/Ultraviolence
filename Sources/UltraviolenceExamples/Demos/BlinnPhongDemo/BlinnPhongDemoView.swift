@@ -64,7 +64,7 @@ public struct BlinnPhongDemoView: View {
                         GridShader(projectionMatrix: projection.projectionMatrix(for: drawableSize), cameraMatrix: cameraMatrix)
 
                         let transforms = Transforms(modelMatrix: .init(translation: lighting.lights[0].lightPosition), cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
-                        try FlatShader(textureSpecifier: .solidColor(SIMD4<Float>(lighting.lights[0].lightColor, 1))) {
+                        try FlatShader(textureSpecifier: .color(SIMD3<Float>(lighting.lights[0].lightColor))) {
                             Draw { encoder in
                                 encoder.setVertexBuffers(of: lightMarker)
                                 encoder.draw(lightMarker)
