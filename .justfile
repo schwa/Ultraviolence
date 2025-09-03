@@ -19,7 +19,7 @@ coverage-percent:
     xcrun llvm-cov report \
         .build/arm64-apple-macosx/debug/UltraviolencePackageTests.xctest/Contents/MacOS/UltraviolencePackageTests \
         -instr-profile=.build/arm64-apple-macosx/debug/codecov/default.profdata \
-        -ignore-filename-regex=".build|Tests" \
+        -ignore-filename-regex=".build|Tests|UltraviolenceExamples|UltraviolenceGaussianSplats|UltraviolenceSupport|UltraviolenceUI" \
         | tail -1 | grep -oE '[0-9]+\.[0-9]+%' | head -n1
 
 format:
