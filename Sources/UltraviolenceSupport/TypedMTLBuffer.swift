@@ -122,7 +122,3 @@ public extension TypedMTLBuffer {
         return self
     }
 }
-
-// TODO: #129 Bad extension. No cookie.
-extension TypedMTLBuffer: @unchecked Sendable where Element: Sendable {
-}

@@ -42,7 +42,7 @@ public final class SplatCloud <Splat>: Equatable, @unchecked Sendable where Spla
 
 // MARK: -
 
-public struct SplatIndices: Sendable, Equatable {
+public struct SplatIndices: @unchecked Sendable, Equatable {
     var parameters: SortParameters
     var indices: TypedMTLBuffer<IndexedDistance>
 }
