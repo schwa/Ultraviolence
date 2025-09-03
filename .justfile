@@ -15,6 +15,34 @@ test:
     swift test --quiet
     @echo "✅ Test Success"
 
+# Run tests with coverage collection
+test-coverage:
+    swift test --enable-code-coverage
+    @echo "✅ Coverage data generated"
+
+# Generate coverage report and show percentage only  
+coverage: test-coverage
+    @xcrun llvm-cov report \
+        .build/debug/*PackageTests.xctest/Contents/MacOS/*PackageTests \
+        -instr-profile=.build/debug/codecov/default.profdata \
+        -ignore-filename-regex=".build|Tests" \
+        | tail -1 | awk '{print "Line Coverage: " $$9}'
+
+# Generate detailed coverage report
+coverage-report: test-coverage
+    @xcrun llvm-cov report \
+        .build/debug/*PackageTests.xctest/Contents/MacOS/*PackageTests \
+        -instr-profile=.build/debug/codecov/default.profdata \
+        -ignore-filename-regex=".build|Tests"
+
+# Show coverage percentage as a single number (useful for CI)
+coverage-percent: test-coverage
+    @xcrun llvm-cov report \
+        .build/debug/*PackageTests.xctest/Contents/MacOS/*PackageTests \
+        -instr-profile=.build/debug/codecov/default.profdata \
+        -ignore-filename-regex=".build|Tests" \
+        | tail -1 | awk '{print $$9}' | tr -d "%"
+
 push: build test periphery-scan
     jj bookmark move main --to @-; jj git push --branch main
 
