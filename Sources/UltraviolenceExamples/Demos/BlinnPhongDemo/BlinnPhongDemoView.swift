@@ -85,7 +85,7 @@ public struct BlinnPhongDemoView: View {
                             }
                             .blinnPhongLighting(lighting)
                         }
-                        .vertexDescriptor(MTLVertexDescriptor(MTKMesh.teapot().vertexDescriptor)) // TODO: #126 Hack.
+                        .vertexDescriptor(MTLVertexDescriptor(MTKMesh.teapot().vertexDescriptor)) // TODO: #125 Hack.
                         .depthCompare(function: .less, enabled: true)
                     }
                 }
