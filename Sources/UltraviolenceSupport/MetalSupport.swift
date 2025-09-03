@@ -553,7 +553,7 @@ public extension MTLFunction {
                 vertexDescriptor.attributes[attribute.attributeIndex].format = .uchar4
                 vertexDescriptor.layouts[attribute.attributeIndex].stride = MemoryLayout<SIMD4<UInt8>>.stride
             default:
-                // TODO: #53 Flesh this out.
+                // TODO: #181 Flesh this out.
                 fatalError("Unimplemented: \(attribute.attributeType)")
             }
             vertexDescriptor.attributes[attribute.attributeIndex].bufferIndex = attribute.attributeIndex
