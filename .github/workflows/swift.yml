@@ -32,6 +32,14 @@ jobs:
         - uses: actions/checkout@v3
           with:
             submodules: true
-        - name: Trust plugins
-          run: defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidation -bool YES
-        - run: xcodebuild -project "${{ env.XCODE_PROJECT }}" -scheme "${{ env.XCODE_SCHEME }}" -destination "generic/platform=macOS" -skipPackagePluginValidation build ARCHS=arm64 ONLY_ACTIVE_ARCH=NO CODE_SIGNING_ALLOWED=NO -configuration "${{ env.XCODE_CONFIGURATION }}"
+        - run: defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidation -bool YES
+        - run: |
+            xcodebuild \
+              -project "${{ env.XCODE_PROJECT }}" \
+              -scheme "${{ env.XCODE_SCHEME }}" \
+              -destination "generic/platform=macOS" \
+              -skipPackagePluginValidation build \
+              -configuration "${{ env.XCODE_CONFIGURATION }}" \
+              ARCHS=arm64 \
+              ONLY_ACTIVE_ARCH=NO \
+              CODE_SIGNING_ALLOWED=NO
