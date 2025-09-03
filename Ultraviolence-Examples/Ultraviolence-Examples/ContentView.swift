@@ -15,6 +15,7 @@ struct ContentView: View {
 #endif // os(iOS) || (os(macOS) && !arch(x86_64))
                 if !splatsOnly {
                     row(for: BlinnPhongDemoView.self)
+                    row(for: GameOfLifeDemoView.self)
                     row(for: GridShaderDemoView.self)
                     row(for: SkyboxDemoView.self)
                     row(for: MixedDemoView.self)
