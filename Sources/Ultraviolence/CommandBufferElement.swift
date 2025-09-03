@@ -47,10 +47,12 @@ public struct CommandBufferElement <Content>: Element, BodylessContentElement wh
 public extension Element {
     func onCommandBufferScheduled(_ action: @escaping (MTLCommandBuffer) -> Void) -> some Element {
         EnvironmentReader(keyPath: \.commandBuffer) { commandBuffer in
-            self.onWorkloadEnter { _ in
+            // Copy action into a nonisolated(unsafe) local so the @Sendable closure can capture it safely.
+            nonisolated(unsafe) let actionCopy = action
+            return self.onWorkloadEnter { _ in
                 if let commandBuffer {
                     commandBuffer.addScheduledHandler { commandBuffer in
-                        action(commandBuffer)
+                        actionCopy(commandBuffer)
                     }
                 }
             }
@@ -59,10 +61,12 @@ public extension Element {
 
     func onCommandBufferCompleted(_ action: @escaping (MTLCommandBuffer) -> Void) -> some Element {
         EnvironmentReader(keyPath: \.commandBuffer) { commandBuffer in
-            self.onWorkloadEnter { _ in
+            // Copy action into a nonisolated(unsafe) local so the @Sendable closure can capture it safely.
+            nonisolated(unsafe) let actionCopy = action
+            return self.onWorkloadEnter { _ in
                 if let commandBuffer {
                     commandBuffer.addCompletedHandler { commandBuffer in
-                        action(commandBuffer)
+                        actionCopy(commandBuffer)
                     }
                 }
             }

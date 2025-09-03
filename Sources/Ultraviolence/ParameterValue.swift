@@ -11,13 +11,13 @@ internal enum ParameterValue<T> {
 extension ParameterValue: CustomDebugStringConvertible {
     var debugDescription: String {
         switch self {
-        case .texture(let texture):
-            return "Texture"
-        case .samplerState(let samplerState):
-            return "SamplerState"
+        case .texture:
+            return "Texture()"
+        case .samplerState:
+            return "SamplerState()"
         case .buffer(let buffer, let offset):
             return "Buffer(\(String(describing: buffer?.label)), offset: \(offset)"
-        case .array(let array):
+        case .array:
             return "Array"
         case .value(let value):
             return "\(value)"

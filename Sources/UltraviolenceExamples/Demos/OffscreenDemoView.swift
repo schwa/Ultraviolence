@@ -21,10 +21,10 @@ public struct OffscreenDemoView: View {
         .overlay(alignment: .bottom) {
             Group {
                 if case let .success(image) = result {
-                    Text("\(image)")
+                    Text(verbatim: String(describing: image))
                 }
                 if case let .failure(error) = result {
-                    Text("Failure: \(error)")
+                    Text(verbatim: "Failure: \(String(describing: error))")
                 }
             }
             .padding()
