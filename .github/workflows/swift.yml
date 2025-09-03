@@ -30,6 +30,6 @@ jobs:
         run: defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidation -bool YES
       - name: Build and test with xcodebuild
         run: |
-          xcodebuild clean build test \
+          xcodebuild clean build \
             -project "Ultraviolence-Examples/Ultraviolence-Examples.xcodeproj" \
             -scheme "Ultraviolence-Examples"

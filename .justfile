@@ -37,40 +37,5 @@ periphery-scan:
     # @echo "✅ periphery-scan Success"
     @echo "‼️ periphery-scan Skipped"
 
-create-todo-tickets:
-    #!/usr/bin/env fish
-    set RESULTS (rg "TODO: (?!\s*#\d)" -n --pcre2 --json --type-add 'code:*.{,swift,metal,h}' | jq -c '. | select(.type=="match")')
-
-    for RESULT in $RESULTS
-        # Extract file path, line number, and the TODO text
-        set FILE_PATH (echo $RESULT | jq -r '.data.path.text')
-        set LINE_NUMBER (echo $RESULT | jq -r '.data.line_number')
-        set TODO_TEXT (echo $RESULT | jq -r '.data.lines.text' | string trim)
-
-        echo "Processing TODO in $FILE_PATH at line $LINE_NUMBER: $TODO_TEXT"
-
-        # Create a GitHub issue and capture the issue URL
-        set ISSUE_URL (gh issue create --title "TODO: $TODO_TEXT" --body "Found in $FILE_PATH at line $LINE_NUMBER" | tee /dev/tty)
-
-        # Extract the issue number from the URL
-        set ISSUE_NUMBER (echo $ISSUE_URL | string replace -r '.*/issues/(\d+)' '$1')
-
-        echo "Created issue #$ISSUE_NUMBER for TODO"
-
-        # Modify the file by appending the issue number to the TODO
-        set TEMP_FILE (mktemp)
-
-        awk -v LINE_NUM=$LINE_NUMBER -v ISSUE_NUM=$ISSUE_NUMBER '
-        NR==LINE_NUM {
-            sub(/TODO: /, "TODO: #" ISSUE_NUM " ", $0);
-        }
-        { print }
-        ' "$FILE_PATH" > "$TEMP_FILE" && mv "$TEMP_FILE" "$FILE_PATH"
-
-        echo "Updated TODO in $FILE_PATH to reference issue #$ISSUE_NUMBER"
-    end
 
 build-docs:
-    xcrun xcodebuild docbuild -scheme Ultraviolence -derivedDataPath /tmp/ultraviolence-docbuild -destination platform=macOS,arch=arm64
-    cp -r /tmp/ultraviolence-docbuild/Build/Products/Debug/Ultraviolence.doccarchive ~/Desktop
-    xcrun docc process-archive transform-for-static-hosting ~/Desktop/Ultraviolence.doccarchive --hosting-base-path / --output-path ~/Desktop/Ultraviolence-HTML/
