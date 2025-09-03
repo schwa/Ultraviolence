@@ -85,9 +85,12 @@ extension CGImage {
 
     static func withColor(colorSpace: CGColorSpace? = nil, red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat = 1.0) -> CGImage {
         let colorSpace = colorSpace ?? CGColorSpaceCreateDeviceRGB()
-        // TODO: #116 These parameters may not be compatible with the passed in color space.
+        // Assert that the color space is RGB-based to ensure compatibility with our bitmap parameters
+        assert(colorSpace.model == .rgb, "Color space must be RGB-based for compatibility with CGImageAlphaInfo.noneSkipFirst")
         let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.noneSkipFirst.rawValue)
-        let context = CGContext(data: nil, width: 1, height: 1, bitsPerComponent: 8, bytesPerRow: 4, space: colorSpace, bitmapInfo: bitmapInfo.rawValue)!
+        guard let context = CGContext(data: nil, width: 1, height: 1, bitsPerComponent: 8, bytesPerRow: 4, space: colorSpace, bitmapInfo: bitmapInfo.rawValue) else {
+            fatalError("Failed to create CGContext - likely due to incompatible color space and bitmap info combination")
+        }
         context.setFillColor(red: red, green: green, blue: blue, alpha: alpha)
         context.fill(CGRect(x: 0, y: 0, width: 1, height: 1))
         return context.makeImage()!
