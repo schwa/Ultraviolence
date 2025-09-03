@@ -5,14 +5,47 @@ public struct UVEnvironmentValues {
     }
 
     class Storage {
-        weak var parent: Storage?
+        weak var parent: Storage? {
+            didSet {
+                // Check for cycles when setting parent
+                if let parent {
+                    var visited = Set<ObjectIdentifier>()
+                    visited.insert(ObjectIdentifier(self))
+                    
+                    var path: [ObjectIdentifier] = [ObjectIdentifier(self)]
+                    var current: Storage? = parent
+                    while let node = current {
+                        let id = ObjectIdentifier(node)
+                        if visited.contains(id) {
+                            // Build a string showing the cycle
+                            path.append(id)
+                            let cycleDescription = path.map { "\($0)" }.joined(separator: " -> ")
+                            assertionFailure("Cannot set parent - would create a cycle in Storage chain: \(cycleDescription)")
+                            // Clear the parent to prevent the cycle
+                            self.parent = nil
+                            return
+                        }
+                        visited.insert(id)
+                        path.append(id)
+                        current = node.parent
+                    }
+                }
+            }
+        }
         var values: [Key: Any] = [:]
     }
 
     var storage = Storage()
 
     internal mutating func merge(_ parent: Self) {
-        precondition(parent.storage !== self.storage)
+        precondition(parent.storage !== self.storage, "Cannot merge storage with itself")
+        
+        // Debug: Check if we're about to create a problematic parent relationship
+        if storage.parent === parent.storage {
+            print("Warning: Attempting to merge with the same parent again (no-op)")
+            return
+        }
+        
         storage.parent = parent.storage
     }
 }
@@ -125,7 +158,7 @@ extension UVEnvironmentValues.Storage {
         if let value = values[key] {
             return value
         }
-        // TODO: #76 This can infinite loop if there is a cycle. *WHY* is there a cycle.
+        // TODO: #76 Parent chain should never have cycles due to didSet check
         if let parent, let value = parent[key] {
             return value
         }
