@@ -8,11 +8,13 @@ import XCTest
 #if canImport(UltraviolenceMacros)
 import UltraviolenceMacros
 
+@MainActor
 let testMacros: [String: Macro.Type] = [
     "Entry": UVEntryMacro.self
 ]
 #endif
 
+@MainActor
 final class EntryMacroTests: XCTestCase {
     func testBasicType() throws {
         #if canImport(UltraviolenceMacros)
