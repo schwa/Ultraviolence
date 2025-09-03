@@ -9,61 +9,19 @@ list:
 
 build:
     swift build --quiet
-    @echo "✅ Build Success"
 
 test:
     swift test --quiet
-    @echo "✅ Test Success"
 
-# Run tests with coverage collection
-test-coverage:
+coverage-percent:
     swift test --enable-code-coverage
-    @echo "✅ Coverage data generated"
-
-# Generate coverage report and show percentage only  
-coverage: test-coverage
-    @xcrun llvm-cov report \
-        .build/debug/*PackageTests.xctest/Contents/MacOS/*PackageTests \
-        -instr-profile=.build/debug/codecov/default.profdata \
+    #.build/arm64-apple-macosx/debug/codecov/Ultraviolence.json
+    xcrun llvm-cov report \
+        .build/arm64-apple-macosx/debug/UltraviolencePackageTests.xctest/Contents/MacOS/UltraviolencePackageTests \
+        -instr-profile=.build/arm64-apple-macosx/debug/codecov/default.profdata \
         -ignore-filename-regex=".build|Tests" \
-        | tail -1 | awk '{print "Line Coverage: " $$9}'
-
-# Generate detailed coverage report
-coverage-report: test-coverage
-    @xcrun llvm-cov report \
-        .build/debug/*PackageTests.xctest/Contents/MacOS/*PackageTests \
-        -instr-profile=.build/debug/codecov/default.profdata \
-        -ignore-filename-regex=".build|Tests"
-
-# Show coverage percentage as a single number (useful for CI)
-coverage-percent: test-coverage
-    @xcrun llvm-cov report \
-        .build/debug/*PackageTests.xctest/Contents/MacOS/*PackageTests \
-        -instr-profile=.build/debug/codecov/default.profdata \
-        -ignore-filename-regex=".build|Tests" \
-        | tail -1 | awk '{print $$9}' | tr -d "%"
-
-push: build test periphery-scan
-    jj bookmark move main --to @-; jj git push --branch main
+        | tail -1 | grep -oE '[0-9]+\.[0-9]+%' | head -n1
 
 format:
     swiftlint --fix --format --quiet
-
     fd --extension metal --extension h --exec clang-format -i {}
-
-metal-nm:
-    swift build --quiet
-    # xcrun metal-nm .build/arm64-apple-macosx/debug/Ultraviolence_UltraviolenceExamples.bundle/debug.metallib
-    #xcrun metal-objdump  --disassemble-all .build/arm64-apple-macosx/debug/Ultraviolence_UltraviolenceExamples.bundle/debug.metallib
-    #xcrun metal-source .build/arm64-apple-macosx/debug/Ultraviolence_UltraviolenceExamples.bundle/debug.metallib
-
-# periphery-scan-clean:
-#     periphery scan --project-root Demo --project UltraviolenceDemo.xcodeproj --schemes UltraviolenceDemo --quiet --write-baseline .periphery.baseline.json --retain-public
-
-periphery-scan:
-    #     periphery scan --project-root Demo --project UltraviolenceDemo.xcodeproj --schemes UltraviolenceDemo --quiet --baseline .periphery.baseline.json --write-baseline .periphery.baseline.json --strict --retain-public
-    # @echo "✅ periphery-scan Success"
-    @echo "‼️ periphery-scan Skipped"
-
-
-build-docs:
