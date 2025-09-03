@@ -48,11 +48,16 @@ struct Transforms {
     simd_float4x4 projectionMatrix;
     simd_float4x4 modelViewMatrix;
     simd_float4x4 modelViewProjectionMatrix;
-    simd_float3x3 modelNormalMatrix; // TODO: #142 Can just get this from the model matrix.
 };
 
 #if defined(__METAL_VERSION__)
 inline float square(float x) {
     return x * x;
+}
+
+inline float3x3 extractNormalMatrix(float4x4 modelMatrix) {
+    return float3x3(modelMatrix[0].xyz,
+                    modelMatrix[1].xyz,
+                    modelMatrix[2].xyz);
 }
 #endif

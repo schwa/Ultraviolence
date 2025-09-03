@@ -54,7 +54,7 @@ namespace BlinnPhong {
         const float4 modelVertex = transforms[instance_id].modelViewMatrix * position;
         out.position = transforms[instance_id].modelViewProjectionMatrix * position;
         out.worldPosition = float3(modelVertex) / modelVertex.w;
-        out.normal = normalize(transforms[instance_id].modelNormalMatrix * in.normal);
+        out.normal = normalize(extractNormalMatrix(transforms[instance_id].modelMatrix) * in.normal);
         out.textureCoordinate = in.textureCoordinate;
         out.instance_id = instance_id;
         return out;
