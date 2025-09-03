@@ -4,8 +4,7 @@ import simd
 import UltraviolenceSupport
 
 // TODO: #62 instead of being typed <T> we need an "AnyParameter" and this needs to take a dictionary of AnyParameters
-// TODO: #123 Rename it to be a modifier?
-internal struct ParameterElement<Content>: Element, BodylessElement, BodylessContentElement where Content: Element {
+internal struct ParameterElementModifier<Content>: Element, BodylessElement, BodylessContentElement where Content: Element {
     var parameters: [String: Parameter]
     var content: Content
 
@@ -91,33 +90,33 @@ internal struct Parameter {
 
 public extension Element {
     func parameter(_ name: String, functionType: MTLFunctionType? = nil, value: SIMD4<Float>) -> some Element {
-        ParameterElement(functionType: functionType, name: name, value: .value(value), content: self)
+        ParameterElementModifier(functionType: functionType, name: name, value: .value(value), content: self)
     }
 
     func parameter(_ name: String, functionType: MTLFunctionType? = nil, value: simd_float4x4) -> some Element {
-        ParameterElement(functionType: functionType, name: name, value: .value(value), content: self)
+        ParameterElementModifier(functionType: functionType, name: name, value: .value(value), content: self)
     }
 
     func parameter(_ name: String, functionType: MTLFunctionType? = nil, texture: MTLTexture?) -> some Element {
-        ParameterElement(functionType: functionType, name: name, value: ParameterValue<()>.texture(texture), content: self)
+        ParameterElementModifier(functionType: functionType, name: name, value: ParameterValue<()>.texture(texture), content: self)
     }
 
     func parameter(_ name: String, functionType: MTLFunctionType? = nil, samplerState: MTLSamplerState) -> some Element {
-        ParameterElement(functionType: functionType, name: name, value: ParameterValue<()>.samplerState(samplerState), content: self)
+        ParameterElementModifier(functionType: functionType, name: name, value: ParameterValue<()>.samplerState(samplerState), content: self)
     }
 
     func parameter(_ name: String, functionType: MTLFunctionType? = nil, buffer: MTLBuffer, offset: Int = 0) -> some Element {
-        ParameterElement(functionType: functionType, name: name, value: ParameterValue<()>.buffer(buffer, offset), content: self)
+        ParameterElementModifier(functionType: functionType, name: name, value: ParameterValue<()>.buffer(buffer, offset), content: self)
     }
 
     func parameter(_ name: String, functionType: MTLFunctionType? = nil, values: [some Any]) -> some Element {
         assert(isPODArray(values), "Parameter values must be a POD type.")
-        return ParameterElement(functionType: functionType, name: name, value: .array(values), content: self)
+        return ParameterElementModifier(functionType: functionType, name: name, value: .array(values), content: self)
     }
 
     func parameter(_ name: String, functionType: MTLFunctionType? = nil, value: some Any) -> some Element {
         assert(isPOD(value), "Parameter value must be a POD type.")
-        return ParameterElement(functionType: functionType, name: name, value: .value(value), content: self)
+        return ParameterElementModifier(functionType: functionType, name: name, value: .value(value), content: self)
     }
 }
 
