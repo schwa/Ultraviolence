@@ -60,7 +60,7 @@ public struct TriangleDemoView: View {
                         }
                         .parameter("color", value: color)
                     }
-                    .vertexDescriptor(vertexShader.inferredVertexDescriptor()!)
+                    .vertexDescriptor(try vertexShader.inferredVertexDescriptor())
                 }
                 .onCommandBufferScheduled { _ in
                     print("**** onCommandBufferScheduled")

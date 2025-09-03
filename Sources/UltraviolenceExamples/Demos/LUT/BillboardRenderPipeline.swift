@@ -48,7 +48,7 @@ struct BillboardRenderPipeline: Element {
                 .parameter("texture2d", texture: texture.textureType == .type2D ? texture : nil)
                 .parameter("textureCube", texture: texture.textureType == .typeCube ? texture : nil)
             }
-            .vertexDescriptor(vertexShader.inferredVertexDescriptor()!)
+            .vertexDescriptor(try vertexShader.inferredVertexDescriptor())
         }
     }
 }

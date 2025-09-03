@@ -48,7 +48,7 @@ public enum RedTriangleInline {
                 }
                 .parameter("color", value: SIMD4<Float>([1, 0, 0, 1]))
             }
-            .vertexDescriptor(vertexShader.inferredVertexDescriptor()!)
+            .vertexDescriptor(try vertexShader.inferredVertexDescriptor())
         }
 
         let offscreenRenderer = try OffscreenRenderer(size: CGSize(width: 1_600, height: 1_200))

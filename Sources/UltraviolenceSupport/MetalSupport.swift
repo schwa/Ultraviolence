@@ -449,9 +449,9 @@ public extension MTLVertexFormat {
 }
 
 public extension MTLFunction {
-    func inferredVertexDescriptor() -> MTLVertexDescriptor? {
+    func inferredVertexDescriptor() throws -> MTLVertexDescriptor {
         guard let vertexAttributes else {
-            return nil
+            throw UltraviolenceError.generic("Function has no vertex attributes.")
         }
         let vertexDescriptor = MTLVertexDescriptor()
         for attribute in vertexAttributes {
