@@ -148,7 +148,7 @@ struct SkyboxRenderPipeline: Element {
                 .transforms(.init(cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix))
                 .parameter("texture", texture: texture)
             }
-            .vertexDescriptor(vertexShader.inferredVertexDescriptor()!)
+            .vertexDescriptor(try vertexShader.inferredVertexDescriptor())
         }
     }
 }

@@ -76,7 +76,7 @@ struct GridShader: Element {
                 .parameter("backgroundColor", value: SIMD4<Float>(0.1, 0.1, 0.1, 1))
                 .parameter("gridScale", value: SIMD2<Float>(0.0005, 0.0005))
             }
-            .vertexDescriptor(vertexShader.inferredVertexDescriptor()!)
+            .vertexDescriptor(try vertexShader.inferredVertexDescriptor())
         }
     }
 }

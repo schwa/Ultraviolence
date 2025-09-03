@@ -69,7 +69,7 @@ public struct StencilDemoView: View {
                     }
                     .parameter("color", value: SIMD4<Float>([0.5, 1, 0.5, 1]))
                 }
-                .vertexDescriptor(vertexShader.inferredVertexDescriptor()!)
+                .vertexDescriptor(try vertexShader.inferredVertexDescriptor())
                 .depthStencilDescriptor(depthStencilDescriptor)
             }
             .renderPassDescriptorModifier { renderPassDescriptor in
