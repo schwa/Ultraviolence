@@ -15,7 +15,6 @@ public extension Transforms {
         self.modelViewMatrix = viewMatrix * modelMatrix
 
         self.modelViewProjectionMatrix = projectionMatrix * viewMatrix * modelMatrix
-        self.modelNormalMatrix = modelMatrix.upperLeft
     }
 }
 
