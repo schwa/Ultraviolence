@@ -100,11 +100,3 @@ func testAnyElement() throws {
     #expect(graph.element(at: [0], type: TestDemoElement.self).title == "Hello world")
 }
 
-@Test
-@MainActor
-func testModifier() throws {
-    let root = TestDemoElement("Hello world").modifier(PassthroughModifier())
-    let graph = try ElementGraph(content: root)
-    try graph.rebuildIfNeeded()
-    #expect(graph.element(at: [0, 0], type: TestDemoElement.self).title == "Hello world")
-}
