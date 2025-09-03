@@ -14,7 +14,7 @@ test:
     swift test --quiet
 
 coverage-percent:
-    swift test --enable-code-coverage
+    swift test --enable-code-coverage --quiet
     #.build/arm64-apple-macosx/debug/codecov/Ultraviolence.json
     xcrun llvm-cov report \
         .build/arm64-apple-macosx/debug/UltraviolencePackageTests.xctest/Contents/MacOS/UltraviolencePackageTests \
