@@ -36,15 +36,18 @@ public struct RenderPipeline <Content>: Element, BodylessElement, BodylessConten
         }
         renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
 
-        // TODO: #102 We don't want to overwrite anything already set.
+        // Only set pixel formats if they haven't been explicitly configured
         // TODO: #103 This is copying everything from the render pass descriptor. But really we should be getting this entirely from the environment.
-        if let colorAttachment0Texture = renderPassDescriptor.colorAttachments[0].texture {
+        if renderPipelineDescriptor.colorAttachments[0].pixelFormat == .invalid,
+           let colorAttachment0Texture = renderPassDescriptor.colorAttachments[0].texture {
             renderPipelineDescriptor.colorAttachments[0].pixelFormat = colorAttachment0Texture.pixelFormat
         }
-        if let depthAttachmentTexture = renderPassDescriptor.depthAttachment?.texture {
+        if renderPipelineDescriptor.depthAttachmentPixelFormat == .invalid,
+           let depthAttachmentTexture = renderPassDescriptor.depthAttachment?.texture {
             renderPipelineDescriptor.depthAttachmentPixelFormat = depthAttachmentTexture.pixelFormat
         }
-        if let stencilAttachmentTexture = renderPassDescriptor.stencilAttachment?.texture {
+        if renderPipelineDescriptor.stencilAttachmentPixelFormat == .invalid,
+           let stencilAttachmentTexture = renderPassDescriptor.stencilAttachment?.texture {
             renderPipelineDescriptor.stencilAttachmentPixelFormat = stencilAttachmentTexture.pixelFormat
         }
         let device = try device.orThrow(.missingEnvironment(\.device))
