@@ -29,7 +29,7 @@ extension CGImage {
         catch {
             let url = URL(fileURLWithPath: "/tmp/\(name).png")
             try self.write(to: url)
-            print("Wrote image to \(url)")
+            // Image written to /tmp for debugging
             return false
         }
     }

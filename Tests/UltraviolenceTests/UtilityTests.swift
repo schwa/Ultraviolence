@@ -45,7 +45,10 @@ func testOptionalElement() throws {
     let optionalElement = TestDemoElement?(element)
     let graph = try ElementGraph(content: optionalElement)
     try graph.rebuildIfNeeded()
-    try graph.dump()
+    // Verify dump works without printing
+    var dumpOutput = ""
+    try graph.dump(to: &dumpOutput)
+    #expect(!dumpOutput.isEmpty)
     #expect(graph.element(at: [], type: TestDemoElement.self).title == "Hello world")
 }
 
@@ -88,7 +91,9 @@ func testComplexGraphDump() throws {
     var s = ""
     try graph.dump(options: [.dumpElement, .dumpNode], to: &s)
     s = s.trimmingCharacters(in: .whitespacesAndNewlines)
-    print(s)
+    // Verify the dump contains expected structure
+    #expect(s.contains("TestDemoElement"))
+    #expect(s.contains("Group"))
 }
 
 @Test
