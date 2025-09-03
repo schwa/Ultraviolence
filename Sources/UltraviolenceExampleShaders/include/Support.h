@@ -35,7 +35,6 @@ typedef UV_ENUM(int, ColorSource){
 
 struct Texture2DSpecifierArgumentBuffer {
     ColorSource source;
-    // TODO: #141 use a union?
     simd_float3 color;
     TEXTURE2D(float, access::sample) texture;
     SAMPLER sampler;
