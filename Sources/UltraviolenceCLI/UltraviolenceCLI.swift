@@ -84,9 +84,9 @@ struct Main {
                         encoder.setVertexBuffers(of: mtkMesh)
                         encoder.draw(mtkMesh)
                     }
-                    .parameter("modelMatrix", modelMatrix)
-                    .parameter("viewMatrix", viewMatrix)
-                    .parameter("projectionMatrix", projectionMatrix)
+                    .parameter("modelMatrix", value: modelMatrix)
+                    .parameter("viewMatrix", value: viewMatrix)
+                    .parameter("projectionMatrix", value: projectionMatrix)
                 }
                 .vertexDescriptor(vertexDescriptor)
             }

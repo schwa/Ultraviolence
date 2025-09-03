@@ -1,0 +1,325 @@
+{
+  "version": 4,
+  "project_info": {
+    "workspace": null,
+    "project": null,
+    "package": "/Users/schwa/Shared/Projects/Ultraviolence/Package.swift",
+    "schemes": [
+      {
+        "name": "Ultraviolence",
+        "supported_platforms": [
+          "mac"
+        ]
+      },
+      {
+        "name": "UltraviolenceUI",
+        "supported_platforms": [
+          "mac"
+        ]
+      },
+      {
+        "name": "UltraviolenceSupport",
+        "supported_platforms": [
+          "mac"
+        ]
+      },
+      {
+        "name": "UltraviolenceMacros",
+        "supported_platforms": [
+          "mac"
+        ]
+      },
+      {
+        "name": "UltraviolenceTests",
+        "supported_platforms": [
+          "mac"
+        ]
+      },
+      {
+        "name": "UltraviolenceExamples",
+        "supported_platforms": [
+          "mac"
+        ]
+      },
+      {
+        "name": "UltraviolenceExampleShaders",
+        "supported_platforms": [
+          "mac"
+        ]
+      },
+      {
+        "name": "UltraviolenceCLI",
+        "supported_platforms": [
+          "mac"
+        ]
+      },
+      {
+        "name": "UltraviolenceGaussianSplats",
+        "supported_platforms": [
+          "mac"
+        ]
+      },
+      {
+        "name": "UltraviolenceGaussianSplatShaders",
+        "supported_platforms": [
+          "mac"
+        ]
+      },
+      {
+        "name": "UltraviolenceKit",
+        "supported_platforms": [
+          "mac"
+        ]
+      },
+      {
+        "name": "UltraviolenceExamplesTests",
+        "supported_platforms": [
+          "mac"
+        ]
+      }
+    ],
+    "targets": [
+      {
+        "name": "Ultraviolence",
+        "platform": null,
+        "target_type": "library"
+      },
+      {
+        "name": "UltraviolenceUI",
+        "platform": null,
+        "target_type": "library"
+      },
+      {
+        "name": "UltraviolenceSupport",
+        "platform": null,
+        "target_type": "library"
+      },
+      {
+        "name": "UltraviolenceMacros",
+        "platform": null,
+        "target_type": "library"
+      },
+      {
+        "name": "UltraviolenceTests",
+        "platform": null,
+        "target_type": "library"
+      },
+      {
+        "name": "UltraviolenceExamples",
+        "platform": null,
+        "target_type": "library"
+      },
+      {
+        "name": "UltraviolenceExampleShaders",
+        "platform": null,
+        "target_type": "library"
+      },
+      {
+        "name": "UltraviolenceCLI",
+        "platform": null,
+        "target_type": "library"
+      },
+      {
+        "name": "UltraviolenceGaussianSplats",
+        "platform": null,
+        "target_type": "library"
+      },
+      {
+        "name": "UltraviolenceGaussianSplatShaders",
+        "platform": null,
+        "target_type": "library"
+      },
+      {
+        "name": "UltraviolenceKit",
+        "platform": null,
+        "target_type": "library"
+      },
+      {
+        "name": "UltraviolenceExamplesTests",
+        "platform": null,
+        "target_type": "library"
+      }
+    ],
+    "packages": []
+  },
+  "xcode_installations": [
+    {
+      "path": "/Applications/Xcode-26.0.0-Beta.7.app",
+      "version": "26.0",
+      "build": "17A5305k",
+      "is_current": true
+    },
+    {
+      "path": "/Applications/Xcode-16.4.0.app",
+      "version": "16.4",
+      "build": "16F6",
+      "is_current": false
+    }
+  ],
+  "available_destinations": [],
+  "discovered_projects": [
+    {
+      "path": ".",
+      "project_type": "SwiftPackage",
+      "depth": 0,
+      "schemes": [
+        {
+          "name": "Ultraviolence",
+          "supported_platforms": [
+            "mac"
+          ]
+        },
+        {
+          "name": "UltraviolenceUI",
+          "supported_platforms": [
+            "mac"
+          ]
+        },
+        {
+          "name": "UltraviolenceSupport",
+          "supported_platforms": [
+            "mac"
+          ]
+        },
+        {
+          "name": "UltraviolenceMacros",
+          "supported_platforms": [
+            "mac"
+          ]
+        },
+        {
+          "name": "UltraviolenceTests",
+          "supported_platforms": [
+            "mac"
+          ]
+        },
+        {
+          "name": "UltraviolenceExamples",
+          "supported_platforms": [
+            "mac"
+          ]
+        },
+        {
+          "name": "UltraviolenceExampleShaders",
+          "supported_platforms": [
+            "mac"
+          ]
+        },
+        {
+          "name": "UltraviolenceCLI",
+          "supported_platforms": [
+            "mac"
+          ]
+        },
+        {
+          "name": "UltraviolenceGaussianSplats",
+          "supported_platforms": [
+            "mac"
+          ]
+        },
+        {
+          "name": "UltraviolenceGaussianSplatShaders",
+          "supported_platforms": [
+            "mac"
+          ]
+        },
+        {
+          "name": "UltraviolenceKit",
+          "supported_platforms": [
+            "mac"
+          ]
+        },
+        {
+          "name": "UltraviolenceExamplesTests",
+          "supported_platforms": [
+            "mac"
+          ]
+        }
+      ],
+      "targets": [
+        {
+          "name": "Ultraviolence",
+          "platform": null,
+          "target_type": "library"
+        },
+        {
+          "name": "UltraviolenceUI",
+          "platform": null,
+          "target_type": "library"
+        },
+        {
+          "name": "UltraviolenceSupport",
+          "platform": null,
+          "target_type": "library"
+        },
+        {
+          "name": "UltraviolenceMacros",
+          "platform": null,
+          "target_type": "library"
+        },
+        {
+          "name": "UltraviolenceTests",
+          "platform": null,
+          "target_type": "library"
+        },
+        {
+          "name": "UltraviolenceExamples",
+          "platform": null,
+          "target_type": "library"
+        },
+        {
+          "name": "UltraviolenceExampleShaders",
+          "platform": null,
+          "target_type": "library"
+        },
+        {
+          "name": "UltraviolenceCLI",
+          "platform": null,
+          "target_type": "library"
+        },
+        {
+          "name": "UltraviolenceGaussianSplats",
+          "platform": null,
+          "target_type": "library"
+        },
+        {
+          "name": "UltraviolenceGaussianSplatShaders",
+          "platform": null,
+          "target_type": "library"
+        },
+        {
+          "name": "UltraviolenceKit",
+          "platform": null,
+          "target_type": "library"
+        },
+        {
+          "name": "UltraviolenceExamplesTests",
+          "platform": null,
+          "target_type": "library"
+        }
+      ]
+    },
+    {
+      "path": "./Ultraviolence-Examples/Ultraviolence-Examples.xcodeproj",
+      "project_type": "Project",
+      "depth": 2,
+      "schemes": [
+        {
+          "name": "Ultraviolence-Examples",
+          "supported_platforms": [
+            "mac"
+          ]
+        }
+      ],
+      "targets": [
+        {
+          "name": "Ultraviolence-Examples",
+          "platform": null,
+          "target_type": "app"
+        }
+      ]
+    }
+  ],
+  "default_project": null,
+  "timestamp": 1756925571
+}

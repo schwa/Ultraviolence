@@ -22,8 +22,8 @@ public extension Transforms {
 public extension Element {
     func transforms(_ transforms: Transforms) -> some Element {
         self
-            .parameter("transforms", value: transforms, functionType: .vertex)
+            .parameter("transforms", functionType: .vertex, value: transforms)
             // TODO: #127 Fix same parameter name with both shaders.
-            .parameter("transforms", value: transforms, functionType: .fragment)
+            .parameter("transforms", functionType: .fragment, value: transforms)
     }
 }

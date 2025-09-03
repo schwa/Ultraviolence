@@ -53,7 +53,7 @@ func testRendering() throws {
                 encoder.setVertexBytes(vertices, length: MemoryLayout<SIMD2<Float>>.stride * 3, index: 0)
                 encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
             }
-            .parameter("color", color)
+            .parameter("color", value: color)
         }
     }
 

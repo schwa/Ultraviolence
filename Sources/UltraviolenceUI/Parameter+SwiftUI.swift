@@ -12,6 +12,6 @@ public extension Element {
             preconditionFailure("Unimplemented.")
         }
         let value = SIMD4<Float>(components[0], components[1], components[2], components[3])
-        return parameter(name, value, functionType: functionType)
+        return parameter(name, functionType: functionType, value: value)
     }
 }
