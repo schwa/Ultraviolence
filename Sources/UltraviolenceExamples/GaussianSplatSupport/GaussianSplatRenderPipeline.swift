@@ -87,4 +87,4 @@ public struct GaussianSplatRenderPipeline: Element {
         }
     }
 }
-#endif // os(iOS) || (os(macOS) && !arch(x86_64))
+#endif
