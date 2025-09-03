@@ -5,7 +5,7 @@ internal import os
 import simd
 import UltraviolenceSupport
 
-// TODO: #146 Dangerous `@unchecked Sendable` usage in SplatCloud.
+// TODO: #146 Dangerous `@unchecked Sendable` usage in SplatCloud and SplatIndices.
 public final class SplatCloud <Splat>: Equatable, @unchecked Sendable where Splat: SortableSplatProtocol {
     public private(set) var splats: TypedMTLBuffer<Splat>
     internal var indexedDistances: SplatIndices
@@ -42,6 +42,7 @@ public final class SplatCloud <Splat>: Equatable, @unchecked Sendable where Spla
 
 // MARK: -
 
+// TODO: #146 Dangerous `@unchecked Sendable` usage in SplatCloud and SplatIndices.
 public struct SplatIndices: @unchecked Sendable, Equatable {
     var parameters: SortParameters
     var indices: TypedMTLBuffer<IndexedDistance>
