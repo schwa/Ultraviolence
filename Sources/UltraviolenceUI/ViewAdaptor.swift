@@ -1,7 +1,6 @@
 import SwiftUI
 
 #if os(macOS)
-// TODO: #112 Make private
 public struct ViewAdaptor<ViewType>: View where ViewType: NSView {
     let make: () -> ViewType
     let update: (ViewType) -> Void
@@ -30,7 +29,6 @@ public struct ViewAdaptor<ViewType>: View where ViewType: NSView {
 }
 
 #elseif os(iOS) || os(tvOS)
-// TODO: #113 Make private
 public struct ViewAdaptor<ViewType>: View where ViewType: UIView {
     let make: () -> ViewType
     let update: (ViewType) -> Void
