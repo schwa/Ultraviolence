@@ -1,4 +1,4 @@
-// swift-tools-version: 6.2
+// swift-tools-version: 6.1
 
 import CompilerPluginSupport
 import PackageDescription
@@ -6,8 +6,9 @@ import PackageDescription
 public let package = Package(
     name: "Ultraviolence",
     platforms: [
-        .iOS("18.2"),
-        .macOS("15.2")
+        .iOS("18.6"),
+        .macOS("15.6"),
+        .visionOS("2.6"),
     ],
     products: [
         .library(name: "Ultraviolence", targets: ["Ultraviolence"]),
@@ -71,7 +72,7 @@ public let package = Package(
                 "UltraviolenceGaussianSplats",
             ],
             swiftSettings: [
-                .defaultIsolation(nil)
+//                .defaultIsolation(nil)
             ]
         ),
         .target(
