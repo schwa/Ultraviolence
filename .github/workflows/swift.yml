@@ -20,16 +20,18 @@ jobs:
       - run: swift build -v
       - run: swift test -v
   xcode-build:
+    env:
+      XCODE_PROJECT: "UltraviolenceExamples/UltraviolenceExamples.xcodeproj"
+      XCODE_SCHEME: "UltraviolenceExamples"
+      XCODE_CONFIGURATION: "Release"
     runs-on: macos-15 # macos-latest
     steps:
-      - uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: ${{ env.XCODE_VERSION }}
-      - uses: actions/checkout@v3
-      - name: Trust plugins
-        run: defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidation -bool YES
-      - name: Build and test with xcodebuild
-        run: |
-          xcodebuild clean build \
-            -project "Ultraviolence-Examples/Ultraviolence-Examples.xcodeproj" \
-            -scheme "Ultraviolence-Examples"
+        - uses: maxim-lobanov/setup-xcode@v1
+          with:
+            xcode-version: ${{ env.XCODE_VERSION }}
+        - uses: actions/checkout@v3
+          with:
+            submodules: true
+        - name: Trust plugins
+          run: defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidation -bool YES
+        - run: xcodebuild -project "${{ env.XCODE_PROJECT }}" -scheme "${{ env.XCODE_SCHEME }}" -destination "generic/platform=macOS" -skipPackagePluginValidation build ARCHS=arm64 ONLY_ACTIVE_ARCH=NO CODE_SIGNING_ALLOWED=NO -configuration "${{ env.XCODE_CONFIGURATION }}"
