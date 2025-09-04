@@ -151,7 +151,7 @@ internal class RenderViewViewModel <Content>: NSObject, MTKViewDelegate where Co
                     // TODO: #25 Find a way to detect if graph has changed and set needsSetup to true. I am assuming we get a whole new graph every time - can we confirm this is true and too much work is being done?
                     try graph.update(content: content)
                     // Check if any new nodes need setup after updating content
-                    if needsSetup || graph.hasNodesNeedingSetup() {
+                    if needsSetup {
                         try graph.processSetup()
                         needsSetup = false
                     }
@@ -188,5 +188,3 @@ public struct RenderViewDebugging {
     @MainActor
     static var logContent = true
 }
-
-
