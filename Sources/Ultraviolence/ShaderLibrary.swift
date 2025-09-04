@@ -30,8 +30,22 @@ public struct ShaderLibrary {
 
     public func function<T>(named name: String, type: T.Type, constants: FunctionConstants = FunctionConstants()) throws -> T where T: ShaderProtocol {
         let scopedNamed = namespace.map { "\($0)::\(name)" } ?? name
-        let mtlConstants = try constants.buildMTLConstants(for: library, functionName: scopedNamed)
-        let function = try library.makeFunction(name: scopedNamed, constantValues: mtlConstants)
+        
+        let function: MTLFunction
+        
+        if !constants.isEmpty {
+            // Build the constant values using the unspecialized function for introspection
+            let mtlConstants = try constants.buildMTLConstants(for: library, functionName: scopedNamed)
+            
+            // Now create the SPECIALIZED function with the constants applied
+            function = try library.makeFunction(name: scopedNamed, constantValues: mtlConstants)
+        } else {
+            // No constants, just get the function directly
+            guard let basicFunction = library.makeFunction(name: scopedNamed) else {
+                throw UltraviolenceError.resourceCreationFailure("Function '\(scopedNamed)' not found in library")
+            }
+            function = basicFunction
+        }
         switch type {
         // TODO: #94 Clean this up.
         case is VertexShader.Type:

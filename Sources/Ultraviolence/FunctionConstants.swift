@@ -23,39 +23,61 @@ public struct FunctionConstants: Equatable {
     
     public init() {}
     
+    public var isEmpty: Bool {
+        values.isEmpty
+    }
+    
     /// Get or set constant values by name using subscript
     public subscript(name: String) -> Value? {
         get { values[name] }
         set { values[name] = newValue }
     }
     
-    /// Build MTLFunctionConstantValues using shader introspection to get indices
+    /// Build MTLFunctionConstantValues
     public func buildMTLConstants(for library: MTLLibrary, functionName: String) throws -> MTLFunctionConstantValues {
-        let mtlConstants = MTLFunctionConstantValues()
-        
-        // Get the function's constant dictionary to map names to indices
-        guard let functionDescriptor = library.functionNames.contains(functionName) ? library.makeFunction(name: functionName) : nil else {
+        guard let baseFunction = library.makeFunction(name: functionName) else {
             throw UltraviolenceError.generic("Function '\(functionName)' not found in library")
         }
         
-        // Apply each constant value using the function's constant dictionary
-        for (name, value) in values {
-            if let constantInfo = functionDescriptor.functionConstantsDictionary[name] {
-                value.apply(to: mtlConstants, at: constantInfo.index)
-            }
-        }
-        
-        return mtlConstants
-    }
-    
-    /// Build MTLFunctionConstantValues when indices are already known
-    public func buildMTLConstants(with indices: [String: Int]) -> MTLFunctionConstantValues {
         let mtlConstants = MTLFunctionConstantValues()
+        let constantsDictionary = baseFunction.functionConstantsDictionary
         
         for (name, value) in values {
-            if let index = indices[name] {
-                value.apply(to: mtlConstants, at: index)
+            // If the constant name already has a namespace delimiter, use it as-is
+            if name.contains("::") {
+                if let info = constantsDictionary[name] {
+                    value.apply(to: mtlConstants, at: info.index)
+                } else if !constantsDictionary.isEmpty {
+                    throw UltraviolenceError.generic(
+                        "Constant '\(name)' not found in function '\(functionName)'. " +
+                        "Available: \(constantsDictionary.keys.joined(separator: ", "))"
+                    )
+                }
+            } else {
+                // No namespace in the constant name - search for it
+                // Try exact match first
+                if let info = constantsDictionary[name] {
+                    value.apply(to: mtlConstants, at: info.index)
+                } else {
+                    // Search for any constant ending with ::name
+                    let matches = constantsDictionary.filter { $0.key.hasSuffix("::\(name)") }
+                    if matches.count == 1, let info = matches.first?.value {
+                        value.apply(to: mtlConstants, at: info.index)
+                    } else if matches.count > 1 {
+                        throw UltraviolenceError.generic(
+                            "Ambiguous constant '\(name)' in function '\(functionName)'. " +
+                            "Multiple matches found: \(matches.keys.joined(separator: ", ")). " +
+                            "Use fully qualified name."
+                        )
+                    } else if !constantsDictionary.isEmpty {
+                        throw UltraviolenceError.generic(
+                            "Constant '\(name)' not found in function '\(functionName)'. " +
+                            "Available: \(constantsDictionary.keys.joined(separator: ", "))"
+                        )
+                    }
+                }
             }
+            // If constantsDictionary is empty, skip silently (constant was optimized out)
         }
         
         return mtlConstants
