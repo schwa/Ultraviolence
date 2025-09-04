@@ -109,6 +109,8 @@ internal class RenderViewViewModel <Content>: NSObject, MTKViewDelegate where Co
     @ObservationIgnored
     var signpostID = signposter?.makeSignpostID()
 
+    var frame: Int = 0
+
     @MainActor
     init(device: MTLDevice, commandQueue: MTLCommandQueue, content: @escaping () throws -> Content) throws {
         self.device = device
@@ -125,10 +127,14 @@ internal class RenderViewViewModel <Content>: NSObject, MTKViewDelegate where Co
 
     func draw(in view: MTKView) {
         do {
+            if RenderViewDebugging.logFrame {
+                logger?.info("Drawing frame #\(self.frame)")
+            }
             try withIntervalSignpost(signposter, name: "RenderViewViewModel.draw()", id: signpostID) {
                 let currentDrawable = try view.currentDrawable.orThrow(.generic("No drawable available"))
                 defer {
                     currentDrawable.present()
+                    frame += 1
                 }
                 let currentRenderPassDescriptor = try view.currentRenderPassDescriptor.orThrow(.generic("No render pass descriptor available"))
                 let content = try CommandBufferElement(completion: .commit) {
@@ -141,17 +147,46 @@ internal class RenderViewViewModel <Content>: NSObject, MTKViewDelegate where Co
                 .environment(\.currentDrawable, currentDrawable)
                 .environment(\.drawableSize, view.drawableSize)
 
-                // TODO: #25 Find a way to detect if graph has changed and set needsSetup to true. I am assuming we get a whole new graph every time - can we confirm this is true and too much work is being done?
-                try graph.update(content: content)
-                if needsSetup {
-                    try graph.processSetup()
-                    needsSetup = false
+                do {
+                    // TODO: #25 Find a way to detect if graph has changed and set needsSetup to true. I am assuming we get a whole new graph every time - can we confirm this is true and too much work is being done?
+                    try graph.update(content: content)
+                    // Check if any new nodes need setup after updating content
+                    if needsSetup || graph.hasNodesNeedingSetup() {
+                        try graph.processSetup()
+                        needsSetup = false
+                    }
+                    try graph.processWorkload()
+                } catch {
+                    handle(error: error)
                 }
-                try graph.processWorkload()
             }
         } catch {
-            logger?.error("Error when drawing: \(error)")
-            lastError = error
+            handle(error: error)
         }
     }
+
+    @MainActor
+    func handle(error: Error) {
+        logger?.error("Error when drawing frame #\(self.frame): \(error)")
+        if RenderViewDebugging.logContent {
+            if let content = try? self.content() {
+                logger?.error("Content: \(String(describing: content))")
+            }
+        }
+        if RenderViewDebugging.fatalErrorOnCatch {
+            fatalError("Error when drawing #\(self.frame): \(error)")
+        }
+        lastError = error
+    }
 }
+
+public struct RenderViewDebugging {
+    @MainActor
+    static var logFrame = true
+    @MainActor
+    static var fatalErrorOnCatch = true
+    @MainActor
+    static var logContent = true
+}
+
+
