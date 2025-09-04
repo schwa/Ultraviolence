@@ -68,7 +68,8 @@ struct ContentView: View {
     }
 
     func row(for demo: any DemoView.Type) -> some View {
-        let page = Page(id: demo.name, keywords: demo.keywords, description: demo.demoDescription) { AnyView(demo.init()) }
+        let metadata = demo.metadata
+        let page = Page(id: metadata.name, keywords: metadata.keywords, description: metadata.description) { AnyView(demo.init()) }
         return row(for: page)
     }
 }

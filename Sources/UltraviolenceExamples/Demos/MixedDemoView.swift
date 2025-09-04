@@ -52,7 +52,12 @@ public struct MixedDemoView: View {
 }
 
 extension MixedDemoView: DemoView {
-    public static var keywords: [String] {
-        ["Raster", "Animated"]
+    public static var metadata: DemoMetadata {
+        DemoMetadata(
+            name: "Mixed Techniques",
+            description: "Combination of multiple rendering techniques including lighting and animation",
+            keywords: ["multipass"],
+            color: .mint
+        )
     }
 }

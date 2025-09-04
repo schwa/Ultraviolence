@@ -107,11 +107,13 @@ public struct BlinnPhongDemoView: View {
 }
 
 extension BlinnPhongDemoView: DemoView {
-    public static var keywords: [String] {
-        ["Raster", "Lighting"]
-    }
-    public static var demoDescription: String? {
-        "A demo of Blinn-Phong lighting with multiple models."
+    public static var metadata: DemoMetadata {
+        DemoMetadata(
+            name: "Blinn-Phong Lighting",
+            description: "3D lighting demonstration using the Blinn-Phong shading model with animated lights",
+            keywords: ["lighting", "skybox"],
+            color: .orange
+        )
     }
 }
 

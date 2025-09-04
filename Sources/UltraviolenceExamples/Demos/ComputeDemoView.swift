@@ -58,8 +58,12 @@ public struct ComputeDemoView: View {
 }
 
 extension ComputeDemoView: DemoView {
-    public static let keywords = ["Compute"]
-    public static let demoDescription: String? = """
-    A simple example of a compute shader that copies data from one buffer to another.
-    """
+    public static var metadata: DemoMetadata {
+        DemoMetadata(
+            name: "Compute",
+            description: "Simple compute shader that copies data between GPU buffers",
+            keywords: ["compute"],
+            color: .blue
+        )
+    }
 }

@@ -96,4 +96,12 @@ public struct TriangleDemoView: View {
 }
 
 extension TriangleDemoView: DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(
+            name: "Triangle",
+            description: "Basic triangle rendering with animated colors and performance metrics",
+            keywords: ["vertex", "fragment"],
+            color: .red
+        )
+    }
 }
