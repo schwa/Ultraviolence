@@ -36,4 +36,11 @@ extension ForEach: BodylessElement {
             index += 1
         }
     }
+    
+    internal func visitChildrenBodyless(_ visit: (any Element) throws -> Void) throws {
+        for datum in data {
+            let child = try content(datum)
+            try visit(child)
+        }
+    }
 }

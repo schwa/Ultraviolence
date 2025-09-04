@@ -16,6 +16,10 @@ extension BodylessContentElement {
     func expandIntoNode(_ node: Node, context: ExpansionContext) throws {
         try expandNodeHelper(node, context: context)
     }
+    
+    func visitChildrenBodyless(_ visit: (any Element) throws -> Void) rethrows {
+        try visit(content)
+    }
 }
 
 internal struct ExpansionContext {

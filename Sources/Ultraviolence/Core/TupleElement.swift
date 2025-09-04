@@ -20,4 +20,10 @@ extension TupleElement: BodylessElement {
             index += 1
         }
     }
+    
+    internal func visitChildrenBodyless(_ visit: (any Element) throws -> Void) rethrows {
+        for child in repeat (each children) {
+            try visit(child)
+        }
+    }
 }
