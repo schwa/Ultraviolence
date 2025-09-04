@@ -28,21 +28,10 @@ public struct ShaderLibrary {
         self.namespace = namespace
     }
 
-    @available(*, deprecated, message: "Use the type-safe function<T>(named:type:constantValues:) method instead")
-    internal func function(named name: String, type: MTLFunctionType? = nil, constantValues: MTLFunctionConstantValues? = nil) throws -> MTLFunction {
+    public func function<T>(named name: String, type: T.Type, constants: FunctionConstants = FunctionConstants()) throws -> T where T: ShaderProtocol {
         let scopedNamed = namespace.map { "\($0)::\(name)" } ?? name
-        let constantValues = constantValues ?? MTLFunctionConstantValues()
-        let function = try library.makeFunction(name: scopedNamed, constantValues: constantValues)
-        if let type, function.functionType != type {
-            throw UltraviolenceError.resourceCreationFailure("Function \(scopedNamed) is not of type \(type).")
-        }
-        return function
-    }
-
-    public func function<T>(named name: String, type: T.Type, constantValues: MTLFunctionConstantValues? = nil) throws -> T where T: ShaderProtocol {
-        let scopedNamed = namespace.map { "\($0)::\(name)" } ?? name
-        let constantValues = constantValues ?? MTLFunctionConstantValues()
-        let function = try library.makeFunction(name: scopedNamed, constantValues: constantValues)
+        let mtlConstants = try constants.buildMTLConstants(for: library, functionName: scopedNamed)
+        let function = try library.makeFunction(name: scopedNamed, constantValues: mtlConstants)
         switch type {
         // TODO: #94 Clean this up.
         case is VertexShader.Type:
