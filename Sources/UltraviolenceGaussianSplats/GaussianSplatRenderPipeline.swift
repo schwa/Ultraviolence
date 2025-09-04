@@ -37,7 +37,7 @@ public struct GaussianSplatRenderPipeline: Element {
 
         let shaderLibrary = try ShaderLibrary(bundle: Bundle.ultraviolenceGaussianSplatShaders(), namespace: "GaussianSplatAntimatter15RenderShaders")
 
-        // Fragment shader needs debug_mode constant, vertex shader doesn't
+        // Initial shader setup
         var fragmentConstants = FunctionConstants()
         fragmentConstants["debug_mode"] = .int32(debugMode.rawValue)
         
@@ -73,6 +73,19 @@ public struct GaussianSplatRenderPipeline: Element {
                 .parameter("scale", value: Float(2.0))
             }
             .vertexDescriptor(vertexDescriptor)
+            .onChange(of: debugMode) {
+                do {
+                    // Update shaders with new constants when debugMode changes
+                    let shaderLibrary = try ShaderLibrary(bundle: Bundle.ultraviolenceGaussianSplatShaders(), namespace: "GaussianSplatAntimatter15RenderShaders")
+                    var fragmentConstants = FunctionConstants()
+                    fragmentConstants["debug_mode"] = .int32(debugMode.rawValue)
+                    self.vertexShader = try shaderLibrary.function(named: "vertex_main", type: VertexShader.self)
+                    self.fragmentShader = try shaderLibrary.function(named: "fragment_main", type: FragmentShader.self, constants: fragmentConstants)
+                }
+                catch {
+                    fatalError("Failed to update shaders: \(error)")
+                }
+            }
             .renderPipelineDescriptorModifier { renderPipelineDescriptor in
                 renderPipelineDescriptor.colorAttachments[0].isBlendingEnabled = true
                 renderPipelineDescriptor.colorAttachments[0].rgbBlendOperation = .add

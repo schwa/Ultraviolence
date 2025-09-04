@@ -30,7 +30,6 @@ public struct GaussianSplatDemoView: View {
             if let splatCloud {
                 WorldView(projection: $projection, cameraMatrix: $cameraMatrix, targetMatrix: .constant(nil)) {
                     GaussianSplatView(splatCloud: splatCloud, projection: projection, cameraMatrix: cameraMatrix, debugMode: debugMode)
-                        .id(debugMode)
                 }
             }
         }
