@@ -23,6 +23,6 @@ extension DemoView {
     }
 
     public static var demoDescription: String? {
-        return nil
+        nil
     }
 }

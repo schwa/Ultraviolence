@@ -9,33 +9,33 @@ import UltraviolenceSupport
 public struct GameOfLife: Element {
     @UVEnvironment(\.device)
     var device
-    
+
     @UVState
     private var textureA: MTLTexture?
-    
+
     @UVState
     private var textureB: MTLTexture?
-    
+
     @UVState
     private var currentTextureIsA = true
-    
+
     @UVState
     private var initialized = false
-    
+
     @UVState
     private var frameCount = 0
-    
+
     @UVState
     private var vertexBuffer: MTLBuffer?
-    
+
     let gridSize: (width: Int, height: Int)
     let updateInterval: Int // Update every N frames
     let isRunning: Bool
     let pattern: InitialPattern
-    
+
     @UVState
     private var lastPattern: InitialPattern = .clear
-    
+
     public enum InitialPattern: String, CaseIterable {
         case glider = "Glider"
         case random = "Random"
@@ -43,7 +43,7 @@ public struct GameOfLife: Element {
         case blinker = "Blinker"
         case toad = "Toad"
     }
-    
+
     public init(
         gridSize: (width: Int, height: Int) = (256, 256),
         updateInterval: Int = 2,
@@ -55,40 +55,40 @@ public struct GameOfLife: Element {
         self.isRunning = isRunning
         self.pattern = pattern
     }
-    
+
     public var body: some Element {
         get throws {
             // Initialize textures lazily
             setupTexturesIfNeeded()
-            
+
             // Initialize grid if needed
             if pattern != lastPattern || !initialized {
                 initializeGridIfNeeded()
                 lastPattern = pattern
                 initialized = true
             }
-            
+
             let shaderBundle = Bundle.ultraviolenceExampleShaders().orFatalError()
             let shaderLibrary = try ShaderLibrary(bundle: shaderBundle, namespace: "GameOfLifeShader")
-            
+
             // Create vertex descriptor for interleaved data
             let vertexDescriptor = MTLVertexDescriptor()
-            
+
             // Position attribute (float2 at attribute 0)
             vertexDescriptor.attributes[0].format = .float2
             vertexDescriptor.attributes[0].offset = 0
             vertexDescriptor.attributes[0].bufferIndex = 0
-            
+
             // Texture coordinates attribute (float2 at attribute 1)
             vertexDescriptor.attributes[1].format = .float2
             vertexDescriptor.attributes[1].offset = MemoryLayout<Float>.size * 2
             vertexDescriptor.attributes[1].bufferIndex = 0
-            
+
             // Layout for buffer 0 (interleaved data)
             vertexDescriptor.layouts[0].stride = MemoryLayout<Float>.size * 4
             vertexDescriptor.layouts[0].stepRate = 1
             vertexDescriptor.layouts[0].stepFunction = .perVertex
-            
+
             return try Group {
                 // Update simulation if running
                 if isRunning && frameCount % updateInterval == 0 {
@@ -107,7 +107,7 @@ public struct GameOfLife: Element {
                         currentTextureIsA.toggle()
                     }
                 }
-                
+
                 // Display the current state
                 try RenderPass {
                     try RenderPipeline(
@@ -120,13 +120,13 @@ public struct GameOfLife: Element {
                             samplerDescriptor.minFilter = .nearest
                             samplerDescriptor.magFilter = .nearest
                             let sampler = device?.makeSamplerState(descriptor: samplerDescriptor)
-                            
+
                             // Set vertex buffer
                             encoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
-                            
+
                             encoder.setFragmentTexture(currentTexture, index: 0)
                             encoder.setFragmentSamplerState(sampler, index: 0)
-                            
+
                             // Draw fullscreen triangle
                             encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
                         }
@@ -139,21 +139,21 @@ public struct GameOfLife: Element {
             }
         }
     }
-    
+
     private var currentTexture: MTLTexture {
         currentTextureIsA ? textureA.orFatalError() : textureB.orFatalError()
     }
-    
+
     private var nextTexture: MTLTexture {
         currentTextureIsA ? textureB.orFatalError() : textureA.orFatalError()
     }
-    
+
     private func setupTexturesIfNeeded() {
         guard textureA == nil || textureB == nil,
               let device = self.device else {
             return
         }
-        
+
         let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(
             pixelFormat: .rgba8Unorm,
             width: gridSize.width,
@@ -162,39 +162,39 @@ public struct GameOfLife: Element {
         )
         textureDescriptor.usage = [.shaderRead, .shaderWrite]
         textureDescriptor.storageMode = .private
-        
+
         textureA = device.makeTexture(descriptor: textureDescriptor)
         textureB = device.makeTexture(descriptor: textureDescriptor)
-        
+
         // Setup vertex buffer for fullscreen triangle
         if vertexBuffer == nil {
             // Create a fullscreen triangle with position and texture coordinates
             // Each vertex has: float2 position + float2 texCoords = 4 floats
             let vertices: [Float] = [
                 // position     texCoords
-                -1.0, -3.0,     0.0, 2.0,  // bottom left (off-screen)
-                -1.0,  1.0,     0.0, 0.0,  // top left
-                 3.0,  1.0,     2.0, 0.0   // top right (off-screen)
+                -1.0, -3.0, 0.0, 2.0,  // bottom left (off-screen)
+                -1.0, 1.0, 0.0, 0.0,  // top left
+                3.0, 1.0, 2.0, 0.0   // top right (off-screen)
             ]
             vertexBuffer = device.makeBuffer(bytes: vertices, length: vertices.count * MemoryLayout<Float>.size, options: .storageModeShared)
         }
     }
-    
+
     private func initializeGridIfNeeded() {
         guard let device = self.device,
               let textureA = self.textureA,
               let textureB = self.textureB else {
             return
         }
-        
+
         let shaderBundle = Bundle.ultraviolenceExampleShaders().orFatalError()
         guard let shaderLibrary = try? ShaderLibrary(bundle: shaderBundle, namespace: "GameOfLifeShader") else {
             return
         }
-        
+
         let initKernel: ComputeKernel
         var parameters: [(String, Any)] = []
-        
+
         do {
             switch pattern {
             case .glider:
@@ -218,18 +218,17 @@ public struct GameOfLife: Element {
         } catch {
             return
         }
-        
+
         // Initialize both textures
         for texture in [textureA, textureB] {
-            
             let commandQueue = device.makeCommandQueue().orFatalError()
             let commandBuffer = commandQueue.makeCommandBuffer().orFatalError()
             let computeEncoder = commandBuffer.makeComputeCommandEncoder().orFatalError()
-            
+
             guard let pipelineState = try? device.makeComputePipelineState(function: initKernel.function) else { continue }
             computeEncoder.setComputePipelineState(pipelineState)
             computeEncoder.setTexture(texture, index: 0)
-            
+
             // Set parameters based on pattern
             for (index, (_, value)) in parameters.enumerated() {
                 if let uint2Value = value as? SIMD2<UInt32> {
@@ -240,7 +239,7 @@ public struct GameOfLife: Element {
                     computeEncoder.setBytes([uintValue], length: MemoryLayout<UInt32>.size, index: index)
                 }
             }
-            
+
             let threadsPerThreadgroup = MTLSize(width: 16, height: 16, depth: 1)
             let threadgroups = MTLSize(
                 width: (gridSize.width + 15) / 16,
@@ -248,7 +247,7 @@ public struct GameOfLife: Element {
                 depth: 1
             )
             computeEncoder.dispatchThreadgroups(threadgroups, threadsPerThreadgroup: threadsPerThreadgroup)
-            
+
             computeEncoder.endEncoding()
             commandBuffer.commit()
             commandBuffer.waitUntilCompleted()

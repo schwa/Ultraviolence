@@ -23,7 +23,7 @@ public struct DraggableValueViewModifier: ViewModifier {
     var value: Double
 
     @State
-    var animatedValue: Double
+    private var animatedValue: Double
 
     var axis: DraggableValueAxis
     var scale: Double
@@ -33,10 +33,10 @@ public struct DraggableValueViewModifier: ViewModifier {
     var animationMaxDelay: TimeInterval
 
     @State
-    var initialValue: Double?
+    private var initialValue: Double?
 
     @State
-    var lastEventTime: TimeInterval?
+    private var lastEventTime: TimeInterval?
 
     public init(value: Binding<Double>, axis: DraggableValueAxis, scale: Double, behavior: DraggableValueBehavior, minimimDragDistance: Double = 10, predictedThreshold: Double = 10, animationMaxDelay: TimeInterval = 0.2) {
         self._value = value

@@ -4,16 +4,16 @@ import Ultraviolence
 
 internal struct RenderViewDebugViewModifier <Root>: ViewModifier where Root: Element {
     @State
-    var debugInspectorIsPresented = false
+    private var debugInspectorIsPresented = false
 
     @Environment(RenderViewViewModel<Root>.self)
     var viewModel
 
     @State
-    var refreshCount = 0
+    private var refreshCount = 0
 
     @State
-    var selection: NodeListBox?
+    private var selection: NodeListBox?
 
     func body(content: Content) -> some View {
         content

@@ -257,7 +257,5 @@
     }
   ],
   "default_project": "Ultraviolence-Examples/Ultraviolence-Examples.xcodeproj",
-  "default_build_project": null,
-  "default_test_project": null,
-  "timestamp": 1756932684
+  "timestamp": 1756959167
 }

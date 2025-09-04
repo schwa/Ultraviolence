@@ -1,6 +1,6 @@
 #if os(iOS) || (os(macOS) && !arch(x86_64))
-import UltraviolenceGaussianSplatShaders
 import simd
+import UltraviolenceGaussianSplatShaders
 
 // `struct GPUSplat` defined in GaussianSplatShaders package.
 // struct GPUSplat {

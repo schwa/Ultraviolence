@@ -5,13 +5,13 @@ internal struct OnChange<Value: Equatable, Content>: Element where Content: Elem
     let initial: Bool
     let action: (Value, Value) -> Void
     let content: Content
-    
+
     @UVState
     private var previousValue: Value?
-    
+
     @UVState
     private var hasInitialized: Bool
-    
+
     init(value: Value, initial: Bool, action: @escaping (Value, Value) -> Void, content: Content) {
         self.value = value
         self.initial = initial
@@ -19,8 +19,8 @@ internal struct OnChange<Value: Equatable, Content>: Element where Content: Elem
         self.content = content
         self.hasInitialized = false
     }
-    
-    public var body: some Element {
+
+    var body: some Element {
         // Check if this is the initial setup
         if !hasInitialized {
             if initial {
@@ -34,7 +34,7 @@ internal struct OnChange<Value: Equatable, Content>: Element where Content: Elem
             action(oldValue, value)
             previousValue = value
         }
-        
+
         return content
     }
 }
@@ -47,7 +47,7 @@ public extension Element {
     ) -> some Element {
         OnChange(value: value, initial: initial, action: action, content: self)
     }
-    
+
     func onChange<V: Equatable>(
         of value: V,
         perform action: @escaping () -> Void

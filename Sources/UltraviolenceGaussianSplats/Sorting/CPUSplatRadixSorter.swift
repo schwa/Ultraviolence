@@ -1,8 +1,8 @@
 internal import AsyncAlgorithms
-import UltraviolenceGaussianSplatShaders
 @preconcurrency import Metal
 internal import os
 import simd
+import UltraviolenceGaussianSplatShaders
 import UltraviolenceSupport
 
 private let signposter: OSSignposter = .init(subsystem: "io.schwa.ultraviolence-examples", category: OSLog.Category.pointsOfInterest)

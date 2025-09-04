@@ -49,8 +49,6 @@ public extension MTKMesh {
     }
 }
 
-
-
 public extension MTLDevice {
     func makeTexture(name: String, bundle: Bundle? = nil) throws -> MTLTexture {
         let textureLoader = MTKTextureLoader(device: self)
@@ -62,8 +60,6 @@ public extension MTLDevice {
 
 import CoreGraphics
 import ImageIO
-import Metal
-import MetalKit
 import ModelIO
 import simd
 import SwiftUI

@@ -44,7 +44,6 @@ public struct ComputePipeline <Content>: Element, BodylessElement, BodylessConte
 // MARK: -
 
 public struct ComputeDispatch: Element, BodylessElement {
-
     private enum Dimensions {
         case threadgroupsPerGrid(MTLSize)
         case threadsPerGrid(MTLSize)
@@ -57,7 +56,7 @@ public struct ComputeDispatch: Element, BodylessElement {
         self.dimensions = .threadgroupsPerGrid(threadgroups)
         self.threadsPerThreadgroup = threadsPerThreadgroup
     }
-    
+
     public init(threadsPerGrid: MTLSize, threadsPerThreadgroup: MTLSize) throws {
         let device = _MTLCreateSystemDefaultDevice()
         guard device.supportsFamily(.apple4) else {
@@ -76,7 +75,7 @@ public struct ComputeDispatch: Element, BodylessElement {
             preconditionFailure("No compute command encoder/compute pipeline state found.")
         }
         computeCommandEncoder.setComputePipelineState(computePipelineState)
-        
+
         switch dimensions {
         case .threadgroupsPerGrid(let threadgroupCount):
             computeCommandEncoder.dispatchThreadgroups(threadgroupCount, threadsPerThreadgroup: threadsPerThreadgroup)

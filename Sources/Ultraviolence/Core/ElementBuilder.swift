@@ -17,12 +17,12 @@ public struct ElementBuilder {
     public static func buildOptional<Content>(_ content: Content?) -> some Element where Content: Element {
         content
     }
-    
+
     /// Builds an expression within the builder.
     public static func buildExpression<Content>(_ content: Content) -> Content where Content: Element {
         content
     }
-    
+
     /// Produces an optional view for conditional statements in multi-statement
     /// closures that's only visible when the condition evaluates to true.
     public static func buildIf<Content>(_ content: Content?) -> Content? where Content: Element {

@@ -6,11 +6,11 @@ import UltraviolenceSupport
 struct TestDemoElement: Element, BodylessElement {
     typealias Body = Never
     var title: String
-    
+
     init(_ title: String) {
         self.title = title
     }
-    
+
     func expandIntoNode(_ node: Node, context: ExpansionContext) throws {
         // This line intentionally left blank.
     }
@@ -104,4 +104,3 @@ func testAnyElement() throws {
     try graph.rebuildIfNeeded()
     #expect(graph.element(at: [0], type: TestDemoElement.self).title == "Hello world")
 }
-

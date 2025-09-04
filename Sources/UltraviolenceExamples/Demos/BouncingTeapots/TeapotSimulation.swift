@@ -70,4 +70,3 @@ internal struct Teapot {
     var velocity: SIMD3<Float>
     var color: SIMD3<Float>
 }
-

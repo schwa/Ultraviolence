@@ -1,8 +1,8 @@
 internal import AsyncAlgorithms
-import UltraviolenceGaussianSplatShaders
 @preconcurrency import Metal
 internal import os
 import simd
+import UltraviolenceGaussianSplatShaders
 
 internal actor AsyncSortManager <Splat> where Splat: SortableSplatProtocol {
     private var splatCloud: SplatCloud<Splat>
@@ -51,7 +51,7 @@ internal actor AsyncSortManager <Splat> where Splat: SortableSplatProtocol {
             let end = CFAbsoluteTimeGetCurrent()
             let duration = end - start
             if duration > 0.033 {
-                logger?.warning("### Sort took longer than expected (\(duration * 1000) msec, \(duration / 0.033)x).")
+                logger?.warning("### Sort took longer than expected (\(duration * 1_000) msec, \(duration / 0.033)x).")
             }
             await self._sortedIndicesChannel.send(.init(parameters: parameters, indices: currentIndexedDistances))
         }

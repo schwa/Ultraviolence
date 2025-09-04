@@ -1,17 +1,17 @@
 import CoreGraphics
+import ImageIO
+import Metal
+import MetalKit
+import ModelIO
+import simd
 import Ultraviolence
 import UltraviolenceExamples
 import UltraviolenceSupport
-import ModelIO
-import Metal
-import MetalKit
-import simd
-import ImageIO
 import UniformTypeIdentifiers
 
 @main
 struct Main {
-    static func main() async throws {
+    static func main() throws {
         let source = """
         #include <metal_stdlib>
         using namespace metal;
@@ -52,7 +52,7 @@ struct Main {
 
         let device = MTLCreateSystemDefaultDevice()!
 
-        let size = CGSize(width: 1600, height: 1200)
+        let size = CGSize(width: 1_600, height: 1_200)
 
         let colorTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .r32Uint, width: Int(size.width), height: Int(size.height), mipmapped: false)
         colorTextureDescriptor.usage = [.renderTarget, .shaderRead, .shaderWrite] // TODO: #33 this is all hardcoded :-(
@@ -73,7 +73,7 @@ struct Main {
         let vertexDescriptor = MTLVertexDescriptor(mtkMesh.vertexDescriptor)
 
         let modelMatrix = simd_float4x4.identity
-        let cameraMatrix = lookAtMatrix(eye: [0, 0, 1000], target: [0, 0, 0], up: [0, 1, 0])
+        let cameraMatrix = lookAtMatrix(eye: [0, 0, 1_000], target: [0, 0, 0], up: [0, 1, 0])
         let viewMatrix = cameraMatrix.inverse
         let projectionMatrix = PerspectiveProjection().projectionMatrix(for: size)
 
@@ -91,8 +91,7 @@ struct Main {
                 .vertexDescriptor(vertexDescriptor)
             }
             let offscreenRenderer = try OffscreenRenderer(size: size, colorTexture: colorTexture, depthTexture: depthTexture)
-            let texture = try offscreenRenderer.render(root).texture
-            return texture
+            return try offscreenRenderer.render(root).texture
         }
 
         assert(texture === colorTexture)

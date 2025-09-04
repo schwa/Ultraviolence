@@ -10,9 +10,9 @@ struct ContentView: View {
     var body: some View {
         NavigationSplitView {
             List(selection: $page) {
-#if os(iOS) || (os(iOS) || (os(macOS) && !arch(x86_64)))
+                #if os(iOS) || (os(iOS) || (os(macOS) && !arch(x86_64)))
                 row(for: GaussianSplatDemoView.self)
-#endif // os(iOS) || (os(macOS) && !arch(x86_64))
+                #endif // os(iOS) || (os(macOS) && !arch(x86_64))
                 if !splatsOnly {
                     row(for: BlinnPhongDemoView.self)
                     row(for: GameOfLifeDemoView.self)
@@ -20,16 +20,16 @@ struct ContentView: View {
                     row(for: SkyboxDemoView.self)
                     row(for: MixedDemoView.self)
                     row(for: TriangleDemoView.self)
-#if canImport(AppKit)
+                    #if canImport(AppKit)
                     row(for: OffscreenDemoView.self)
-#endif
+                    #endif
                     row(for: ComputeDemoView.self)
                     row(for: BouncingTeapotsDemoView.self)
                     row(for: StencilDemoView.self)
                     row(for: LUTDemoView.self)
-#if canImport(MetalFX)
+                    #if canImport(MetalFX)
                     row(for: MetalFXDemoView.self)
-#endif
+                    #endif
                 }
             }
         } detail: {
@@ -55,16 +55,14 @@ struct ContentView: View {
                             .padding([.leading, .trailing], 4)
                             .padding([.top, .bottom], 2)
                             .background(Color.green, in: Capsule())
-
                     }
                 }
                 if let description = page.description {
                     Text(description)
-                    .lineLimit(nil)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                        .lineLimit(nil)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
-
             }
         }
     }

@@ -7,4 +7,3 @@ public extension FloatingPoint {
         clamp(self, to: range)
     }
 }
-
