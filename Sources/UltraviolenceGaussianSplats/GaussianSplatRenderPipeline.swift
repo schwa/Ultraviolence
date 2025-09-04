@@ -37,11 +37,12 @@ public struct GaussianSplatRenderPipeline: Element {
 
         let shaderLibrary = try ShaderLibrary(bundle: Bundle.ultraviolenceGaussianSplatShaders(), namespace: "GaussianSplatAntimatter15RenderShaders")
 
-        var constants = FunctionConstants()
-        constants["debug_mode"] = .int32(debugMode.rawValue)
+        // Fragment shader needs debug_mode constant, vertex shader doesn't
+        var fragmentConstants = FunctionConstants()
+        fragmentConstants["debug_mode"] = .int32(debugMode.rawValue)
         
-        self.vertexShader = try shaderLibrary.function(named: "vertex_main", type: VertexShader.self, constants: constants)
-        self.fragmentShader = try shaderLibrary.function(named: "fragment_main", type: FragmentShader.self, constants: constants)
+        self.vertexShader = try shaderLibrary.function(named: "vertex_main", type: VertexShader.self)
+        self.fragmentShader = try shaderLibrary.function(named: "fragment_main", type: FragmentShader.self, constants: fragmentConstants)
 
         let vertexDescriptor = MTLVertexDescriptor()
         vertexDescriptor.attributes[0].format = .float2

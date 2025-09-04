@@ -40,9 +40,6 @@ namespace GaussianSplatAntimatter15RenderShaders {
         constant float2 &drawableSize [[buffer(8)]],
         constant float &scale [[buffer(9)]]
     ) {
-        if (vertex_id == 0 && instance_id == 0) {
-            os_log_default.log("debug_mode: %d.", debug_mode);
-        }
         VertexOut out;
         const uint splatIndex = indexedDistances[instance_id].index;
         const GPUSplat splat = splats[splatIndex];
