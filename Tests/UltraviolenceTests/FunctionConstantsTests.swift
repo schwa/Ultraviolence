@@ -100,7 +100,7 @@ struct FunctionConstantsTests {
         // the actual function's constants dictionary. Without a real Metal library
         // with a function that has these constants, we can't test this directly.
         // The functionality is tested through integration tests with actual shaders.
-        
+
         // Test that we can still create and manipulate FunctionConstants
         #expect(constants["myInt"] == .int32(42))
         #expect(constants["myFloat"] == .float(3.14))
@@ -110,11 +110,11 @@ struct FunctionConstantsTests {
     @Test("Empty constants creation")
     func emptyConstants() throws {
         let constants = FunctionConstants()
-        
+
         // Test that empty constants are properly initialized
         #expect(constants.isEmpty == true)
         #expect(constants["anyKey"] == nil)
-        
+
         // Test that we can add values to empty constants
         var mutableConstants = constants
         mutableConstants["test"] = .int32(1)

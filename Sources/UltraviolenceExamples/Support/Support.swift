@@ -5,8 +5,6 @@ import MetalKit
 import ModelIO
 import simd
 import SwiftUI
-import Ultraviolence
-import UltraviolenceSupport
 import UniformTypeIdentifiers
 
 #if canImport(AppKit)
@@ -102,4 +100,17 @@ extension URLPicker where Label == Text {
     init(title titleKey: LocalizedStringKey, rootURL: URL, utiTypes: [UTType], action: @escaping (URL) -> Void) {
         self.init(label: { Text(titleKey) }, rootURL: rootURL, utiTypes: utiTypes, action: action)
     }
+}
+
+public func lookAtMatrix(eye: SIMD3<Float>, target: SIMD3<Float>, up: SIMD3<Float>) -> float4x4 {
+    let forward = normalize(target - eye)
+    let right = normalize(cross(forward, up))
+    let newUp = cross(right, forward)
+
+    return float4x4(
+        SIMD4<Float>(right.x, right.y, right.z, 0),
+        SIMD4<Float>(newUp.x, newUp.y, newUp.z, 0),
+        SIMD4<Float>(forward.x, forward.y, forward.z, 0), // FIXED: Do NOT negate forward
+        SIMD4<Float>(-dot(right, eye), -dot(newUp, eye), -dot(forward, eye), 1) // FIXED: Negate forward dot product
+    )
 }

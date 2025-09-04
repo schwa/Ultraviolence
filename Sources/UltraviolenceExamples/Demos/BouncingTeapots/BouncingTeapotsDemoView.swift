@@ -112,9 +112,6 @@ public struct BouncingTeapotsDemoView: View {
 // MARK: -
 
 struct FlyingTeapotsRenderPass: Element {
-    @UVEnvironment(\.drawableSize)
-    var drawableSize
-
     @UVState
     var mesh: MTKMesh = .teapot()
     @UVState

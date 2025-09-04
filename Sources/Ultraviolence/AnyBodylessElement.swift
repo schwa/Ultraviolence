@@ -35,7 +35,7 @@ internal extension AnyBodylessElement {
         modifier._setupEnter = action
         return modifier
     }
-    func onSetupExit(_ action: @escaping () throws -> Void) -> AnyBodylessElement {
+    func onSetupExit(_ action: @escaping () throws -> Void) -> AnyBodylessElement { // periphery:ignore
         var modifier = self
         modifier._setupExit = action
         return modifier
@@ -45,7 +45,7 @@ internal extension AnyBodylessElement {
         modifier._workloadEnter = action
         return modifier
     }
-    func onWorkloadExit(_ action: @escaping () throws -> Void) -> AnyBodylessElement {
+    func onWorkloadExit(_ action: @escaping () throws -> Void) -> AnyBodylessElement { // periphery:ignore
         var modifier = self
         modifier._workloadExit = action
         return modifier
