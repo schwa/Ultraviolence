@@ -21,6 +21,7 @@ struct ContentView: View {
             LUTDemoView.self,
 
             GameOfLifeDemoView.self,
+			AppleEventLogoDemoView.self
         ])
     }
 }

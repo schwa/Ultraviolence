@@ -82,6 +82,9 @@ public let package = Package(
                 "UltraviolenceGaussianSplats",
                 "DemoKit"
             ],
+            resources: [
+                .copy("Resources")
+            ],
             swiftSettings: [
 //                .defaultIsolation(nil)
             ]
