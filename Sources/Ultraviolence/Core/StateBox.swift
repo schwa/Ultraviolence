@@ -1,17 +1,17 @@
 internal final class StateBox<Wrapped> {
     private var _value: Wrapped
-    private weak var _graph: ElementGraph?
+    private weak var _graph: NodeGraph?
     private var dependencies: [WeakBox<Node>] = []
     private var hasBeenConnected = false
 
-    private var graph: ElementGraph? {
+    private var graph: NodeGraph? {
         if _graph == nil {
-            _graph = ElementGraph.current
+            _graph = NodeGraph.current
             if _graph != nil {
                 hasBeenConnected = true
             } else if !hasBeenConnected {
                 // Never been connected to a graph - this is a real error, else: was connected but graph is now gone (teardown) - this is OK
-                assert(false, "StateBox must be used within a ElementGraph.")
+                assert(false, "StateBox must be used within a NodeGraph.")
             }
         }
         return _graph

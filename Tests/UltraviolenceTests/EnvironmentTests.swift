@@ -27,7 +27,7 @@ struct EnvironmentTests {
         }
 
         let s = Example1()
-        let graph = try ElementGraph(content: s)
+        let graph = try NodeGraph(content: s)
         try graph.rebuildIfNeeded()
         #expect(graph.element(at: [0], type: Example2.self).value == "Hello world")
     }
@@ -56,7 +56,7 @@ struct EnvironmentTests {
             }
         }
 
-        let g1 = try ElementGraph(content: Example1())
+        let g1 = try NodeGraph(content: Example1())
         try g1.rebuildIfNeeded()
         #expect(g1.element(at: [0, 0], type: Example3.self).value == "Hello world")
     }

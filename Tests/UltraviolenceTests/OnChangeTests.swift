@@ -39,7 +39,7 @@ struct OnChangeTests {
             lastNewValue = new
         }
 
-        let graph = try ElementGraph(content: element)
+        let graph = try NodeGraph(content: element)
         try graph.rebuildIfNeeded()
         try graph.processSetup()
 
@@ -92,7 +92,7 @@ struct OnChangeTests {
             lastOldValue = old
             lastNewValue = new
         }
-        let graph = try ElementGraph(content: element)
+        let graph = try NodeGraph(content: element)
         try graph.rebuildIfNeeded()
         try graph.processSetup()
 
@@ -148,7 +148,7 @@ struct OnChangeTests {
         var element = ContentElement(value: "Hello") {
             changeCount += 1
         }
-        let graph = try ElementGraph(content: element)
+        let graph = try NodeGraph(content: element)
         try graph.rebuildIfNeeded()
         try graph.processSetup()
 
@@ -197,7 +197,7 @@ struct OnChangeTests {
             actionCalled = true
         }
 
-        let graph = try ElementGraph(content: element)
+        let graph = try NodeGraph(content: element)
         try graph.rebuildIfNeeded()
         try graph.processSetup()
 
@@ -240,7 +240,7 @@ struct OnChangeTests {
             onValue2Change: { value2ChangeCount += 1 }
         )
 
-        let graph = try ElementGraph(content: element)
+        let graph = try NodeGraph(content: element)
         try graph.rebuildIfNeeded()
         try graph.processSetup()
 
@@ -305,7 +305,7 @@ struct OnChangeTests {
             lastValue = newValue
         }
 
-        let graph = try ElementGraph(content: element)
+        let graph = try NodeGraph(content: element)
         try graph.rebuildIfNeeded()
         try graph.processSetup()
 

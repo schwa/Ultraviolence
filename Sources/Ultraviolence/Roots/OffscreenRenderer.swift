@@ -63,7 +63,7 @@ public extension OffscreenRenderer {
         .environment(\.commandQueue, commandQueue)
         .environment(\.renderPassDescriptor, renderPassDescriptor)
         .environment(\.drawableSize, size)
-        let graph = try ElementGraph(content: content)
+        let graph = try NodeGraph(content: content)
         try graph.processSetup()
         try graph.processWorkload()
         return .init(texture: colorTexture)

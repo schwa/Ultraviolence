@@ -28,7 +28,7 @@ struct RebuildTests {
         }
 
         // Create graph and do initial build
-        let graph = try ElementGraph(content: element)
+        let graph = try NodeGraph(content: element)
         try graph.rebuildIfNeeded()
         #expect(bodyEvaluationCount == 1, "Initial body evaluation should happen")
 
@@ -57,7 +57,7 @@ struct RebuildTests {
             }
         }
 
-        let graph = try ElementGraph(content: TestElement(id: 1))
+        let graph = try NodeGraph(content: TestElement(id: 1))
         try graph.rebuildIfNeeded()
 
         // Verify initial state
@@ -114,7 +114,7 @@ struct RebuildTests {
             childCounter: { childBodyCount += 1 }
         )
 
-        let graph = try ElementGraph(content: element)
+        let graph = try NodeGraph(content: element)
         try graph.rebuildIfNeeded()
 
         #expect(parentBodyCount == 1, "Parent body should be evaluated once initially")

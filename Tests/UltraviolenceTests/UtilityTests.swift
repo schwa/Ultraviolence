@@ -43,7 +43,7 @@ func weirdTests() throws {
 func testOptionalElement() throws {
     let element = TestDemoElement("Hello world")
     let optionalElement = TestDemoElement?(element)
-    let graph = try ElementGraph(content: optionalElement)
+    let graph = try NodeGraph(content: optionalElement)
     try graph.rebuildIfNeeded()
     // Verify dump works without printing
     var dumpOutput = ""
@@ -66,7 +66,7 @@ func testElementDump() throws {
 @MainActor
 func testGraphDump() throws {
     let root = TestDemoElement("Hello world")
-    let graph = try ElementGraph(content: root)
+    let graph = try NodeGraph(content: root)
     var s = ""
     try graph.dump(to: &s)
     s = s.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -87,7 +87,7 @@ func testComplexGraphDump() throws {
             }
         }
     }
-    let graph = try ElementGraph(content: root)
+    let graph = try NodeGraph(content: root)
     var s = ""
     try graph.dump(options: [.dumpElement, .dumpNode], to: &s)
     s = s.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -100,7 +100,7 @@ func testComplexGraphDump() throws {
 @MainActor
 func testAnyElement() throws {
     let e = TestDemoElement("Hello world").eraseToAnyElement()
-    let graph = try ElementGraph(content: e)
+    let graph = try NodeGraph(content: e)
     try graph.rebuildIfNeeded()
     #expect(graph.element(at: [0], type: TestDemoElement.self).title == "Hello world")
 }

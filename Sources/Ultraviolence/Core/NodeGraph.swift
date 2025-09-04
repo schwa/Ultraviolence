@@ -1,7 +1,7 @@
 internal import os
 import UltraviolenceSupport
 
-public class ElementGraph {
+public class NodeGraph {
     internal var activeNodeStack: [Node] = []
     public private(set) var root: Node
     internal var signpostID = signposter?.makeSignpostID()
@@ -15,7 +15,7 @@ public class ElementGraph {
 
     @MainActor
     public func update<Content>(content: Content) throws where Content: Element {
-        try withIntervalSignpost(signposter, name: "ElementGraph.updateContent()", id: signpostID) {
+        try withIntervalSignpost(signposter, name: "NodeGraph.updateContent()", id: signpostID) {
             // TODO: #25 We need to somehow detect if the content has changed.
             let saved = Self.current
             Self.current = self
@@ -39,9 +39,9 @@ public class ElementGraph {
         try rootElement.expandNode(root, context: .init())
     }
 
-    private static let _current = OSAllocatedUnfairLock<ElementGraph?>(uncheckedState: nil)
+    private static let _current = OSAllocatedUnfairLock<NodeGraph?>(uncheckedState: nil)
 
-    internal static var current: ElementGraph? {
+    internal static var current: NodeGraph? {
         get {
             _current.withLockUnchecked { $0 }
         }

@@ -1,4 +1,4 @@
-internal extension ElementGraph {
+internal extension NodeGraph {
     @MainActor
     func visit(enter: (Node) throws -> Void, exit: (Node) throws -> Void) throws {
         // swiftlint:disable:next no_empty_block
@@ -7,10 +7,10 @@ internal extension ElementGraph {
 
     @MainActor
     func visit(_ visitor: (Int, Node) throws -> Void, enter: (Node) throws -> Void, exit: (Node) throws -> Void) throws {
-        let saved = ElementGraph.current
-        ElementGraph.current = self
+        let saved = NodeGraph.current
+        NodeGraph.current = self
         defer {
-            ElementGraph.current = saved
+            NodeGraph.current = saved
         }
 
         try root.rebuildIfNeeded()

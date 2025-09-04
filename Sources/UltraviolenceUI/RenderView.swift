@@ -98,7 +98,7 @@ internal class RenderViewViewModel <Content>: NSObject, MTKViewDelegate where Co
     var lastError: Error?
 
     @ObservationIgnored
-    var graph: ElementGraph
+    var graph: NodeGraph
 
     @ObservationIgnored
     var needsSetup = true
@@ -116,7 +116,7 @@ internal class RenderViewViewModel <Content>: NSObject, MTKViewDelegate where Co
         self.device = device
         self.content = content
         self.commandQueue = commandQueue
-        self.graph = try ElementGraph(content: EmptyElement())
+        self.graph = try NodeGraph(content: EmptyElement())
     }
 
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {

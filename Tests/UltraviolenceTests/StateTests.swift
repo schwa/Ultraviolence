@@ -66,7 +66,7 @@ struct StateTests {
     func testUpdate() throws {
         let v = ContentRenderPass()
 
-        let graph = try ElementGraph(content: v)
+        let graph = try NodeGraph(content: v)
         try graph.rebuildIfNeeded()
         var demoElement: DemoElement {
             graph.element(at: [0], type: DemoElement.self)
@@ -102,7 +102,7 @@ struct StateTests {
         }
 
         let v = ContentRenderPass()
-        let graph = try ElementGraph(content: v)
+        let graph = try NodeGraph(content: v)
         try graph.rebuildIfNeeded()
         #expect(contentRenderPassBodyCount == 1)
         #expect(nestedBodyCount == 1)
@@ -139,7 +139,7 @@ struct StateTests {
         }
 
         let v = ContentRenderPass()
-        let graph = try ElementGraph(content: v)
+        let graph = try NodeGraph(content: v)
         try graph.rebuildIfNeeded()
         #expect(contentRenderPassBodyCount == 1)
         #expect(nestedBodyCount == 1)
@@ -176,7 +176,7 @@ struct StateTests {
         }
 
         let v = ContentRenderPass()
-        let graph = try ElementGraph(content: v)
+        let graph = try NodeGraph(content: v)
         try graph.rebuildIfNeeded()
         #expect(contentRenderPassBodyCount == 1)
         #expect(nestedBodyCount == 1)
@@ -213,7 +213,7 @@ struct StateTests {
         }
 
         let v = ContentRenderPass()
-        let graph = try ElementGraph(content: v)
+        let graph = try NodeGraph(content: v)
         try graph.rebuildIfNeeded()
         #expect(contentRenderPassBodyCount == 1)
         #expect(nestedBodyCount == 1)
@@ -250,7 +250,7 @@ struct StateTests {
         }
 
         let v = ContentRenderPass()
-        let graph = try ElementGraph(content: v)
+        let graph = try NodeGraph(content: v)
         try graph.rebuildIfNeeded()
         #expect(contentRenderPassBodyCount == 1)
         #expect(nestedBodyCount == 1)
@@ -284,7 +284,7 @@ struct StateTests {
         }
 
         let v = ContentRenderPass()
-        let graph = try ElementGraph(content: v)
+        let graph = try NodeGraph(content: v)
         try graph.rebuildIfNeeded()
         var demoElement: DemoElement {
             graph.element(at: [0, 0], type: DemoElement.self)
@@ -323,7 +323,7 @@ struct StateTests {
         }
 
         let s = Sample()
-        let graph = try ElementGraph(content: s)
+        let graph = try NodeGraph(content: s)
         try graph.rebuildIfNeeded()
         var demoElement: DemoElement {
             graph.element(at: [0, 0], type: DemoElement.self)
@@ -366,7 +366,7 @@ struct StateTests {
         }
 
         let s = Sample()
-        let graph = try ElementGraph(content: s)
+        let graph = try NodeGraph(content: s)
         try graph.rebuildIfNeeded()
         var nestedDemoElement: DemoElement {
             graph.element(at: [0, 0], type: DemoElement.self)
@@ -400,7 +400,7 @@ struct StateTests {
         }
 
         let s = Sample()
-        let graph = try ElementGraph(content: s)
+        let graph = try NodeGraph(content: s)
         try graph.rebuildIfNeeded()
         var nestedDemoElement: DemoElement {
             graph.element(at: [0, 1, 0], type: DemoElement.self)

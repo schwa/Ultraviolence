@@ -14,7 +14,7 @@ public extension Element {
         .environment(\.commandQueue, commandQueue)
         .environment(\.device, device)
 
-        let graph = try ElementGraph(content: content)
+        let graph = try NodeGraph(content: content)
         try graph.processSetup()
         try graph.processWorkload()
     }
