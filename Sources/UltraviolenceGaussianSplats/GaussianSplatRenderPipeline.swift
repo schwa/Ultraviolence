@@ -1,8 +1,8 @@
 #if os(iOS) || (os(macOS) && !arch(x86_64))
 import Foundation
-import UltraviolenceGaussianSplatShaders
 import Metal
 import Ultraviolence
+import UltraviolenceGaussianSplatShaders
 
 public struct GaussianSplatRenderPipeline: Element {
     public enum DebugMode: Int32, CaseIterable {
@@ -40,7 +40,7 @@ public struct GaussianSplatRenderPipeline: Element {
         // Initial shader setup
         var fragmentConstants = FunctionConstants()
         fragmentConstants["debug_mode"] = .int32(debugMode.rawValue)
-        
+
         self.vertexShader = try shaderLibrary.function(named: "vertex_main", type: VertexShader.self)
         self.fragmentShader = try shaderLibrary.function(named: "fragment_main", type: FragmentShader.self, constants: fragmentConstants)
 
@@ -79,8 +79,8 @@ public struct GaussianSplatRenderPipeline: Element {
                     let shaderLibrary = try ShaderLibrary(bundle: Bundle.ultraviolenceGaussianSplatShaders(), namespace: "GaussianSplatAntimatter15RenderShaders")
                     var fragmentConstants = FunctionConstants()
                     fragmentConstants["debug_mode"] = .int32(debugMode.rawValue)
-                    self.vertexShader = try shaderLibrary.function(named: "vertex_main", type: VertexShader.self)
-                    self.fragmentShader = try shaderLibrary.function(named: "fragment_main", type: FragmentShader.self, constants: fragmentConstants)
+                    vertexShader = try shaderLibrary.function(named: "vertex_main", type: VertexShader.self)
+                    fragmentShader = try shaderLibrary.function(named: "fragment_main", type: FragmentShader.self, constants: fragmentConstants)
                 }
                 catch {
                     fatalError("Failed to update shaders: \(error)")

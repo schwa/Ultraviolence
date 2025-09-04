@@ -30,13 +30,13 @@ public struct ShaderLibrary {
 
     public func function<T>(named name: String, type: T.Type, constants: FunctionConstants = FunctionConstants()) throws -> T where T: ShaderProtocol {
         let scopedNamed = namespace.map { "\($0)::\(name)" } ?? name
-        
+
         let function: MTLFunction
-        
+
         if !constants.isEmpty {
             // Build the constant values using the unspecialized function for introspection
             let mtlConstants = try constants.buildMTLConstants(for: library, functionName: scopedNamed)
-            
+
             // Now create the SPECIALIZED function with the constants applied
             function = try library.makeFunction(name: scopedNamed, constantValues: mtlConstants)
         } else {

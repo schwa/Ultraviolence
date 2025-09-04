@@ -56,8 +56,6 @@ inline float square(float x) {
 }
 
 inline float3x3 extractNormalMatrix(float4x4 modelMatrix) {
-    return float3x3(modelMatrix[0].xyz,
-                    modelMatrix[1].xyz,
-                    modelMatrix[2].xyz);
+    return float3x3(modelMatrix[0].xyz, modelMatrix[1].xyz, modelMatrix[2].xyz);
 }
 #endif

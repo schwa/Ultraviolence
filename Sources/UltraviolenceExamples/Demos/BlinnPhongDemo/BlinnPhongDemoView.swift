@@ -113,7 +113,6 @@ extension BlinnPhongDemoView: DemoView {
     public static var demoDescription: String? {
         "A demo of Blinn-Phong lighting with multiple models."
     }
-
 }
 
 struct Model: Identifiable {

@@ -4,10 +4,10 @@ import UltraviolenceSupport
 
 internal struct SlidersOverlayCameraController: ViewModifier {
     @State
-    var pitch: AngleF = .zero
+    private var pitch: AngleF = .zero
 
     @State
-    var yaw: AngleF = .zero
+    private var yaw: AngleF = .zero
 
     @Binding
     var rotation: simd_quatf

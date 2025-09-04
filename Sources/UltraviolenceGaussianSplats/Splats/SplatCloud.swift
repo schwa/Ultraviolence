@@ -1,8 +1,8 @@
 internal import AsyncAlgorithms
-import UltraviolenceGaussianSplatShaders
 import Metal
 internal import os
 import simd
+import UltraviolenceGaussianSplatShaders
 import UltraviolenceSupport
 
 // TODO: #146 Dangerous `@unchecked Sendable` usage in SplatCloud and SplatIndices.

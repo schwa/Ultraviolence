@@ -3,8 +3,8 @@ import GameController
 import Observation
 import simd
 import SwiftUI
-import UltraviolenceUI
 import UltraviolenceSupport
+import UltraviolenceUI
 
 public struct RTSControllerModifier: ViewModifier {
     @Binding
@@ -13,7 +13,7 @@ public struct RTSControllerModifier: ViewModifier {
     var floorPlane: Plane
 
     @State
-    var controller: RTSController?
+    private var controller: RTSController?
 
     public init(cameraMatrix: Binding<simd_float4x4>, floorPlane: Plane = .init(point: .zero, normal: [0, 1, 0])) {
         self._cameraMatrix = cameraMatrix

@@ -10,7 +10,6 @@ extension UVEnvironmentValues {
 @Suite
 @MainActor
 struct EnvironmentTests {
-    
     @Test
     func testEnvironment1() throws {
         struct Example1: Element {

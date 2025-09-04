@@ -2,8 +2,8 @@ import MetalKit
 import simd
 import SwiftUI
 import Ultraviolence
-import UltraviolenceUI
 import UltraviolenceSupport
+import UltraviolenceUI
 
 public struct MixedDemoView: View {
     @State

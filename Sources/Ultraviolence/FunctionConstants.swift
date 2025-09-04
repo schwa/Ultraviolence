@@ -18,30 +18,30 @@ public struct FunctionConstants: Equatable {
         case float3(SIMD3<Float>)
         case float4(SIMD4<Float>)
     }
-    
+
     private var values: [String: Value] = [:]
-    
+
     public init() {}
-    
+
     public var isEmpty: Bool {
         values.isEmpty
     }
-    
+
     /// Get or set constant values by name using subscript
     public subscript(name: String) -> Value? {
         get { values[name] }
         set { values[name] = newValue }
     }
-    
+
     /// Build MTLFunctionConstantValues
     public func buildMTLConstants(for library: MTLLibrary, functionName: String) throws -> MTLFunctionConstantValues {
         guard let baseFunction = library.makeFunction(name: functionName) else {
             throw UltraviolenceError.generic("Function '\(functionName)' not found in library")
         }
-        
+
         let mtlConstants = MTLFunctionConstantValues()
         let constantsDictionary = baseFunction.functionConstantsDictionary
-        
+
         for (name, value) in values {
             // If the constant name already has a namespace delimiter, use it as-is
             if name.contains("::") {
@@ -50,7 +50,7 @@ public struct FunctionConstants: Equatable {
                 } else if !constantsDictionary.isEmpty {
                     throw UltraviolenceError.generic(
                         "Constant '\(name)' not found in function '\(functionName)'. " +
-                        "Available: \(constantsDictionary.keys.joined(separator: ", "))"
+                            "Available: \(constantsDictionary.keys.joined(separator: ", "))"
                     )
                 }
             } else {
@@ -66,20 +66,20 @@ public struct FunctionConstants: Equatable {
                     } else if matches.count > 1 {
                         throw UltraviolenceError.generic(
                             "Ambiguous constant '\(name)' in function '\(functionName)'. " +
-                            "Multiple matches found: \(matches.keys.joined(separator: ", ")). " +
-                            "Use fully qualified name."
+                                "Multiple matches found: \(matches.keys.joined(separator: ", ")). " +
+                                "Use fully qualified name."
                         )
                     } else if !constantsDictionary.isEmpty {
                         throw UltraviolenceError.generic(
                             "Constant '\(name)' not found in function '\(functionName)'. " +
-                            "Available: \(constantsDictionary.keys.joined(separator: ", "))"
+                                "Available: \(constantsDictionary.keys.joined(separator: ", "))"
                         )
                     }
                 }
             }
             // If constantsDictionary is empty, skip silently (constant was optimized out)
         }
-        
+
         return mtlConstants
     }
 }
@@ -102,7 +102,7 @@ extension FunctionConstants.Value {
         case .float4: return .float4
         }
     }
-    
+
     /// Apply this constant value to MTLFunctionConstantValues at the specified index
     func apply(to constantValues: MTLFunctionConstantValues, at index: Int) {
         switch self {

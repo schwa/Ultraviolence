@@ -17,7 +17,6 @@ public extension URL {
 }
 #endif
 
-
 public extension SIMD4<Float> {
     init(color: Color) {
         let resolved = color.resolve(in: .init())
@@ -29,7 +28,6 @@ public extension SIMD4<Float> {
         ]
     }
 }
-
 
 public extension ClosedRange where Bound == Angle {
     var degrees: ClosedRange<Double> {

@@ -11,7 +11,7 @@ public struct UVEnvironmentValues {
                 if let parent {
                     var visited = Set<ObjectIdentifier>()
                     visited.insert(ObjectIdentifier(self))
-                    
+
                     var path: [ObjectIdentifier] = [ObjectIdentifier(self)]
                     var current: Storage? = parent
                     while let node = current {
@@ -39,13 +39,13 @@ public struct UVEnvironmentValues {
 
     internal mutating func merge(_ parent: Self) {
         precondition(parent.storage !== self.storage, "Cannot merge storage with itself")
-        
+
         // Debug: Check if we're about to create a problematic parent relationship
         if storage.parent === parent.storage {
             print("Warning: Attempting to merge with the same parent again (no-op)")
             return
         }
-        
+
         storage.parent = parent.storage
     }
 }

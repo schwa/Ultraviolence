@@ -1,11 +1,11 @@
 #if os(iOS) || (os(macOS) && !arch(x86_64))
-import UltraviolenceGaussianSplatShaders
 internal import os
 import SwiftUI
 import Ultraviolence
+import UltraviolenceGaussianSplats
+import UltraviolenceGaussianSplatShaders
 import UltraviolenceSupport
 import UltraviolenceUI
-import UltraviolenceGaussianSplats
 
 public struct GaussianSplatDemoView: View {
     @State

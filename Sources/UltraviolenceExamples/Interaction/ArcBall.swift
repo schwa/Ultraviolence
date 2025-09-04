@@ -9,10 +9,10 @@ internal struct ArcBallRotationModifier: ViewModifier {
     private var arcBall: ArcBall
 
     @State
-    var size: CGSize = .zero
+    private var size: CGSize = .zero
 
     @State
-    var startPoint: CGPoint?
+    private var startPoint: CGPoint?
 
     init(rotation: Binding<simd_quatf>, radius: Float) {
         self._rotation = rotation

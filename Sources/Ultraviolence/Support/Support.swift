@@ -28,7 +28,7 @@ public extension Element {
             renderCommandEncoder.useResource(resource, usage: usage, stages: stages)
         }
     }
-    
+
     @ElementBuilder
     func useResource(_ resource: (any MTLResource)?, usage: MTLResourceUsage, stages: MTLRenderStages) -> some Element {
         if let resource {

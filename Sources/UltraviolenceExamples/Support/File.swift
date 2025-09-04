@@ -1,7 +1,7 @@
 import Metal
+import MetalKit
 import SwiftUI
 import Ultraviolence
-import MetalKit
 import UltraviolenceSupport
 
 public extension Draw {

@@ -39,12 +39,12 @@ internal extension Element {
             // Create a fresh environment that inherits from parent
             var freshEnvironment = UVEnvironmentValues()
             freshEnvironment.merge(parentEnvironmentValues)
-            
+
             // Preserve any existing values from the node's current environment
             if !node.environmentValues.storage.values.isEmpty {
                 freshEnvironment.storage.values.merge(node.environmentValues.storage.values) { _, new in new }
             }
-            
+
             node.environmentValues = freshEnvironment
         }
 

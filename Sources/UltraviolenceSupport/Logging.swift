@@ -24,10 +24,10 @@ public func withIntervalSignpost<T>(_ signposter: OSSignposter?, name: StaticStr
 
 public extension ProcessInfo {
     var loggingEnabled: Bool {
-        return true
-//        guard let value = environment["LOGGING"]?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() else {
-//            return false
-//        }
-//        return ["yes", "true", "y", "1", "on"].contains(value)
+        true
+        //        guard let value = environment["LOGGING"]?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() else {
+        //            return false
+        //        }
+        //        return ["yes", "true", "y", "1", "on"].contains(value)
     }
 }
