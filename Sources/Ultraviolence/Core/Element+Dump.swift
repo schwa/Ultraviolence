@@ -32,7 +32,7 @@ public extension Element {
         let typeName = String(describing: type(of: self))
         
         // Get type identifier for structural identity
-        let typeId = ObjectIdentifier(type(of: self) as any Element.Type)
+        let typeId = ObjectIdentifier(type(of: self) as any Element.Type).shortId
 
         // Check if it's a BodylessElement
         let isBodyless = self is any BodylessElement
