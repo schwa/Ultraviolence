@@ -91,7 +91,7 @@ public struct GameOfLife: Element {
 
             return try Group {
                 // Update simulation if running
-                if isRunning && frameCount % updateInterval == 0 {
+                if isRunning, frameCount % updateInterval == 0 {
                     try ComputePass {
                         try ComputePipeline(computeKernel: try shaderLibrary.updateGrid) {
                             try ComputeDispatch(

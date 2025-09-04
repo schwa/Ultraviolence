@@ -5,7 +5,7 @@ public struct DemoMetadata {
     public let description: String
     public let keywords: [String]
     public let color: Color
-    
+
     public init(name: String, description: String, keywords: [String] = [], color: Color = .blue) {
         self.name = name
         self.description = description
@@ -26,7 +26,7 @@ extension DemoView {
         let defaultName = "\(type(of: Self.self))"
             .replacingOccurrences(of: ".Type", with: "")
             .replacingOccurrences(of: "DemoView", with: "")
-        
+
         return DemoMetadata(
             name: defaultName,
             description: "No description available",
