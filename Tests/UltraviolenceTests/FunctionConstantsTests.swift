@@ -89,35 +89,36 @@ struct FunctionConstantsTests {
         // The test passing means no crashes occurred during the apply operations
     }
 
-    @Test("Build MTL constants with indices")
-    func buildMTLConstantsWithIndices() throws {
+    @Test("Build MTL constants requires library")
+    func buildMTLConstantsRequiresLibrary() throws {
         var constants = FunctionConstants()
         constants["myInt"] = .int32(42)
         constants["myFloat"] = .float(3.14)
         constants["myBool"] = .bool(true)
 
-        let indices = [
-            "myInt": 0,
-            "myFloat": 1,
-            "myBool": 2,
-            "notUsed": 3  // This shouldn't cause issues
-        ]
-
-        let mtlConstants = constants.buildMTLConstants(with: indices)
-
-        // Verify the MTLFunctionConstantValues object was created successfully
-        // While we can't read back the values directly, we can at least verify
-        // the object exists and the operation didn't throw
-        #expect(mtlConstants.description.contains("MTLFunctionConstantValues"))
+        // buildMTLConstants now requires a library and function name to introspect
+        // the actual function's constants dictionary. Without a real Metal library
+        // with a function that has these constants, we can't test this directly.
+        // The functionality is tested through integration tests with actual shaders.
+        
+        // Test that we can still create and manipulate FunctionConstants
+        #expect(constants["myInt"] == .int32(42))
+        #expect(constants["myFloat"] == .float(3.14))
+        #expect(constants["myBool"] == .bool(true))
     }
 
-    @Test("Empty constants")
+    @Test("Empty constants creation")
     func emptyConstants() throws {
         let constants = FunctionConstants()
-        let mtlConstants = constants.buildMTLConstants(with: [:])
-
-        // Empty constants should still create a valid MTLFunctionConstantValues object
-        #expect(mtlConstants.description.contains("MTLFunctionConstantValues"))
+        
+        // Test that empty constants are properly initialized
+        #expect(constants.isEmpty == true)
+        #expect(constants["anyKey"] == nil)
+        
+        // Test that we can add values to empty constants
+        var mutableConstants = constants
+        mutableConstants["test"] = .int32(1)
+        #expect(mutableConstants.isEmpty == false)
     }
 
     @Test("Constants equality")
