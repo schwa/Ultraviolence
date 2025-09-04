@@ -33,7 +33,7 @@ public extension Element {
     func depthAttachment(_ texture: MTLTexture) -> some Element {
         environment(\.depthAttachment, texture)
     }
-    func stencilAttahcment(_ texture: MTLTexture) -> some Element {
+    func stencilAttachment(_ texture: MTLTexture) -> some Element {
         environment(\.stencilAttachment, texture)
     }
 }
