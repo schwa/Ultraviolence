@@ -30,8 +30,13 @@ public struct GridShaderDemoView: View {
 }
 
 extension GridShaderDemoView: DemoView {
-    public static var keywords: [String] {
-        ["Raster"]
+    public static var metadata: DemoMetadata {
+        DemoMetadata(
+            name: "Grid Shader",
+            description: "Procedural grid rendering using fragment shaders for geometric patterns",
+            keywords: ["procedural"],
+            color: .gray
+        )
     }
 }
 

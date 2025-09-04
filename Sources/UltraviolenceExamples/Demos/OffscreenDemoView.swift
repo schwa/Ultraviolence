@@ -46,5 +46,13 @@ public struct OffscreenDemoView: View {
 }
 
 extension OffscreenDemoView: DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(
+            name: "Offscreen Rendering",
+            description: "Render-to-texture demonstration showing offscreen rendering capabilities",
+            keywords: ["offscreen", "render-to-texture"],
+            color: .pink
+        )
+    }
 }
 #endif

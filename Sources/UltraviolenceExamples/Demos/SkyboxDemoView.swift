@@ -89,6 +89,14 @@ public struct SkyboxDemoView: View {
 }
 
 extension SkyboxDemoView: DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(
+            name: "Skybox",
+            description: "Environment mapping demonstration using cube textures for 360-degree backgrounds",
+            keywords: ["skybox", "cubemap"],
+            color: .cyan
+        )
+    }
 }
 
 struct SkyboxRenderPipeline: Element {

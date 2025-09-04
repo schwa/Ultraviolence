@@ -195,9 +195,12 @@ struct FlyingTeapotsRenderPass: Element {
 }
 
 extension BouncingTeapotsDemoView: DemoView {
-    public static var keywords: [String] = ["Compute", "Raster", "MetalFX", "Animation"]
-
-    public static let demoDescription: String? = """
-    A demo showing a number of teapots bouncing around inside a box, rendered with a checkerboard skybox. The teapots are animated on the CPU, and rendered using instanced drawing.
-    """
+    public static var metadata: DemoMetadata {
+        DemoMetadata(
+            name: "Bouncing Teapots",
+            description: "Physics simulation of animated teapots with MetalFX upscaling and instanced rendering",
+            keywords: ["instancing", "metalfx"],
+            color: .yellow
+        )
+    }
 }

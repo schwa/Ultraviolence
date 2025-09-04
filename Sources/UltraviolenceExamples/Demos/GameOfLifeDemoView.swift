@@ -86,7 +86,12 @@ public struct GameOfLifeDemoView: View {
 }
 
 extension GameOfLifeDemoView: DemoView {
-    public static var keywords: [String] {
-        ["Compute", "Simulation", "Game of Life", "Cellular Automaton"]
+    public static var metadata: DemoMetadata {
+        DemoMetadata(
+            name: "Game of Life",
+            description: "Conway's Game of Life cellular automaton simulation using GPU compute shaders",
+            keywords: ["compute"],
+            color: .green
+        )
     }
 }
