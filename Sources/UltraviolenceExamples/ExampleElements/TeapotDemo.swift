@@ -18,9 +18,6 @@ public struct TeapotDemo: Element {
     var transforms: Transforms
     var lightDirection: SIMD3<Float>
 
-    @UVEnvironment(\.drawableSize)
-    var drawableSize
-
     public init(transforms: Transforms, color: SIMD3<Float>, lightDirection: SIMD3<Float>) throws {
         let device = _MTLCreateSystemDefaultDevice()
         let teapotURL = try Bundle.main.url(forResource: "teapot", withExtension: "obj").orThrow(.resourceCreationFailure("Failed to find teapot.obj."))

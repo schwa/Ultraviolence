@@ -6,6 +6,7 @@ struct TestEnvironmentKey: UVEnvironmentKey {
 }
 
 extension UVEnvironmentValues {
+    // periphery:ignore
     var testValue: String {
         get { self[TestEnvironmentKey.self] }
         set { self[TestEnvironmentKey.self] = newValue }

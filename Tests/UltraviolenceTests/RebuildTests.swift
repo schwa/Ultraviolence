@@ -1,7 +1,6 @@
 import Combine
 import Testing
 @testable import Ultraviolence
-import UltraviolenceSupport
 
 @Suite(.serialized)
 @MainActor

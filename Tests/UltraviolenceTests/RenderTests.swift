@@ -4,8 +4,6 @@ import simd
 import SwiftUI
 import Testing
 @testable import Ultraviolence
-import UltraviolenceSupport
-import UltraviolenceUI
 
 @Test
 @MainActor

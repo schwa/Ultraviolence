@@ -7,6 +7,7 @@ struct OnChangeTests {
     struct TestElement: Element, BodylessElement {
         typealias Body = Never
 
+        // periphery:ignore
         let value: String
 
         func expandIntoNode(_ node: Node, context: ExpansionContext) throws {

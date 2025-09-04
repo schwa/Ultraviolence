@@ -117,27 +117,6 @@ extension SuperDownloadWidget where Label == Text {
 }
 
 extension FileManager {
-    var applicationSupportDirectory: URL {
-        get throws {
-            let url = urls(for: .applicationSupportDirectory, in: .userDomainMask).first.orFatalError()
-            try createDirectory(at: url, withIntermediateDirectories: true, attributes: nil)
-            return url
-        }
-    }
-    var applicationSpecificSupportDirectory: URL {
-        get throws {
-            let url = urls(for: .applicationSupportDirectory, in: .userDomainMask).first.orFatalError().appendingPathComponent(Bundle.main.bundleIdentifier!)
-            try createDirectory(at: url, withIntermediateDirectories: true, attributes: nil)
-            return url
-        }
-    }
-    var cachesDirectory: URL {
-        get throws {
-            let url = urls(for: .cachesDirectory, in: .userDomainMask).first.orFatalError()
-            try createDirectory(at: url, withIntermediateDirectories: true, attributes: nil)
-            return url
-        }
-    }
     var applicationSpecificCachesDirectory: URL {
         get throws {
             let url = urls(for: .cachesDirectory, in: .userDomainMask).first.orFatalError().appendingPathComponent(Bundle.main.bundleIdentifier!)

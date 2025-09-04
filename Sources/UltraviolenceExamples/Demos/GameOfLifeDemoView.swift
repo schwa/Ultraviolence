@@ -1,5 +1,4 @@
 import SwiftUI
-import Ultraviolence
 import UltraviolenceUI
 
 public struct GameOfLifeDemoView: View {
@@ -89,12 +88,5 @@ public struct GameOfLifeDemoView: View {
 extension GameOfLifeDemoView: DemoView {
     public static var keywords: [String] {
         ["Compute", "Simulation", "Game of Life", "Cellular Automaton"]
-    }
-}
-
-// Preview
-struct GameOfLifeDemoView_Previews: PreviewProvider {
-    static var previews: some View {
-        GameOfLifeDemoView()
     }
 }

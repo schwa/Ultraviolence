@@ -2,22 +2,9 @@ import Metal
 internal import os
 import UltraviolenceSupport
 
-internal extension Element {
-    var shortDescription: String {
-        "\(type(of: self))"
-    }
-}
-
 public extension UltraviolenceError {
     static func missingEnvironment(_ key: PartialKeyPath<UVEnvironmentValues>) -> Self {
         missingEnvironment("\(key)")
-    }
-}
-
-@MainActor
-internal extension Node {
-    var shortDescription: String {
-        self.element?.shortDescription ?? "<empty>"
     }
 }
 

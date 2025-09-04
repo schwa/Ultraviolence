@@ -1,8 +1,7 @@
-// TODO: #107 Compare ids to see if they've changed in expandNode.
-
 public struct ForEach <Data, ID, Content>: Element where Data: RandomAccessCollection, ID: Hashable, Content: Element {
     @UVState
-    var ids: [ID]
+    // TODO: #107 Compare ids to see if they've changed in expandNode
+    //    var ids: [ID]
 
     var data: Data
     var content: (Data.Element) throws -> Content
@@ -10,13 +9,13 @@ public struct ForEach <Data, ID, Content>: Element where Data: RandomAccessColle
 
 public extension ForEach {
     init(_ data: Data, @ElementBuilder content: @escaping (Data.Element) throws -> Content) where Data: Collection, Data.Element: Identifiable, Data.Element.ID == ID {
-        self.ids = data.map(\.id)
+        //        self.ids = data.map(\.id)
         self.data = data
         self.content = content
     }
 
     init(_ data: Data, id: KeyPath<Data.Element, ID>, @ElementBuilder content: @escaping (Data.Element) throws -> Content) where Data: Collection {
-        self.ids = data.map { $0[keyPath: id] }
+        //        self.ids = data.map { $0[keyPath: id] }
         self.data = data
         self.content = content
     }
