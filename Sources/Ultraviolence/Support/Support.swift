@@ -45,3 +45,8 @@ public extension Element {
         }
     }
 }
+
+internal func abbreviatedTypeName<T>(of t: T) -> String {
+    let name = "\(type(of: t))"
+    return String(name[..<(name.firstIndex(of: "<") ?? name.endIndex)])
+}
