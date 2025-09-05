@@ -2,6 +2,8 @@
 
 An _**experimental**_ declarative framework for Metal rendering in Swift.
 
-See [Wiki](https://github.com/schwa/Ultraviolence/wiki) for more information.
+See [Documentation](./Documentation/) for more information:
 
-See [Github Projects](https://github.com/users/schwa/projects/7) for current issues and tasks.
+- [Overview](./Documentation/Overview.md) - Introduction and design principles
+- [Architecture](./Documentation/Architecture.md) - Technical architecture details
+- [Internals](./Documentation/Internals.md) - Implementation details
