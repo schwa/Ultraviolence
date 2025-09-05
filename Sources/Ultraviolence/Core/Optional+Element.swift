@@ -6,7 +6,8 @@ extension Optional: Element, BodylessElement where Wrapped: Element {
     }
 
     internal func visitChildrenBodyless(_ visit: (any Element) throws -> Void) rethrows {
-        if let self {
+        // swiftlint:disable:next shorthand_optional_binding
+        if let wrapped = self {
             try visit(wrapped)
         }
     }
