@@ -8,7 +8,7 @@ public let package = Package(
     platforms: [
         .iOS("18.6"),
         .macOS("15.6"),
-        .visionOS("2.6"),
+        .visionOS("2.6")
     ],
     products: [
         .library(name: "Ultraviolence", targets: ["Ultraviolence"]),
@@ -17,7 +17,7 @@ public let package = Package(
         .library(name: "UltraviolenceExamples", targets: ["UltraviolenceExamples"]),
         .library(name: "UltraviolenceGaussianSplats", targets: ["UltraviolenceGaussianSplats"]),
         .library(name: "UltraviolenceKit", targets: ["UltraviolenceKit"]),
-        .executable(name: "UltraviolenceCLI", targets: ["UltraviolenceCLI"]),
+        .executable(name: "UltraviolenceCLI", targets: ["UltraviolenceCLI"])
     ],
     dependencies: [
         .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.0-latest"),
@@ -28,7 +28,7 @@ public let package = Package(
         .target(
             name: "Ultraviolence",
             dependencies: [
-                "UltraviolenceSupport",
+                "UltraviolenceSupport"
             ]
         ),
         .target(
@@ -70,7 +70,7 @@ public let package = Package(
                 "Ultraviolence",
                 "UltraviolenceExampleShaders",
                 "UltraviolenceUI",
-                "UltraviolenceGaussianSplats",
+                "UltraviolenceGaussianSplats"
             ],
             swiftSettings: [
 //                .defaultIsolation(nil)
@@ -123,8 +123,7 @@ public let package = Package(
         .testTarget(
             name: "UltraviolenceExamplesTests",
             dependencies: ["UltraviolenceExamples"]
-        ),
-
+        )
     ],
     swiftLanguageModes: [.v6]
 )

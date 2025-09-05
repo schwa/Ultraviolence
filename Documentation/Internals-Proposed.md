@@ -12,7 +12,7 @@ Before implementing structural identity, we should refactor the current system t
 
 **Current:** `expandNode` tightly couples traversal with node creation/updating
 
-**Proposed:** 
+**Proposed:**
 - Use `element.walk(visitor)` for traversal
 - Move node management into a `NodeBuildingVisitor`
 - Visitor handles comparison, node creation/updating, environment propagation
@@ -80,7 +80,7 @@ Each frame:
 2. **Diff** new identities against previous frame
 3. **Update** nodes based on diff results:
    - Added: Create new nodes, call onAppear
-   - Removed: Delete nodes, call onDisappear  
+   - Removed: Delete nodes, call onDisappear
    - Unchanged: Keep node, but compare element properties
 4. **Check Element Changes** for unchanged identities:
    - Use `equalToPrevious()` to detect property changes
@@ -166,7 +166,7 @@ Most code will continue working unchanged:
     This would eliminate the setup/workload distinction, making the framework more declarative.
 
 
-  ## 
+  ##
 
 ### References
 

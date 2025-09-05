@@ -7,22 +7,22 @@ struct ElementDumpTests {
             EmptyElement()
         }
     }
-    
+
     struct ContainerElement: Element {
         var body: some Element {
             SimpleElement()
             SimpleElement()
         }
     }
-    
+
     struct ForEachExample: Element {
         var body: some Element {
-            ForEach(["A", "B", "C"], id: \.self) { item in
+            ForEach(["A", "B", "C"], id: \.self) { _ in
                 SimpleElement()
             }
         }
     }
-    
+
     @Test
     @MainActor
     func testSimpleDump() throws {
@@ -31,7 +31,7 @@ struct ElementDumpTests {
         #expect(dump.contains("SimpleElement"))
         #expect(dump.contains("EmptyElement"))
     }
-    
+
     @Test
     @MainActor
     func testContainerDump() throws {
@@ -41,7 +41,7 @@ struct ElementDumpTests {
         #expect(dump.contains("TupleElement"))
         #expect(dump.contains("SimpleElement"))
     }
-    
+
     @Test
     @MainActor
     func testForEachDump() throws {
@@ -51,7 +51,7 @@ struct ElementDumpTests {
         #expect(dump.contains("ForEach"))
         #expect(dump.contains("SimpleElement"))
     }
-    
+
     @Test
     @MainActor
     func testVerboseDump() throws {

@@ -85,6 +85,5 @@ internal extension ObjectIdentifier {
             return String(out.reversed())
         }
         return encode(int)
-
     }
 }
