@@ -4,6 +4,7 @@ import SwiftUI
 import UltraviolenceGaussianSplats
 import UltraviolenceGaussianSplatShaders
 import UltraviolenceSupport
+import DemoKit
 
 public struct GaussianSplatDemoView: View {
     @State
@@ -91,8 +92,7 @@ extension GaussianSplatDemoView: DemoView {
         DemoMetadata(
             name: "Gaussian Splatting",
             description: "Real-time point cloud rendering using Gaussian splatting techniques for 3D scene reconstruction",
-            keywords: ["point-cloud", "compute"],
-            color: .purple
+            keywords: ["point-cloud", "compute"]
         )
     }
 }

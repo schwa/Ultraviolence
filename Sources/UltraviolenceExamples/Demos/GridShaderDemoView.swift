@@ -4,6 +4,7 @@ import Ultraviolence
 import UltraviolenceExampleShaders
 import UltraviolenceSupport
 import UltraviolenceUI
+import DemoKit
 
 public struct GridShaderDemoView: View {
     @State
@@ -34,8 +35,7 @@ extension GridShaderDemoView: DemoView {
         DemoMetadata(
             name: "Grid Shader",
             description: "Procedural grid rendering using fragment shaders for geometric patterns",
-            keywords: ["procedural"],
-            color: .gray
+            keywords: ["procedural"]
         )
     }
 }

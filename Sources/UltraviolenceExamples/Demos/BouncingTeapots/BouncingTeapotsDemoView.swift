@@ -4,6 +4,7 @@ import SwiftUI
 import Ultraviolence
 import UltraviolenceSupport
 import UltraviolenceUI
+import DemoKit
 
 public struct BouncingTeapotsDemoView: View {
     @State
@@ -199,8 +200,7 @@ extension BouncingTeapotsDemoView: DemoView {
         DemoMetadata(
             name: "Bouncing Teapots",
             description: "Physics simulation of animated teapots with MetalFX upscaling and instanced rendering",
-            keywords: ["instancing", "metalfx"],
-            color: .yellow
+            keywords: ["instancing", "metalfx"]
         )
     }
 }

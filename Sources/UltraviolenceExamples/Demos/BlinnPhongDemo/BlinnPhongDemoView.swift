@@ -5,6 +5,7 @@ import SwiftUI
 import Ultraviolence
 import UltraviolenceSupport
 import UltraviolenceUI
+import DemoKit
 
 public struct BlinnPhongDemoView: View {
     @State
@@ -111,8 +112,7 @@ extension BlinnPhongDemoView: DemoView {
         DemoMetadata(
             name: "Blinn-Phong Lighting",
             description: "3D lighting demonstration using the Blinn-Phong shading model with animated lights",
-            keywords: ["lighting", "skybox"],
-            color: .orange
+            keywords: ["lighting", "skybox"]
         )
     }
 }

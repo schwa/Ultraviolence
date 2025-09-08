@@ -4,6 +4,7 @@ import SwiftUI
 import Ultraviolence
 import UltraviolenceSupport
 import UltraviolenceUI
+import DemoKit
 
 public struct MixedDemoView: View {
     @State
@@ -56,8 +57,7 @@ extension MixedDemoView: DemoView {
         DemoMetadata(
             name: "Mixed Techniques",
             description: "Combination of multiple rendering techniques including lighting and animation",
-            keywords: ["multipass"],
-            color: .mint
+            keywords: ["multipass"]
         )
     }
 }

@@ -5,6 +5,7 @@ import SwiftUI
 import Ultraviolence
 import UltraviolenceSupport
 import UltraviolenceUI
+import DemoKit
 
 public struct MetalFXDemoView: View {
     let sourceTexture: MTLTexture
@@ -112,8 +113,7 @@ extension MetalFXDemoView: DemoView {
         DemoMetadata(
             name: "MetalFX Upscaling",
             description: "Image upscaling using MetalFX spatial upsampling for enhanced image quality",
-            keywords: ["metalfx", "upscaling"],
-            color: .brown
+            keywords: ["metalfx", "upscaling"]
         )
     }
 }

@@ -1,6 +1,7 @@
 import SwiftUI
 import Ultraviolence
 import UltraviolenceSupport
+import DemoKit
 
 public struct ComputeDemoView: View {
     @State
@@ -62,8 +63,7 @@ extension ComputeDemoView: DemoView {
         DemoMetadata(
             name: "Compute",
             description: "Simple compute shader that copies data between GPU buffers",
-            keywords: ["compute"],
-            color: .blue
+            keywords: ["compute"]
         )
     }
 }

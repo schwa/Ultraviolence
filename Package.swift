@@ -22,7 +22,8 @@ public let package = Package(
     dependencies: [
         .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.0-latest"),
         .package(url: "https://github.com/schwa/MetalCompilerPlugin", from: "0.1.0"),
-        .package(url: "https://github.com/apple/swift-async-algorithms", from: "1.0.0")
+        .package(url: "https://github.com/apple/swift-async-algorithms", from: "1.0.0"),
+        .package(url: "https://github.com/schwa/DemoKit", from: "0.1.0"),
     ],
     targets: [
         .target(
@@ -70,7 +71,8 @@ public let package = Package(
                 "Ultraviolence",
                 "UltraviolenceExampleShaders",
                 "UltraviolenceUI",
-                "UltraviolenceGaussianSplats"
+                "UltraviolenceGaussianSplats",
+                "DemoKit"
             ],
             swiftSettings: [
 //                .defaultIsolation(nil)

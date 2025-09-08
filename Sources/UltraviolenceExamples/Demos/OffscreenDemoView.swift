@@ -1,6 +1,7 @@
 #if canImport(AppKit)
 import SwiftUI
 import Ultraviolence
+import DemoKit
 
 public struct OffscreenDemoView: View {
     @State
@@ -51,7 +52,6 @@ extension OffscreenDemoView: DemoView {
             name: "Offscreen Rendering",
             description: "Render-to-texture demonstration showing offscreen rendering capabilities",
             keywords: ["offscreen", "render-to-texture"],
-            color: .pink
         )
     }
 }

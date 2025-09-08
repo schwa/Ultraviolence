@@ -3,6 +3,7 @@ import simd
 import SwiftUI
 import Ultraviolence
 import UltraviolenceUI
+import DemoKit
 
 public struct TriangleDemoView: View {
     let source = """
@@ -100,8 +101,7 @@ extension TriangleDemoView: DemoView {
         DemoMetadata(
             name: "Triangle",
             description: "Basic triangle rendering with animated colors and performance metrics",
-            keywords: ["vertex", "fragment"],
-            color: .red
+            keywords: ["vertex", "fragment"]
         )
     }
 }

@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		45D9A56A2E67A7BE00B03138 /* UltraviolenceSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 45D9A5692E67A7BE00B03138 /* UltraviolenceSupport */; };
-		45D9A56C2E67A7BE00B03138 /* UltraviolenceUI in Frameworks */ = {isa = PBXBuildFile; productRef = 45D9A56B2E67A7BE00B03138 /* UltraviolenceUI */; };
-		45D9A5A92E67A93900B03138 /* Ultraviolence in Frameworks */ = {isa = PBXBuildFile; productRef = 45D9A5A82E67A93900B03138 /* Ultraviolence */; };
-		45D9A5AB2E67A93900B03138 /* UltraviolenceExamples in Frameworks */ = {isa = PBXBuildFile; productRef = 45D9A5AA2E67A93900B03138 /* UltraviolenceExamples */; };
-		45D9A5AD2E67A93900B03138 /* UltraviolenceSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 45D9A5AC2E67A93900B03138 /* UltraviolenceSupport */; };
-		45D9A5AF2E67A93900B03138 /* UltraviolenceUI in Frameworks */ = {isa = PBXBuildFile; productRef = 45D9A5AE2E67A93900B03138 /* UltraviolenceUI */; };
-		45E0A14D2D9DAF420091ED9E /* UltraviolenceExamples in Frameworks */ = {isa = PBXBuildFile; productRef = 45E0A14C2D9DAF420091ED9E /* UltraviolenceExamples */; };
+		45057C6A2E6F661900C379BE /* DemoKit in Frameworks */ = {isa = PBXBuildFile; productRef = 45057C692E6F661900C379BE /* DemoKit */; };
+		458D5CBC2E6F668F00BB8979 /* Ultraviolence in Frameworks */ = {isa = PBXBuildFile; productRef = 458D5CBB2E6F668F00BB8979 /* Ultraviolence */; };
+		458D5CBE2E6F668F00BB8979 /* UltraviolenceExamples in Frameworks */ = {isa = PBXBuildFile; productRef = 458D5CBD2E6F668F00BB8979 /* UltraviolenceExamples */; };
+		458D5CC02E6F668F00BB8979 /* UltraviolenceGaussianSplats in Frameworks */ = {isa = PBXBuildFile; productRef = 458D5CBF2E6F668F00BB8979 /* UltraviolenceGaussianSplats */; };
+		458D5CC22E6F668F00BB8979 /* UltraviolenceKit in Frameworks */ = {isa = PBXBuildFile; productRef = 458D5CC12E6F668F00BB8979 /* UltraviolenceKit */; };
+		458D5CC42E6F668F00BB8979 /* UltraviolenceSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 458D5CC32E6F668F00BB8979 /* UltraviolenceSupport */; };
+		45A7372B2E6B64F1000C2B8C /* DemoKit in Frameworks */ = {isa = PBXBuildFile; productRef = 45A7372A2E6B64F1000C2B8C /* DemoKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -79,13 +79,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				45D9A56C2E67A7BE00B03138 /* UltraviolenceUI in Frameworks */,
-				45D9A5AF2E67A93900B03138 /* UltraviolenceUI in Frameworks */,
-				45D9A56A2E67A7BE00B03138 /* UltraviolenceSupport in Frameworks */,
-				45D9A5AD2E67A93900B03138 /* UltraviolenceSupport in Frameworks */,
-				45D9A5A92E67A93900B03138 /* Ultraviolence in Frameworks */,
-				45D9A5AB2E67A93900B03138 /* UltraviolenceExamples in Frameworks */,
-				45E0A14D2D9DAF420091ED9E /* UltraviolenceExamples in Frameworks */,
+				458D5CC02E6F668F00BB8979 /* UltraviolenceGaussianSplats in Frameworks */,
+				458D5CC22E6F668F00BB8979 /* UltraviolenceKit in Frameworks */,
+				458D5CC42E6F668F00BB8979 /* UltraviolenceSupport in Frameworks */,
+				458D5CBC2E6F668F00BB8979 /* Ultraviolence in Frameworks */,
+				458D5CBE2E6F668F00BB8979 /* UltraviolenceExamples in Frameworks */,
+				45057C6A2E6F661900C379BE /* DemoKit in Frameworks */,
+				45A7372B2E6B64F1000C2B8C /* DemoKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -149,13 +149,13 @@
 			);
 			name = "Ultraviolence-Examples";
 			packageProductDependencies = (
-				45E0A14C2D9DAF420091ED9E /* UltraviolenceExamples */,
-				45D9A5692E67A7BE00B03138 /* UltraviolenceSupport */,
-				45D9A56B2E67A7BE00B03138 /* UltraviolenceUI */,
-				45D9A5A82E67A93900B03138 /* Ultraviolence */,
-				45D9A5AA2E67A93900B03138 /* UltraviolenceExamples */,
-				45D9A5AC2E67A93900B03138 /* UltraviolenceSupport */,
-				45D9A5AE2E67A93900B03138 /* UltraviolenceUI */,
+				45A7372A2E6B64F1000C2B8C /* DemoKit */,
+				45057C692E6F661900C379BE /* DemoKit */,
+				458D5CBB2E6F668F00BB8979 /* Ultraviolence */,
+				458D5CBD2E6F668F00BB8979 /* UltraviolenceExamples */,
+				458D5CBF2E6F668F00BB8979 /* UltraviolenceGaussianSplats */,
+				458D5CC12E6F668F00BB8979 /* UltraviolenceKit */,
+				458D5CC32E6F668F00BB8979 /* UltraviolenceSupport */,
 			);
 			productName = UltraviolenceExamples;
 			productReference = 45E0A1122D9DAF2D0091ED9E /* Ultraviolence-Examples.app */;
@@ -187,7 +187,8 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				450B4C822D7FCAEB0051CFE4 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */,
-				45D9A5A72E67A93900B03138 /* XCLocalSwiftPackageReference "../../Ultraviolence" */,
+				45057C682E6F661900C379BE /* XCRemoteSwiftPackageReference "DemoKit" */,
+				455FDDCF2E6F66D3006B905A /* XCLocalSwiftPackageReference "../../Ultraviolence" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 455C19062CD483FC009A25A6 /* Products */;
@@ -285,13 +286,21 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		45D9A5A72E67A93900B03138 /* XCLocalSwiftPackageReference "../../Ultraviolence" */ = {
+		455FDDCF2E6F66D3006B905A /* XCLocalSwiftPackageReference "../../Ultraviolence" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../../Ultraviolence;
 		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		45057C682E6F661900C379BE /* XCRemoteSwiftPackageReference "DemoKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/schwa/DemoKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.0;
+			};
+		};
 		450B4C822D7FCAEB0051CFE4 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-async-algorithms.git";
@@ -303,35 +312,41 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		45C0EEDD2D9DB10A0076D9DF /* UltraviolenceExamples */ = {
+		45057C692E6F661900C379BE /* DemoKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = UltraviolenceExamples;
+			package = 45057C682E6F661900C379BE /* XCRemoteSwiftPackageReference "DemoKit" */;
+			productName = DemoKit;
 		};
-		45D9A5692E67A7BE00B03138 /* UltraviolenceSupport */ = {
+		458D5CBB2E6F668F00BB8979 /* Ultraviolence */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = UltraviolenceSupport;
-		};
-		45D9A56B2E67A7BE00B03138 /* UltraviolenceUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = UltraviolenceUI;
-		};
-		45D9A5A82E67A93900B03138 /* Ultraviolence */ = {
-			isa = XCSwiftPackageProductDependency;
+			package = 45057C682E6F661900C379BE /* XCRemoteSwiftPackageReference "DemoKit" */;
 			productName = Ultraviolence;
 		};
-		45D9A5AA2E67A93900B03138 /* UltraviolenceExamples */ = {
+		458D5CBD2E6F668F00BB8979 /* UltraviolenceExamples */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = 45057C682E6F661900C379BE /* XCRemoteSwiftPackageReference "DemoKit" */;
 			productName = UltraviolenceExamples;
 		};
-		45D9A5AC2E67A93900B03138 /* UltraviolenceSupport */ = {
+		458D5CBF2E6F668F00BB8979 /* UltraviolenceGaussianSplats */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = 45057C682E6F661900C379BE /* XCRemoteSwiftPackageReference "DemoKit" */;
+			productName = UltraviolenceGaussianSplats;
+		};
+		458D5CC12E6F668F00BB8979 /* UltraviolenceKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 45057C682E6F661900C379BE /* XCRemoteSwiftPackageReference "DemoKit" */;
+			productName = UltraviolenceKit;
+		};
+		458D5CC32E6F668F00BB8979 /* UltraviolenceSupport */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 45057C682E6F661900C379BE /* XCRemoteSwiftPackageReference "DemoKit" */;
 			productName = UltraviolenceSupport;
 		};
-		45D9A5AE2E67A93900B03138 /* UltraviolenceUI */ = {
+		45A7372A2E6B64F1000C2B8C /* DemoKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = UltraviolenceUI;
+			productName = DemoKit;
 		};
-		45E0A14C2D9DAF420091ED9E /* UltraviolenceExamples */ = {
+		45C0EEDD2D9DB10A0076D9DF /* UltraviolenceExamples */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = UltraviolenceExamples;
 		};

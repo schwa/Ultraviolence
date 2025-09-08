@@ -1,5 +1,6 @@
 import SwiftUI
 import UltraviolenceUI
+import DemoKit
 
 public struct GameOfLifeDemoView: View {
     @State private var isRunning = true
@@ -90,8 +91,7 @@ extension GameOfLifeDemoView: DemoView {
         DemoMetadata(
             name: "Game of Life",
             description: "Conway's Game of Life cellular automaton simulation using GPU compute shaders",
-            keywords: ["compute"],
-            color: .green
+            keywords: ["compute"]
         )
     }
 }

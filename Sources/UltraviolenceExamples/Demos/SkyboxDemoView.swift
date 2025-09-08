@@ -3,6 +3,7 @@ import SwiftUI
 import Ultraviolence
 import UltraviolenceSupport
 import UltraviolenceUI
+import DemoKit
 
 public struct SkyboxDemoView: View {
     @State
@@ -93,8 +94,7 @@ extension SkyboxDemoView: DemoView {
         DemoMetadata(
             name: "Skybox",
             description: "Environment mapping demonstration using cube textures for 360-degree backgrounds",
-            keywords: ["skybox", "cubemap"],
-            color: .cyan
+            keywords: ["skybox", "cubemap"]
         )
     }
 }
