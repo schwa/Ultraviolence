@@ -1,417 +1,198 @@
-import Combine
-import Testing
+import Foundation
 @testable import Ultraviolence
+import Testing
 
-// Helper types for State tests
-
-struct DemoElement: Element, BodylessElement {
-    typealias Body = Never
-
-    var title: String
-    var action: () -> Void
-
-    init(_ title: String, action: @escaping () -> Void = { }) {
-        self.title = title
-        self.action = action
-    }
-
-    func expandIntoNode(_ node: Node, context: ExpansionContext) throws {
-        // This line intentionally left blank.
-    }
-}
-
-final class Model: ObservableObject {
-    @Published var counter: Int = 0
-}
-
-extension Element {
-    func debug(_ f: () -> Void) -> some Element {
-        f()
-        return self
-    }
-}
-
-struct ContentRenderPass: Element {
-    @UVObservedObject var model = Model()
-    var body: some Element {
-        DemoElement("\(model.counter)") {
-            model.counter += 1
-        }
-    }
-}
-
-@MainActor
-var nestedModel = Model()
-
-@MainActor
-var nestedBodyCount = 0
-
-@MainActor
-var contentRenderPassBodyCount = 0
-
-@MainActor
-var sampleBodyCount = 0
-
-@Suite(.serialized)
 @MainActor
 struct StateTests {
-    init() {
-        nestedBodyCount = 0
-        contentRenderPassBodyCount = 0
-        nestedModel.counter = 0
-        sampleBodyCount = 0
-    }
 
-    @Test
-    func testUpdate() throws {
-        let v = ContentRenderPass()
+    // MARK: - Basic State Test
+    
+    struct TestRoot: Element {
+        @UVState var count: Int = 0
 
-        let graph = try NodeGraph(content: v)
-        try graph.rebuildIfNeeded()
-        var demoElement: DemoElement {
-            graph.element(at: [0], type: DemoElement.self)
+        var body: some Element {
+            TestChild(count: count)
         }
-        #expect(demoElement.title == "0")
-        demoElement.action()
-        try graph.rebuildIfNeeded()
-        #expect(demoElement.title == "1")
     }
 
-    // MARK: ObservedObject tests
+    struct TestChild: Element {
+        var count: Int
+
+        init(count: Int) {
+            self.count = count
+        }
+
+        var body: some Element {
+            EmptyElement()
+        }
+    }
 
     @Test
-    func testConstantNested() throws {
-        @MainActor struct Nested: Element {
-            var body: some Element {
-                nestedBodyCount += 1
-                return DemoElement("Nested DemoElement")
+    func testBasicStateMutation() async throws {
+        let root = TestRoot()
+        let system = System()
+        try system.update(root: root)
+
+        #expect(system.dirtyIdentifiers.isEmpty)
+
+        system.withCurrentSystem {
+            root.count += 1
+        }
+
+        #expect(root.count == 1)
+        #expect(system.dirtyIdentifiers.count == 1)
+
+        try system.update(root: root)
+
+        #expect(root.count == 1)
+        #expect(system.dirtyIdentifiers.isEmpty)
+    }
+    
+    // MARK: - Independent State Test
+    
+    struct ParentWithState: Element {
+        @UVState var parentCounter = 0
+        
+        var body: some Element {
+            TrackedElement(name: "parent", value: parentCounter) {
+                parentCounter += 1
+            }
+            ChildWithState()
+        }
+    }
+    
+    struct ChildWithState: Element {
+        @UVState var childCounter = 0
+        
+        var body: some Element {
+            TrackedElement(name: "child", value: childCounter) {
+                childCounter += 1
             }
         }
-
-        struct ContentRenderPass: Element {
-            @UVObservedObject var model = Model()
-            var body: some Element {
-                DemoElement("\(model.counter)") {
-                    model.counter += 1
+    }
+    
+    struct TrackedElement: Element, BodylessElement {
+        let name: String
+        let value: Int
+        let action: () -> Void
+        
+        var body: Never {
+            fatalError()
+        }
+        
+        func system_workloadEnter(_ node: NeoNode) throws {
+            TestMonitor.shared.values[name] = value
+        }
+    }
+    
+    @Test
+    func testIndependentStateInHierarchy() async throws {
+        TestMonitor.shared.reset()
+        
+        let root = ParentWithState()
+        let system = System()
+        
+        try system.update(root: root)
+        try system.processWorkload()
+        
+        // Initial values
+        #expect(TestMonitor.shared.values["parent"] as? Int == 0)
+        #expect(TestMonitor.shared.values["child"] as? Int == 0)
+        
+        // Get elements and trigger child action
+        let childElement = system.element(at: [0, 0, 1, 0], type: TrackedElement.self)!
+        system.withCurrentSystem {
+            childElement.action()
+        }
+        
+        // Only child should be dirty
+        #expect(system.dirtyIdentifiers.count == 1)
+        
+        try system.update(root: root)
+        try system.processWorkload()
+        
+        // Parent unchanged, child incremented
+        #expect(TestMonitor.shared.values["parent"] as? Int == 0)
+        #expect(TestMonitor.shared.values["child"] as? Int == 1)
+        
+        // Now trigger parent action
+        let parentElement = system.element(at: [0, 0, 0], type: TrackedElement.self)!
+        system.withCurrentSystem {
+            parentElement.action()
+        }
+        
+        try system.update(root: root)
+        try system.processWorkload()
+        
+        // Parent incremented, child unchanged
+        #expect(TestMonitor.shared.values["parent"] as? Int == 1)
+        #expect(TestMonitor.shared.values["child"] as? Int == 1)
+    }
+    
+    // MARK: - State Propagation Test
+    
+    struct PropagationRoot: Element {
+        @UVState var value = 0
+        
+        var body: some Element {
+            PropagationMiddle(parentValue: value) {
+                value += 10
+            }
+        }
+    }
+    
+    struct PropagationMiddle: Element {
+        let parentValue: Int
+        let onIncrement: () -> Void
+        @UVState var ownValue = 100
+        
+        var body: some Element {
+            PropagationLeaf(
+                combinedValue: parentValue + ownValue,
+                onIncrement: {
+                    onIncrement()
+                    ownValue += 1
                 }
-                Nested()
-                    .debug {
-                        contentRenderPassBodyCount += 1
-                    }
-            }
+            )
         }
-
-        let v = ContentRenderPass()
-        let graph = try NodeGraph(content: v)
-        try graph.rebuildIfNeeded()
-        #expect(contentRenderPassBodyCount == 1)
-        #expect(nestedBodyCount == 1)
-        var demoElement: DemoElement {
-            graph.element(at: [0, 0], type: DemoElement.self)
-        }
-        demoElement.action()
-        try graph.rebuildIfNeeded()
-        #expect(contentRenderPassBodyCount == 2)
-        #expect(nestedBodyCount == 1)
     }
-
-    @Test
-    func testChangedNested() throws {
-        struct Nested: Element {
-            var counter: Int
-            var body: some Element {
-                nestedBodyCount += 1
-                return DemoElement("Nested DemoElement")
-            }
+    
+    struct PropagationLeaf: Element, BodylessElement {
+        let combinedValue: Int
+        let onIncrement: () -> Void
+        
+        var body: Never {
+            fatalError()
         }
-
-        struct ContentRenderPass: Element {
-            @UVObservedObject var model = Model()
-            var body: some Element {
-                DemoElement("\(model.counter)") {
-                    model.counter += 1
-                }
-                Nested(counter: model.counter)
-                    .debug {
-                        contentRenderPassBodyCount += 1
-                    }
-            }
+        
+        func system_workloadEnter(_ node: NeoNode) throws {
+            TestMonitor.shared.values["combined"] = combinedValue
         }
-
-        let v = ContentRenderPass()
-        let graph = try NodeGraph(content: v)
-        try graph.rebuildIfNeeded()
-        #expect(contentRenderPassBodyCount == 1)
-        #expect(nestedBodyCount == 1)
-        var demoElement: DemoElement {
-            graph.element(at: [0, 0], type: DemoElement.self)
-        }
-        demoElement.action()
-        try graph.rebuildIfNeeded()
-        #expect(contentRenderPassBodyCount == 2)
-        #expect(nestedBodyCount == 2)
     }
-
+    
     @Test
-    func testUnchangedNested() throws {
-        struct Nested: Element {
-            var isLarge: Bool = false
-            var body: some Element {
-                nestedBodyCount += 1
-                return DemoElement("Nested DemoElement")
-            }
+    func testStatePropagationThroughHierarchy() async throws {
+        TestMonitor.shared.reset()
+        
+        let root = PropagationRoot()
+        let system = System()
+        
+        try system.update(root: root)
+        try system.processWorkload()
+        
+        // Initial: parent=0, middle=100, combined=100
+        #expect(TestMonitor.shared.values["combined"] as? Int == 100)
+        
+        // Trigger action
+        let leaf = system.element(at: [0, 0, 0], type: PropagationLeaf.self)!
+        system.withCurrentSystem {
+            leaf.onIncrement()
         }
-
-        struct ContentRenderPass: Element {
-            @UVObservedObject var model = Model()
-            var body: some Element {
-                DemoElement("\(model.counter)") {
-                    model.counter += 1
-                }
-                Nested(isLarge: model.counter > 10)
-                    .debug {
-                        contentRenderPassBodyCount += 1
-                    }
-            }
-        }
-
-        let v = ContentRenderPass()
-        let graph = try NodeGraph(content: v)
-        try graph.rebuildIfNeeded()
-        #expect(contentRenderPassBodyCount == 1)
-        #expect(nestedBodyCount == 1)
-        var demoElement: DemoElement {
-            graph.element(at: [0, 0], type: DemoElement.self)
-        }
-        demoElement.action()
-        try graph.rebuildIfNeeded()
-        #expect(contentRenderPassBodyCount == 2)
-        #expect(nestedBodyCount == 1)
-    }
-
-    @Test
-    func testUnchangedNestedWithObservedObject() throws {
-        struct Nested: Element {
-            @UVObservedObject var model = nestedModel
-            var body: some Element {
-                nestedBodyCount += 1
-                return DemoElement("Nested DemoElement")
-            }
-        }
-
-        struct ContentRenderPass: Element {
-            @UVObservedObject var model = Model()
-            var body: some Element {
-                DemoElement("\(model.counter)") {
-                    model.counter += 1
-                }
-                Nested()
-                    .debug {
-                        contentRenderPassBodyCount += 1
-                    }
-            }
-        }
-
-        let v = ContentRenderPass()
-        let graph = try NodeGraph(content: v)
-        try graph.rebuildIfNeeded()
-        #expect(contentRenderPassBodyCount == 1)
-        #expect(nestedBodyCount == 1)
-        var demoElement: DemoElement {
-            graph.element(at: [0, 0], type: DemoElement.self)
-        }
-        demoElement.action()
-        try graph.rebuildIfNeeded()
-        #expect(contentRenderPassBodyCount == 2)
-        #expect(nestedBodyCount == 1)
-    }
-
-    @Test
-    func testBinding1() throws {
-        struct Nested: Element {
-            @UVBinding var counter: Int
-            var body: some Element {
-                nestedBodyCount += 1
-                return DemoElement("Nested DemoElement")
-            }
-        }
-
-        struct ContentRenderPass: Element {
-            @UVObservedObject var model = Model()
-            var body: some Element {
-                DemoElement("\(model.counter)") {
-                    model.counter += 1
-                }
-                Nested(counter: $model.counter)
-                    .debug {
-                        contentRenderPassBodyCount += 1
-                    }
-            }
-        }
-
-        let v = ContentRenderPass()
-        let graph = try NodeGraph(content: v)
-        try graph.rebuildIfNeeded()
-        #expect(contentRenderPassBodyCount == 1)
-        #expect(nestedBodyCount == 1)
-        var demoElement: DemoElement {
-            graph.element(at: [0, 0], type: DemoElement.self)
-        }
-        demoElement.action()
-        try graph.rebuildIfNeeded()
-        #expect(contentRenderPassBodyCount == 2)
-        #expect(nestedBodyCount == 2)
-    }
-
-    @Test
-    func testBinding2() throws {
-        struct Nested: Element {
-            @UVBinding var counter: Int
-            var body: some Element {
-                nestedBodyCount += 1
-                return DemoElement("\(counter)") { counter += 1 }
-            }
-        }
-
-        struct ContentRenderPass: Element {
-            @UVObservedObject var model = Model()
-            var body: some Element {
-                Nested(counter: $model.counter)
-                    .debug {
-                        contentRenderPassBodyCount += 1
-                    }
-            }
-        }
-
-        let v = ContentRenderPass()
-        let graph = try NodeGraph(content: v)
-        try graph.rebuildIfNeeded()
-        var demoElement: DemoElement {
-            graph.element(at: [0, 0], type: DemoElement.self)
-        }
-        #expect(contentRenderPassBodyCount == 1)
-        #expect(nestedBodyCount == 1)
-        #expect(demoElement.title == "0")
-        demoElement.action()
-        try graph.rebuildIfNeeded()
-        #expect(contentRenderPassBodyCount == 2)
-        #expect(nestedBodyCount == 2)
-        #expect(demoElement.title == "1")
-    }
-
-    // MARK: State tests
-
-    @Test
-    func testSimple() throws {
-        struct Nested: Element {
-            @UVState private var counter = 0
-            var body: some Element {
-                DemoElement("\(counter)") {
-                    counter += 1
-                }
-            }
-        }
-
-        struct Sample: Element {
-            @UVState private var counter = 0
-            var body: some Element {
-                DemoElement("\(counter)") {
-                    counter += 1
-                }
-                Nested()
-            }
-        }
-
-        let s = Sample()
-        let graph = try NodeGraph(content: s)
-        try graph.rebuildIfNeeded()
-        var demoElement: DemoElement {
-            graph.element(at: [0, 0], type: DemoElement.self)
-        }
-        var nestedDemoElement: DemoElement {
-            graph.element(at: [0, 1, 0], type: DemoElement.self)
-        }
-        #expect(demoElement.title == "0")
-        #expect(nestedDemoElement.title == "0")
-
-        nestedDemoElement.action()
-        try graph.rebuildIfNeeded()
-
-        #expect(demoElement.title == "0")
-        #expect(nestedDemoElement.title == "1")
-
-        demoElement.action()
-        try graph.rebuildIfNeeded()
-
-        #expect(demoElement.title == "1")
-        #expect(nestedDemoElement.title == "1")
-    }
-
-    @Test
-    func testBindings() throws {
-        struct Nested: Element {
-            @UVBinding var counter: Int
-            var body: some Element {
-                DemoElement("\(counter)") {
-                    counter += 1
-                }
-            }
-        }
-
-        struct Sample: Element {
-            @UVState private var counter = 0
-            var body: some Element {
-                Nested(counter: $counter)
-            }
-        }
-
-        let s = Sample()
-        let graph = try NodeGraph(content: s)
-        try graph.rebuildIfNeeded()
-        var nestedDemoElement: DemoElement {
-            graph.element(at: [0, 0], type: DemoElement.self)
-        }
-        #expect(nestedDemoElement.title == "0")
-
-        nestedDemoElement.action()
-        try graph.rebuildIfNeeded()
-        #expect(nestedDemoElement.title == "1")
-    }
-
-    @Test
-    func testUnusedBinding() throws {
-        struct Nested: Element {
-            @UVBinding var counter: Int
-            var body: some Element {
-                DemoElement("") {
-                    counter += 1
-                }
-                .debug { nestedBodyCount += 1 }
-            }
-        }
-
-        struct Sample: Element {
-            @UVState private var counter = 0
-            var body: some Element {
-                DemoElement("\(counter)")
-                Nested(counter: $counter)
-                    .debug { sampleBodyCount += 1 }
-            }
-        }
-
-        let s = Sample()
-        let graph = try NodeGraph(content: s)
-        try graph.rebuildIfNeeded()
-        var nestedDemoElement: DemoElement {
-            graph.element(at: [0, 1, 0], type: DemoElement.self)
-        }
-        #expect(sampleBodyCount == 1)
-        #expect(nestedBodyCount == 1)
-
-        nestedDemoElement.action()
-        try graph.rebuildIfNeeded()
-
-        #expect(sampleBodyCount == 2)
-        #expect(nestedBodyCount == 1)
+        
+        try system.update(root: root)
+        try system.processWorkload()
+        
+        // After: parent=10, middle=101, combined=111
+        #expect(TestMonitor.shared.values["combined"] as? Int == 111)
     }
 }

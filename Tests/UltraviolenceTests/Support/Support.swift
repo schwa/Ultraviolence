@@ -60,15 +60,16 @@ func imageCompare(_ image1: CGImage, _ image2: CGImage) throws -> Bool {
     return histogram.relativeRed[0] == 1.0 && histogram.relativeGreen[0] == 1.0 && histogram.relativeBlue[0] == 1.0
 }
 
-extension NodeGraph {
-    func element<V>(at path: [Int], type: V.Type) -> V {
-        var node: Node = root
-        for index in path {
-            node = node.children[index]
-        }
-        return node.element as! V
-    }
-}
+// TODO: System
+//extension NodeGraph {
+//    func element<V>(at path: [Int], type: V.Type) -> V {
+//        var node: Node = root
+//        for index in path {
+//            node = node.children[index]
+//        }
+//        return node.element as! V
+//    }
+//}
 
 extension CGImage {
     func write(to url: URL) throws {
@@ -162,3 +163,43 @@ public extension URL {
     }
 }
 #endif
+
+@MainActor
+class TestMonitor {
+    static let shared = TestMonitor()
+
+    var updates: [String] = []
+    var values: [String: Any] = [:]
+    var observations: [(phase: String, element: String, counter: Int, env: String)] = []
+
+    func reset() {
+        updates.removeAll()
+        values.removeAll()
+        observations.removeAll()
+    }
+    
+    func logUpdate(_ message: String) {
+        updates.append(message)
+    }
+    
+    func record(phase: String, element: String, counter: Int = -1, env: String = "") {
+        observations.append((phase: phase, element: element, counter: counter, env: env))
+    }
+}
+
+// Test helper extension
+extension StructuralIdentifier.Atom {
+    var index: Int? {
+        if case .index(let value) = component {
+            return value
+        }
+        return nil
+    }
+
+    var explicit: AnyHashable? {
+        if case .explicit(let value) = component {
+            return value
+        }
+        return nil
+    }
+}

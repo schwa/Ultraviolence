@@ -4,10 +4,9 @@ import UltraviolenceSupport
 
 extension UVEnvironmentValues {
     @UVEntry
-    var exampleValue: String = ""
+    var exampleValue: String = "<default>"
 }
 
-@Suite
 @MainActor
 struct EnvironmentTests {
     @Test
@@ -22,14 +21,16 @@ struct EnvironmentTests {
         struct Example2: Element, BodylessElement {
             typealias Body = Never
             var value: String
-            func expandIntoNode(_ node: Node, context: ExpansionContext) throws {
-            }
         }
 
-        let s = Example1()
-        let graph = try NodeGraph(content: s)
-        try graph.rebuildIfNeeded()
-        #expect(graph.element(at: [0], type: Example2.self).value == "Hello world")
+        let root = Example1()
+        let system = System()
+        try system.update(root: root)
+
+        let element = system.element(at: [0, 0, 0, 0], type: Example2.self)
+
+
+        #expect(element!.value == "Hello world")
     }
 
     @Test
@@ -52,12 +53,11 @@ struct EnvironmentTests {
         struct Example3: Element, BodylessElement {
             typealias Body = Never
             var value: String
-            func expandIntoNode(_ node: Node, context: ExpansionContext) throws {
-            }
         }
 
-        let g1 = try NodeGraph(content: Example1())
-        try g1.rebuildIfNeeded()
-        #expect(g1.element(at: [0, 0], type: Example3.self).value == "Hello world")
+        let system = System()
+        try system.update(root: Example1())
+        let element = system.element(at: [0, 0, 0, 0], type: Example3.self)
+        #expect(element!.value == "Hello world")
     }
 }

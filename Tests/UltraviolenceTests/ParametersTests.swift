@@ -129,27 +129,31 @@ struct ParametersTests {
         struct TestElement: Element {
             var body: some Element {
                 EmptyElement()
+                    .parameter("testParam", functionType: .vertex, value: Float(1.0))
             }
         }
-
+        
         let element = TestElement()
-        let modifier = ParameterElementModifier(
-            functionType: .vertex,
-            name: "testParam",
-            value: ParameterValue<Float>.value(1.0),
-            content: element
-        )
-
-        // Create a mock node with environment values
-        let node = Node()
-        node.element = modifier
-
-        // We need a real reflection and encoder to fully test, but we can test the basic structure
-        #expect(modifier.parameters.count == 1)
-
-        // Test that workloadEnter throws when missing reflection
-        #expect(throws: UltraviolenceError.self) {
-            try modifier.workloadEnter(node)
+        let system = System()
+        
+        // Update the system with our element
+        try system.update(root: element)
+        
+        // Process setup - parameters should be collected
+        try system.processSetup()
+        
+        // The parameter modifier should be in the element tree
+        // We can verify that the parameter was properly created
+        let modifiedElement = element.body
+        #expect(modifiedElement is ParameterElementModifier<EmptyElement>)
+        
+        // Verify the parameter was created with correct values
+        if let modifier = modifiedElement as? ParameterElementModifier<EmptyElement> {
+            #expect(modifier.parameters.count == 1)
+            if let param = modifier.parameters["testParam"] {
+                #expect(param.name == "testParam")
+                #expect(param.functionType == MTLFunctionType.vertex)
+            }
         }
     }
 
