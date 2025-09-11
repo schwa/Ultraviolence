@@ -75,52 +75,16 @@ public extension UVEnvironmentValues {
     }
 }
 
-// TODO: #30 Make into actual modifier.
-internal struct EnvironmentWritingModifier<Content: Element>: Element, BodylessElement {
-    var content: Content
-    var modify: (inout UVEnvironmentValues) -> Void
-
-    func expandIntoNode(_ node: Node, context: ExpansionContext) throws {
-        modify(&node.environmentValues)
-        try content.expandNode(node, context: context.deeper())
-    }
-}
-
-public extension Element {
-    func environment<Value>(_ keyPath: WritableKeyPath<UVEnvironmentValues, Value>, _ value: Value) -> some Element {
-        EnvironmentWritingModifier(content: self) { environmentValues in
-            environmentValues[keyPath: keyPath] = value
-        }
-    }
-}
-
-// MARK: -
-
-public struct EnvironmentReader<Value, Content: Element>: Element, BodylessElement {
-    var keyPath: KeyPath<UVEnvironmentValues, Value>
-    var content: (Value) throws -> Content
-
-    public init(keyPath: KeyPath<UVEnvironmentValues, Value>, @ElementBuilder content: @escaping (Value) throws -> Content) {
-        self.keyPath = keyPath
-        self.content = content
-    }
-
-    func expandIntoNode(_ node: Node, context: ExpansionContext) throws {
-        let value = node.environmentValues[keyPath: keyPath]
-        try content(value).expandNode(node, context: context.deeper())
-    }
-}
-
 // MARK: -
 
 @propertyWrapper
 public struct UVEnvironment <Value> {
     public var wrappedValue: Value {
-        guard let graph = NodeGraph.current else {
-            preconditionFailure("Environment must be used within a NodeGraph.")
+        guard let system = System.current else {
+            preconditionFailure("Environment must be used within a System.")
         }
-        guard let currentNode = graph.activeNodeStack.last else {
-            preconditionFailure("Environment must be used within a Node.")
+        guard let currentNode = system.activeNodeStack.last else {
+            preconditionFailure("Environment must be used within a System that has an activeNodeStack.")
         }
         return currentNode.environmentValues[keyPath: keyPath]
     }

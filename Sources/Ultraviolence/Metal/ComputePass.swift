@@ -8,13 +8,13 @@ public struct ComputePass <Content>: Element, BodylessElement, BodylessContentEl
         self.content = try content()
     }
 
-    func workloadEnter(_ node: Node) throws {
+    func system_workloadEnter(_ node: NeoNode) throws {
         let commandBuffer = try node.environmentValues.commandBuffer.orThrow(.missingEnvironment(\.commandBuffer))
         let computeCommandEncoder = try commandBuffer._makeComputeCommandEncoder()
         node.environmentValues.computeCommandEncoder = computeCommandEncoder
     }
 
-    func workloadExit(_ node: Node) throws {
+    func system_workloadExit(_ node: NeoNode) throws {
         let computeCommandEncoder = try node.environmentValues.computeCommandEncoder.orThrow(.missingEnvironment(\.computeCommandEncoder))
         computeCommandEncoder.endEncoding()
     }
@@ -31,7 +31,7 @@ public struct ComputePipeline <Content>: Element, BodylessElement, BodylessConte
         self.content = try content()
     }
 
-    func setupEnter(_ node: Node) throws {
+    func system_setupEnter(_ node: NeoNode) throws {
         let device = try node.environmentValues.device.orThrow(.missingEnvironment(\.device))
         let descriptor = MTLComputePipelineDescriptor()
         descriptor.computeFunction = computeKernel.function
@@ -66,11 +66,7 @@ public struct ComputeDispatch: Element, BodylessElement {
         self.threadsPerThreadgroup = threadsPerThreadgroup
     }
 
-    func expandIntoNode(_ node: Node, context: ExpansionContext) throws {
-        // This line intentionally left blank.
-    }
-
-    func workloadEnter(_ node: Node) throws {
+    func system_workloadEnter(_ node: NeoNode) throws {
         guard let computeCommandEncoder = node.environmentValues.computeCommandEncoder, let computePipelineState = node.environmentValues.computePipelineState else {
             preconditionFailure("No compute command encoder/compute pipeline state found.")
         }

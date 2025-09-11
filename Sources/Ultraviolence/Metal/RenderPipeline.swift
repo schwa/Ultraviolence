@@ -22,7 +22,7 @@ public struct RenderPipeline <Content>: Element, BodylessElement, BodylessConten
         self.content = try content()
     }
 
-    func setupEnter(_ node: Node) throws {
+    func system_setupEnter(_ node: NeoNode) throws {
         let environment = node.environmentValues
 
         let renderPassDescriptor = try environment.renderPassDescriptor.orThrow(.missingEnvironment(\.renderPassDescriptor)).copyWithType(MTLRenderPassDescriptor.self)
@@ -63,7 +63,7 @@ public struct RenderPipeline <Content>: Element, BodylessElement, BodylessConten
         node.environmentValues.reflection = self.reflection
     }
 
-    func workloadEnter(_ node: Node) throws {
+    func system_workloadEnter(_ node: NeoNode) throws {
         let renderCommandEncoder = try node.environmentValues.renderCommandEncoder.orThrow(.missingEnvironment(\.renderCommandEncoder))
         let renderPipelineState = try node.environmentValues.renderPipelineState.orThrow(.missingEnvironment(\.renderPipelineState))
 

@@ -14,8 +14,9 @@ public extension Element {
         .environment(\.commandQueue, commandQueue)
         .environment(\.device, device)
 
-        let graph = try NodeGraph(content: content)
-        try graph.processSetup()
-        try graph.processWorkload()
+        let system = try System()
+        try system.update(root: content)
+        try system.processSetup()
+        try system.processWorkload()
     }
 }

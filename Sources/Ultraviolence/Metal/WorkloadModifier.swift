@@ -7,7 +7,7 @@ internal struct WorkloadModifier <Content>: Element, BodylessElement, BodylessCo
         self._workloadEnter = workloadEnter
     }
 
-    func workloadEnter(_ node: Node) throws {
+    func system_workloadEnter(_ node: NeoNode) throws {
         try _workloadEnter?(node.environmentValues)
     }
 }

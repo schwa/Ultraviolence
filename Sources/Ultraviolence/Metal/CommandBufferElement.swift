@@ -13,7 +13,7 @@ public struct CommandBufferElement <Content>: Element, BodylessContentElement wh
         self.content = try content()
     }
 
-    func workloadEnter(_ node: Node) throws {
+    func system_workloadEnter(_ node: NeoNode) throws {
         let commandQueue = try node.environmentValues.commandQueue.orThrow(.missingEnvironment(\.commandQueue))
         let commandBufferDescriptor = MTLCommandBufferDescriptor()
         // TODO: #97 Users cannot modify the environment here. This is a problem.
@@ -26,7 +26,7 @@ public struct CommandBufferElement <Content>: Element, BodylessContentElement wh
         node.environmentValues.commandBuffer = commandBuffer
     }
 
-    func workloadExit(_ node: Node) throws {
+    func system_workloadExit(_ node: NeoNode) throws {
         let commandBuffer = try node.environmentValues.commandBuffer.orThrow(.missingEnvironment(\.commandBuffer))
         switch completion {
         case .none:

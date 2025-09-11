@@ -1,18 +1,13 @@
+// TODO: is this still needed?
 public struct AnyElement: Element, BodylessElement {
-    private let expand: (Node, ExpansionContext) throws -> Void
-
+    private let base: any Element
+    
     public init(_ base: some Element) {
-        expand = { node, context in
-            try base.expandNode(node, context: context)
-        }
+        self.base = base
     }
 
-    internal func expandIntoNode(_ node: Node, context: ExpansionContext) throws {
-        let graph = try node.graph.orThrow(.noCurrentGraph)
-        if node.children.isEmpty {
-            node.children.append(graph.makeNode())
-        }
-        try expand(node.children[0], context.deeper())
+    func visitChildrenBodyless(_ visit: (any Element) throws -> Void) throws {
+        try visit(base)
     }
 }
 

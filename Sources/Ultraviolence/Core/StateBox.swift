@@ -1,20 +1,20 @@
 internal final class StateBox<Wrapped> {
     private var _value: Wrapped
-    private weak var _graph: NodeGraph?
-    private var dependencies: [WeakBox<Node>] = []
+    private weak var _system: System?
+    private var dependencies: [WeakBox<NeoNode>] = []
     private var hasBeenConnected = false
 
-    private var graph: NodeGraph? {
-        if _graph == nil {
-            _graph = NodeGraph.current
-            if _graph != nil {
+    private var system: System? {
+        if _system == nil {
+            _system = System.current
+            if _system != nil {
                 hasBeenConnected = true
             } else if !hasBeenConnected {
                 // Never been connected to a graph - this is a real error, else: was connected but graph is now gone (teardown) - this is OK
-                assert(false, "StateBox must be used within a NodeGraph.")
+                assert(false, "StateBox must be used within a System.")
             }
         }
-        return _graph
+        return _system
     }
 
     internal var wrappedValue: Wrapped {
@@ -23,7 +23,7 @@ internal final class StateBox<Wrapped> {
             dependencies = dependencies.filter { $0.wrappedValue != nil }
 
             // Add current node accessoring the value to list of dependencies
-            let currentNode = graph?.activeNodeStack.last
+            let currentNode = system?.activeNodeStack.last
             if let currentNode, !dependencies.contains(where: { $0() === currentNode }) {
                 dependencies.append(WeakBox(currentNode))
             }
@@ -53,6 +53,16 @@ internal final class StateBox<Wrapped> {
 
     /// Update dependencies when the value changes
     private func valueDidChange() {
-        dependencies.forEach { $0()?.setNeedsRebuild() }
+        guard let system else {
+            // TODO: ERROR?
+            return
+        }
+        dependencies.forEach { boxedNode in
+            guard let node = boxedNode() else {
+                // TODO: ERROR?
+                return
+            }
+            system.dirtyIdentifiers.insert(node.id)
+        }
     }
 }

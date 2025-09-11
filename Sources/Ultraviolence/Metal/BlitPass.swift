@@ -7,13 +7,13 @@ public struct BlitPass <Content>: Element, BodylessElement, BodylessContentEleme
         self.content = try content()
     }
 
-    func workloadEnter(_ node: Node) throws {
+    func system_workloadEnter(_ node: NeoNode) throws {
         let commandBuffer = try node.environmentValues.commandBuffer.orThrow(.missingEnvironment(\.commandBuffer))
         let blitCommandEncoder = try commandBuffer._makeBlitCommandEncoder()
         node.environmentValues.blitCommandEncoder = blitCommandEncoder
     }
 
-    func workloadExit(_ node: Node) throws {
+    func system_workloadExit(_ node: NeoNode) throws {
         let blitCommandEncoder = try node.environmentValues.blitCommandEncoder.orThrow(.missingEnvironment(\.blitCommandEncoder))
         blitCommandEncoder.endEncoding()
     }
@@ -26,11 +26,7 @@ public struct Blit: Element, BodylessElement {
         self.block = block
     }
 
-    func expandIntoNode(_ node: Node, context: ExpansionContext) throws {
-        // This line intentionally left blank.
-    }
-
-    func workloadEnter(_ node: Node) throws {
+    func system_workloadEnter(_ node: NeoNode) throws {
         let blitCommandEncoder = try node.environmentValues.blitCommandEncoder.orThrow(.missingEnvironment(\.blitCommandEncoder))
         try block(blitCommandEncoder)
     }

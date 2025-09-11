@@ -3,23 +3,19 @@ public struct LoggingElement: Element, BodylessElement {
         // This line intentionally left blank.
     }
 
-    func expandIntoNode(_ node: Node, context: ExpansionContext) throws {
-        // This line intentionally left blank.
-    }
-
-    func setupEnter(_ node: Node) throws {
+    func system_setupEnter(_ node: NeoNode) throws {
         logger?.log("setupEnter")
     }
 
-    func setupExit(_ node: Node) throws {
+    func system_setupExit(_ node: NeoNode) throws {
         logger?.log("setupExit")
     }
 
-    func workloadEnter(_ node: Node) throws {
+    func system_workloadEnter(_ node: NeoNode) throws {
         logger?.log("workloadEnter")
     }
 
-    func workloadExit(_ node: Node) throws {
+    func system_workloadExit(_ node: NeoNode) throws {
         logger?.log("workloadExit")
     }
 }

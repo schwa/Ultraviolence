@@ -1,3 +1,6 @@
+// TODO: This is dangerous. Because walking the tree can modify state. FILE A TICKET. Stuff like EnvironmentReader can break things.
+// TODO: We should only walk the "System tree"
+
 public extension Element {
     @MainActor
     func dump(to output: inout String, indent: Int = 0) throws {

@@ -98,7 +98,7 @@ internal class RenderViewViewModel <Content>: NSObject, MTKViewDelegate where Co
     var lastError: Error?
 
     @ObservationIgnored
-    var graph: NodeGraph
+    var system: System
 
     @ObservationIgnored
     var needsSetup = true
@@ -116,7 +116,7 @@ internal class RenderViewViewModel <Content>: NSObject, MTKViewDelegate where Co
         self.device = device
         self.content = content
         self.commandQueue = commandQueue
-        self.graph = try NodeGraph(content: EmptyElement())
+        self.system = try System()
     }
 
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
@@ -149,13 +149,13 @@ internal class RenderViewViewModel <Content>: NSObject, MTKViewDelegate where Co
 
                 do {
                     // TODO: #25 Find a way to detect if graph has changed and set needsSetup to true. I am assuming we get a whole new graph every time - can we confirm this is true and too much work is being done?
-                    try graph.update(content: content)
+                    try system.update(root: content)
                     // Check if any new nodes need setup after updating content
                     if needsSetup {
-                        try graph.processSetup()
+                        try system.processSetup()
                         needsSetup = false
                     }
-                    try graph.processWorkload()
+                    try system.processWorkload()
                 } catch {
                     handle(error: error)
                 }

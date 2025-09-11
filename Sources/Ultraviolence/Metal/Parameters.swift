@@ -13,7 +13,7 @@ internal struct ParameterElementModifier<Content>: Element, BodylessElement, Bod
         self.content = content
     }
 
-    func workloadEnter(_ node: Node) throws {
+    func system_workloadEnter(_ node: NeoNode) throws {
         let reflection = try node.environmentValues.reflection.orThrow(.missingEnvironment(\.reflection))
         let renderCommandEncoder = node.environmentValues.renderCommandEncoder
         let computeCommandEncoder = node.environmentValues.computeCommandEncoder

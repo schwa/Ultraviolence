@@ -21,22 +21,8 @@ public extension ForEach {
     }
 }
 
+// TODO: We're not useing ids in the System StructuralIdentifier yet. (File a ticket for this!)
 extension ForEach: BodylessElement {
-    internal func expandIntoNode(_ node: Node, context: ExpansionContext) throws {
-        let graph = try node.graph.orThrow(.noCurrentGraph)
-        var index = 0
-
-        for datum in data {
-            if node.children.count <= index {
-                node.children.append(graph.makeNode())
-            }
-
-            let content = try content(datum)
-            try content.expandNode(node.children[index], context: context.deeper())
-            index += 1
-        }
-    }
-
     internal func visitChildrenBodyless(_ visit: (any Element) throws -> Void) throws {
         for datum in data {
             let child = try content(datum)
