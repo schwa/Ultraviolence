@@ -180,6 +180,49 @@ Closures are essential for the declarative API design, lazy evaluation, and capt
   - Draw calls
   - Uniform updates
 
+## Architecture Issues
+
+### Hidden Global Dependency in Environment Access
+
+The framework has an architectural inconsistency in how environment values are accessed during the process phase:
+
+#### The Problem
+- `system_workloadEnter/Exit` and `system_setupEnter/Exit` methods receive a `node` parameter directly
+- However, `@UVEnvironment` property wrappers cannot access this parameter
+- Instead, they rely on a global `activeNodeStack` maintained by the System
+
+#### Code Example
+```swift
+// In process phase - node is passed explicitly
+func system_workloadEnter(_ node: NeoNode) throws {
+    // But @UVEnvironment properties inside here use global state:
+    // They access System.current?.activeNodeStack.last
+    // Not the node parameter passed to this function
+}
+```
+
+#### Why This Is Problematic
+1. **Hidden coupling**: Elements appear to have local access but actually depend on global mutable state
+2. **Fragility**: The stack must be perfectly maintained or environment access crashes
+3. **Thread safety**: Global mutable state prevents concurrent processing
+4. **API dishonesty**: The function signature suggests node is sufficient, but it's not
+
+#### Current Workaround
+The System maintains `activeNodeStack` during traversal:
+```swift
+activeNodeStack.append(node)
+defer { activeNodeStack.removeLast() }
+try enter(bodylessElement, node)  // node passed but not used for @UVEnvironment
+```
+
+#### Potential Solutions
+1. **Explicit context**: Pass environment through the node parameter instead of property wrappers
+2. **Context object**: Bundle node + environment in a context parameter
+3. **Direct access**: Use `node.environment[KeyPath]` instead of `@UVEnvironment` wrapper
+4. **Thread-local storage**: Make the stack thread-local to at least enable concurrency
+
+This design prioritizes SwiftUI-like syntax over explicit dependencies, but the benefits are undermined by the global state requirement.
+
 ## Related Issues
 
 - *#25*: Graph.updateContent should detect if content changed (core issue)
