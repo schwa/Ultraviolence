@@ -1,3 +1,4 @@
+
 internal final class StateBox<Wrapped> {
     private var _value: Wrapped
     private weak var _system: System?

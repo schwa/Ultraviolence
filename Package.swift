@@ -17,6 +17,7 @@ public let package = Package(
         .library(name: "UltraviolenceExamples", targets: ["UltraviolenceExamples"]),
         .library(name: "UltraviolenceGaussianSplats", targets: ["UltraviolenceGaussianSplats"]),
         .library(name: "UltraviolenceKit", targets: ["UltraviolenceKit"]),
+        .library(name: "UltraviolenceSnapshotUI", targets: ["UltraviolenceSnapshotUI"]),
         .executable(name: "UltraviolenceCLI", targets: ["UltraviolenceCLI"])
     ],
     dependencies: [
@@ -37,6 +38,13 @@ public let package = Package(
             dependencies: [
                 "Ultraviolence",
                 "UltraviolenceSupport"
+            ]
+        ),
+        .target(
+            name: "UltraviolenceSnapshotUI",
+            dependencies: [
+                "Ultraviolence",
+                "UltraviolenceUI"
             ]
         ),
         .target(

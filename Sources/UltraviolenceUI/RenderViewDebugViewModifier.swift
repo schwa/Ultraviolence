@@ -12,9 +12,11 @@ internal struct RenderViewDebugViewModifier <Root>: ViewModifier where Root: Ele
     @State
     private var refreshCount = 0
 
-// TODO: SYSTEM
-//    @State
-//    private var selection: NodeListBox?
+    @State
+    private var selectedNodeID: String?
+    
+    @State
+    private var snapshot: SystemSnapshot?
 
     func body(content: Content) -> some View {
         content
