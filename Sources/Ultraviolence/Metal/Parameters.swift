@@ -69,7 +69,7 @@ internal struct Parameter {
                     encoder.setValue(value, index: fragmentIndex, functionType: .fragment)
                 case (.none, .none):
                     logger?.info("Parameter \(name) not found in reflection \(reflection.debugDescription).")
-                    throw UltraviolenceError.missingBinding(name)
+                    try _throw(UltraviolenceError.missingBinding(name))
                 }
             default:
                 fatalError("Invalid shader type \(functionType.debugDescription).")
@@ -79,7 +79,7 @@ internal struct Parameter {
 
     func set(on encoder: MTLComputeCommandEncoder, reflection: Reflection) throws {
         guard functionType == .kernel || functionType == nil else {
-            throw UltraviolenceError.generic("Invalid function type \(functionType.debugDescription).")
+            try _throw(UltraviolenceError.generic("Invalid function type \(functionType.debugDescription)."))
         }
         let index = try reflection.binding(forType: .kernel, name: name).orThrow(.missingBinding(name))
         encoder.setValue(value, index: index)

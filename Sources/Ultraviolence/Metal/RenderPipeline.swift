@@ -32,7 +32,7 @@ public struct RenderPipeline <Content>: Element, BodylessElement, BodylessConten
         renderPipelineDescriptor.fragmentFunction = fragmentShader.function
 
         guard let vertexDescriptor = environment.vertexDescriptor else {
-            throw UltraviolenceError.generic("No vertex descriptor provided. Use .vertexDescriptor() modifier or vertexShader.inferredVertexDescriptor() for simple cases.")
+            try _throw(UltraviolenceError.generic("No vertex descriptor provided. Use .vertexDescriptor() modifier or vertexShader.inferredVertexDescriptor() for simple cases."))
         }
         renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
 

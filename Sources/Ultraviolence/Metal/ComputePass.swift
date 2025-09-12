@@ -60,7 +60,7 @@ public struct ComputeDispatch: Element, BodylessElement {
     public init(threadsPerGrid: MTLSize, threadsPerThreadgroup: MTLSize) throws {
         let device = _MTLCreateSystemDefaultDevice()
         guard device.supportsFamily(.apple4) else {
-            throw UltraviolenceError.deviceCababilityFailure("Non-uniform threadgroup sizes require Apple GPU Family 4+ (A11 or later)")
+            try _throw(UltraviolenceError.deviceCababilityFailure("Non-uniform threadgroup sizes require Apple GPU Family 4+ (A11 or later)"))
         }
         self.dimensions = .threadsPerGrid(threadsPerGrid)
         self.threadsPerThreadgroup = threadsPerThreadgroup
@@ -84,3 +84,4 @@ public struct ComputeDispatch: Element, BodylessElement {
         }
     }
 }
+

@@ -1,3 +1,5 @@
+import Foundation
+
 public indirect enum UltraviolenceError: Error, Equatable {
     case undefined
     case generic(String)
@@ -35,3 +37,17 @@ public extension Optional {
         return value
     }
 }
+
+public func _throw(_ error: some Error) throws -> Never {
+    if fatalErrorOnThrow {
+        fatalError("\(error)")
+    }
+    else {
+        throw error
+    }
+}
+
+let fatalErrorOnThrow: Bool = {
+    let env = ProcessInfo.processInfo.environment
+    return env["UV_FATALERROR"] == "1"
+}()

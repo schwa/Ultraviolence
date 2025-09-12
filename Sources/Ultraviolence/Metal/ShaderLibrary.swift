@@ -22,7 +22,7 @@ public struct ShaderLibrary {
                 self.library = library
             }
             else {
-                throw UltraviolenceError.resourceCreationFailure("Failed to load default library from bundle.")
+                try _throw(UltraviolenceError.resourceCreationFailure("Failed to load default library from bundle."))
             }
         }
         self.namespace = namespace
@@ -42,7 +42,7 @@ public struct ShaderLibrary {
         } else {
             // No constants, just get the function directly
             guard let basicFunction = library.makeFunction(name: scopedNamed) else {
-                throw UltraviolenceError.resourceCreationFailure("Function '\(scopedNamed)' not found in library")
+                try _throw(UltraviolenceError.resourceCreationFailure("Function '\(scopedNamed)' not found in library"))
             }
             function = basicFunction
         }
@@ -50,21 +50,21 @@ public struct ShaderLibrary {
         // TODO: #94 Clean this up.
         case is VertexShader.Type:
             guard function.functionType == .vertex else {
-                throw UltraviolenceError.resourceCreationFailure("Function \(scopedNamed) is not a vertex function.")
+                try _throw(UltraviolenceError.resourceCreationFailure("Function \(scopedNamed) is not a vertex function."))
             }
             return (VertexShader(function) as? T).orFatalError(.resourceCreationFailure("Failed to create VertexShader."))
         case is FragmentShader.Type:
             guard function.functionType == .fragment else {
-                throw UltraviolenceError.resourceCreationFailure("Function \(scopedNamed) is not a fragment function.")
+                try _throw(UltraviolenceError.resourceCreationFailure("Function \(scopedNamed) is not a fragment function."))
             }
             return (FragmentShader(function) as? T).orFatalError(.resourceCreationFailure("Failed to create FragmentShader."))
         case is ComputeKernel.Type:
             guard function.functionType == .kernel else {
-                throw UltraviolenceError.resourceCreationFailure("Function \(scopedNamed) is not a kernel function.")
+                try _throw(UltraviolenceError.resourceCreationFailure("Function \(scopedNamed) is not a kernel function."))
             }
             return (ComputeKernel(function) as? T).orFatalError(.resourceCreationFailure("Failed to create ComputeKernel."))
         default:
-            throw UltraviolenceError.resourceCreationFailure("Unknown shader type \(type).")
+            try _throw(UltraviolenceError.resourceCreationFailure("Unknown shader type \(type)."))
         }
     }
 }

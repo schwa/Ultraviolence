@@ -21,7 +21,7 @@ public extension ShaderProtocol {
         let library = try library ?? _MTLCreateSystemDefaultDevice().makeDefaultLibrary().orThrow(.resourceCreationFailure("Failed to create default library"))
         let function = try library.makeFunction(name: name).orThrow(.resourceCreationFailure("Failed to create function"))
         if function.functionType != .kernel {
-            throw UltraviolenceError.resourceCreationFailure("Function type is not kernel")
+            try _throw(UltraviolenceError.resourceCreationFailure("Function type is not kernel"))
         }
         self.init(function)
     }
