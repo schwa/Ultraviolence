@@ -51,6 +51,8 @@ func testRendering() throws {
         .vertexDescriptor(try vertexShader.inferredVertexDescriptor())
     }
     let offscreenRenderer = try OffscreenRenderer(size: CGSize(width: 1_600, height: 1_200))
-    let image = try offscreenRenderer.render(renderPass).cgImage
+    let texture = try offscreenRenderer.render(renderPass)
+    try texture.texture.write(to: URL(fileURLWithPath: "/tmp/RedTriangle.png"))
+    let image = try texture.cgImage
     #expect(try image.isEqualToGoldenImage(named: "RedTriangle"))
 }
