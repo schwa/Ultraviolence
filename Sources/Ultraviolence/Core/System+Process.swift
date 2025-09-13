@@ -44,7 +44,9 @@ internal extension System {
                     // Exit any nodes that aren't ancestors of the current node
                     // This ensures sibling passes close their encoders before the next sibling starts
                     while !nodesNeedingExit.isEmpty {
-                        let lastNode = nodesNeedingExit.last!
+                        guard let lastNode = nodesNeedingExit.last else {
+                            fatalError("Unreachable")
+                        }
                         if isDescendant(node, of: lastNode) {
                             // Current node is a child, keep parent's encoder open
                             break

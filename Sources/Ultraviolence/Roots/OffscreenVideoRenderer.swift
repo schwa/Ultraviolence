@@ -147,9 +147,13 @@ public final class OffscreenVideoRenderer {
         let bytesPerRow = CVPixelBufferGetBytesPerRow(pixelBuffer)
         let baseAddress = CVPixelBufferGetBaseAddress(pixelBuffer)
 
+        guard let baseAddress else {
+            throw UltraviolenceError.generic("Failed to get pixel buffer base address")
+        }
+
         let region = MTLRegionMake2D(0, 0, Int(size.width), Int(size.height))
         colorTexture.getBytes(
-            baseAddress!,
+            baseAddress,
             bytesPerRow: bytesPerRow,
             from: region,
             mipmapLevel: 0

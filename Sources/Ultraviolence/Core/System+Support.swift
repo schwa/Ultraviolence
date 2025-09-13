@@ -17,9 +17,8 @@ internal extension System {
             var foundAtCurrentDepth = false
             var currentIndexAtDepth = -1
 
-            for identifier in orderedIdentifiers {
-                // Check if this identifier is at the right depth
-                if identifier.atoms.count == targetDepth + 1 {
+            // For identifiers at the right depth...
+            for identifier in orderedIdentifiers where identifier.atoms.count == targetDepth + 1 {
                     // Check if it matches our built path so far
                     if currentPath.enumerated().allSatisfy({ $0.element == identifier.atoms[$0.offset] }) {
                         currentIndexAtDepth += 1
@@ -30,7 +29,6 @@ internal extension System {
                             break
                         }
                     }
-                }
             }
 
             if !foundAtCurrentDepth {

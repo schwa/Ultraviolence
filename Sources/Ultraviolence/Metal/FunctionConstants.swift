@@ -48,8 +48,7 @@ public struct FunctionConstants: Equatable {
                 if let info = constantsDictionary[name] {
                     value.apply(to: mtlConstants, at: info.index)
                 } else if !constantsDictionary.isEmpty {
-                    try _throw(UltraviolenceError.configurationError("Constant '\(name)' not found in function '\(functionName)'. " + "Available: \(constantsDictionary.keys.joined(separator: ", "))"
-                    ))
+                    try _throw(UltraviolenceError.configurationError("Constant '\(name)' not found in function '\(functionName)'. Available: \(constantsDictionary.keys.joined(separator: ", "))"))
                 }
             } else {
                 // No namespace in the constant name - search for it
@@ -62,16 +61,9 @@ public struct FunctionConstants: Equatable {
                     if matches.count == 1, let info = matches.first?.value {
                         value.apply(to: mtlConstants, at: info.index)
                     } else if matches.count > 1 {
-                        try _throw(UltraviolenceError.configurationError(
-                            "Ambiguous constant '\(name)' in function '\(functionName)'. " +
-                                "Multiple matches found: \(matches.keys.joined(separator: ", ")). " +
-                                "Use fully qualified name."
-                        ))
+                        try _throw(UltraviolenceError.configurationError("Ambiguous constant '\(name)' in function '\(functionName)'. Multiple matches found: \(matches.keys.joined(separator: ", ")). Use fully qualified name."))
                     } else if !constantsDictionary.isEmpty {
-                        try _throw(UltraviolenceError.configurationError(
-                            "Constant '\(name)' not found in function '\(functionName)'. " +
-                                "Available: \(constantsDictionary.keys.joined(separator: ", "))"
-                        ))
+                        try _throw(UltraviolenceError.configurationError("Constant '\(name)' not found in function '\(functionName)'. Available: \(constantsDictionary.keys.joined(separator: ", "))"))
                     }
                 }
             }

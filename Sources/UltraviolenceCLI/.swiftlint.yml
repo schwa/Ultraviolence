@@ -1,0 +1,3 @@
+disabled_rules:
+- force_unwrapping
+- force_try

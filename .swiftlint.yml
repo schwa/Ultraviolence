@@ -5,9 +5,9 @@ excluded:
 force_cast: warning
 force_try: warning
 shorthand_operator: warning
-type_body_length:
-  warning: 250
-  error: 10000
+# type_body_length:
+#   warning: 250
+#   error: 10000
 type_name:
   allowed_symbols:
     - _
