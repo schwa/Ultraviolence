@@ -2,31 +2,40 @@ import Metal
 import UltraviolenceSupport
 
 public struct ComputePass <Content>: Element, BodylessElement, BodylessContentElement where Content: Element {
+    internal let label: String?
     internal let content: Content
 
-    public init(@ElementBuilder content: () throws -> Content) throws {
+    public init(label: String? = nil, @ElementBuilder content: () throws -> Content) throws {
+        self.label = label
         self.content = try content()
     }
 
     func system_workloadEnter(_ node: NeoNode) throws {
+        logger?.verbose?.info("Start compute pass: \(label ?? "<unlabeled>") (\(node.element.internalDescription))")
         let commandBuffer = try node.environmentValues.commandBuffer.orThrow(.missingEnvironment(\.commandBuffer))
         let computeCommandEncoder = try commandBuffer._makeComputeCommandEncoder()
+        if let label {
+            computeCommandEncoder.label = label
+        }
         node.environmentValues.computeCommandEncoder = computeCommandEncoder
     }
 
     func system_workloadExit(_ node: NeoNode) throws {
         let computeCommandEncoder = try node.environmentValues.computeCommandEncoder.orThrow(.missingEnvironment(\.computeCommandEncoder))
         computeCommandEncoder.endEncoding()
+        logger?.verbose?.info("Ending compute pass: \(label ?? "<unlabeled>") (\(node.element.internalDescription))")
     }
 }
 
 // MARK: -
 
 public struct ComputePipeline <Content>: Element, BodylessElement, BodylessContentElement where Content: Element {
-    var computeKernel: ComputeKernel
-    var content: Content
+    private let label: String?
+    private let computeKernel: ComputeKernel
+    internal let content: Content
 
-    public init(computeKernel: ComputeKernel, @ElementBuilder content: () throws -> Content) throws {
+    public init(label: String? = nil, computeKernel: ComputeKernel, @ElementBuilder content: () throws -> Content) throws {
+        self.label = label
         self.computeKernel = computeKernel
         self.content = try content()
     }
@@ -34,6 +43,9 @@ public struct ComputePipeline <Content>: Element, BodylessElement, BodylessConte
     func system_setupEnter(_ node: NeoNode) throws {
         let device = try node.environmentValues.device.orThrow(.missingEnvironment(\.device))
         let descriptor = MTLComputePipelineDescriptor()
+        if let label {
+            descriptor.label = label
+        }
         descriptor.computeFunction = computeKernel.function
         let (computePipelineState, reflection) = try device.makeComputePipelineState(descriptor: descriptor, options: .bindingInfo)
         node.environmentValues.reflection = Reflection(try reflection.orThrow(.resourceCreationFailure("Failed to create reflection.")))
