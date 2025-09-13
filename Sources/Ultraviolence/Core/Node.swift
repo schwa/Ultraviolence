@@ -1,5 +1,4 @@
-// TODO: Rename into Node.
-class NeoNode: Identifiable {
+class Node: Identifiable {
     weak var system: System?
     var id: StructuralIdentifier
     var parentIdentifier: StructuralIdentifier?

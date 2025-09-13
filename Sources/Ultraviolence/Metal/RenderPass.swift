@@ -9,12 +9,12 @@ public struct RenderPass <Content>: Element, BodylessElement, BodylessContentEle
         self.content = try content()
     }
 
-    func system_setupEnter(_ node: NeoNode) throws {
+    func setupEnter(_ node: Node) throws {
         let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
         node.environmentValues.renderPipelineDescriptor = renderPipelineDescriptor
     }
 
-    func system_workloadEnter(_ node: NeoNode) throws {
+    func workloadEnter(_ node: Node) throws {
         logger?.verbose?.info("Start render pass: \(label ?? "<unlabeled>") (\(node.element.internalDescription))")
         let commandBuffer = try node.environmentValues.commandBuffer.orThrow(.missingEnvironment(\.commandBuffer))
         let renderPassDescriptor = try node.environmentValues.renderPassDescriptor.orThrow(.missingEnvironment(\.renderPassDescriptor))
@@ -25,7 +25,7 @@ public struct RenderPass <Content>: Element, BodylessElement, BodylessContentEle
         node.environmentValues.renderCommandEncoder = renderCommandEncoder
     }
 
-    func system_workloadExit(_ node: NeoNode) throws {
+    func workloadExit(_ node: Node) throws {
         let renderCommandEncoder = try node.environmentValues.renderCommandEncoder.orThrow(.missingEnvironment(\.renderCommandEncoder))
         renderCommandEncoder.endEncoding()
         node.environmentValues.renderCommandEncoder = nil

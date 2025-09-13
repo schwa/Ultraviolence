@@ -10,7 +10,7 @@ public struct ComputePass <Content>: Element, BodylessElement, BodylessContentEl
         self.content = try content()
     }
 
-    func system_workloadEnter(_ node: NeoNode) throws {
+    func workloadEnter(_ node: Node) throws {
         logger?.verbose?.info("Start compute pass: \(label ?? "<unlabeled>") (\(node.element.internalDescription))")
         let commandBuffer = try node.environmentValues.commandBuffer.orThrow(.missingEnvironment(\.commandBuffer))
         let computeCommandEncoder = try commandBuffer._makeComputeCommandEncoder()
@@ -20,7 +20,7 @@ public struct ComputePass <Content>: Element, BodylessElement, BodylessContentEl
         node.environmentValues.computeCommandEncoder = computeCommandEncoder
     }
 
-    func system_workloadExit(_ node: NeoNode) throws {
+    func workloadExit(_ node: Node) throws {
         let computeCommandEncoder = try node.environmentValues.computeCommandEncoder.orThrow(.missingEnvironment(\.computeCommandEncoder))
         computeCommandEncoder.endEncoding()
         logger?.verbose?.info("Ending compute pass: \(label ?? "<unlabeled>") (\(node.element.internalDescription))")
@@ -40,7 +40,7 @@ public struct ComputePipeline <Content>: Element, BodylessElement, BodylessConte
         self.content = try content()
     }
 
-    func system_setupEnter(_ node: NeoNode) throws {
+    func setupEnter(_ node: Node) throws {
         let device = try node.environmentValues.device.orThrow(.missingEnvironment(\.device))
         let descriptor = MTLComputePipelineDescriptor()
         if let label {
@@ -78,7 +78,7 @@ public struct ComputeDispatch: Element, BodylessElement {
         self.threadsPerThreadgroup = threadsPerThreadgroup
     }
 
-    func system_workloadEnter(_ node: NeoNode) throws {
+    func workloadEnter(_ node: Node) throws {
         guard let computeCommandEncoder = node.environmentValues.computeCommandEncoder, let computePipelineState = node.environmentValues.computePipelineState else {
             preconditionFailure("No compute command encoder/compute pipeline state found.")
         }

@@ -5,9 +5,9 @@ public extension System {
     func processSetup() throws {
         try withIntervalSignpost(signposter, name: "System.processSetup()") {
             try process { element, node in
-                try element.system_setupEnter(node)
+                try element.setupEnter(node)
             } exit: { element, node in
-                try element.system_setupExit(node)
+                try element.setupExit(node)
             }
         }
     }
@@ -16,9 +16,9 @@ public extension System {
     func processWorkload() throws {
         try withIntervalSignpost(signposter, name: "System.processWorkload()") {
             try process { element, node in
-                try element.system_workloadEnter(node)
+                try element.workloadEnter(node)
             } exit: { element, node in
-                try element.system_workloadExit(node)
+                try element.workloadExit(node)
             }
         }
     }
@@ -26,13 +26,13 @@ public extension System {
 
 internal extension System {
     @MainActor
-    func process(enter: (any BodylessElement, NeoNode) throws -> Void, exit: (any BodylessElement, NeoNode) throws -> Void) throws {
+    func process(enter: (any BodylessElement, Node) throws -> Void, exit: (any BodylessElement, Node) throws -> Void) throws {
         try withCurrentSystem {
 
             assert(activeNodeStack.isEmpty)
             
             // Track nodes that have been entered but not yet exited
-            var nodesNeedingExit: [NeoNode] = []
+            var nodesNeedingExit: [Node] = []
 
             // Process nodes in depth-first order
             for identifier in orderedIdentifiers {
@@ -118,7 +118,7 @@ internal extension System {
     }
     
     /// Check if a node is a descendant of another node
-    private func isDescendant(_ node: NeoNode, of potentialAncestor: NeoNode) -> Bool {
+    private func isDescendant(_ node: Node, of potentialAncestor: Node) -> Bool {
         var currentId = node.parentIdentifier
         while let parentId = currentId {
             if parentId == potentialAncestor.id {
@@ -130,8 +130,8 @@ internal extension System {
     }
     
     /// Build the chain of ancestors from root to the parent of the given node
-    private func buildAncestorChain(for node: NeoNode) -> [NeoNode] {
-        var ancestors: [NeoNode] = []
+    private func buildAncestorChain(for node: Node) -> [Node] {
+        var ancestors: [Node] = []
         var currentIdentifier = node.parentIdentifier
         
         while let identifier = currentIdentifier {

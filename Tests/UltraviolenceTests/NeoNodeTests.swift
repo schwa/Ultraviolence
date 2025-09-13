@@ -3,7 +3,7 @@ import Foundation
 import Testing
 
 @MainActor
-struct NeoNodeTests {
+struct NodeTests {
     
     @Test
     func testParentIdentifierIsSet() async throws {

@@ -1,7 +1,7 @@
 internal final class StateBox<Wrapped> {
     private var _value: Wrapped
     private weak var _system: System?
-    private var dependencies: [WeakBox<NeoNode>] = []
+    private var dependencies: [WeakBox<Node>] = []
     private var hasBeenConnected = false
 
     private var system: System? {

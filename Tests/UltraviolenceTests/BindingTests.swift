@@ -33,7 +33,7 @@ struct BindingTests {
             fatalError()
         }
         
-        func system_workloadEnter(_ node: NeoNode) throws {
+        func workloadEnter(_ node: Node) throws {
             TestMonitor.shared.values["value"] = value
         }
     }
@@ -204,7 +204,7 @@ struct BindingTests {
             fatalError()
         }
         
-        func system_workloadEnter(_ node: NeoNode) throws {
+        func workloadEnter(_ node: Node) throws {
             TestMonitor.shared.values["sum"] = sum
         }
     }

@@ -7,7 +7,7 @@ internal struct EnvironmentWritingModifier<Content: Element>: Element, BodylessE
         try visit(content)
     }
 
-    func system_configureNodeBodyless(_ node: NeoNode) throws {
+    func configureNodeBodyless(_ node: Node) throws {
         modify(&node.environmentValues)
     }
 }

@@ -80,7 +80,7 @@ struct StateTests {
             fatalError()
         }
         
-        func system_workloadEnter(_ node: NeoNode) throws {
+        func workloadEnter(_ node: Node) throws {
             TestMonitor.shared.values[name] = value
         }
     }
@@ -165,7 +165,7 @@ struct StateTests {
             fatalError()
         }
         
-        func system_workloadEnter(_ node: NeoNode) throws {
+        func workloadEnter(_ node: Node) throws {
             TestMonitor.shared.values["combined"] = combinedValue
         }
     }

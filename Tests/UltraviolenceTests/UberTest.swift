@@ -52,19 +52,19 @@ struct UberTest {
             fatalError()
         }
         
-        func system_setupEnter(_ node: NeoNode) throws {
+        func setupEnter(_ node: Node) throws {
             TestMonitor.shared.record(phase: "setupEnter", element: name, counter: counter, env: envValue)
         }
         
-        func system_setupExit(_ node: NeoNode) {
+        func setupExit(_ node: Node) {
             TestMonitor.shared.record(phase: "setupExit", element: name, counter: counter, env: envValue)
         }
         
-        func system_workloadEnter(_ node: NeoNode) throws {
+        func workloadEnter(_ node: Node) throws {
             TestMonitor.shared.record(phase: "workloadEnter", element: name, counter: counter, env: envValue)
         }
         
-        func system_workloadExit(_ node: NeoNode) {
+        func workloadExit(_ node: Node) {
             TestMonitor.shared.record(phase: "workloadExit", element: name, counter: counter, env: envValue)
         }
     }
@@ -176,11 +176,11 @@ struct UberTest {
                 fatalError()
             }
             
-            func system_setupEnter(_ node: NeoNode) throws {
+            func setupEnter(_ node: Node) throws {
                 onSetup()
             }
             
-            func system_workloadEnter(_ node: NeoNode) throws {
+            func workloadEnter(_ node: Node) throws {
                 onWorkload()
             }
         }
@@ -230,7 +230,7 @@ struct UberTest {
                 fatalError()
             }
             
-            func system_setupEnter(_ node: NeoNode) throws {
+            func setupEnter(_ node: Node) throws {
                 TestMonitor.shared.logUpdate("\(name): \(envValue)")
             }
         }
@@ -293,11 +293,11 @@ struct UberTest {
                 fatalError()
             }
             
-            func system_setupEnter(_ node: NeoNode) throws {
+            func setupEnter(_ node: Node) throws {
                 TestMonitor.shared.record(phase: "setupEnter", element: name)
             }
             
-            func system_setupExit(_ node: NeoNode) {
+            func setupExit(_ node: Node) {
                 TestMonitor.shared.record(phase: "setupExit", element: name)
             }
         }

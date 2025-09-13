@@ -34,7 +34,7 @@ struct ObservableObjectTests {
             fatalError()
         }
         
-        func system_workloadEnter(_ node: NeoNode) throws {
+        func workloadEnter(_ node: Node) throws {
             TestMonitor.shared.values["counter"] = value
         }
     }
@@ -96,7 +96,7 @@ struct ObservableObjectTests {
             fatalError()
         }
         
-        func system_workloadEnter(_ node: NeoNode) throws {
+        func workloadEnter(_ node: Node) throws {
             TestMonitor.shared.values["text"] = text
         }
     }
@@ -109,7 +109,7 @@ struct ObservableObjectTests {
             fatalError()
         }
         
-        func system_workloadEnter(_ node: NeoNode) throws {
+        func workloadEnter(_ node: Node) throws {
             TestMonitor.shared.values["flag"] = flag
         }
     }

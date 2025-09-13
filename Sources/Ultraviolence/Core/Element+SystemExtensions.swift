@@ -1,6 +1,6 @@
 internal extension Element {
     // TODO: RENAME THIS
-    func system_configureNode(_ node: NeoNode) throws {
+    func configureNode(_ node: Node) throws {
         guard let system = System.current else {
             preconditionFailure("No System is currently active.")
         }
@@ -9,18 +9,18 @@ internal extension Element {
         // Get the parent node (second to last in stack, since current node is already pushed)
         let parent = system.activeNodeStack.count >= 2 ? system.activeNodeStack[system.activeNodeStack.count - 2] : nil
 
-        system_applyInheritedEnvironment(from: parent, to: node)
+        applyInheritedEnvironment(from: parent, to: node)
 
-        system_observeObjects(node)
-        system_restoreStateProperties(node)
+        observeObjects(node)
+        restoreStateProperties(node)
 
         if let bodylessElement = self as? any BodylessElement {
-            try bodylessElement.system_configureNodeBodyless(node)
+            try bodylessElement.configureNodeBodyless(node)
         }
-        system_storeStateProperties(node)
+        storeStateProperties(node)
     }
 
-    private func system_applyInheritedEnvironment(from parent: NeoNode?, to node: NeoNode) {
+    private func applyInheritedEnvironment(from parent: Node?, to node: Node) {
         // Always create a fresh environment for the node to avoid cycles
         // This ensures each node has its own storage that can safely inherit from parent
         if let parentEnvironmentValues = parent?.environmentValues {
@@ -37,7 +37,7 @@ internal extension Element {
         }
     }
 
-    private func system_observeObjects(_ node: NeoNode) {
+    private func observeObjects(_ node: Node) {
         let mirror = Mirror(reflecting: self)
         for child in mirror.children {
             guard let observedObject = child.value as? AnyObservedObject else {
@@ -47,7 +47,7 @@ internal extension Element {
         }
     }
 
-    private func system_restoreStateProperties(_ node: NeoNode) {
+    private func restoreStateProperties(_ node: Node) {
         let mirror = Mirror(reflecting: self)
         for (label, value) in mirror.children {
             guard let prop = value as? StateProperty else { continue }
@@ -59,7 +59,7 @@ internal extension Element {
         }
     }
 
-    private func system_storeStateProperties(_ node: NeoNode) {
+    private func storeStateProperties(_ node: Node) {
         let m = Mirror(reflecting: self)
         for (label, value) in m.children {
             guard let prop = value as? StateProperty else { continue }

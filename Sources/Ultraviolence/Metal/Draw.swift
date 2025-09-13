@@ -10,7 +10,7 @@ public struct Draw: Element, BodylessElement {
         self.encodeGeometry = encodeGeometry
     }
 
-    func system_workloadEnter(_ node: NeoNode) throws {
+    func workloadEnter(_ node: Node) throws {
         let renderCommandEncoder = try node.environmentValues.renderCommandEncoder.orThrow(.missingEnvironment(\.renderCommandEncoder))
         try encodeGeometry(renderCommandEncoder)
     }

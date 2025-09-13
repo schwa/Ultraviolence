@@ -187,14 +187,14 @@ Closures are essential for the declarative API design, lazy evaluation, and capt
 The framework has an architectural inconsistency in how environment values are accessed during the process phase:
 
 #### The Problem
-- `system_workloadEnter/Exit` and `system_setupEnter/Exit` methods receive a `node` parameter directly
+- `workloadEnter/Exit` and `setupEnter/Exit` methods receive a `node` parameter directly
 - However, `@UVEnvironment` property wrappers cannot access this parameter
 - Instead, they rely on a global `activeNodeStack` maintained by the System
 
 #### Code Example
 ```swift
 // In process phase - node is passed explicitly
-func system_workloadEnter(_ node: NeoNode) throws {
+func workloadEnter(_ node: Node) throws {
     // But @UVEnvironment properties inside here use global state:
     // They access System.current?.activeNodeStack.last
     // Not the node parameter passed to this function

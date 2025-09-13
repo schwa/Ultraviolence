@@ -1,37 +1,37 @@
 internal struct AnyBodylessElement: Element, BodylessElement {
-    fileprivate var _setupEnter: ((NeoNode) throws -> Void)?
-    fileprivate var _setupExit: ((NeoNode) throws -> Void)?
-    fileprivate var _workloadEnter: ((NeoNode) throws -> Void)?
-    fileprivate var _workloadExit: ((NeoNode) throws -> Void)?
+    fileprivate var _setupEnter: ((Node) throws -> Void)?
+    fileprivate var _setupExit: ((Node) throws -> Void)?
+    fileprivate var _workloadEnter: ((Node) throws -> Void)?
+    fileprivate var _workloadExit: ((Node) throws -> Void)?
 
     init() {
         // This line intentionally left blank
     }
 
-    func system_configureNodeBodyless(_ node: NeoNode) throws {
+    func configureNodeBodyless(_ node: Node) throws {
         // This line intentionally left blank
     }
     
-    func system_setupEnter(_ node: NeoNode) throws {
+    func setupEnter(_ node: Node) throws {
         try _setupEnter?(node)
     }
     
-    func system_setupExit(_ node: NeoNode) throws {
+    func setupExit(_ node: Node) throws {
         try _setupExit?(node)
     }
     
-    func system_workloadEnter(_ node: NeoNode) throws {
+    func workloadEnter(_ node: Node) throws {
         try _workloadEnter?(node)
     }
     
-    func system_workloadExit(_ node: NeoNode) throws {
+    func workloadExit(_ node: Node) throws {
         try _workloadExit?(node)
     }
 }
 
 // TODO: I am not sure why these are here exactly?
 internal extension AnyBodylessElement {
-    func onSetupEnter(_ action: @escaping (NeoNode) throws -> Void) -> AnyBodylessElement {
+    func onSetupEnter(_ action: @escaping (Node) throws -> Void) -> AnyBodylessElement {
         var modifier = self
         modifier._setupEnter = action
         return modifier
@@ -43,7 +43,7 @@ internal extension AnyBodylessElement {
         return modifier
     }
     
-    func onSetupExit(_ action: @escaping (NeoNode) throws -> Void) -> AnyBodylessElement { // periphery:ignore
+    func onSetupExit(_ action: @escaping (Node) throws -> Void) -> AnyBodylessElement { // periphery:ignore
         var modifier = self
         modifier._setupExit = action
         return modifier
@@ -55,7 +55,7 @@ internal extension AnyBodylessElement {
         return modifier
     }
     
-    func onWorkloadEnter(_ action: @escaping (NeoNode) throws -> Void) -> AnyBodylessElement {
+    func onWorkloadEnter(_ action: @escaping (Node) throws -> Void) -> AnyBodylessElement {
         var modifier = self
         modifier._workloadEnter = action
         return modifier
@@ -67,7 +67,7 @@ internal extension AnyBodylessElement {
         return modifier
     }
     
-    func onWorkloadExit(_ action: @escaping (NeoNode) throws -> Void) -> AnyBodylessElement { // periphery:ignore
+    func onWorkloadExit(_ action: @escaping (Node) throws -> Void) -> AnyBodylessElement { // periphery:ignore
         var modifier = self
         modifier._workloadExit = action
         return modifier

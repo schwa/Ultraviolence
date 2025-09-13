@@ -10,19 +10,19 @@ struct SystemProcessTests {
             fatalError()
         }
         
-        func system_setupEnter(_ node: NeoNode) throws {
+        func setupEnter(_ node: Node) throws {
             TestMonitor.shared.logUpdate("setupEnter")
         }
         
-        func system_setupExit(_ node: NeoNode) {
+        func setupExit(_ node: Node) {
             TestMonitor.shared.logUpdate("setupExit")
         }
         
-        func system_workloadEnter(_ node: NeoNode) throws {
+        func workloadEnter(_ node: Node) throws {
             TestMonitor.shared.logUpdate("workloadEnter")
         }
         
-        func system_workloadExit(_ node: NeoNode) {
+        func workloadExit(_ node: Node) {
             TestMonitor.shared.logUpdate("workloadExit")
         }
     }
@@ -48,19 +48,19 @@ struct SystemProcessTests {
             fatalError()
         }
         
-        func system_setupEnter(_ node: NeoNode) throws {
+        func setupEnter(_ node: Node) throws {
             TestMonitor.shared.logUpdate("\(name)-setupEnter")
         }
         
-        func system_setupExit(_ node: NeoNode) {
+        func setupExit(_ node: Node) {
             TestMonitor.shared.logUpdate("\(name)-setupExit")
         }
         
-        func system_workloadEnter(_ node: NeoNode) throws {
+        func workloadEnter(_ node: Node) throws {
             TestMonitor.shared.logUpdate("\(name)-workloadEnter")
         }
         
-        func system_workloadExit(_ node: NeoNode) {
+        func workloadExit(_ node: Node) {
             TestMonitor.shared.logUpdate("\(name)-workloadExit")
         }
     }

@@ -2,11 +2,11 @@
 internal protocol BodylessElement {
     func visitChildrenBodyless(_ visit: (any Element) throws -> Void) throws
 
-    func system_configureNodeBodyless(_ node: NeoNode) throws
-    func system_setupEnter(_ node: NeoNode) throws
-    func system_setupExit(_ node: NeoNode) throws
-    func system_workloadEnter(_ node: NeoNode) throws
-    func system_workloadExit(_ node: NeoNode) throws
+    func configureNodeBodyless(_ node: Node) throws
+    func setupEnter(_ node: Node) throws
+    func setupExit(_ node: Node) throws
+    func workloadEnter(_ node: Node) throws
+    func workloadExit(_ node: Node) throws
 }
 
 extension BodylessElement {
@@ -14,20 +14,20 @@ extension BodylessElement {
         // This line intentionally left blank.
     }
 
-    func system_configureNodeBodyless(_ node: NeoNode) throws {
+    func configureNodeBodyless(_ node: Node) throws {
         // This line intentionally left blank.
     }
     
-    func system_setupEnter(_ node: NeoNode) throws {
+    func setupEnter(_ node: Node) throws {
         // This line intentionally left blank.
     }
-    func system_setupExit(_ node: NeoNode) throws {
+    func setupExit(_ node: Node) throws {
         // This line intentionally left blank.
     }
-    func system_workloadEnter(_ node: NeoNode) throws {
+    func workloadEnter(_ node: Node) throws {
         // This line intentionally left blank.
     }
-    func system_workloadExit(_ node: NeoNode) throws {
+    func workloadExit(_ node: Node) throws {
         // This line intentionally left blank.
     }
 }

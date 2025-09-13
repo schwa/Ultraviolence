@@ -298,7 +298,7 @@ Most code will continue working unchanged:
   - Currently System maintains an activeNodeStack for tracking current node during traversal
   - This could be eliminated by passing StructuralIdentifier directly to process methods
   - Would simplify System implementation and make data flow more explicit
-  - Requires updating system_setupEnter/Exit and system_workloadEnter/Exit signatures
+  - Requires updating setupEnter/Exit and workloadEnter/Exit signatures
 - Future: Dependency-Based Setup
 
   - SwiftUI doesn't have an explicit "setup" phase. We could adopt this approach:

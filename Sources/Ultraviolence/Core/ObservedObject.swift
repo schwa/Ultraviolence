@@ -2,7 +2,7 @@ import Combine
 
 internal protocol AnyObservedObject {
     @MainActor
-    func addDependency(_ node: NeoNode)
+    func addDependency(_ node: Node)
 }
 
 // MARK: -
@@ -32,7 +32,7 @@ extension UVObservedObject: Equatable {
 }
 
 extension UVObservedObject: AnyObservedObject {
-    internal func addDependency(_ node: NeoNode) {
+    internal func addDependency(_ node: Node) {
         _object.addDependency(node)
     }
 }
@@ -43,14 +43,14 @@ extension UVObservedObject: AnyObservedObject {
 private final class ObservedObjectBox<Wrapped: ObservableObject> {
     let wrappedValue: Wrapped
     var cancellable: AnyCancellable?
-    weak var node: NeoNode?
+    weak var node: Node?
 
     init(_ wrappedValue: Wrapped) {
         self.wrappedValue = wrappedValue
     }
 
     @MainActor
-    func addDependency(_ node: NeoNode) {
+    func addDependency(_ node: Node) {
         guard node !== self.node else {
             return
         }
