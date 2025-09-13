@@ -8,17 +8,21 @@ struct ContentView: View {
         DemoPickerView(demos: [
             GaussianSplatDemoView.self,
             BlinnPhongDemoView.self,
-            GameOfLifeDemoView.self,
             GridShaderDemoView.self,
             SkyboxDemoView.self,
-            MixedDemoView.self,
             TriangleDemoView.self,
             OffscreenDemoView.self,
             ComputeDemoView.self,
+
+            // "Complex" Demos
+            MetalFXDemoView.self,
+            MixedDemoView.self,
             BouncingTeapotsDemoView.self,
             StencilDemoView.self,
             LUTDemoView.self,
-            MetalFXDemoView.self,
+
+            // TODO: SYSTEM - these crash
+            // GameOfLifeDemoView.self,
         ])
     }
 
