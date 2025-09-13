@@ -2,6 +2,7 @@
 excluded:
   - "**/.build"
   - "**/Package.swift"
+  - "temp"
 force_cast: warning
 force_try: warning
 shorthand_operator: warning
