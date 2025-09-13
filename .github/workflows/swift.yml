@@ -3,7 +3,8 @@
 
 name: Swift
 env:
-    XCODE_VERSION: "latest-stable"
+#    XCODE_VERSION: "latest-stable"
+    XCODE_VERSION: "16.4"
 on:
   push:
   pull_request:
