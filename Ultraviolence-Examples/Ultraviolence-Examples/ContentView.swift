@@ -18,9 +18,9 @@ struct ContentView: View {
             MixedDemoView.self,
             BouncingTeapotsDemoView.self,
             StencilDemoView.self,
-            LUTDemoView.self
+            LUTDemoView.self,
 
-            // GameOfLifeDemoView.self, // crashes
+            GameOfLifeDemoView.self,
         ])
     }
 }
