@@ -133,6 +133,7 @@ struct NodeRowView: View {
             .onTapGesture {
                 selectedNodeID = node.identifier
             }
+            .accessibilityAddTraits(.isButton)
         }
         .tag(node.identifier)
     }

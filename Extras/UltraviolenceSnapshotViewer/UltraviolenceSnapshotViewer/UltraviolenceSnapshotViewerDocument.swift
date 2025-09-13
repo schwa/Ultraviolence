@@ -10,7 +10,11 @@ nonisolated struct UltraviolenceSnapshotViewerDocument: FileDocument {
     static let emptySnapshot: SystemSnapshot = {
         let root = EmptyElement()
         let system = System()
-        try! system.update(root: root)
+        do {
+            try system.update(root: root)
+        } catch {
+            fatalError("Failed to update system with root: \(error)")
+        }
         return system.snapshot()
     }()
 
@@ -27,7 +31,11 @@ nonisolated struct UltraviolenceSnapshotViewerDocument: FileDocument {
 
         let root = DemoElement()
         let system = System()
-        try! system.update(root: DemoElement())
+        do {
+            try system.update(root: DemoElement())
+        } catch {
+            fatalError("Failed to update system with DemoElement: \(error)")
+        }
         return system.snapshot()
     }()
 

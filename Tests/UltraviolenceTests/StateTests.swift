@@ -148,10 +148,10 @@ struct StateTests {
         var body: some Element {
             PropagationLeaf(
                 combinedValue: parentValue + ownValue
-            )                {
-                    onIncrement()
-                    ownValue += 1
-                }
+            ) {
+                onIncrement()
+                ownValue += 1
+            }
         }
     }
 
