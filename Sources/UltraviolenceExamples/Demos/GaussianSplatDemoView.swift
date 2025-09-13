@@ -1,10 +1,10 @@
 #if os(iOS) || (os(macOS) && !arch(x86_64))
+import DemoKit
 internal import os
 import SwiftUI
 import UltraviolenceGaussianSplats
 import UltraviolenceGaussianSplatShaders
 import UltraviolenceSupport
-import DemoKit
 
 public struct GaussianSplatDemoView: View {
     @State

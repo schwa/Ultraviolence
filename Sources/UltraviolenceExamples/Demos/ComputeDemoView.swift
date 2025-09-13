@@ -1,7 +1,7 @@
+import DemoKit
 import SwiftUI
 import Ultraviolence
 import UltraviolenceSupport
-import DemoKit
 
 public struct ComputeDemoView: View {
     @State

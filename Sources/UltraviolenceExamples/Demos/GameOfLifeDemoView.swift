@@ -1,6 +1,6 @@
+import DemoKit
 import SwiftUI
 import UltraviolenceUI
-import DemoKit
 
 public struct GameOfLifeDemoView: View {
     @State private var isRunning = true

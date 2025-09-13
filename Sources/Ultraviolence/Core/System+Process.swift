@@ -28,9 +28,8 @@ internal extension System {
     @MainActor
     func process(enter: (any BodylessElement, Node) throws -> Void, exit: (any BodylessElement, Node) throws -> Void) throws {
         try withCurrentSystem {
-
             assert(activeNodeStack.isEmpty)
-            
+
             // Track nodes that have been entered but not yet exited
             var nodesNeedingExit: [Node] = []
 
@@ -49,26 +48,25 @@ internal extension System {
                         if isDescendant(node, of: lastNode) {
                             // Current node is a child, keep parent's encoder open
                             break
-                        } else {
-                            // Current node is a sibling or in different branch, close the encoder
-                            let nodeToExit = nodesNeedingExit.removeLast()
-                            if let exitElement = nodeToExit.element as? any BodylessElement {
-                                let ancestors = buildAncestorChain(for: nodeToExit)
-                                for ancestor in ancestors {
-                                    activeNodeStack.append(ancestor)
-                                }
-                                activeNodeStack.append(nodeToExit)
-                                
-                                try exit(exitElement, nodeToExit)
-                                
-                                activeNodeStack.removeLast(ancestors.count + 1)
+                        }
+                        // Current node is a sibling or in different branch, close the encoder
+                        let nodeToExit = nodesNeedingExit.removeLast()
+                        if let exitElement = nodeToExit.element as? any BodylessElement {
+                            let ancestors = buildAncestorChain(for: nodeToExit)
+                            for ancestor in ancestors {
+                                activeNodeStack.append(ancestor)
                             }
+                            activeNodeStack.append(nodeToExit)
+
+                            try exit(exitElement, nodeToExit)
+
+                            activeNodeStack.removeLast(ancestors.count + 1)
                         }
                     }
-                    
+
                     // Build the ancestor chain for proper environment inheritance
                     let ancestors = buildAncestorChain(for: node)
-                    
+
                     // Rebuild environment parent chain in case it was broken by COW
                     if !ancestors.isEmpty {
                         if node.environmentValues.storage.parent == nil {
@@ -80,23 +78,23 @@ internal extension System {
                             }
                         }
                     }
-                    
+
                     // Push all ancestors onto the stack to maintain parent-child hierarchy
                     for ancestor in ancestors {
                         activeNodeStack.append(ancestor)
                     }
-                    
+
                     // Push current node
                     activeNodeStack.append(node)
-                    
+
                     try enter(bodylessElement, node)
-                    
+
                     // Remove from stack but track that this node needs exit
                     activeNodeStack.removeLast(ancestors.count + 1)
                     nodesNeedingExit.append(node)
                 }
             }
-            
+
             // Exit any remaining nodes in reverse order
             while !nodesNeedingExit.isEmpty {
                 let node = nodesNeedingExit.removeLast()
@@ -106,9 +104,9 @@ internal extension System {
                         activeNodeStack.append(ancestor)
                     }
                     activeNodeStack.append(node)
-                    
+
                     try exit(bodylessElement, node)
-                    
+
                     activeNodeStack.removeLast(ancestors.count + 1)
                 }
             }
@@ -116,7 +114,7 @@ internal extension System {
             assert(activeNodeStack.isEmpty)
         }
     }
-    
+
     /// Check if a node is a descendant of another node
     private func isDescendant(_ node: Node, of potentialAncestor: Node) -> Bool {
         var currentId = node.parentIdentifier
@@ -128,12 +126,12 @@ internal extension System {
         }
         return false
     }
-    
+
     /// Build the chain of ancestors from root to the parent of the given node
     private func buildAncestorChain(for node: Node) -> [Node] {
         var ancestors: [Node] = []
         var currentIdentifier = node.parentIdentifier
-        
+
         while let identifier = currentIdentifier {
             guard let parentNode = nodes[identifier] else {
                 break
@@ -142,7 +140,7 @@ internal extension System {
             ancestors.insert(parentNode, at: 0)
             currentIdentifier = parentNode.parentIdentifier
         }
-        
+
         return ancestors
     }
 }

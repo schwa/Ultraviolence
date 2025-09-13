@@ -13,4 +13,3 @@ struct ContentView: View {
 #Preview {
     ContentView(document: .constant(UltraviolenceSnapshotViewerDocument()))
 }
-

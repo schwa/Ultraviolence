@@ -7,11 +7,11 @@ public struct SnapshotDebugView: View {
     @State private var selectedNodeID: String?
     @State private var showEnvironment = false
     @State private var searchText = ""
-    
+
     public init(snapshot: SystemSnapshot) {
         self.snapshot = snapshot
     }
-    
+
     public var body: some View {
         NavigationSplitView {
             NodeTreeView(

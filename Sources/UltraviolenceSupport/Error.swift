@@ -46,4 +46,3 @@ public func _throw(_ error: some Error) throws -> Never {
         throw error
     }
 }
-

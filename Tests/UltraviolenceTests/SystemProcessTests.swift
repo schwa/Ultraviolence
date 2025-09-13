@@ -1,83 +1,82 @@
 import Foundation
-@testable import Ultraviolence
 import Testing
+@testable import Ultraviolence
 
 @MainActor
 struct SystemProcessTests {
-
     struct CallOrderTracker: Element, BodylessElement {
         var body: Never {
             fatalError()
         }
-        
+
         func setupEnter(_ node: Node) throws {
             TestMonitor.shared.logUpdate("setupEnter")
         }
-        
+
         func setupExit(_ node: Node) {
             TestMonitor.shared.logUpdate("setupExit")
         }
-        
+
         func workloadEnter(_ node: Node) throws {
             TestMonitor.shared.logUpdate("workloadEnter")
         }
-        
+
         func workloadExit(_ node: Node) {
             TestMonitor.shared.logUpdate("workloadExit")
         }
     }
 
     @Test
-    func testSetupWorkloadOrder() async throws {
+    func testSetupWorkloadOrder() throws {
         TestMonitor.shared.reset()
-        
+
         let element = CallOrderTracker()
         let system = System()
-        
+
         try system.update(root: element)
         try system.processSetup()
         try system.processWorkload()
-        
+
         #expect(TestMonitor.shared.updates == ["setupEnter", "setupExit", "workloadEnter", "workloadExit"])
     }
-    
+
     struct TrackedBodyless: Element, BodylessElement {
         let name: String
-        
+
         var body: Never {
             fatalError()
         }
-        
+
         func setupEnter(_ node: Node) throws {
             TestMonitor.shared.logUpdate("\(name)-setupEnter")
         }
-        
+
         func setupExit(_ node: Node) {
             TestMonitor.shared.logUpdate("\(name)-setupExit")
         }
-        
+
         func workloadEnter(_ node: Node) throws {
             TestMonitor.shared.logUpdate("\(name)-workloadEnter")
         }
-        
+
         func workloadExit(_ node: Node) {
             TestMonitor.shared.logUpdate("\(name)-workloadExit")
         }
     }
-    
+
     struct DeepHierarchy: Element {
         var body: some Element {
             TrackedBodyless(name: "parent")
             Child1()
         }
-        
+
         struct Child1: Element {
             var body: some Element {
                 TrackedBodyless(name: "child1")
                 Child2()
             }
         }
-        
+
         struct Child2: Element {
             var body: some Element {
                 TrackedBodyless(name: "child2-a")
@@ -85,25 +84,25 @@ struct SystemProcessTests {
                 Child3()
             }
         }
-        
+
         struct Child3: Element {
             var body: some Element {
                 TrackedBodyless(name: "child3")
             }
         }
     }
-    
+
     @Test
-    func testDeepHierarchyOrder() async throws {
+    func testDeepHierarchyOrder() throws {
         TestMonitor.shared.reset()
-        
+
         let element = DeepHierarchy()
         let system = System()
-        
+
         try system.update(root: element)
         try system.processSetup()
         try system.processWorkload()
-        
+
         // Expected order explanation:
         // The new processing model ensures siblings complete (enter+exit) before moving to the next sibling.
         //
@@ -144,7 +143,7 @@ struct SystemProcessTests {
             "child3-workloadEnter",
             "child3-workloadExit"
         ]
-        
+
         #expect(TestMonitor.shared.updates == expectedSetupOrder)
     }
 }

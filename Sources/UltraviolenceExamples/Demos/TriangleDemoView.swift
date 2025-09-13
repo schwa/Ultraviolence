@@ -1,9 +1,9 @@
+import DemoKit
 import MetalKit
 import simd
 import SwiftUI
 import Ultraviolence
 import UltraviolenceUI
-import DemoKit
 
 public struct TriangleDemoView: View {
     let source = """

@@ -13,7 +13,7 @@ func testVideoRenderer() async throws {
         frameRate: 30.0,
         outputURL: outputURL
     )
-    
+
     let source = """
     #include <metal_stdlib>
     using namespace metal;

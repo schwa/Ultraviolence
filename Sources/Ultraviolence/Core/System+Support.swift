@@ -7,7 +7,6 @@ internal extension System {
         return try closure()
     }
 
-
     func identifier(at indices: [Int]) -> StructuralIdentifier? {
         guard !indices.isEmpty else { return nil }
         // TODO: This seems overly complex, can we simplify?

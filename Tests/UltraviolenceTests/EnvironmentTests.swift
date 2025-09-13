@@ -29,7 +29,6 @@ struct EnvironmentTests {
 
         let element = system.element(at: [0, 0, 0, 0], type: Example2.self)
 
-
         #expect(element!.value == "Hello world")
     }
 

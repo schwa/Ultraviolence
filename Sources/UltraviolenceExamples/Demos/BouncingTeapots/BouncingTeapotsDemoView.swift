@@ -1,10 +1,10 @@
+import DemoKit
 import MetalKit
 import simd
 import SwiftUI
 import Ultraviolence
 import UltraviolenceSupport
 import UltraviolenceUI
-import DemoKit
 
 public struct BouncingTeapotsDemoView: View {
     @State

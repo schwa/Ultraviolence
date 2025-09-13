@@ -6,46 +6,46 @@ struct NodeDetailView: View {
     let node: NodeSnapshot
     let snapshot: SystemSnapshot
     let showEnvironment: Bool
-    
+
     private var parent: NodeSnapshot? {
         guard let parentID = node.parentIdentifier else { return nil }
         return snapshot.nodes.first { $0.identifier == parentID }
     }
-    
+
     private var children: [NodeSnapshot] {
         snapshot.nodes.filter { $0.parentIdentifier == node.identifier }
     }
-    
+
     private var isDirty: Bool {
         snapshot.dirtyIdentifiers.contains(node.identifier)
     }
-    
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 // Header
                 headerSection
-                
+
                 Divider()
-                
+
                 // Identifier
                 identifierSection
-                
+
                 // Relationships
                 if parent != nil || !children.isEmpty {
                     relationshipsSection
                 }
-                
+
                 // State Properties
                 if !node.stateProperties.isEmpty {
                     stateSection
                 }
-                
+
                 // Environment
-                if showEnvironment && (!node.environmentValues.values.isEmpty || node.environmentValues.hasParent) {
+                if showEnvironment, !node.environmentValues.values.isEmpty || node.environmentValues.hasParent {
                     environmentSection
                 }
-                
+
                 // Raw element description
                 rawDescriptionSection
             }
@@ -54,30 +54,30 @@ struct NodeDetailView: View {
         }
         .navigationTitle(simplifiedTypeName)
     }
-    
+
     @ViewBuilder
     private var headerSection: some View {
         HStack {
             Image(systemName: "cube.fill")
                 .font(.largeTitle)
                 .foregroundStyle(isDirty ? .red : .blue)
-            
+
             VStack(alignment: .leading, spacing: 4) {
                 Text(simplifiedTypeName)
                     .font(.title2)
                     .fontWeight(.semibold)
-                
+
                 if isDirty {
                     Label("Dirty", systemImage: "exclamationmark.triangle.fill")
                         .font(.caption)
                         .foregroundStyle(.red)
                 }
             }
-            
+
             Spacer()
         }
     }
-    
+
     @ViewBuilder
     private var identifierSection: some View {
         GroupBox("Identifier") {
@@ -87,12 +87,12 @@ struct NodeDetailView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
-    
+
     @ViewBuilder
     private var relationshipsSection: some View {
         GroupBox("Relationships") {
             VStack(alignment: .leading, spacing: 8) {
-                if let parent = parent {
+                if let parent {
                     Label {
                         Text(simplifiedTypeName(for: parent.elementType))
                             .font(.system(.body, design: .monospaced))
@@ -101,7 +101,7 @@ struct NodeDetailView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
-                
+
                 if !children.isEmpty {
                     Label {
                         VStack(alignment: .leading, spacing: 4) {
@@ -119,7 +119,7 @@ struct NodeDetailView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
-    
+
     @ViewBuilder
     private var stateSection: some View {
         GroupBox("State Properties") {
@@ -130,9 +130,9 @@ struct NodeDetailView: View {
                             Label(prop.key, systemImage: "square.and.pencil")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
-                            
+
                             Spacer()
-                            
+
                             Text(prop.type)
                                 .font(.caption2)
                                 .padding(.horizontal, 6)
@@ -140,14 +140,14 @@ struct NodeDetailView: View {
                                 .background(Color.blue.opacity(0.1))
                                 .clipShape(RoundedRectangle(cornerRadius: 4))
                         }
-                        
+
                         Text(prop.value)
                             .font(.system(.body, design: .monospaced))
                             .textSelection(.enabled)
                             .padding(8)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .clipShape(RoundedRectangle(cornerRadius: 4))
-                        
+
                         if !prop.dependencies.isEmpty {
                             Label {
                                 Text(prop.dependencies.joined(separator: ", "))
@@ -164,7 +164,7 @@ struct NodeDetailView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
-    
+
     @ViewBuilder
     private var environmentSection: some View {
         GroupBox("Environment") {
@@ -174,15 +174,15 @@ struct NodeDetailView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
-                
+
                 if !node.environmentValues.values.isEmpty {
-                    ForEach(Array(node.environmentValues.values.sorted(by: { $0.key < $1.key })), id: \.key) { key, value in
+                    ForEach(Array(node.environmentValues.values.sorted { $0.key < $1.key }), id: \.key) { key, value in
                         HStack(alignment: .top) {
                             Text(key)
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                                 .frame(width: 150, alignment: .trailing)
-                            
+
                             Text(value)
                                 .font(.system(.caption, design: .monospaced))
                                 .textSelection(.enabled)
@@ -198,7 +198,7 @@ struct NodeDetailView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
-    
+
     @ViewBuilder
     private var rawDescriptionSection: some View {
         GroupBox("Element Description") {
@@ -208,20 +208,20 @@ struct NodeDetailView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
-    
+
     private var simplifiedTypeName: String {
         simplifiedTypeName(for: node.elementType)
     }
-    
+
     private func simplifiedTypeName(for type: String) -> String {
         if type.contains("TupleElement<") {
             return "Tuple"
         }
-        
+
         if let lastDot = type.lastIndex(of: ".") {
             return String(type[type.index(after: lastDot)...])
         }
-        
+
         return type
     }
 }

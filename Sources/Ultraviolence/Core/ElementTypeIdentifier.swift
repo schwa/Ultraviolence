@@ -8,6 +8,6 @@ public struct ElementTypeIdentifier: Hashable {
 
 extension ElementTypeIdentifier: CustomDebugStringConvertible {
     public var debugDescription: String {
-        return "t#\(id.shortId)"
+        "t#\(id.shortId)"
     }
 }

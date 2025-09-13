@@ -778,15 +778,15 @@ public extension MTLCommandQueue {
 
 public extension MTLCommandBuffer {
     func _makeBlitCommandEncoder() throws -> MTLBlitCommandEncoder {
-        return try makeBlitCommandEncoder().orThrow(.resourceCreationFailure("Could not create blit command encoder."))
+        try makeBlitCommandEncoder().orThrow(.resourceCreationFailure("Could not create blit command encoder."))
     }
 
     func _makeComputeCommandEncoder() throws -> MTLComputeCommandEncoder {
-        return try makeComputeCommandEncoder().orThrow(.resourceCreationFailure("Could not create compute command encoder."))
+        try makeComputeCommandEncoder().orThrow(.resourceCreationFailure("Could not create compute command encoder."))
     }
 
     func _makeRenderCommandEncoder(descriptor: MTLRenderPassDescriptor) throws -> MTLRenderCommandEncoder {
-        return try makeRenderCommandEncoder(descriptor: descriptor).orThrow(.resourceCreationFailure("Could not create render command encoder."))
+        try makeRenderCommandEncoder(descriptor: descriptor).orThrow(.resourceCreationFailure("Could not create render command encoder."))
     }
 }
 

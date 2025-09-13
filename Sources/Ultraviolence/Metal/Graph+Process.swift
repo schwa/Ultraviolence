@@ -1,8 +1,8 @@
-//import CoreGraphics
-//import Metal
-//import UltraviolenceSupport
+// import CoreGraphics
+// import Metal
+// import UltraviolenceSupport
 //
-//public extension NodeGraph {
+// public extension NodeGraph {
 //    @MainActor
 //    func processSetup() throws {
 //        try withIntervalSignpost(signposter, name: "NodeGraph.processSetup()") {
@@ -24,9 +24,9 @@
 //            }
 //        }
 //    }
-//}
+// }
 //
-//internal extension NodeGraph {
+// internal extension NodeGraph {
 //    @MainActor
 //    func process(enter: (any BodylessElement, Node) throws -> Void, exit: (any BodylessElement, Node) throws -> Void) throws {
 //        try visit { node in
@@ -40,4 +40,4 @@
 //            }
 //        }
 //    }
-//}
+// }

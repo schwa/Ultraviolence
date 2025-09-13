@@ -132,21 +132,21 @@ struct ParametersTests {
                     .parameter("testParam", functionType: .vertex, value: Float(1.0))
             }
         }
-        
+
         let element = TestElement()
         let system = System()
-        
+
         // Update the system with our element
         try system.update(root: element)
-        
+
         // Process setup - parameters should be collected
         try system.processSetup()
-        
+
         // The parameter modifier should be in the element tree
         // We can verify that the parameter was properly created
         let modifiedElement = element.body
         #expect(modifiedElement is ParameterElementModifier<EmptyElement>)
-        
+
         // Verify the parameter was created with correct values
         if let modifier = modifiedElement as? ParameterElementModifier<EmptyElement> {
             #expect(modifier.parameters.count == 1)

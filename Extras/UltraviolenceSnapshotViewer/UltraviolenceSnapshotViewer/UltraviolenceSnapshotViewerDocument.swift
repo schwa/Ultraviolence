@@ -1,6 +1,6 @@
+import SwiftUI
 import Ultraviolence
 import UltraviolenceSnapshotUI
-import SwiftUI
 import UniformTypeIdentifiers
 
 nonisolated struct UltraviolenceSnapshotViewerDocument: FileDocument {
@@ -16,7 +16,6 @@ nonisolated struct UltraviolenceSnapshotViewerDocument: FileDocument {
 
     @MainActor
     static let complexSnapshot: SystemSnapshot = {
-
         struct DemoElement: Element {
             @UVState
             var count = 0
@@ -51,7 +50,7 @@ nonisolated struct UltraviolenceSnapshotViewerDocument: FileDocument {
         }
         snapshot = try JSONDecoder().decode(SystemSnapshot.self, from: data)
     }
-    
+
     func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
         let encoder = JSONEncoder()
         let data = try encoder.encode(snapshot)

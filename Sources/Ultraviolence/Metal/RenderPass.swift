@@ -30,6 +30,5 @@ public struct RenderPass <Content>: Element, BodylessElement, BodylessContentEle
         renderCommandEncoder.endEncoding()
         node.environmentValues.renderCommandEncoder = nil
         logger?.verbose?.info("Ending render pass: \(label ?? "<unlabeled>") (\(node.element.internalDescription))")
-
     }
 }

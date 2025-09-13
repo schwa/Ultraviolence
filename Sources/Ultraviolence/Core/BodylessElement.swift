@@ -17,7 +17,7 @@ extension BodylessElement {
     func configureNodeBodyless(_ node: Node) throws {
         // This line intentionally left blank.
     }
-    
+
     func setupEnter(_ node: Node) throws {
         // This line intentionally left blank.
     }

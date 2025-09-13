@@ -1,5 +1,5 @@
 // TODO: System
-//internal extension NodeGraph {
+// internal extension NodeGraph {
 //    @MainActor
 //    func visit(enter: (Node) throws -> Void, exit: (Node) throws -> Void) throws {
 //        // swiftlint:disable:next no_empty_block
@@ -27,9 +27,9 @@
 //            activeNodeStack.removeLast()
 //        }
 //    }
-//}
+// }
 //
-//internal extension Node {
+// internal extension Node {
 //    func visit(depth: Int = 0, _ visitor: (Int, Node) throws -> Void) rethrows {
 //        // swiftlint:disable:next no_empty_block
 //        try visit(depth: depth, visitor, enter: { _ in }, exit: { _ in })
@@ -43,4 +43,4 @@
 //        }
 //        try exit(self)
 //    }
-//}
+// }

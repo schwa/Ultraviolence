@@ -1,9 +1,9 @@
+import DemoKit
 import MetalKit
 import SwiftUI
 import Ultraviolence
 import UltraviolenceSupport
 import UltraviolenceUI
-import DemoKit
 
 public struct SkyboxDemoView: View {
     @State

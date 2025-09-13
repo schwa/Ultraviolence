@@ -1,10 +1,10 @@
+import DemoKit
 import MetalKit
 import simd
 import SwiftUI
 import Ultraviolence
 import UltraviolenceSupport
 import UltraviolenceUI
-import DemoKit
 
 public struct MixedDemoView: View {
     @State
@@ -36,7 +36,7 @@ public struct MixedDemoView: View {
                 RenderView {
                     let transforms = Transforms(modelMatrix: modelMatrix, cameraMatrix: cameraMatrix, projectionMatrix: projection.projectionMatrix(for: drawableSize))
                     MixedExample(transforms: transforms, color: color, lightDirection: lightDirection)
-// TODO: SYSTEM
+                    // TODO: SYSTEM
                     //                        .debugLabel("MIXED EXAMPLE")
                 }
                 .metalDepthStencilPixelFormat(.depth32Float)

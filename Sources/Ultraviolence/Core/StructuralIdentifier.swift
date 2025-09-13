@@ -18,7 +18,7 @@ public struct StructuralIdentifier: Hashable {
 
 extension StructuralIdentifier: CustomStringConvertible {
     public var description: String {
-        atoms.map { $0.description }.joined(separator: "/")
+        atoms.map(\.description).joined(separator: "/")
     }
 }
 

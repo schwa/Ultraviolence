@@ -1,9 +1,8 @@
+import DemoKit
 import SwiftUI
 import UltraviolenceExamples
-import DemoKit
 
 struct ContentView: View {
-
     var body: some View {
         DemoPickerView(demos: [
             GaussianSplatDemoView.self,
@@ -19,16 +18,14 @@ struct ContentView: View {
             MixedDemoView.self,
             BouncingTeapotsDemoView.self,
             StencilDemoView.self,
-            LUTDemoView.self,
+            LUTDemoView.self
 
             // TODO: SYSTEM - these crash
             // GameOfLifeDemoView.self,
         ])
     }
-
 }
 
 #Preview {
     ContentView()
 }
-

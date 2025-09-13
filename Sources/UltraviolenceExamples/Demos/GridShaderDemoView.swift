@@ -1,10 +1,10 @@
+import DemoKit
 import simd
 import SwiftUI
 import Ultraviolence
 import UltraviolenceExampleShaders
 import UltraviolenceSupport
 import UltraviolenceUI
-import DemoKit
 
 public struct GridShaderDemoView: View {
     @State

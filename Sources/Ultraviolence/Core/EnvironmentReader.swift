@@ -5,7 +5,6 @@
 //  Created by Jonathan Wight on 9/12/25.
 //
 
-
 public struct EnvironmentReader<Value, Content: Element>: Element, BodylessElement {
     var keyPath: KeyPath<UVEnvironmentValues, Value>
     var content: (Value) throws -> Content
@@ -25,4 +24,3 @@ public struct EnvironmentReader<Value, Content: Element>: Element, BodylessEleme
         try visit(content)
     }
 }
-

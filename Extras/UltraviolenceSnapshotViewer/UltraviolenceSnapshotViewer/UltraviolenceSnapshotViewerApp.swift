@@ -1,9 +1,7 @@
 import SwiftUI
 
-
 @main
 struct UltraviolenceSnapshotViewerApp: App {
-
     let emptyDocument: UltraviolenceSnapshotViewerDocument
 
     init() {

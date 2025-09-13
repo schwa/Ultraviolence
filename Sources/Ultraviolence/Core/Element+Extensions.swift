@@ -1,4 +1,3 @@
-
 // TODO: Let's organise these extensions better
 
 internal extension Element {

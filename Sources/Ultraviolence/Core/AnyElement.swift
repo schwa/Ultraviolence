@@ -1,7 +1,7 @@
 // TODO: is this still needed?
 public struct AnyElement: Element, BodylessElement {
     private let base: any Element
-    
+
     public init(_ base: some Element) {
         self.base = base
     }

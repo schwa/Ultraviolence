@@ -1,8 +1,8 @@
+import DemoKit
 import SwiftUI
 import Ultraviolence
 import UltraviolenceSupport
 import UltraviolenceUI
-import DemoKit
 
 /// A demo that shows the use of a stencil texture.
 /// This view creates a texture, the size of the output drawable, containing a checkerboard pattern. The texture is regenerated when the drawable size changes.

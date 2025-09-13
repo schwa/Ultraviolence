@@ -3,13 +3,13 @@ internal import os
 public class System {
     // TODO: These all need to become private
     var orderedIdentifiers: [StructuralIdentifier] = []
-    var nodes: [StructuralIdentifier:Node] = [:]
+    var nodes: [StructuralIdentifier: Node] = [:]
     /// Stack of nodes currently being processed during system traversal.
     /// This stack is maintained during:
     /// - Initial system update (`update(root:)`) - populated during element tree traversal
-    /// - Setup phase (`setup()`) - populated during node visitation  
+    /// - Setup phase (`setup()`) - populated during node visitation
     /// - Process/workload phase (`process()`) - populated during node visitation
-    /// 
+    ///
     /// The stack enables:
     /// - Environment value resolution via @UVEnvironment property wrapper
     /// - State dependency tracking for reactive updates
@@ -39,7 +39,6 @@ public class System {
     public func update(root: some Element) throws {
         assert(activeNodeStack.isEmpty)
         try withCurrentSystem {
-
             // Clean up after the update
             defer {
                 assert(activeNodeStack.isEmpty, "activeNodeStack should be empty after update")
@@ -112,7 +111,7 @@ public class System {
 
             // Process root
             try processElement(root)
-            
+
             // Clear dirty identifiers after processing entire tree
             dirtyIdentifiers = []
 
@@ -134,13 +133,12 @@ public class System {
 private extension System {
     /// Determine whether to reuse an existing node or create a new one
     func processNode(currentId: StructuralIdentifier, previousId: StructuralIdentifier?, element: any Element, newNodes: inout [StructuralIdentifier: Node]) -> Node {
-        if let previousId = previousId, previousId == currentId {
+        if let previousId, previousId == currentId {
             return reuseNode(currentId: currentId, element: element, newNodes: &newNodes)
-        } else {
-            return makeNode(currentId: currentId, element: element, newNodes: &newNodes)
         }
+        return makeNode(currentId: currentId, element: element, newNodes: &newNodes)
     }
-    
+
     /// Reuse an existing node, updating it if its element has changed
     func reuseNode(currentId: StructuralIdentifier, element: any Element, newNodes: inout [StructuralIdentifier: Node]) -> Node {
         guard let existingNode = nodes[currentId] else {
@@ -149,7 +147,7 @@ private extension System {
         }
         // Update parent identifier (in case the node moved in the tree)
         existingNode.parentIdentifier = activeNodeStack.last?.id
-        
+
         if shouldUpdateNode(existingNode, with: element, id: currentId) {
             existingNode.element = element
             // When element changes, preserve setup-phase values while clearing others
@@ -163,14 +161,14 @@ private extension System {
         newNodes[currentId] = existingNode
         return existingNode
     }
-    
+
     func makeNode(currentId: StructuralIdentifier, element: any Element, newNodes: inout [StructuralIdentifier: Node]) -> Node {
         let parentId = activeNodeStack.last?.id
         let currentNode = Node(system: self, id: currentId, parentIdentifier: parentId, element: element)
         newNodes[currentId] = currentNode
         return currentNode
     }
-    
+
     func shouldUpdateNode(_ node: Node, with element: any Element, id: StructuralIdentifier) -> Bool {
         !isEqual(node.element, element) || dirtyIdentifiers.contains(id)
     }

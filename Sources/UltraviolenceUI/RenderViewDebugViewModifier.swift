@@ -14,7 +14,7 @@ internal struct RenderViewDebugViewModifier <Root>: ViewModifier where Root: Ele
 
     @State
     private var selectedNodeID: String?
-    
+
     @State
     private var snapshot: SystemSnapshot?
 
@@ -29,25 +29,25 @@ internal struct RenderViewDebugViewModifier <Root>: ViewModifier where Root: Ele
             .inspector(isPresented: $debugInspectorIsPresented) {
                 VStack {
                     // TODO: SYSTEM
-//                    List([NodeListBox(node: viewModel.graph.root)], children: \.children, selection: $selection) { box in
-//                        let node = box.node
-//
-//                        Label(node.name, systemImage: "cube").font(.caption2).tag(box)
-//                    }
-//                    if let node = selection?.node {
-//                        ScrollView {
-//                            Form {
-//                                LabeledContent("ID", value: "\(ObjectIdentifier(node))")
-//                                LabeledContent("Name", value: "\(node.debugName)")
-//                                LabeledContent("Debug Label", value: "\(node.debugLabel ?? "")")
-//                                LabeledContent("Children", value: "\(node.children.count)")
-//                                LabeledContent("# State", value: "\(node.stateProperties.count)")
-//                                LabeledContent("Element", value: "\(String(describing: node.element))")
-//                                //                            LabeledContent("# Environment", value: "\(node.environmentValues.count)")
-//                            }
-//                        }
-//                        .font(.caption2)
-//                    }
+                    //                    List([NodeListBox(node: viewModel.graph.root)], children: \.children, selection: $selection) { box in
+                    //                        let node = box.node
+                    //
+                    //                        Label(node.name, systemImage: "cube").font(.caption2).tag(box)
+                    //                    }
+                    //                    if let node = selection?.node {
+                    //                        ScrollView {
+                    //                            Form {
+                    //                                LabeledContent("ID", value: "\(ObjectIdentifier(node))")
+                    //                                LabeledContent("Name", value: "\(node.debugName)")
+                    //                                LabeledContent("Debug Label", value: "\(node.debugLabel ?? "")")
+                    //                                LabeledContent("Children", value: "\(node.children.count)")
+                    //                                LabeledContent("# State", value: "\(node.stateProperties.count)")
+                    //                                LabeledContent("Element", value: "\(String(describing: node.element))")
+                    //                                //                            LabeledContent("# Environment", value: "\(node.environmentValues.count)")
+                    //                            }
+                    //                        }
+                    //                        .font(.caption2)
+                    //                    }
                 }
                 .id(refreshCount)
                 .inspectorColumnWidth(min: 200, ideal: 300)
@@ -59,7 +59,7 @@ internal struct RenderViewDebugViewModifier <Root>: ViewModifier where Root: Ele
 }
 
 // TODO: SYSTEM
-//internal struct NodeListBox: Identifiable, Hashable {
+// internal struct NodeListBox: Identifiable, Hashable {
 //    var id: ObjectIdentifier {
 //        ObjectIdentifier(node)
 //    }
@@ -76,4 +76,4 @@ internal struct RenderViewDebugViewModifier <Root>: ViewModifier where Root: Ele
 //    func hash(into hasher: inout Hasher) {
 //        hasher.combine(id)
 //    }
-//}
+// }

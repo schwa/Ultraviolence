@@ -3,7 +3,7 @@ class Node: Identifiable {
     var id: StructuralIdentifier
     var parentIdentifier: StructuralIdentifier?
     var element: (any Element)
-    
+
     var stateProperties: [String: Any] = [:]
     var environmentValues = UVEnvironmentValues()
 

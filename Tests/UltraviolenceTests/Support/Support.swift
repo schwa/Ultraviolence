@@ -61,7 +61,7 @@ func imageCompare(_ image1: CGImage, _ image2: CGImage) throws -> Bool {
 }
 
 // TODO: System
-//extension NodeGraph {
+// extension NodeGraph {
 //    func element<V>(at path: [Int], type: V.Type) -> V {
 //        var node: Node = root
 //        for index in path {
@@ -69,7 +69,7 @@ func imageCompare(_ image1: CGImage, _ image2: CGImage) throws -> Bool {
 //        }
 //        return node.element as! V
 //    }
-//}
+// }
 
 extension CGImage {
     func write(to url: URL) throws {
@@ -177,11 +177,11 @@ class TestMonitor {
         values.removeAll()
         observations.removeAll()
     }
-    
+
     func logUpdate(_ message: String) {
         updates.append(message)
     }
-    
+
     func record(phase: String, element: String, counter: Int = -1, env: String = "") {
         observations.append((phase: phase, element: element, counter: counter, env: env))
     }

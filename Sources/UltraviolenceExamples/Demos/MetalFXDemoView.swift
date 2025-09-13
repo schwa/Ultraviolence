@@ -1,11 +1,11 @@
 #if canImport(MetalFX)
+import DemoKit
 import Metal
 import MetalKit
 import SwiftUI
 import Ultraviolence
 import UltraviolenceSupport
 import UltraviolenceUI
-import DemoKit
 
 public struct MetalFXDemoView: View {
     let sourceTexture: MTLTexture
