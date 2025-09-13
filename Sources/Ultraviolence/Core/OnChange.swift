@@ -1,4 +1,4 @@
-internal import Foundation
+import Foundation
 
 internal struct OnChange<Value: Equatable, Content>: Element where Content: Element {
     let value: Value

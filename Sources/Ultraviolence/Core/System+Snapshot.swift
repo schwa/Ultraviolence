@@ -1,4 +1,4 @@
-public import Foundation
+import Foundation
 internal import os
 
 // MARK: - Snapshot Creation

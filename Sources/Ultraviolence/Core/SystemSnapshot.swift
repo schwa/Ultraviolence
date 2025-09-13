@@ -1,4 +1,4 @@
-public import Foundation
+import Foundation
 
 /// A complete snapshot of the System state for debugging purposes
 public struct SystemSnapshot: Codable, Sendable {

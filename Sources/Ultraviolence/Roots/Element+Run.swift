@@ -14,7 +14,7 @@ public extension Element {
         .environment(\.commandQueue, commandQueue)
         .environment(\.device, device)
 
-        let system = try System()
+        let system = System()
         try system.update(root: content)
         try system.processSetup()
         try system.processWorkload()

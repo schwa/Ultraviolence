@@ -116,7 +116,7 @@ internal class RenderViewViewModel <Content>: NSObject, MTKViewDelegate where Co
         self.device = device
         self.content = content
         self.commandQueue = commandQueue
-        self.system = try System()
+        self.system = System()
     }
 
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {

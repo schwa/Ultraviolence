@@ -1,4 +1,4 @@
-internal import Foundation
+import Foundation
 internal import os
 import UltraviolenceSupport
 

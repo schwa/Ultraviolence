@@ -1,4 +1,4 @@
-internal import Foundation
+import Foundation
 
 @propertyWrapper
 public struct UVBinding<Value>: Equatable {
