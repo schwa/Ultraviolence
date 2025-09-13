@@ -21,8 +21,8 @@ public struct MixedExample: Element {
     public var body: some Element {
         get throws {
             let renderPassDescriptor = try renderPassDescriptor.orThrow(.missingEnvironment("renderPassDescriptor"))
-            let colorTexture = try renderPassDescriptor.colorAttachments[0].texture.orThrow(.undefined)
-            let depthTexture = try renderPassDescriptor.depthAttachment.texture.orThrow(.undefined)
+            let colorTexture = try renderPassDescriptor.colorAttachments[0].texture.orThrow(.resourceCreationFailure("Missing color attachment texture"))
+            let depthTexture = try renderPassDescriptor.depthAttachment.texture.orThrow(.resourceCreationFailure("Missing depth attachment texture"))
 
             try RenderPass {
                 try TeapotDemo(transforms: transforms, color: color, lightDirection: lightDirection)

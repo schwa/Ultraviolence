@@ -24,7 +24,7 @@ public struct MetalFXSpatial: Element {
                 scaler = try makeScaler()
             }
             .onWorkloadEnter {
-                var scaler = try scaler.orThrow(.undefined)
+                var scaler = try scaler.orThrow(.resourceCreationFailure("MetalFX spatial scaler not initialized"))
                 // TODO: #55, #70 Instead of doing this we need to have some kind of "onChange" and merely mark "setupNeeded"
                 if scaler.outputWidth != outputTexture.width || scaler.outputHeight != outputTexture.height {
                     scaler = try makeScaler()
@@ -48,7 +48,7 @@ public struct MetalFXSpatial: Element {
         descriptor.outputWidth = outputTexture.width
         descriptor.outputHeight = outputTexture.height
         let device = _MTLCreateSystemDefaultDevice()
-        return try descriptor.makeSpatialScaler(device: device).orThrow(.undefined)
+        return try descriptor.makeSpatialScaler(device: device).orThrow(.resourceCreationFailure("Failed to create MetalFX spatial scaler"))
     }
 }
 #endif

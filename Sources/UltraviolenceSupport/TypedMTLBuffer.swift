@@ -107,7 +107,7 @@ public extension TypedMTLBuffer {
 
 public extension MTLDevice {
     func makeTypedBuffer<Element>(element: Element.Type, capacity: Int, options: MTLResourceOptions) throws -> TypedMTLBuffer<Element> {
-        let mtlBuffer = try makeBuffer(length: capacity * MemoryLayout<Element>.stride, options: options).orThrow(.undefined)
+        let mtlBuffer = try makeBuffer(length: capacity * MemoryLayout<Element>.stride, options: options).orThrow(.resourceCreationFailure("Failed to create MTLBuffer with capacity \(capacity)"))
         return TypedMTLBuffer(buffer: mtlBuffer, count: 0)
     }
     func makeTypedBuffer<Element>(values: [Element], options: MTLResourceOptions) throws -> TypedMTLBuffer<Element> {

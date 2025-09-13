@@ -35,26 +35,26 @@ struct CubeReader {
             }
             else if is3D == nil, let match = try lut3DSizeRegex.firstMatch(in: String(line)) {
                 is3D = true
-                count = try Int(match.output.1).orThrow(.undefined)
+                count = try Int(match.output.1).orThrow(.generic("Failed to parse LUT_3D_SIZE value"))
             }
             else {
                 let components = line.split(separator: " ")
                 guard components.count == 3 else {
-                    throw UltraviolenceError.undefined
+                    throw UltraviolenceError.generic("Invalid LUT entry: expected 3 components, got \(components.count)")
                 }
-                let r = try Float(components[0]).orThrow(.undefined)
-                let g = try Float(components[1]).orThrow(.undefined)
-                let b = try Float(components[2]).orThrow(.undefined)
+                let r = try Float(components[0]).orThrow(.generic("Failed to parse red component"))
+                let g = try Float(components[1]).orThrow(.generic("Failed to parse green component"))
+                let b = try Float(components[2]).orThrow(.generic("Failed to parse blue component"))
                 values.append(SIMD3<Float>(r, g, b))
             }
         }
 
         guard let is3D, is3D == true, let count else {
-            throw UltraviolenceError.undefined
+            throw UltraviolenceError.generic("Missing or invalid LUT_3D_SIZE declaration in .cube file")
         }
 
         guard values.count == count * count * count else {
-            throw UltraviolenceError.undefined
+            throw UltraviolenceError.generic("LUT data size mismatch: expected \(count * count * count) entries, got \(values.count)")
         }
 
         self.title = String(title ?? "")
