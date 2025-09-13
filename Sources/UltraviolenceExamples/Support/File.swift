@@ -52,7 +52,7 @@ public extension MTLDevice {
         cubeMapDescriptor.width = size.x
         cubeMapDescriptor.height = size.y
         guard let cubeMap = makeTexture(descriptor: cubeMapDescriptor) else {
-            throw UltraviolenceError.textureCreationFailure
+            throw UltraviolenceError.resourceCreationFailure("Failed to create texture cube")
         }
         let blit = try BlitPass {
             Blit { encoder in

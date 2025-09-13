@@ -41,7 +41,7 @@ public final class OffscreenVideoRenderer {
             mipmapped: false
         )
         colorTextureDescriptor.usage = [.renderTarget, .shaderRead]
-        colorTexture = try device.makeTexture(descriptor: colorTextureDescriptor).orThrow(.textureCreationFailure)
+        colorTexture = try device.makeTexture(descriptor: colorTextureDescriptor).orThrow(.resourceCreationFailure("Failed to create video color texture"))
         colorTexture.label = "Video Color Texture"
         
         let depthTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(
@@ -51,7 +51,7 @@ public final class OffscreenVideoRenderer {
             mipmapped: false
         )
         depthTextureDescriptor.usage = [.renderTarget]
-        depthTexture = try device.makeTexture(descriptor: depthTextureDescriptor).orThrow(.textureCreationFailure)
+        depthTexture = try device.makeTexture(descriptor: depthTextureDescriptor).orThrow(.resourceCreationFailure("Failed to create video depth texture"))
         depthTexture.label = "Video Depth Texture"
         
         renderPassDescriptor = MTLRenderPassDescriptor()

@@ -35,12 +35,12 @@ public struct OffscreenRenderer {
         let device = _MTLCreateSystemDefaultDevice()
         let colorTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm_srgb, width: Int(size.width), height: Int(size.height), mipmapped: false)
         colorTextureDescriptor.usage = [.renderTarget, .shaderRead, .shaderWrite] // TODO: #33 this is all hardcoded :-(
-        let colorTexture = try device.makeTexture(descriptor: colorTextureDescriptor).orThrow(.textureCreationFailure)
+        let colorTexture = try device.makeTexture(descriptor: colorTextureDescriptor).orThrow(.resourceCreationFailure("Failed to create color texture"))
         colorTexture.label = "Color Texture"
 
         let depthTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: Int(size.width), height: Int(size.height), mipmapped: false)
         depthTextureDescriptor.usage = [.renderTarget, .shaderRead] // TODO: #33 this is all hardcoded :-(
-        let depthTexture = try device.makeTexture(descriptor: depthTextureDescriptor).orThrow(.textureCreationFailure)
+        let depthTexture = try device.makeTexture(descriptor: depthTextureDescriptor).orThrow(.resourceCreationFailure("Failed to create depth texture"))
         depthTexture.label = "Depth Texture"
 
         try self.init(size: size, colorTexture: colorTexture, depthTexture: depthTexture)

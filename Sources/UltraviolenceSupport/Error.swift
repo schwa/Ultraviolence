@@ -7,7 +7,6 @@ public indirect enum UltraviolenceError: Error, Equatable {
     case missingBinding(String)
     case resourceCreationFailure(String)
     case deviceCababilityFailure(String)
-    case textureCreationFailure
     case validationError(String)
     case configurationError(String)
     case unexpectedError(Self)
