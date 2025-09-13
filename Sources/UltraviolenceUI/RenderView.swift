@@ -128,7 +128,7 @@ internal class RenderViewViewModel <Content>: NSObject, MTKViewDelegate where Co
     func draw(in view: MTKView) {
         do {
             if RenderViewDebugging.logFrame {
-                logger?.info("Drawing frame #\(self.frame)")
+                logger?.verbose?.info("Drawing frame #\(self.frame)")
             }
             try withIntervalSignpost(signposter, name: "RenderViewViewModel.draw()", id: signpostID) {
                 let currentDrawable = try view.currentDrawable.orThrow(.generic("No drawable available"))

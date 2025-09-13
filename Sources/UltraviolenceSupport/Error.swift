@@ -39,7 +39,7 @@ public extension Optional {
 }
 
 public func _throw(_ error: some Error) throws -> Never {
-    if fatalErrorOnThrow {
+    if ProcessInfo.processInfo.fatalErrorOnThrow {
         fatalError("\(error)")
     }
     else {
@@ -47,7 +47,3 @@ public func _throw(_ error: some Error) throws -> Never {
     }
 }
 
-let fatalErrorOnThrow: Bool = {
-    let env = ProcessInfo.processInfo.environment
-    return env["UV_FATALERROR"] == "1"
-}()

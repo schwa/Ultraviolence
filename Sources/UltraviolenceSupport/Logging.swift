@@ -15,12 +15,8 @@ public func withIntervalSignpost<T>(_ signposter: OSSignposter?, name: StaticStr
     return try signposter.withIntervalSignpost(name, id: id ?? .exclusive, around: task)
 }
 
-public extension ProcessInfo {
-    var loggingEnabled: Bool {
-        true
-        //        guard let value = environment["LOGGING"]?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() else {
-        //            return false
-        //        }
-        //        return ["yes", "true", "y", "1", "on"].contains(value)
+public extension Logger {
+    var verbose: Logger? {
+        ProcessInfo.processInfo.verboseLoggingEnabled ? self : nil
     }
 }
