@@ -47,7 +47,8 @@ public struct LUTDemoView: View {
                 .origin: MTKTextureLoader.Origin.flippedVertically.rawValue,
                 .SRGB: true
             ])
-            let lutTextureURL = Bundle.main.url(forResource: "Blue Bias", withExtension: "png").orFatalError()
+            let resourceURL = Bundle.main.resourceURL.orFatalError()
+            let lutTextureURL = resourceURL.appendingPathComponent("Blue Bias.png").assertFileExists()
             self._lutURL = .init(initialValue: lutTextureURL)
             let lutTexture = try Self.make3DLUTTexture(from: lutTextureURL)
             let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm_srgb, width: sourceTexture.width, height: sourceTexture.height, mipmapped: false)
