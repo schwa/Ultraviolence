@@ -46,7 +46,7 @@ public struct ComputeDemoView: View {
                         }
                         try compute.run()
                         guard [UInt8](inputBuffer.contents()) == [UInt8](outputBuffer.contents()) else {
-                            throw UltraviolenceError.generic("Buffers do not match.")
+                            throw UltraviolenceError.validationError("Buffers do not match.")
                         }
                     }
                     state = .success(())

@@ -8,8 +8,9 @@ public indirect enum UltraviolenceError: Error, Equatable {
     case resourceCreationFailure(String)
     case deviceCababilityFailure(String)
     case textureCreationFailure
+    case validationError(String)
+    case configurationError(String)
     case unexpectedError(Self)
-    case noCurrentGraph
 }
 
 public extension Optional {

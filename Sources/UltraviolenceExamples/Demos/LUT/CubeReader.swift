@@ -40,7 +40,7 @@ struct CubeReader {
             else {
                 let components = line.split(separator: " ")
                 guard components.count == 3 else {
-                    throw UltraviolenceError.generic("Invalid LUT entry: expected 3 components, got \(components.count)")
+                    throw UltraviolenceError.validationError("Invalid LUT entry: expected 3 components, got \(components.count)")
                 }
                 let r = try Float(components[0]).orThrow(.generic("Failed to parse red component"))
                 let g = try Float(components[1]).orThrow(.generic("Failed to parse green component"))
@@ -50,11 +50,11 @@ struct CubeReader {
         }
 
         guard let is3D, is3D == true, let count else {
-            throw UltraviolenceError.generic("Missing or invalid LUT_3D_SIZE declaration in .cube file")
+            throw UltraviolenceError.configurationError("Missing or invalid LUT_3D_SIZE declaration in .cube file")
         }
 
         guard values.count == count * count * count else {
-            throw UltraviolenceError.generic("LUT data size mismatch: expected \(count * count * count) entries, got \(values.count)")
+            throw UltraviolenceError.validationError("LUT data size mismatch: expected \(count * count * count) entries, got \(values.count)")
         }
 
         self.title = String(title ?? "")

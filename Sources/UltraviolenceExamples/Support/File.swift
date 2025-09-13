@@ -27,7 +27,7 @@ public extension MTLDevice {
         }
         let textureLoader = MTKTextureLoader(device: self)
         guard let cgImage else {
-            throw UltraviolenceError.generic("Failed to create image.")
+            throw UltraviolenceError.resourceCreationFailure("Failed to create image.")
         }
         return try textureLoader.newTexture(cgImage: cgImage, options: [
             .textureUsage: MTLTextureUsage([.shaderRead, .shaderWrite]).rawValue,
@@ -52,7 +52,7 @@ public extension MTLDevice {
         cubeMapDescriptor.width = size.x
         cubeMapDescriptor.height = size.y
         guard let cubeMap = makeTexture(descriptor: cubeMapDescriptor) else {
-            throw UltraviolenceError.generic("Failed to create texture cube.")
+            throw UltraviolenceError.textureCreationFailure
         }
         let blit = try BlitPass {
             Blit { encoder in

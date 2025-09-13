@@ -118,7 +118,7 @@ public struct LUTDemoView: View {
             return try create3DLUT(device: device, from: lutTexture2D)!
 
         default:
-            throw UltraviolenceError.generic("Unsupported LUT file format: .\(url.pathExtension)")
+            throw UltraviolenceError.validationError("Unsupported LUT file format: .\(url.pathExtension)")
         }
     }
 }

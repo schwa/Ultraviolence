@@ -131,12 +131,12 @@ internal class RenderViewViewModel <Content>: NSObject, MTKViewDelegate where Co
                 logger?.verbose?.info("Drawing frame #\(self.frame)")
             }
             try withIntervalSignpost(signposter, name: "RenderViewViewModel.draw()", id: signpostID) {
-                let currentDrawable = try view.currentDrawable.orThrow(.generic("No drawable available"))
+                let currentDrawable = try view.currentDrawable.orThrow(.resourceCreationFailure("No drawable available"))
                 defer {
                     currentDrawable.present()
                     frame += 1
                 }
-                let currentRenderPassDescriptor = try view.currentRenderPassDescriptor.orThrow(.generic("No render pass descriptor available"))
+                let currentRenderPassDescriptor = try view.currentRenderPassDescriptor.orThrow(.resourceCreationFailure("No render pass descriptor available"))
                 let content = try CommandBufferElement(completion: .commit) {
                     try self.content()
                 }

@@ -79,7 +79,7 @@ internal struct Parameter {
 
     func set(on encoder: MTLComputeCommandEncoder, reflection: Reflection) throws {
         guard functionType == .kernel || functionType == nil else {
-            try _throw(UltraviolenceError.generic("Invalid function type \(functionType.debugDescription)."))
+            try _throw(UltraviolenceError.configurationError("Invalid function type \(functionType.debugDescription)."))
         }
         let index = try reflection.binding(forType: .kernel, name: name).orThrow(.missingBinding(name))
         encoder.setValue(value, index: index)
