@@ -52,9 +52,9 @@ namespace GameOfLifeShader {
             nextAlive = (liveNeighbors == 3);
         }
 
-        // Write result with some visual flair - fade out dead cells
+        // Write result - white cells on black background
         float outputValue = nextAlive ? 1.0 : 0.0;
-        float4 color = float4(outputValue, outputValue * 0.9, outputValue * 0.7, 1.0);
+        float4 color = float4(outputValue, outputValue, outputValue, 1.0);
         nextState.write(color, gid);
     }
 
@@ -87,7 +87,7 @@ namespace GameOfLifeShader {
         }
 
         float value = isAlive ? 1.0 : 0.0;
-        float4 color = float4(value, value * 0.9, value * 0.7, 1.0);
+        float4 color = float4(value, value, value, 1.0);
         texture.write(color, gid);
     }
 
@@ -116,7 +116,7 @@ namespace GameOfLifeShader {
         bool isAlive = random < density;
 
         float value = isAlive ? 1.0 : 0.0;
-        float4 color = float4(value, value * 0.9, value * 0.7, 1.0);
+        float4 color = float4(value, value, value, 1.0);
         texture.write(color, gid);
     }
 
@@ -132,33 +132,5 @@ namespace GameOfLifeShader {
         texture.write(float4(0.0, 0.0, 0.0, 1.0), gid);
     }
 
-    // Vertex shader for displaying the texture
-    struct VertexIn {
-        float2 position [[attribute(0)]];
-        float2 texCoords [[attribute(1)]];
-    };
-
-    struct VertexOut {
-        float4 position [[position]];
-        float2 texCoords;
-    };
-
-    vertex VertexOut displayVertex(VertexIn in [[stage_in]]) {
-        VertexOut out;
-        out.position = float4(in.position, 0.0, 1.0);
-        out.texCoords = in.texCoords;
-
-        return out;
-    }
-
-    // Fragment shader for displaying the texture
-    fragment float4 displayFragment(
-        VertexOut in [[stage_in]],
-        texture2d<float, access::sample> gameTexture [[texture(0)]],
-        sampler textureSampler [[sampler(0)]]
-    ) {
-        float4 color = gameTexture.sample(textureSampler, in.texCoords);
-        return color;
-    }
 
 } // namespace GameOfLifeShader

@@ -22,16 +22,12 @@ public struct GameOfLife: Element {
     @UVState
     private var initialized = false
 
-    @UVState
-    private var frameCount = 0
 
-    @UVState
-    private var vertexBuffer: MTLBuffer?
 
-    let gridSize: (width: Int, height: Int)
-    let updateInterval: Int // Update every N frames
     let isRunning: Bool
     let pattern: InitialPattern
+    
+    private let gridSize = (width: 256, height: 256)
 
     @UVState
     private var lastPattern: InitialPattern = .clear
@@ -45,13 +41,9 @@ public struct GameOfLife: Element {
     }
 
     public init(
-        gridSize: (width: Int, height: Int) = (256, 256),
-        updateInterval: Int = 2,
         isRunning: Bool = true,
         pattern: InitialPattern = .random
     ) {
-        self.gridSize = gridSize
-        self.updateInterval = updateInterval
         self.isRunning = isRunning
         self.pattern = pattern
     }
@@ -71,27 +63,9 @@ public struct GameOfLife: Element {
             let shaderBundle = Bundle.ultraviolenceExampleShaders().orFatalError()
             let shaderLibrary = try ShaderLibrary(bundle: shaderBundle, namespace: "GameOfLifeShader")
 
-            // Create vertex descriptor for interleaved data
-            let vertexDescriptor = MTLVertexDescriptor()
-
-            // Position attribute (float2 at attribute 0)
-            vertexDescriptor.attributes[0].format = .float2
-            vertexDescriptor.attributes[0].offset = 0
-            vertexDescriptor.attributes[0].bufferIndex = 0
-
-            // Texture coordinates attribute (float2 at attribute 1)
-            vertexDescriptor.attributes[1].format = .float2
-            vertexDescriptor.attributes[1].offset = MemoryLayout<Float>.size * 2
-            vertexDescriptor.attributes[1].bufferIndex = 0
-
-            // Layout for buffer 0 (interleaved data)
-            vertexDescriptor.layouts[0].stride = MemoryLayout<Float>.size * 4
-            vertexDescriptor.layouts[0].stepRate = 1
-            vertexDescriptor.layouts[0].stepFunction = .perVertex
-
             return try Group {
                 // Update simulation if running
-                if isRunning, frameCount % updateInterval == 0 {
+                if isRunning {
                     try ComputePass {
                         try ComputePipeline(computeKernel: try shaderLibrary.updateGrid) {
                             try ComputeDispatch(
@@ -108,34 +82,10 @@ public struct GameOfLife: Element {
                     }
                 }
 
-                // Display the current state
+                // Display the current state using billboard shader
                 try RenderPass {
-                    try RenderPipeline(
-                        vertexShader: try shaderLibrary.displayVertex,
-                        fragmentShader: try shaderLibrary.displayFragment
-                    ) {
-                        Draw { encoder in
-                            // Create sampler
-                            let samplerDescriptor = MTLSamplerDescriptor()
-                            samplerDescriptor.minFilter = .nearest
-                            samplerDescriptor.magFilter = .nearest
-                            let sampler = device?.makeSamplerState(descriptor: samplerDescriptor)
-
-                            // Set vertex buffer
-                            encoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
-
-                            encoder.setFragmentTexture(currentTexture, index: 0)
-                            encoder.setFragmentSamplerState(sampler, index: 0)
-
-                            // Draw fullscreen triangle
-                            encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
-                        }
-                    }
-                    .vertexDescriptor(vertexDescriptor)
+                    try BillboardRenderPipeline(texture: currentTexture)
                 }
-            }
-            .onCommandBufferCompleted { _ in
-                frameCount += 1
             }
         }
     }
@@ -166,18 +116,6 @@ public struct GameOfLife: Element {
         textureA = device.makeTexture(descriptor: textureDescriptor)
         textureB = device.makeTexture(descriptor: textureDescriptor)
 
-        // Setup vertex buffer for fullscreen triangle
-        if vertexBuffer == nil {
-            // Create a fullscreen triangle with position and texture coordinates
-            // Each vertex has: float2 position + float2 texCoords = 4 floats
-            let vertices: [Float] = [
-                // position     texCoords
-                -1.0, -3.0, 0.0, 2.0,  // bottom left (off-screen)
-                -1.0, 1.0, 0.0, 0.0,  // top left
-                3.0, 1.0, 2.0, 0.0   // top right (off-screen)
-            ]
-            vertexBuffer = device.makeBuffer(bytes: vertices, length: vertices.count * MemoryLayout<Float>.size, options: .storageModeShared)
-        }
     }
 
     private func initializeGridIfNeeded() {
