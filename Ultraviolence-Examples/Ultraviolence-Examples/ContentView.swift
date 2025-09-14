@@ -20,8 +20,7 @@ struct ContentView: View {
             StencilDemoView.self,
             LUTDemoView.self
 
-            // TODO: SYSTEM - these crash
-            // GameOfLifeDemoView.self,
+            // GameOfLifeDemoView.self, // crashes
         ])
     }
 }

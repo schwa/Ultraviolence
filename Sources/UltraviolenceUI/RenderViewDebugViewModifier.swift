@@ -28,7 +28,6 @@ internal struct RenderViewDebugViewModifier <Root>: ViewModifier where Root: Ele
             }
             .inspector(isPresented: $debugInspectorIsPresented) {
                 VStack {
-                    // TODO: SYSTEM
                     //                    List([NodeListBox(node: viewModel.graph.root)], children: \.children, selection: $selection) { box in
                     //                        let node = box.node
                     //
@@ -58,7 +57,6 @@ internal struct RenderViewDebugViewModifier <Root>: ViewModifier where Root: Ele
     }
 }
 
-// TODO: SYSTEM
 // internal struct NodeListBox: Identifiable, Hashable {
 //    var id: ObjectIdentifier {
 //        ObjectIdentifier(node)

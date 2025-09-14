@@ -22,7 +22,7 @@ public extension SIMD4<Float> {
             Float(resolved.linearRed),
             Float(resolved.linearGreen),
             Float(resolved.linearBlue),
-            Float(1.0) // TODO:
+            Float(1.0) // TODO: #229 Handle alpha value from resolved color instead of hardcoding 1.0
         ]
     }
 }

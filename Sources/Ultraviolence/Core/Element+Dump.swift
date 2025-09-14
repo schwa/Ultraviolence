@@ -1,5 +1,5 @@
-// TODO: This is dangerous. Because walking the tree can modify state. FILE A TICKET. Stuff like EnvironmentReader can break things.
-// TODO: We should only walk the "System tree"
+// TODO: #226 This is dangerous - walking the tree can modify state (e.g., EnvironmentReader can break things)
+// TODO: #226 We should only walk the "System tree" instead of the Element tree to avoid state mutations
 
 public extension Element {
     @MainActor

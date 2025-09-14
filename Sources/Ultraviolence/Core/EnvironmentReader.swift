@@ -15,7 +15,7 @@ public struct EnvironmentReader<Value, Content: Element>: Element, BodylessEleme
     }
 
     func visitChildrenBodyless(_ visit: (any Element) throws -> Void) throws {
-        // TODO: Ideally we would be passed a Node as a parameter here... FILE THIS.
+        // TODO: #220 Ideally we would be passed a Node as a parameter here instead of accessing activeNodeStack
         guard let system = System.current, let node = system.activeNodeStack.last else {
             fatalError("EnvironmentReader must be visited within a System context, with a valid non-empty activeNodeStack.")
         }

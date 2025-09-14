@@ -36,7 +36,6 @@ public struct MixedDemoView: View {
                 RenderView {
                     let transforms = Transforms(modelMatrix: modelMatrix, cameraMatrix: cameraMatrix, projectionMatrix: projection.projectionMatrix(for: drawableSize))
                     MixedExample(transforms: transforms, color: color, lightDirection: lightDirection)
-                    // TODO: SYSTEM
                     //                        .debugLabel("MIXED EXAMPLE")
                 }
                 .metalDepthStencilPixelFormat(.depth32Float)

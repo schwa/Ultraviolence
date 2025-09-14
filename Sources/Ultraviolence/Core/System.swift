@@ -1,7 +1,7 @@
 internal import os
 
 public class System {
-    // TODO: These all need to become private
+    // TODO: #221 These properties should become private to enforce proper encapsulation
     var orderedIdentifiers: [StructuralIdentifier] = []
     var nodes: [StructuralIdentifier: Node] = [:]
     /// Stack of nodes currently being processed during system traversal.
@@ -118,7 +118,7 @@ public class System {
             // Find removed nodes by diffing old vs new
             let removedIds = Set(nodes.keys).subtracting(Set(newNodes.keys))
             for _ in removedIds {
-                // TODO: System - Could call cleanup/onDisappear here. For now just note they're gone
+                // TODO: #222 Could call cleanup/onDisappear here for proper node lifecycle management
             }
 
             // Replace old with new

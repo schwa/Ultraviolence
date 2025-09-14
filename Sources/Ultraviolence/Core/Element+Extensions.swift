@@ -1,4 +1,4 @@
-// TODO: Let's organise these extensions better
+// TODO: #219 Organize these Element extensions into logical groups or separate files for better maintainability
 
 internal extension Element {
     var debugName: String {

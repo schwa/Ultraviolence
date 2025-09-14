@@ -122,6 +122,7 @@ public final class OffscreenVideoRenderer {
 
         // Process the render
         try system.withCurrentSystem {
+            // TODO: #228 Setup should be smart enough to skip elements that are already configured - avoid redundant setup every frame
             try system.processSetup()
             try system.processWorkload()
         }

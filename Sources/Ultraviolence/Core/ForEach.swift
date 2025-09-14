@@ -21,7 +21,7 @@ public extension ForEach {
     }
 }
 
-// TODO: We're not useing ids in the System StructuralIdentifier yet. (File a ticket for this!)
+// TODO: #217 We're not using ids in the System StructuralIdentifier yet - need to implement proper ID tracking for ForEach elements
 extension ForEach: BodylessElement {
     internal func visitChildrenBodyless(_ visit: (any Element) throws -> Void) throws {
         for datum in data {

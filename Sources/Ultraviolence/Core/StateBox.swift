@@ -54,12 +54,12 @@ internal final class StateBox<Wrapped> {
     /// Update dependencies when the value changes
     private func valueDidChange() {
         guard let system else {
-            // TODO: ERROR?
+            // TODO: #218 Handle error when system is nil during value change - could log or assert
             return
         }
         dependencies.forEach { boxedNode in
             guard let node = boxedNode() else {
-                // TODO: ERROR?
+                // TODO: #218 Handle error when node has been deallocated - dependency cleanup needed
                 return
             }
             system.dirtyIdentifiers.insert(node.id)

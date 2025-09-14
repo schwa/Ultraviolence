@@ -60,7 +60,6 @@ func imageCompare(_ image1: CGImage, _ image2: CGImage) throws -> Bool {
     return histogram.relativeRed[0] == 1.0 && histogram.relativeGreen[0] == 1.0 && histogram.relativeBlue[0] == 1.0
 }
 
-// TODO: System
 // extension NodeGraph {
 //    func element<V>(at path: [Int], type: V.Type) -> V {
 //        var node: Node = root

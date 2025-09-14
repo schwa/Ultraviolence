@@ -9,7 +9,7 @@ internal extension System {
 
     func identifier(at indices: [Int]) -> StructuralIdentifier? {
         guard !indices.isEmpty else { return nil }
-        // TODO: This seems overly complex, can we simplify?
+        // TODO: #223 This identifier lookup logic seems overly complex - consider refactoring for clarity
         // Build the structural identifier path from indices
         var currentPath: [StructuralIdentifier.Atom] = []
         // Walk through orderedIdentifiers to match the indices
