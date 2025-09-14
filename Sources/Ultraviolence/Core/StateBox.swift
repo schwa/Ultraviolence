@@ -63,6 +63,7 @@ internal final class StateBox<Wrapped> {
                 return
             }
             system.dirtyIdentifiers.insert(node.id)
+            node.needsSetup = true
         }
     }
 }

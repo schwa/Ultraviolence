@@ -57,6 +57,7 @@ private final class ObservedObjectBox<Wrapped: ObservableObject> {
         self.node = node
         cancellable = wrappedValue.objectWillChange.sink { _ in
             node.system?.dirtyIdentifiers.insert(node.id)
+            node.needsSetup = true
         }
     }
 }

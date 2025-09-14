@@ -34,6 +34,13 @@ public class System {
     public init() {
         // This line intentionally left blank.
     }
+    
+    /// Mark all nodes as needing setup (e.g., when drawable size changes)
+    public func markAllNodesNeedingSetup() {
+        for node in nodes.values {
+            node.needsSetup = true
+        }
+    }
 
     @MainActor
     public func update(root: some Element) throws {
@@ -156,6 +163,8 @@ private extension System {
             existingNode.environmentValues = UVEnvironmentValues()
             // Restore preserved values after resetting
             existingNode.environmentValues.storage.values = preservedValues
+            // Element changed, needs setup
+            existingNode.needsSetup = true
         }
         // Whether changed or not, reuse the existing node
         newNodes[currentId] = existingNode
@@ -166,6 +175,8 @@ private extension System {
         let parentId = activeNodeStack.last?.id
         let currentNode = Node(system: self, id: currentId, parentIdentifier: parentId, element: element)
         newNodes[currentId] = currentNode
+        // New nodes always need setup
+        currentNode.needsSetup = true
         return currentNode
     }
 

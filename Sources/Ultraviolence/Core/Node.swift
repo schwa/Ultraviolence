@@ -6,6 +6,7 @@ class Node: Identifiable {
 
     var stateProperties: [String: Any] = [:]
     var environmentValues = UVEnvironmentValues()
+    var needsSetup = true
 
     init(system: System, id: StructuralIdentifier, parentIdentifier: StructuralIdentifier? = nil, element: (any Element)) {
         self.system = system

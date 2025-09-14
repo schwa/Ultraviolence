@@ -101,9 +101,6 @@ internal class RenderViewViewModel <Content>: NSObject, MTKViewDelegate where Co
     var system: System
 
     @ObservationIgnored
-    var needsSetup = true
-
-    @ObservationIgnored
     var drawableSizeChange: ((CGSize) -> Void)?
 
     @ObservationIgnored
@@ -120,9 +117,9 @@ internal class RenderViewViewModel <Content>: NSObject, MTKViewDelegate where Co
     }
 
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
-        // TODO: #45 We may want to actually do graph.processSetup here so that (expensive) setup is not done at render time. But this is made a lot more difficult because we are wrapping the content in CommandBufferElement and a ton of .environment setting.
-        needsSetup = true
         drawableSizeChange?(size)
+        // Mark all nodes as needing setup when drawable size changes
+        system.markAllNodesNeedingSetup()
     }
 
     func draw(in view: MTKView) {
@@ -148,13 +145,10 @@ internal class RenderViewViewModel <Content>: NSObject, MTKViewDelegate where Co
                 .environment(\.drawableSize, view.drawableSize)
 
                 do {
-                    // TODO: #25 Find a way to detect if graph has changed and set needsSetup to true. I am assuming we get a whole new graph every time - can we confirm this is true and too much work is being done?
                     try system.update(root: content)
-                    // Check if any new nodes need setup after updating content
-                    if needsSetup {
-                        try system.processSetup()
-                        needsSetup = false
-                    }
+                    // Process setup immediately after update
+                    // Only nodes that need setup will be processed
+                    try system.processSetup()
                     try system.processWorkload()
                 } catch {
                     handle(error: error)
