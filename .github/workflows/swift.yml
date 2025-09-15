@@ -2,14 +2,14 @@
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-swift
 
 name: Swift
-env:
-#    XCODE_VERSION: "latest-stable"
-    XCODE_VERSION: "16.4"
 on:
   push:
   pull_request:
 jobs:
   swift-build:
+    env:
+      # XCODE_VERSION: "latest-stable"
+      XCODE_VERSION: "16.4"
     runs-on: macos-15 # macos-latest
     steps:
       - uses: maxim-lobanov/setup-xcode@v1
@@ -22,25 +22,27 @@ jobs:
       - run: swift test -v
   xcode-build:
     env:
+      # XCODE_VERSION: "latest-stable"
+      XCODE_VERSION: "16.4"
       XCODE_PROJECT: "Ultraviolence-Examples/Ultraviolence-Examples.xcodeproj"
       XCODE_SCHEME: "Ultraviolence-Examples"
       XCODE_CONFIGURATION: "Release"
     runs-on: macos-15 # macos-latest
     steps:
-        - uses: maxim-lobanov/setup-xcode@v1
-          with:
-            xcode-version: ${{ env.XCODE_VERSION }}
-        - uses: actions/checkout@v3
-          with:
-            submodules: true
-        - run: defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidation -bool YES
-        - run: |
-            xcodebuild \
-              -project "${{ env.XCODE_PROJECT }}" \
-              -scheme "${{ env.XCODE_SCHEME }}" \
-              -destination "generic/platform=macOS" \
-              -skipPackagePluginValidation build \
-              -configuration "${{ env.XCODE_CONFIGURATION }}" \
-              ARCHS=arm64 \
-              ONLY_ACTIVE_ARCH=NO \
-              CODE_SIGNING_ALLOWED=NO
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: ${{ env.XCODE_VERSION }}
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+      - run: defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidation -bool YES
+      - run: |
+          xcodebuild \
+            -project "${{ env.XCODE_PROJECT }}" \
+            -scheme "${{ env.XCODE_SCHEME }}" \
+            -destination "generic/platform=macOS" \
+            -skipPackagePluginValidation build \
+            -configuration "${{ env.XCODE_CONFIGURATION }}" \
+            ARCHS=arm64 \
+            ONLY_ACTIVE_ARCH=NO \
+            CODE_SIGNING_ALLOWED=NO
