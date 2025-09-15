@@ -53,7 +53,6 @@
 				Resources/Samples/Transfer.png,
 				Resources/Samples/tweaked.png,
 				Resources/teapot.obj,
-				SnapshotLoaderScene.swift,
 				UltraviolenceExamplesApp.swift,
 			);
 			target = 45E0A1112D9DAF2D0091ED9E /* Ultraviolence-Examples */;
@@ -250,9 +249,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 45D6606A2D8377EA00CD91F5 /* Ultraviolence-Examples-Debug.xcconfig */;
 			buildSettings = {
-				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
-				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				XROS_DEPLOYMENT_TARGET = 2.6;
+				INFOPLIST_KEY_GCSupportsControllerUserInteraction = YES;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 			};
 			name = Debug;
 		};
@@ -260,9 +260,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 45D6606B2D8377EA00CD91F5 /* Ultraviolence-Examples-Release.xcconfig */;
 			buildSettings = {
-				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
-				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				XROS_DEPLOYMENT_TARGET = 2.6;
+				INFOPLIST_KEY_GCSupportsControllerUserInteraction = YES;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 			};
 			name = Release;
 		};

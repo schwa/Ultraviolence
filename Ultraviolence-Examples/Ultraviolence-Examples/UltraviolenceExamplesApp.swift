@@ -1,12 +1,14 @@
 import SwiftUI
+import UltraviolenceSnapshotUI
 
 @main
 struct UltraviolenceExamplesApp: App {
     var body: some Scene {
-        WindowGroup {
+        Window("Ultraviolence", id: "main") {
             ContentView()
         }
-        SnapshotLoaderScene()
+        
+        SnapshotViewerDocumentScene()
     }
 }
 
