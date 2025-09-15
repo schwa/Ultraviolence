@@ -10,12 +10,21 @@ public struct SystemSnapshot: Codable, Sendable {
 
     public init(system: System) {
         self.timestamp = Date()
-        self.orderedIdentifiers = system.orderedIdentifiers.map(\.description)
+        
+        // Extract ordered identifiers from traversal events (only enter events to avoid duplicates)
+        var extractedIdentifiers: [StructuralIdentifier] = []
+        for event in system.traversalEvents {
+            if case .enter(let node) = event {
+                extractedIdentifiers.append(node.id)
+            }
+        }
+        
+        self.orderedIdentifiers = extractedIdentifiers.map(\.description)
         self.dirtyIdentifiers = Set(system.dirtyIdentifiers.map(\.description))
         self.activeNodeStackDepth = system.activeNodeStack.count
 
         // Create node snapshots
-        self.nodes = system.orderedIdentifiers.compactMap { identifier in
+        self.nodes = extractedIdentifiers.compactMap { identifier in
             guard let node = system.nodes[identifier] else { return nil }
             return NodeSnapshot(node: node)
         }

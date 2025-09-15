@@ -1,9 +1,15 @@
 internal import os
 import Foundation
 
+/// Represents a traversal event in the node tree
+internal enum TraversalEvent {
+    case enter(Node)
+    case exit(Node)
+}
+
 public class System {
     // TODO: #221 These properties should become private to enforce proper encapsulation
-    var orderedIdentifiers: [StructuralIdentifier] = []
+    var traversalEvents: [TraversalEvent] = []
     var nodes: [StructuralIdentifier: Node] = [:]
     /// Stack of nodes currently being processed during system traversal.
     /// This stack is maintained during:
@@ -58,11 +64,17 @@ public class System {
                 activeNodeStack.removeAll()
             }
 
-            // Create iterator for previous identifiers
-            var previousIterator = orderedIdentifiers.makeIterator()
+            // Extract previous identifiers from traversal events for comparison
+            var previousIdentifiers: [StructuralIdentifier] = []
+            for event in traversalEvents {
+                if case .enter(let node) = event {
+                    previousIdentifiers.append(node.id)
+                }
+            }
+            var previousIterator = previousIdentifiers.makeIterator()
 
-            // New identifiers we're building
-            var newOrderedIdentifiers: [StructuralIdentifier] = []
+            // New traversal events we're building
+            var newTraversalEvents: [TraversalEvent] = []
 
             // New nodes dictionary we're building
             var newNodes: [StructuralIdentifier: Node] = [:]
@@ -94,7 +106,6 @@ public class System {
 
                 // Build current identifier from stack
                 let currentId = StructuralIdentifier(atoms: atomStack)
-                newOrderedIdentifiers.append(currentId)
 
                 // Get previous identifier
                 let previousId = previousIterator.next()
@@ -105,9 +116,16 @@ public class System {
                 // Compare and update nodes
                 currentNode = processNode(currentId: currentId, previousId: previousId, element: element, newNodes: &newNodes)
 
+                // Add enter event for this node
+                newTraversalEvents.append(.enter(currentNode))
+
                 // Push current node onto active stack
                 activeNodeStack.append(currentNode)
-                defer { activeNodeStack.removeLast() }
+                defer { 
+                    activeNodeStack.removeLast()
+                    // Add exit event when we're done with this node
+                    newTraversalEvents.append(.exit(currentNode))
+                }
 
                 // Configure the node (applies environment, state, etc.)
                 try element.configureNode(currentNode)
@@ -135,7 +153,7 @@ public class System {
 
             // Replace old with new
             self.nodes = newNodes
-            self.orderedIdentifiers = newOrderedIdentifiers
+            self.traversalEvents = newTraversalEvents
             
             // Dump snapshot if environment variable is set
             if Self.shouldDumpSnapshots {
