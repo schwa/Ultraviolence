@@ -3,14 +3,16 @@ import SwiftUI
 import UltraviolenceExamples
 
 struct ContentView: View {
-    var body: some View {
-        DemoPickerView(demos: [
+
+    let demos: [any DemoView.Type]
+
+    init() {
+        var demos: [any DemoView.Type] = [
             GaussianSplatDemoView.self,
             BlinnPhongDemoView.self,
             GridShaderDemoView.self,
             SkyboxDemoView.self,
             TriangleDemoView.self,
-            OffscreenDemoView.self,
             ComputeDemoView.self,
 
             // "Complex" Demos
@@ -21,8 +23,20 @@ struct ContentView: View {
             LUTDemoView.self,
 
             GameOfLifeDemoView.self,
-			AppleEventLogoDemoView.self
-        ])
+            AppleEventLogoDemoView.self
+        ]
+
+#if os(macOS)
+        demos += [
+            OffscreenDemoView.self
+        ]
+#endif
+
+        self.demos = demos
+    }
+
+    var body: some View {
+        DemoPickerView(demos: demos)
     }
 }
 
