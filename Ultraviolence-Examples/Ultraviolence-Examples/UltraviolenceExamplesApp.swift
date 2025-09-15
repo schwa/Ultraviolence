@@ -6,5 +6,7 @@ struct UltraviolenceExamplesApp: App {
         WindowGroup {
             ContentView()
         }
+        SnapshotLoaderScene()
     }
 }
+
