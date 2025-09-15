@@ -16,6 +16,7 @@ struct SnapshotLoaderScene: Scene {
                 Button("Snapshots") {
                     openWindow(id: "snapshot-loader")
                 }
+                .keyboardShortcut("s", modifiers: [.command, .shift] )
             }
         }
     }
@@ -40,7 +41,7 @@ struct SnapshotLoaderView: View {
                 }
                 actions: {
                     Button("Load") {
-
+                        isFileImporterPresented = true
                     }
                     .fileImporter(isPresented: $isFileImporterPresented, allowedContentTypes: [.uvSnapshot]) { result in
                         guard case .success(let url) = result else {

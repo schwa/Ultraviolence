@@ -69,7 +69,7 @@
          <EnvironmentVariable
             key = "UV_DUMP_SNAPSHOTS"
             value = "YES"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>
    </LaunchAction>
