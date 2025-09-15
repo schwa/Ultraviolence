@@ -30,10 +30,12 @@ public struct NodeSnapshot: Codable, Sendable {
     public let elementDescription: String
     public let stateProperties: [StatePropertySnapshot]
     public let environmentValues: EnvironmentSnapshot
+    public let needsSetup: Bool
 
     init(node: Node) {
         self.identifier = node.id.description
         self.parentIdentifier = node.parentIdentifier?.description
+        self.needsSetup = node.needsSetup
 
         // Get element type information
         let element = node.element
@@ -206,7 +208,8 @@ public extension SystemSnapshot {
         // Node header
         let isDirty = dirtyIdentifiers.contains(node.identifier)
         let dirtyMarker = isDirty ? " [DIRTY]" : ""
-        output.append("\(indentStr)• \(node.elementType)\(dirtyMarker)")
+        let setupMarker = node.needsSetup ? " [NEEDS SETUP]" : ""
+        output.append("\(indentStr)• \(node.elementType)\(dirtyMarker)\(setupMarker)")
         output.append("\(indentStr)  ID: \(node.identifier)")
 
         // State properties

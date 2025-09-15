@@ -119,14 +119,26 @@ struct NodeRowView: View {
 
                 Spacer()
 
-                if isDirty {
-                    Text("DIRTY")
-                        .font(.caption2)
-                        .padding(.horizontal, 4)
-                        .padding(.vertical, 2)
-                        .background(.red.opacity(0.2))
-                        .foregroundStyle(.red)
-                        .clipShape(RoundedRectangle(cornerRadius: 4))
+                HStack(spacing: 4) {
+                    if isDirty {
+                        Text("DIRTY")
+                            .font(.caption2)
+                            .padding(.horizontal, 4)
+                            .padding(.vertical, 2)
+                            .background(.red.opacity(0.2))
+                            .foregroundStyle(.red)
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                    }
+                    
+                    if node.needsSetup {
+                        Text("SETUP")
+                            .font(.caption2)
+                            .padding(.horizontal, 4)
+                            .padding(.vertical, 2)
+                            .background(.orange.opacity(0.2))
+                            .foregroundStyle(.orange)
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                    }
                 }
             }
             .contentShape(Rectangle())

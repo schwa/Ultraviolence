@@ -67,10 +67,18 @@ struct NodeDetailView: View {
                     .font(.title2)
                     .fontWeight(.semibold)
 
-                if isDirty {
-                    Label("Dirty", systemImage: "exclamationmark.triangle.fill")
-                        .font(.caption)
-                        .foregroundStyle(.red)
+                HStack(spacing: 8) {
+                    if isDirty {
+                        Label("Dirty", systemImage: "exclamationmark.triangle.fill")
+                            .font(.caption)
+                            .foregroundStyle(.red)
+                    }
+                    
+                    if node.needsSetup {
+                        Label("Needs Setup", systemImage: "wrench.and.screwdriver.fill")
+                            .font(.caption)
+                            .foregroundStyle(.orange)
+                    }
                 }
             }
 
