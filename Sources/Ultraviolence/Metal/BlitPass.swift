@@ -30,4 +30,9 @@ public struct Blit: Element, BodylessElement {
         let blitCommandEncoder = try node.environmentValues.blitCommandEncoder.orThrow(.missingEnvironment(\.blitCommandEncoder))
         try block(blitCommandEncoder)
     }
+
+    nonisolated func requiresSetup(comparedTo old: Blit) -> Bool {
+        // Blit only encodes during workload, never needs setup
+        return false
+    }
 }

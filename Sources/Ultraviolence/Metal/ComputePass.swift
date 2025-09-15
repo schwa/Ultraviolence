@@ -91,4 +91,9 @@ public struct ComputeDispatch: Element, BodylessElement {
             computeCommandEncoder.dispatchThreads(threads, threadsPerThreadgroup: threadsPerThreadgroup)
         }
     }
+
+    nonisolated func requiresSetup(comparedTo old: ComputeDispatch) -> Bool {
+        // ComputeDispatch only dispatches during workload, never needs setup
+        return false
+    }
 }

@@ -7,8 +7,13 @@ struct UltraviolenceExamplesApp: App {
         Window("Ultraviolence", id: "main") {
             ContentView()
         }
-        
+
         SnapshotViewerDocumentScene()
+
+        #if os(macOS)
+        Settings {
+            SettingsView()
+        }
+        #endif
     }
 }
-

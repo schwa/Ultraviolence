@@ -1,22 +1,16 @@
 import Foundation
-#if os(macOS)
-import AppKit
-#endif
 
 internal class Snapshotter {
     private struct FrameInfo: Codable {
         let number: Int
     }
-    
+
     private struct SnapshotRecord: Codable {
         let frame: FrameInfo
         let snapshot: SystemSnapshot
     }
-    
+
     private var frameCounter: Int = 0
-    #if os(macOS)
-    private var hasRevealedDirectory = false
-    #endif
     private let shouldDumpSnapshots = ProcessInfo.processInfo.environment["UV_DUMP_SNAPSHOTS"] != nil
     private var fileHandle: FileHandle?
     private let fileURL: URL
@@ -60,15 +54,7 @@ internal class Snapshotter {
                 }
                 fileHandle = try FileHandle(forWritingTo: fileURL)
                 fileHandle?.seekToEndOfFile()
-                
-                // Reveal in Finder on first snapshot (macOS only)
-                #if os(macOS)
-                if !hasRevealedDirectory {
-                    hasRevealedDirectory = true
-                    NSWorkspace.shared.selectFile(fileURL.path, inFileViewerRootedAtPath: directory.path)
-                }
-                #endif
-                
+
                 print("UV_DUMP_SNAPSHOTS: Dumping snapshots to \(fileURL.path)")
             }
             

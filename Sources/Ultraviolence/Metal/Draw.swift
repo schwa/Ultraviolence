@@ -14,4 +14,9 @@ public struct Draw: Element, BodylessElement {
         let renderCommandEncoder = try node.environmentValues.renderCommandEncoder.orThrow(.missingEnvironment(\.renderCommandEncoder))
         try encodeGeometry(renderCommandEncoder)
     }
+
+    nonisolated func requiresSetup(comparedTo old: Draw) -> Bool {
+        // Draw only encodes during workload, never needs setup
+        return false
+    }
 }

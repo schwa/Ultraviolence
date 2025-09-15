@@ -53,6 +53,7 @@
 				Resources/Samples/Transfer.png,
 				Resources/Samples/tweaked.png,
 				Resources/teapot.obj,
+				SettingsView.swift,
 				UltraviolenceExamplesApp.swift,
 			);
 			target = 45E0A1112D9DAF2D0091ED9E /* Ultraviolence-Examples */;
