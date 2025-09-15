@@ -1,4 +1,5 @@
 internal import os
+import Foundation
 
 public class System {
     // TODO: #221 These properties should become private to enforce proper encapsulation
@@ -19,6 +20,10 @@ public class System {
     /// Accessing @UVEnvironment properties outside traversal will cause a crash.
     var activeNodeStack: [Node] = []
     var dirtyIdentifiers: Set<StructuralIdentifier> = []
+    
+    // Frame counter for snapshot dumping
+    private var frameCounter: Int = 0
+    private static let shouldDumpSnapshots = ProcessInfo.processInfo.environment["UV_DUMP_SNAPSHOTS"] != nil
 
     private static let _current = OSAllocatedUnfairLock<System?>(uncheckedState: nil)
 
@@ -131,6 +136,48 @@ public class System {
             // Replace old with new
             self.nodes = newNodes
             self.orderedIdentifiers = newOrderedIdentifiers
+            
+            // Dump snapshot if environment variable is set
+            if Self.shouldDumpSnapshots {
+                dumpSnapshotToFile()
+            }
+        }
+    }
+    
+    @MainActor
+    private func dumpSnapshotToFile() {
+        frameCounter += 1
+        
+        // Create snapshot
+        let snapshot = self.snapshot()
+        
+        // Setup directory - use user's temporary directory
+        let baseDir = FileManager.default.temporaryDirectory.appendingPathComponent("ultraviolence_snapshots")
+        let sessionDir = baseDir.appendingPathComponent(ProcessInfo.processInfo.processIdentifier.description)
+        
+        // Create directory if needed
+        do {
+            try FileManager.default.createDirectory(at: sessionDir, withIntermediateDirectories: true)
+            
+            // Create filename with zero-padded frame number
+            let filename = String(format: "frame_%06d.uvsnapshot", frameCounter)
+            let fileURL = sessionDir.appendingPathComponent(filename)
+            
+            // Encode and save
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+            let data = try encoder.encode(snapshot)
+            try data.write(to: fileURL)
+            
+            // Log first frame with full path, then every 100th frame
+            if frameCounter == 1 {
+                print("UV_DUMP_SNAPSHOTS: Dumping snapshots to \(sessionDir.path)")
+                print("UV_DUMP_SNAPSHOTS: Saved frame \(frameCounter) to \(fileURL.path)")
+            } else if frameCounter % 100 == 0 {
+                print("UV_DUMP_SNAPSHOTS: Saved frame \(frameCounter) to \(fileURL.path)")
+            }
+        } catch {
+            print("UV_DUMP_SNAPSHOTS: Failed to save snapshot: \(error)")
         }
     }
 }
