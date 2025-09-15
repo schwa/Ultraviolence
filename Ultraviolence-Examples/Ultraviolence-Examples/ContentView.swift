@@ -8,6 +8,7 @@ struct ContentView: View {
 
     init() {
         var demos: [any DemoView.Type] = [
+            EmptyView.self,
             GaussianSplatDemoView.self,
             BlinnPhongDemoView.self,
             GridShaderDemoView.self,
@@ -42,4 +43,10 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
+}
+
+extension EmptyView: DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(name: "Empty", description: "An empty view.")
+    }
 }
