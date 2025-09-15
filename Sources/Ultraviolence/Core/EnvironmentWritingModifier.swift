@@ -10,6 +10,12 @@ internal struct EnvironmentWritingModifier<Content: Element>: Element, BodylessE
     func configureNodeBodyless(_ node: Node) throws {
         modify(&node.environmentValues)
     }
+
+    nonisolated func requiresSetup(comparedTo old: EnvironmentWritingModifier<Content>) -> Bool {
+        // Environment changes might affect setup if they change pipeline-relevant values
+        // Since we can't compare closures, be conservative
+        return true
+    }
 }
 
 public extension Element {

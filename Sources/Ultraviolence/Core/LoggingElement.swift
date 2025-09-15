@@ -18,4 +18,9 @@ public struct LoggingElement: Element, BodylessElement {
     func workloadExit(_ node: Node) throws {
         logger?.log("workloadExit")
     }
+
+    nonisolated func requiresSetup(comparedTo old: LoggingElement) -> Bool {
+        // LoggingElement only logs, never needs setup
+        return false
+    }
 }

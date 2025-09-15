@@ -27,6 +27,12 @@ internal struct AnyBodylessElement: Element, BodylessElement {
     func workloadExit(_ node: Node) throws {
         try _workloadExit?(node)
     }
+
+    nonisolated func requiresSetup(comparedTo old: AnyBodylessElement) -> Bool {
+        // AnyBodylessElement wraps closures - if the closures change, we need setup
+        // Since we can't compare closures, always return true for safety
+        return true
+    }
 }
 
 // TODO: #225 Clarify purpose of these modifier-style extensions - may be for builder pattern or phase-specific actions

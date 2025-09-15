@@ -9,6 +9,11 @@ public struct AnyElement: Element, BodylessElement {
     func visitChildrenBodyless(_ visit: (any Element) throws -> Void) throws {
         try visit(base)
     }
+
+    nonisolated func requiresSetup(comparedTo old: AnyElement) -> Bool {
+        // Type erasure prevents comparison - be conservative
+        return true
+    }
 }
 
 public extension Element {

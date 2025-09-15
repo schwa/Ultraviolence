@@ -17,6 +17,11 @@ public struct BlitPass <Content>: Element, BodylessElement, BodylessContentEleme
         let blitCommandEncoder = try node.environmentValues.blitCommandEncoder.orThrow(.missingEnvironment(\.blitCommandEncoder))
         blitCommandEncoder.endEncoding()
     }
+
+    nonisolated func requiresSetup(comparedTo old: BlitPass<Content>) -> Bool {
+        // BlitPass only creates encoders during workload, never needs setup
+        return false
+    }
 }
 
 public struct Blit: Element, BodylessElement {

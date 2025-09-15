@@ -152,7 +152,7 @@ public class System {
             // Replace old with new
             self.nodes = newNodes
             self.traversalEvents = newTraversalEvents
-            
+
             // Dump snapshot if environment variable is set
             snapshotter.dumpSnapshotIfNeeded(self)
         }
@@ -180,6 +180,8 @@ private extension System {
         existingNode.parentIdentifier = activeNodeStack.last?.id
 
         if shouldUpdateNode(existingNode, with: element, id: currentId) {
+            // Save the old element BEFORE updating for requiresSetup check
+            let oldElement = existingNode.element
             existingNode.element = element
             // When element changes, preserve setup-phase values while clearing others
             // This ensures values like renderPipelineState set during setup are retained
@@ -187,8 +189,16 @@ private extension System {
             existingNode.environmentValues = UVEnvironmentValues()
             // Restore preserved values after resetting
             existingNode.environmentValues.storage.values = preservedValues
-            // Element changed, needs setup
-            existingNode.needsSetup = true
+
+            // Only mark as needing setup if the element type requires it
+            if let oldBodyless = oldElement as? any BodylessElement,
+               let newBodyless = element as? any BodylessElement,
+               type(of: oldBodyless) == type(of: newBodyless) {
+                existingNode.needsSetup = requiresSetupErased(old: oldBodyless, new: newBodyless)
+            } else {
+                // Default to needing setup for non-BodylessElements or type changes
+                existingNode.needsSetup = true
+            }
         }
         // Whether changed or not, reuse the existing node
         newNodes[currentId] = existingNode
@@ -205,6 +215,24 @@ private extension System {
     }
 
     func shouldUpdateNode(_ node: Node, with element: any Element, id: StructuralIdentifier) -> Bool {
-        !isEqual(node.element, element) || dirtyIdentifiers.contains(id)
+        // Check if element is dirty first
+        if dirtyIdentifiers.contains(id) {
+            return true
+        }
+
+        // Always check if the element has changed using equality
+        // Don't use requiresSetup here - that's only for determining if setup phase is needed
+        return !isEqual(node.element, element)
+    }
+
+    private func requiresSetupErased(old: any BodylessElement, new: any BodylessElement) -> Bool {
+        // This function handles the type erasure needed to call requiresSetup
+        func helper<T: BodylessElement>(_ old: T, _ new: any BodylessElement) -> Bool {
+            guard let new = new as? T else { return true }
+            return new.requiresSetup(comparedTo: old)
+        }
+
+        // Use a protocol witness to preserve the concrete type
+        return helper(old, new)
     }
 }

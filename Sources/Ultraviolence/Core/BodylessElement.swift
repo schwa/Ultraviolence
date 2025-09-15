@@ -7,6 +7,10 @@ internal protocol BodylessElement {
     func setupExit(_ node: Node) throws
     func workloadEnter(_ node: Node) throws
     func workloadExit(_ node: Node) throws
+
+    /// Returns true if the change from `old` to `self` requires the setup phase to run again.
+    /// This is a SHALLOW check - only considers this element, not its children.
+    nonisolated func requiresSetup(comparedTo old: Self) -> Bool
 }
 
 extension BodylessElement {
@@ -29,5 +33,22 @@ extension BodylessElement {
     }
     func workloadExit(_ node: Node) throws {
         // This line intentionally left blank.
+    }
+}
+
+extension BodylessElement {
+    nonisolated func requiresSetup(comparedTo old: Self) -> Bool {
+        // Default: use Equatable if available, otherwise assume change requires setup
+        if let self = self as? any Equatable,
+           let old = old as? any Equatable {
+            return !isEqual(self, old)
+        }
+        return true
+    }
+}
+
+extension BodylessElement where Self: Equatable {
+    nonisolated func requiresSetup(comparedTo old: Self) -> Bool {
+        return self != old
     }
 }

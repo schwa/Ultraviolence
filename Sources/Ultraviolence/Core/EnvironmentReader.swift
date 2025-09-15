@@ -23,4 +23,10 @@ public struct EnvironmentReader<Value, Content: Element>: Element, BodylessEleme
         let content = try content(value)
         try visit(content)
     }
+
+    nonisolated func requiresSetup(comparedTo old: EnvironmentReader<Value, Content>) -> Bool {
+        // EnvironmentReader dynamically creates content based on environment
+        // Since we can't compare closures, be conservative
+        return true
+    }
 }

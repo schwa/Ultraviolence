@@ -20,4 +20,10 @@ public struct _ConditionalContent<TrueContent, FalseContent>: Element, BodylessE
             try visit(second)
         }
     }
+
+    nonisolated func requiresSetup(comparedTo old: _ConditionalContent<TrueContent, FalseContent>) -> Bool {
+        // ConditionalContent may switch branches which could affect setup
+        // Be conservative since we can't check which branch without accessing properties
+        return true
+    }
 }

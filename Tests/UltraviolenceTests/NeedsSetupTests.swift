@@ -125,7 +125,7 @@ struct NeedsSetupTests {
         // Third update with different element
         try system.update(root: SetupTrackingElement(id: 2))
         try system.processSetup()
-        
+
         // Should now be 2
         #expect(SetupTrackingElement.globalSetupEnterCount == 2)
     }

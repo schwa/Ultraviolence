@@ -31,4 +31,10 @@ public struct RenderPass <Content>: Element, BodylessElement, BodylessContentEle
         node.environmentValues.renderCommandEncoder = nil
         logger?.verbose?.info("Ending render pass: \(label ?? "<unlabeled>") (\(node.element.internalDescription))")
     }
+
+    nonisolated func requiresSetup(comparedTo old: RenderPass<Content>) -> Bool {
+        // RenderPass creates pipeline descriptor in setup but only creates encoders in workload
+        // The descriptor creation is lightweight and should happen on structure changes
+        return false
+    }
 }

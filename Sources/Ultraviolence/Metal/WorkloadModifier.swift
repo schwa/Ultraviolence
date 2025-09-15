@@ -10,6 +10,11 @@ internal struct WorkloadModifier <Content>: Element, BodylessElement, BodylessCo
     func workloadEnter(_ node: Node) throws {
         try _workloadEnter?(node.environmentValues)
     }
+
+    nonisolated func requiresSetup(comparedTo old: WorkloadModifier<Content>) -> Bool {
+        // WorkloadModifier only affects the workload phase, never requires setup
+        return false
+    }
 }
 
 public extension Element {

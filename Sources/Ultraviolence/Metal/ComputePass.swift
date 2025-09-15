@@ -51,6 +51,13 @@ public struct ComputePipeline <Content>: Element, BodylessElement, BodylessConte
         node.environmentValues.reflection = Reflection(try reflection.orThrow(.resourceCreationFailure("Failed to create reflection.")))
         node.environmentValues.computePipelineState = computePipelineState
     }
+
+    nonisolated func requiresSetup(comparedTo old: ComputePipeline<Content>) -> Bool {
+        // For now, always return false since kernels rarely change after initial setup
+        // This prevents pipeline recreation on every frame
+        // TODO: Implement proper comparison when shader constants are added
+        return false
+    }
 }
 
 // MARK: -

@@ -30,6 +30,11 @@ internal struct ParameterElementModifier<Content>: Element, BodylessElement, Bod
             }
         }
     }
+
+    nonisolated func requiresSetup(comparedTo old: ParameterElementModifier<Content>) -> Bool {
+        // Parameter values changing never requires setup - they're only used in workload phase
+        return false
+    }
 }
 
 // MARK: -
