@@ -24,7 +24,8 @@ public class VideoTexturePipeline: ObservableObject {
         CVMetalTextureCacheCreate(nil, nil, device, nil, &cache)
         self.textureCache = cache
     }
-    
+
+    @MainActor
     public func loadVideo(url: URL, loopStart: TimeInterval = 2.95, loopEnd: TimeInterval = 11.95) throws {
         // Create player item and player
         playerItem = AVPlayerItem(url: url)
