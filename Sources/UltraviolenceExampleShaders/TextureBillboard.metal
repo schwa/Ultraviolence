@@ -24,9 +24,10 @@ namespace TextureBillboard {
         VertexOut in [[stage_in]],
         constant int &input [[buffer(0)]],
         constant int &slice [[buffer(1)]],
+        constant float4 &solidColor [[buffer(2)]],
 
-        texture2d<float> texture2d [[texture(2)]],
-        texturecube<float> textureCube [[texture(3)]]
+        texture2d<float> texture2d [[texture(3)]],
+        texturecube<float> textureCube [[texture(4)]]
     ) {
         constexpr sampler s;
         if (input == 0) {
@@ -58,6 +59,8 @@ namespace TextureBillboard {
             auto color = textureCube.sample(s, direction);
             color.a = 1.0;
             return color;
+        } else if (input == 2) {
+            return solidColor;
         } else {
             return float4(1.0, 0.0, 1.0, 1.0);
         }

@@ -5,7 +5,8 @@ import UltraviolenceSupport
 
 // TODO: #138 Add code to align the texture correctly in the output.
 struct BillboardRenderPipeline: Element {
-    let texture: MTLTexture
+    let texture: MTLTexture?
+    let color: SIMD4<Float>?
     let slice: Int
 
     let vertexShader: VertexShader
@@ -13,8 +14,10 @@ struct BillboardRenderPipeline: Element {
     let positions: [SIMD2<Float>]
     let textureCoordinates: [SIMD2<Float>]
 
-    init(texture: MTLTexture, slice: Int = 0) throws {
+    init(texture: MTLTexture? = nil, color: SIMD4<Float>? = nil, slice: Int = 0) throws {
+        precondition(texture != nil || color != nil, "Either texture or color must be provided")
         self.texture = texture
+        self.color = color
         self.slice = slice
         let device = _MTLCreateSystemDefaultDevice()
         assert(device.argumentBuffersSupport == .tier2)
@@ -36,17 +39,20 @@ struct BillboardRenderPipeline: Element {
                     encoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: positions.count)
                 }
                 .parameter("input", value: {
-                    if texture.textureType == .type2D {
-                        return 0
+                    if let texture = texture {
+                        if texture.textureType == .type2D {
+                            return 0
+                        }
+                        if texture.textureType == .typeCube {
+                            return 1
+                        }
                     }
-                    if texture.textureType == .typeCube {
-                        return 1
-                    }
-                    return 0
+                    return 2 // color mode
                 }())
                 .parameter("slice", value: slice)
-                .parameter("texture2d", texture: texture.textureType == .type2D ? texture : nil)
-                .parameter("textureCube", texture: texture.textureType == .typeCube ? texture : nil)
+                .parameter("solidColor", value: color ?? SIMD4<Float>(1, 0, 1, 1))
+                .parameter("texture2d", texture: texture?.textureType == .type2D ? texture : nil)
+                .parameter("textureCube", texture: texture?.textureType == .typeCube ? texture : nil)
             }
             .vertexDescriptor(try vertexShader.inferredVertexDescriptor())
         }
