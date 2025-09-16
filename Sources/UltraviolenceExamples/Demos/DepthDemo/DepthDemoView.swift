@@ -31,7 +31,24 @@ public struct DepthDemoView: View {
 
     let teapot = MTKMesh.teapot()
 
+    let adjustSource = """
+    #include <metal_stdlib>
+    using namespace metal;
+
+    [[ stitchable ]]
+    float4 adjustColor(float4 inputColor) {
+        return pow(inputColor, 50.0);
+    }
+    """
+
+    let linkedFunctions: MTLLinkedFunctions
+
     public init() {
+        let device = _MTLCreateSystemDefaultDevice()
+        let sourceLibrary = try! device.makeLibrary(source: adjustSource, options: nil)
+        let linkedFunctions = MTLLinkedFunctions()
+        linkedFunctions.privateFunctions = [sourceLibrary.makeFunction(name: "adjustColor")!]
+        self.linkedFunctions = linkedFunctions
     }
 
     public var body: some View {
@@ -55,6 +72,7 @@ public struct DepthDemoView: View {
                     try ComputePass(label: "ColorAdjust") {
                         ColorAdjustComputePipeline(inputSpecifier: .depth2D(depthTexture, nil), outputTexture: adjustedDepthTexture)
                     }
+                    .environment(\.linkedFunctions, linkedFunctions)
 
                     try RenderPass(label: "Depth to Screen Pass") {
                         try BillboardRenderPipeline(specifier:showDepthMap ? .texture2D(adjustedDepthTexture, nil) : .texture2D(colorTexture, nil), flippedY: true)

@@ -47,6 +47,9 @@ public struct ComputePipeline <Content>: Element, BodylessElement, BodylessConte
             descriptor.label = label
         }
         descriptor.computeFunction = computeKernel.function
+        if let linkedFunctions = node.environmentValues.linkedFunctions {
+            descriptor.linkedFunctions = linkedFunctions
+        }
         let (computePipelineState, reflection) = try device.makeComputePipelineState(descriptor: descriptor, options: .bindingInfo)
         node.environmentValues.reflection = Reflection(try reflection.orThrow(.resourceCreationFailure("Failed to create reflection.")))
         node.environmentValues.computePipelineState = computePipelineState

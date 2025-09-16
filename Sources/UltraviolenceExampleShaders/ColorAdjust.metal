@@ -3,6 +3,9 @@
 
 using namespace metal;
 
+[[ visible ]]
+float4 adjustColor(float4 inputColor);
+
 namespace ColorAdjust {
 
     uint2 thread_position_in_grid [[thread_position_in_grid]];
@@ -50,7 +53,10 @@ namespace ColorAdjust {
         const float2 textureCoordinate = textureCoordinateForPixel(inputSpecifier, thread_position_in_grid);
         const float4 inputColor = resolveSpecifiedColor(inputSpecifier, textureCoordinate, discard);
         // TODO: Make this a function pointer
-        float4 newColor = pow(inputColor, 50.0);;
+//        float4 newColor = pow(inputColor, 50.0);;
+
+        float4 newColor = adjustColor(inputColor);
+
         outputTexture.write(newColor, thread_position_in_grid);
     }
 }
