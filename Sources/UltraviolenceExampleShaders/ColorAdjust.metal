@@ -4,7 +4,7 @@
 using namespace metal;
 
 [[ visible ]]
-float4 adjustColor(float4 inputColor, constant void *inputParameters);
+float4 process_graph(float4 inputColor);
 
 namespace ColorAdjust {
 
@@ -56,7 +56,7 @@ namespace ColorAdjust {
         // TODO: Make this a function pointer
 //        float4 newColor = pow(inputColor, 50.0);;
 
-        float4 newColor = adjustColor(inputColor, inputParameters);
+        float4 newColor = process_graph(inputColor);
 
         outputTexture.write(newColor, thread_position_in_grid);
     }

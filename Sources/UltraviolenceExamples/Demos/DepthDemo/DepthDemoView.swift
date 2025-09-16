@@ -48,10 +48,27 @@ public struct DepthDemoView: View {
 
     public init() {
         let device = _MTLCreateSystemDefaultDevice()
-        let sourceLibrary = try! device.makeLibrary(source: adjustSource, options: nil)
-        let linkedFunctions = MTLLinkedFunctions()
-        linkedFunctions.privateFunctions = [sourceLibrary.makeFunction(name: "adjustColor")!]
-        self.linkedFunctions = linkedFunctions
+
+        // Compile the stitchable function
+                let sourceLibrary = try! device.makeLibrary(source: adjustSource, options: nil)
+
+                // Build the graph: process_graph(input) -> adjustColor(input)
+                let input0 = MTLFunctionStitchingInputNode(argumentIndex: 0)
+                let adjust = MTLFunctionStitchingFunctionNode(name: "adjustColor", arguments: [input0], controlDependencies: [])
+
+                // IMPORTANT: set outputNode to the node whose value you want to return
+        let graph = MTLFunctionStitchingGraph(functionName: "process_graph", nodes: [adjust], outputNode: adjust, attributes: [])
+
+                let stitchedLibraryDescriptor = MTLStitchedLibraryDescriptor()
+                stitchedLibraryDescriptor.functions = [sourceLibrary.makeFunction(name: "adjustColor")!]
+                stitchedLibraryDescriptor.functionGraphs = [graph]
+                let stitchedLibrary = try! device.makeLibrary(stitchedDescriptor: stitchedLibraryDescriptor)
+                let stitchedFunction = stitchedLibrary.makeFunction(name: "process_graph")!
+
+                let linkedFunctions = MTLLinkedFunctions()
+                linkedFunctions.privateFunctions = [stitchedFunction]
+
+                self.linkedFunctions = linkedFunctions
     }
 
     public var body: some View {
