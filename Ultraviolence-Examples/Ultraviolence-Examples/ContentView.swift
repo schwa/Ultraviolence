@@ -15,6 +15,7 @@ struct ContentView: View {
             SkyboxDemoView.self,
             TriangleDemoView.self,
             ComputeDemoView.self,
+            DepthDemoView.self,
 
             // "Complex" Demos
             MetalFXDemoView.self,

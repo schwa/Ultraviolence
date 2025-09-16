@@ -34,7 +34,9 @@ public struct FlatShader <Content>: Element where Content: Element {
             try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                 content
                     .parameter("specifier", value: textureSpecifierArgumentBuffer)
-                    .useResource(textureSpecifier.texture2D, usage: .read, stages: .fragment) // TODO: We dont always have a texture2D to use! [FILE THIS]
+                    .useResource(textureSpecifier.texture2D, usage: .read, stages: .fragment)
+                    .useResource(textureSpecifier.textureCube, usage: .read, stages: .fragment)
+                    .useResource(textureSpecifier.depth2D, usage: .read, stages: .fragment)
             }
         }
     }

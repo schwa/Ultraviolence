@@ -44,7 +44,9 @@ struct BillboardRenderPipeline: Element {
                     encoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: positions.count)
                 }
                 .parameter("specifier", value: specifierArgumentBuffer)
-                .useResource(specifier.texture2D, usage: .read, stages: .fragment) // TODO: We dont always have a texture2D to use! [FILE THIS]
+                .useResource(specifier.texture2D, usage: .read, stages: .fragment)
+                .useResource(specifier.textureCube, usage: .read, stages: .fragment)
+                .useResource(specifier.depth2D, usage: .read, stages: .fragment)
                 .parameter("slice", value: slice)
             }
             .vertexDescriptor(try vertexShader.inferredVertexDescriptor())
