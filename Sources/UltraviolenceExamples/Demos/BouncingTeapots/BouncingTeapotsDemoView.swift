@@ -1,4 +1,3 @@
-import DemoKit
 import MetalKit
 import simd
 import SwiftUI
@@ -196,12 +195,3 @@ struct FlyingTeapotsRenderPass: Element {
     }
 }
 
-extension BouncingTeapotsDemoView: DemoView {
-    public static var metadata: DemoMetadata {
-        DemoMetadata(
-            name: "Bouncing Teapots",
-            description: "Physics simulation of animated teapots with MetalFX upscaling and instanced rendering",
-            keywords: ["instancing", "metalfx"]
-        )
-    }
-}

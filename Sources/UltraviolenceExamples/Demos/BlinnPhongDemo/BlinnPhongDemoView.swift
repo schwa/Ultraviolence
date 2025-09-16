@@ -1,4 +1,3 @@
-import DemoKit
 import Metal
 import MetalKit
 import simd
@@ -108,15 +107,6 @@ public struct BlinnPhongDemoView: View {
     }
 }
 
-extension BlinnPhongDemoView: DemoView {
-    public static var metadata: DemoMetadata {
-        DemoMetadata(
-            name: "Blinn-Phong Lighting",
-            description: "3D lighting demonstration using the Blinn-Phong shading model with animated lights",
-            keywords: ["lighting", "skybox"]
-        )
-    }
-}
 
 struct Model: Identifiable {
     var id: String

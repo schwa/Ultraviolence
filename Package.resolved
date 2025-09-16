@@ -1,15 +1,6 @@
 {
-  "originHash" : "e2e4c2563a14347d0d4a2cf6e82527348214dd29d20fa1d27e234d9b7ab0479c",
+  "originHash" : "a3bc22604815ea165376371039e9fac64a07167df32c14dcb6dc4405d2012352",
   "pins" : [
-    {
-      "identity" : "demokit",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/schwa/DemoKit",
-      "state" : {
-        "revision" : "abf12ec5910b9ec7b18f72c65f09a107895a43d4",
-        "version" : "0.1.0"
-      }
-    },
     {
       "identity" : "metalcompilerplugin",
       "kind" : "remoteSourceControl",

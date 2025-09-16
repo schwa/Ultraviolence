@@ -24,7 +24,7 @@ struct ContentView: View {
             LUTDemoView.self,
 
             GameOfLifeDemoView.self,
-            AppleEventLogoDemoView.self
+            AppleEventLogoDemoView.self,
         ]
 
 #if os(macOS)
@@ -43,10 +43,4 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-}
-
-extension EmptyView: DemoView {
-    public static var metadata: DemoMetadata {
-        DemoMetadata(name: "Empty", description: "An empty view.")
-    }
 }

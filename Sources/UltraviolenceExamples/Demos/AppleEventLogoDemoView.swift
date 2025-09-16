@@ -2,7 +2,6 @@ import SwiftUI
 import UltraviolenceSupport
 import Ultraviolence
 import UltraviolenceUI
-import DemoKit
 import simd
 import MetalKit
 import AVFoundation
@@ -228,10 +227,3 @@ public struct AppleEventLogoDemoView: View {
     }
 }
 
-extension AppleEventLogoDemoView: DemoView {
-    public static var metadata: DemoMetadata {
-        DemoMetadata(
-            name: "Apple Event Logo",
-        )
-    }
-}

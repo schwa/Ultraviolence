@@ -33,6 +33,7 @@
 			membershipExceptions = (
 				Assets.xcassets,
 				ContentView.swift,
+				Demos.swift,
 				"Preview Content/Preview Assets.xcassets",
 				Resources/Images/DJSI3956.JPG,
 				"Resources/Images/HD-Testcard-original.jpg",

@@ -1,4 +1,3 @@
-import DemoKit
 import SwiftUI
 import UltraviolenceUI
 
@@ -45,12 +44,3 @@ public struct GameOfLifeDemoView: View {
     }
 }
 
-extension GameOfLifeDemoView: DemoView {
-    public static var metadata: DemoMetadata {
-        DemoMetadata(
-            name: "Game of Life",
-            description: "Conway's Game of Life cellular automaton simulation using GPU compute shaders",
-            keywords: ["compute"]
-        )
-    }
-}

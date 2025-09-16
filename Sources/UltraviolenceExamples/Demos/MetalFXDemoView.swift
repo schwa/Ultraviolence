@@ -1,5 +1,4 @@
 #if canImport(MetalFX)
-import DemoKit
 import Metal
 import MetalKit
 import SwiftUI
@@ -108,13 +107,4 @@ public struct MetalFXDemoView: View {
     }
 }
 
-extension MetalFXDemoView: DemoView {
-    public static var metadata: DemoMetadata {
-        DemoMetadata(
-            name: "MetalFX Upscaling",
-            description: "Image upscaling using MetalFX spatial upsampling for enhanced image quality",
-            keywords: ["metalfx", "upscaling"]
-        )
-    }
-}
 #endif

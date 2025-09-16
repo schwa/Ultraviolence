@@ -1,4 +1,3 @@
-import DemoKit
 import simd
 import SwiftUI
 import Ultraviolence
@@ -31,15 +30,6 @@ public struct GridShaderDemoView: View {
     }
 }
 
-extension GridShaderDemoView: DemoView {
-    public static var metadata: DemoMetadata {
-        DemoMetadata(
-            name: "Grid Shader",
-            description: "Procedural grid rendering using fragment shaders for geometric patterns",
-            keywords: ["procedural"]
-        )
-    }
-}
 
 struct GridShader: Element {
     @State

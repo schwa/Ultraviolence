@@ -1,4 +1,3 @@
-import DemoKit
 import MetalKit
 import simd
 import SwiftUI
@@ -53,12 +52,3 @@ public struct MixedDemoView: View {
     }
 }
 
-extension MixedDemoView: DemoView {
-    public static var metadata: DemoMetadata {
-        DemoMetadata(
-            name: "Mixed Techniques",
-            description: "Combination of multiple rendering techniques including lighting and animation",
-            keywords: ["multipass"]
-        )
-    }
-}

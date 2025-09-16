@@ -1,4 +1,3 @@
-import DemoKit
 import Metal
 import MetalKit
 import SwiftUI
@@ -123,15 +122,6 @@ public struct LUTDemoView: View {
     }
 }
 
-extension LUTDemoView: DemoView {
-    public static var metadata: DemoMetadata {
-        DemoMetadata(
-            name: "LUT Color Grading",
-            description: "Color grading and correction using Look-Up Tables (LUTs) for cinematic effects",
-            keywords: ["lut", "post-processing"]
-        )
-    }
-}
 
 extension URL {
     func assertFileExists() -> URL {

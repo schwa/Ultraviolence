@@ -1,4 +1,3 @@
-import DemoKit
 import SwiftUI
 import Ultraviolence
 import UltraviolenceSupport
@@ -101,12 +100,3 @@ public struct StencilDemoView: View {
     }
 }
 
-extension StencilDemoView: DemoView {
-    public static var metadata: DemoMetadata {
-        DemoMetadata(
-            name: "Stencil Buffer",
-            description: "Stencil buffer masking demonstration with checkerboard pattern clipping",
-            keywords: ["stencil"]
-        )
-    }
-}

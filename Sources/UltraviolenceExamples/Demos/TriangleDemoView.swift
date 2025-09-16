@@ -1,4 +1,3 @@
-import DemoKit
 import MetalKit
 import simd
 import SwiftUI
@@ -96,12 +95,3 @@ public struct TriangleDemoView: View {
     }
 }
 
-extension TriangleDemoView: DemoView {
-    public static var metadata: DemoMetadata {
-        DemoMetadata(
-            name: "Triangle",
-            description: "Basic triangle rendering with animated colors and performance metrics",
-            keywords: ["vertex", "fragment"]
-        )
-    }
-}

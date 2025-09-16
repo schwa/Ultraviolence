@@ -1,0 +1,95 @@
+import DemoKit
+import SwiftUI
+import UltraviolenceExamples
+
+extension EmptyView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(name: "Empty", description: "An empty view.")
+    }
+}
+
+extension TriangleDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(name: "Triangle", description: "Basic triangle rendering with animated colors and performance metrics", group: "Basic", keywords: ["animated"])
+    }
+}
+
+extension GridShaderDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(name: "Grid Shader", description: "Procedural grid rendering using fragment shaders for geometric patterns", group: "Basic", keywords: [])
+    }
+}
+
+extension GameOfLifeDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(name: "Game of Life", description: "Conway's Game of Life cellular automaton simulation using GPU compute shaders", group: "Basic", keywords: ["animated"])
+    }
+}
+
+extension StencilDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(name: "Stencil Buffer", description: "Stencil buffer masking demonstration with checkerboard pattern clipping", group: "Basic", keywords: [])
+    }
+}
+
+extension GaussianSplatDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(name: "Gaussian Splatting", description: "Real-time point cloud rendering using Gaussian splatting techniques for 3D scene reconstruction", group: "Complex", keywords: [])
+    }
+}
+
+extension ComputeDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(name: "Compute", description: "Simple compute shader that copies data between GPU buffers", group: "Basic", keywords: ["needs-work"])
+    }
+}
+
+extension MetalFXDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(name: "MetalFX Upscaling", description: "Image upscaling using MetalFX spatial upsampling for enhanced image quality", group: "Basic", keywords: ["metalfx", "needs-work"])
+    }
+}
+
+extension BouncingTeapotsDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(name: "Bouncing Teapots", description: "Physics simulation of animated teapots with MetalFX upscaling and instanced rendering", group: "Complex", keywords: ["metalfx", "animated", "multipass"])
+    }
+}
+
+extension BlinnPhongDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(name: "Blinn-Phong Lighting", description: "3D lighting demonstration using the Blinn-Phong shading model with animated lights", group: "Basic", keywords: ["lighting", "multipass", "animated"])
+    }
+}
+
+extension SkyboxDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(name: "Skybox", description: "Environment mapping demonstration using cube textures for 360-degree backgrounds", group: "Basic", keywords: [])
+    }
+}
+
+extension AppleEventLogoDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(name: "Apple Event Logo", group: "Complex", keywords: ["needs-work", "animated", "video"])
+    }
+}
+
+extension LUTDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(name: "LUT Color Grading", description: "Color grading and correction using Look-Up Tables (LUTs) for cinematic effects", group: "Basic", keywords: ["post-processing"])
+    }
+}
+
+#if os(macOS)
+extension OffscreenDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(name: "Offscreen Rendering", description: "Render-to-texture demonstration showing offscreen rendering capabilities", group: "Basic", keywords: ["needs-work"])
+    }
+}
+#endif
+
+extension MixedDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(name: "Mixed Techniques", description: "Combination of multiple rendering techniques including lighting and animation", group: "Complex", keywords: ["multipass", "animated"])
+    }
+}

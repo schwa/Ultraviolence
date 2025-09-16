@@ -1,5 +1,4 @@
 #if os(iOS) || (os(macOS) && !arch(x86_64))
-import DemoKit
 internal import os
 import SwiftUI
 import UltraviolenceGaussianSplats
@@ -88,13 +87,4 @@ public struct GaussianSplatDemoView: View {
     }
 }
 
-extension GaussianSplatDemoView: DemoView {
-    public static var metadata: DemoMetadata {
-        DemoMetadata(
-            name: "Gaussian Splatting",
-            description: "Real-time point cloud rendering using Gaussian splatting techniques for 3D scene reconstruction",
-            keywords: ["point-cloud", "compute"]
-        )
-    }
-}
 #endif
