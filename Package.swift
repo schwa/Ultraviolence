@@ -18,7 +18,6 @@ public let package = Package(
         .library(name: "UltraviolenceGaussianSplats", targets: ["UltraviolenceGaussianSplats"]),
         .library(name: "UltraviolenceKit", targets: ["UltraviolenceKit"]),
         .library(name: "UltraviolenceSnapshotUI", targets: ["UltraviolenceSnapshotUI"]),
-        .executable(name: "UltraviolenceCLI", targets: ["UltraviolenceCLI"])
     ],
     dependencies: [
         .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.0-latest"),
@@ -97,17 +96,6 @@ public let package = Package(
             ],
             plugins: [
                 .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
-            ]
-        ),
-        .executableTarget(
-            name: "UltraviolenceCLI",
-            dependencies: [
-                "Ultraviolence",
-                "UltraviolenceSupport",
-                "UltraviolenceExamples"
-            ],
-            resources: [
-                .copy("Teapot.usdz")
             ]
         ),
         .target(
