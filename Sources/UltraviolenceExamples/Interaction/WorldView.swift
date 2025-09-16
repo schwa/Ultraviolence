@@ -70,11 +70,11 @@ public struct WorldView<Content: View>: View {
 
 public enum CameraController: Hashable, CaseIterable {
     case turntable
-    case arcball
-    case flight
-    case walk
-    case hover
-    case pan
+//    case arcball
+//    case flight
+//    case walk
+//    case hover
+//    case pan
 }
 
 public enum CameraMode: Hashable {
