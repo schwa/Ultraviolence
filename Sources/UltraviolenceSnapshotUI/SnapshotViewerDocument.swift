@@ -49,7 +49,7 @@ nonisolated struct SnapshotViewerDocument: FileDocument {
     }
 
     static let readableContentTypes = [
-        UTType(importedAs: "io.schwa.uvsnapshots")
+        UTType(exportedAs: "io.schwa.uvsnapshots")
     ]
 
     init(configuration: ReadConfiguration) throws {
