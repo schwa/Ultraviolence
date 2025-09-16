@@ -5,6 +5,8 @@ import Ultraviolence
 import UltraviolenceGaussianSplatShaders
 import UltraviolenceSupport
 import UltraviolenceUI
+import GeometryLite3D
+
 let logger: Logger? = Logger(subsystem: "gaussian-splats", category: "gaussian-splats")
 
 public struct GaussianSplatView: View {

@@ -5,6 +5,7 @@ import Ultraviolence
 import UltraviolenceExampleShaders
 import UltraviolenceSupport
 import UltraviolenceUI
+import GeometryLite3D
 
 public struct GridShaderDemoView: View {
     @State

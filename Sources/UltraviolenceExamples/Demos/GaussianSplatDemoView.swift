@@ -5,6 +5,7 @@ import SwiftUI
 import UltraviolenceGaussianSplats
 import UltraviolenceGaussianSplatShaders
 import UltraviolenceSupport
+import GeometryLite3D
 
 public struct GaussianSplatDemoView: View {
     @State

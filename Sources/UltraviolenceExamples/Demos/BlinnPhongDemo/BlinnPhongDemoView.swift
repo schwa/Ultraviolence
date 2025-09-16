@@ -6,6 +6,7 @@ import SwiftUI
 import Ultraviolence
 import UltraviolenceSupport
 import UltraviolenceUI
+import GeometryLite3D
 
 public struct BlinnPhongDemoView: View {
     @State

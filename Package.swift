@@ -24,6 +24,7 @@ public let package = Package(
         .package(url: "https://github.com/schwa/MetalCompilerPlugin", from: "0.1.0"),
         .package(url: "https://github.com/apple/swift-async-algorithms", from: "1.0.0"),
         .package(url: "https://github.com/schwa/DemoKit", from: "0.1.0"),
+        .package(path: "/Users/schwa/Projects/GeometryLite3D"),
     ],
     targets: [
         .target(
@@ -79,7 +80,8 @@ public let package = Package(
                 "UltraviolenceExampleShaders",
                 "UltraviolenceUI",
                 "UltraviolenceGaussianSplats",
-                "DemoKit"
+                "DemoKit",
+                "GeometryLite3D",
             ],
             resources: [
                 .copy("Resources")
@@ -105,7 +107,8 @@ public let package = Package(
                 "UltraviolenceSupport",
                 "UltraviolenceGaussianSplatShaders",
                 "UltraviolenceUI",
-                .product(name: "AsyncAlgorithms", package: "swift-async-algorithms")
+                .product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
+                "GeometryLite3D",
             ]
         ),
         .target(

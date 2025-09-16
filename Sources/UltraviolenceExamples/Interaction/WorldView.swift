@@ -1,6 +1,7 @@
 import simd
 import SwiftUI
 import UltraviolenceSupport
+import GeometryLite3D
 
 public struct WorldView<Content: View>: View {
     @Binding
@@ -95,17 +96,17 @@ extension CameraAngle {
     var matrix: simd_float4x4 {
         switch self {
         case .top:
-            return look(at: [0, 0, 0], from: [0, 1, 0], up: [0, 0, 1])
+            return float4x4.look(at: [0, 0, 0], from: [0, 1, 0], up: [0, 0, 1])
         case .bottom:
-            return look(at: [0, 0, 0], from: [0, -1, 0], up: [0, 0, -1])
+            return float4x4.look(at: [0, 0, 0], from: [0, -1, 0], up: [0, 0, -1])
         case .left:
-            return look(at: [0, 0, 0], from: [-1, 0, 0], up: [0, 1, 0])
+            return float4x4.look(at: [0, 0, 0], from: [-1, 0, 0], up: [0, 1, 0])
         case .right:
-            return look(at: [0, 0, 0], from: [1, 0, 0], up: [0, 1, 0])
+            return float4x4.look(at: [0, 0, 0], from: [1, 0, 0], up: [0, 1, 0])
         case .front:
-            return look(at: [0, 0, 0], from: [0, 0, 1], up: [0, 1, 0])
+            return float4x4.look(at: [0, 0, 0], from: [0, 0, 1], up: [0, 1, 0])
         case .back:
-            return look(at: [0, 0, 0], from: [0, 0, -1], up: [0, 1, 0])
+            return float4x4.look(at: [0, 0, 0], from: [0, 0, -1], up: [0, 1, 0])
         }
     }
 }

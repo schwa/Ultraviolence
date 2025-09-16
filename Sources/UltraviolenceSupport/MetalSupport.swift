@@ -1,5 +1,16 @@
 import Metal
 import MetalKit
+import CoreGraphics
+import ImageIO
+import ModelIO
+import simd
+import SwiftUI
+import UniformTypeIdentifiers
+#if canImport(AppKit)
+import AppKit
+#elseif canImport(UIKit)
+import UIKit
+#endif
 
 public extension MTKMesh {
     convenience init(name: String, bundle: Bundle) throws {
@@ -57,18 +68,6 @@ public extension MTLDevice {
 }
 
 // swiftlint:disable file_length
-
-import CoreGraphics
-import ImageIO
-import ModelIO
-import simd
-import SwiftUI
-import UniformTypeIdentifiers
-#if canImport(AppKit)
-import AppKit
-#elseif canImport(UIKit)
-import UIKit
-#endif
 
 public extension MTLVertexDescriptor {
     convenience init(vertexAttributes: [MTLVertexAttribute]) {
@@ -732,19 +731,13 @@ public extension MTLBuffer {
 public extension MTLCommandBufferDescriptor {
     func addDefaultLogging() throws {
         let logStateDescriptor = MTLLogStateDescriptor()
-        logStateDescriptor.bufferSize = 16 * 1_024
+        logStateDescriptor.bufferSize = 32 * 1024 * 1_024
         let device = _MTLCreateSystemDefaultDevice()
         let logState = try device.makeLogState(descriptor: logStateDescriptor)
         logState.addLogHandler { _, _, _, message in
             logger?.log("\(message)")
         }
         self.logState = logState
-    }
-}
-
-public extension SIMD2<Float> {
-    init(_ size: CGSize) {
-        self.init(Float(size.width), Float(size.height))
     }
 }
 

@@ -2,6 +2,7 @@
 import UltraviolenceGaussianSplatShaders
 import UltraviolenceSupport
 import UniformTypeIdentifiers
+import GeometryLite3D
 
 public extension UTType {
     // An buffer of Antimatter15Splat in little endian format.

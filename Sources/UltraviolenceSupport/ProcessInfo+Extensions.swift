@@ -12,6 +12,10 @@ public extension ProcessInfo {
     var fatalErrorOnThrow: Bool {
         environment["FATALERROR_ON_THROW"]?.isTruthy ?? false
     }
+
+    var metalLoggingEnabled: Bool {
+        environment["METAL_LOGGING"]?.isTruthy ?? false
+    }
 }
 
 private extension String {

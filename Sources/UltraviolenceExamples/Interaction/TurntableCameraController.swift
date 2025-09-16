@@ -1,6 +1,7 @@
 import simd
 import SwiftUI
 import UltraviolenceSupport
+import GeometryLite3D
 
 public struct TurntableCameraController: ViewModifier {
     @State
@@ -51,9 +52,9 @@ public struct TurntableControllerConstraint: Equatable {
         let rotatedOffset = simd_float4x4(rotation) * localPos
         let other = target + rotatedOffset.xyz
         if towards {
-            return look(at: target, from: other, up: [0, 1, 0])
+            return float4x4.look(at: target, from: other, up: [0, 1, 0])
         }
-        return look(at: other, from: target, up: [0, 1, 0])
+        return float4x4.look(at: other, from: target, up: [0, 1, 0])
     }
 }
 
