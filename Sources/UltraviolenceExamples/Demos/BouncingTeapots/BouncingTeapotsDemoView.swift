@@ -158,7 +158,7 @@ struct FlyingTeapotsRenderPass: Element {
             }
             try RenderPass {
                 // Draw the checkerboard texture into a skybox
-                try FlatShader(textureSpecifier: .texture(skyboxTexture, skyboxSampler)) {
+                try FlatShader(textureSpecifier: .texture2D(skyboxTexture, skyboxSampler)) {
                     Draw { encoder in
                         encoder.setVertexBuffers(of: sphere)
                         encoder.draw(sphere)
@@ -187,7 +187,7 @@ struct FlyingTeapotsRenderPass: Element {
             #if canImport(MetalFX)
             MetalFXSpatial(inputTexture: offscreenTexture, outputTexture: upscaledTexture)
             try RenderPass {
-                try BillboardRenderPipeline(texture: upscaledTexture)
+                try BillboardRenderPipeline(specifier: .texture2D(upscaledTexture))
             }
             .depthCompare(function: .always, enabled: false)
             #endif

@@ -3,7 +3,8 @@
 using namespace metal;
 
 namespace ColorRemap {
-    
+
+    // TODO: This is WAY TOO specific to the example it's used in.
     [[kernel]] void colorRemap(
         texture2d<float, access::read> inputTexture [[texture(0)]],
         texture2d<float, access::write> outputTexture [[texture(1)]],

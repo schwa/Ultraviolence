@@ -1,5 +1,5 @@
-#import "include/UltraviolenceExampleShaders.h"
 #import <metal_stdlib>
+#import "include/UltraviolenceExampleShaders.h"
 
 using namespace metal;
 
@@ -28,12 +28,17 @@ namespace FlatShader {
     }
 
     [[fragment]] float4
-    fragment_main(VertexOut in [[stage_in]], constant Texture2DSpecifierArgumentBuffer &texture [[buffer(0)]]) {
-        if (texture.source == kColorSourceColor) {
-            return float4(texture.color, 1);
-        } else if (texture.source == kColorSourceTexture) {
-            float4 color = texture.texture.sample(texture.sampler, in.textureCoordinate);
-            return color;
+    fragment_main(
+                  VertexOut in [[stage_in]],
+                  constant Texture2DSpecifierArgumentBuffer &specifier [[buffer(0)]]
+    ) {
+        // TODO: Move this into helper function - SHARED WITH TEXTUREBILLBOARD & FLATSHADER & BLINN PHONG
+        if (specifier.source == kColorSourceColor) {
+            return float4(specifier.color, 1);
+        } else if (specifier.source == kColorSourceTexture2D) {
+            return specifier.texture2D.sample(specifier.sampler, in.textureCoordinate);
+        } else if (specifier.source == kColorSourceDepth2D) {
+            return specifier.depth2D.sample(specifier.sampler, in.textureCoordinate);
         } else {
             discard_fragment();
             return float4(0.0, 0.0, 0.0, 0.0);

@@ -6,6 +6,7 @@
 #import <metal_stdlib>
 #define ATTRIBUTE(INDEX) [[attribute(INDEX)]]
 #define TEXTURE2D(TYPE, ACCESS) texture2d<TYPE, ACCESS>
+#define DEPTH2D(TYPE, ACCESS) depth2d<TYPE, ACCESS>
 #define TEXTURECUBE(TYPE, ACCESS) texturecube<TYPE, ACCESS>
 #define SAMPLER sampler
 #define BUFFER(ADDRESS_SPACE, TYPE) ADDRESS_SPACE TYPE
@@ -14,6 +15,7 @@ using namespace metal;
 #import <Metal/Metal.h>
 #define ATTRIBUTE(INDEX)
 #define TEXTURE2D(TYPE, ACCESS) MTLResourceID
+#define DEPTH2D(TYPE, ACCESS) MTLResourceID
 #define TEXTURECUBE(TYPE, ACCESS) MTLResourceID
 #define SAMPLER MTLResourceID
 #define BUFFER(ADDRESS_SPACE, TYPE) TYPE
@@ -30,13 +32,17 @@ using namespace metal;
 
 typedef UV_ENUM(int, ColorSource){
     kColorSourceColor = 0,
-    kColorSourceTexture = 1,
+    kColorSourceTexture2D = 1,
+    kColorSourceTextureCube = 2,
+    kColorSourceDepth2D = 3,
 };
 
 struct Texture2DSpecifierArgumentBuffer {
     ColorSource source;
     simd_float3 color;
-    TEXTURE2D(float, access::sample) texture;
+    TEXTURE2D(float, access::sample) texture2D;
+    TEXTURECUBE(float, access::sample) textureCube;
+    DEPTH2D(float, access::sample) depth2D;
     SAMPLER sampler;
 };
 

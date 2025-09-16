@@ -2,25 +2,50 @@ import Metal
 import simd
 import UltraviolenceExampleShaders
 
+// TODO: Rename to texture specifier
 public enum Texture2DSpecifier {
-    case texture(MTLTexture, MTLSamplerState)
-    // TODO: #139 Switch to SIMD3<Float>??
+    case texture2D(MTLTexture, MTLSamplerState?)
+    case textureCube(MTLTexture, MTLSamplerState?)
+    case depth2D(MTLTexture, MTLSamplerState?)
     case color(SIMD3<Float>)
+
+    static func texture2D(_ texture: MTLTexture) -> Self {
+        .texture2D(texture, nil)
+    }
 }
 
 public extension Texture2DSpecifier {
-    var texture: MTLTexture? {
-        if case let .texture(texture, _) = self {
+    var texture2D: MTLTexture? {
+        if case let .texture2D(texture, _) = self {
+            // TODO: Assert value is correct.
+            return texture
+        }
+        return nil
+    }
+
+    var textureCube: MTLTexture? {
+        if case let .textureCube(texture, _) = self {
+            // TODO: Assert value is correct.
+            return texture
+        }
+        return nil
+    }
+
+    var depth2D: MTLTexture? {
+        if case let .depth2D(texture, _) = self {
+            // TODO: Assert value is correct.
             return texture
         }
         return nil
     }
 
     var sampler: MTLSamplerState? {
-        if case let .texture(_, sampler) = self {
+        switch self {
+        case let .texture2D(_, sampler), let .textureCube(_, sampler), let .depth2D(_, sampler):
             return sampler
+        default:
+            return nil
         }
-        return nil
     }
 
     var color: SIMD3<Float>? {
@@ -35,10 +60,18 @@ public extension Texture2DSpecifier {
     func toTexture2DSpecifierArgmentBuffer() -> Texture2DSpecifierArgumentBuffer {
         var result = Texture2DSpecifierArgumentBuffer()
         switch self {
-        case .texture(let texture, let sampler):
-            result.source = .texture
-            result.texture = texture.gpuResourceID
-            result.sampler = sampler.gpuResourceID
+        case .texture2D(let texture, let sampler):
+            result.source = .texture2D
+            result.texture2D = texture.gpuResourceID
+            result.sampler = sampler.map(\.gpuResourceID) ?? .init()
+        case .textureCube(let texture, let sampler):
+            result.source = .textureCube
+            result.textureCube = texture.gpuResourceID
+            result.sampler = sampler.map(\.gpuResourceID) ?? .init()
+        case .depth2D(let texture, let sampler):
+            result.source = .depth2D
+            result.depth2D = texture.gpuResourceID
+            result.sampler = sampler.map(\.gpuResourceID) ?? .init()
         case .color(let color):
             result.source = .color
             result.color = color

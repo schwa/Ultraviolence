@@ -69,7 +69,7 @@ public struct LUTDemoView: View {
                     try LUTComputePipeline(inputTexture: sourceTexture, lutTexture: lutTexture, blend: blend, outputTexture: outputTexture)
                 }
                 try RenderPass(label: "Billboard") {
-                    try BillboardRenderPipeline(texture: outputTexture)
+                    try BillboardRenderPipeline(specifier: .texture2D(outputTexture))
                 }
             }
         }

@@ -38,9 +38,11 @@ public extension View {
     func metalPresentsWithTransaction(_ value: Bool) -> some View {
         self.environment(\.metalPresentsWithTransaction, value)
     }
+    // TODO: This is so important it should be a parameter on RenderView?? (FILE TICKET)
     func metalColorPixelFormat(_ value: MTLPixelFormat) -> some View {
         self.environment(\.metalColorPixelFormat, value)
     }
+    // TODO: This is so important it should be a parameter on RenderView?? (FILE TICKET)
     func metalDepthStencilPixelFormat(_ value: MTLPixelFormat) -> some View {
         self.environment(\.metalDepthStencilPixelFormat, value)
     }

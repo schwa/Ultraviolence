@@ -1,4 +1,6 @@
-#include <metal_stdlib>
+#import "include/UltraviolenceExampleShaders.h"
+#import <metal_stdlib>
+
 using namespace metal;
 
 namespace TextureBillboard {
@@ -22,17 +24,13 @@ namespace TextureBillboard {
 
     [[fragment]] float4 fragment_main(
         VertexOut in [[stage_in]],
-        constant int &input [[buffer(0)]],
-        constant int &slice [[buffer(1)]],
-        constant float4 &solidColor [[buffer(2)]],
-
-        texture2d<float> texture2d [[texture(3)]],
-        texturecube<float> textureCube [[texture(4)]]
+        constant Texture2DSpecifierArgumentBuffer &specifier [[buffer(0)]],
+        constant int &slice [[buffer(1)]]
     ) {
-        constexpr sampler s;
-        if (input == 0) {
-            return texture2d.sample(s, in.textureCoordinate);
-        } else if (input == 1) {
+        // TODO: Move this into helper function - SHARED WITH TEXTUREBILLBOARD & FLATSHADER & BLINN PHONG
+        if (specifier.source == kColorSourceColor) {
+            return float4(specifier.color, 1);
+        } else if (specifier.source == kColorSourceTextureCube) {
             float2 uv = in.textureCoordinate;
             float3 direction;
             switch (slice) {
@@ -55,14 +53,18 @@ namespace TextureBillboard {
                 direction = float3(-uv.x, uv.y, -1.0);
                 break; // -Z
             }
-
-            auto color = textureCube.sample(s, direction);
+            auto color = specifier.textureCube.sample(specifier.sampler, direction);
             color.a = 1.0;
             return color;
-        } else if (input == 2) {
-            return solidColor;
+        } else if (specifier.source == kColorSourceTexture2D) {
+            return specifier.texture2D.sample(specifier.sampler, in.textureCoordinate);
+        } else if (specifier.source == kColorSourceDepth2D) {
+            float depth = specifier.depth2D.sample(specifier.sampler, in.textureCoordinate);
+            float d = pow(depth, 50.0);
+            return float4(d, d, d, 1);
         } else {
-            return float4(1.0, 0.0, 1.0, 1.0);
+            discard_fragment();
+            return float4(0.0, 0.0, 0.0, 0.0);
         }
     }
 

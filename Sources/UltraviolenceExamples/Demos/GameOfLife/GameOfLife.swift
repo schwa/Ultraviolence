@@ -22,8 +22,6 @@ public struct GameOfLife: Element {
     @UVState
     private var initialized = false
 
-
-
     let isRunning: Bool
     let pattern: InitialPattern
     
@@ -84,7 +82,7 @@ public struct GameOfLife: Element {
 
                 // Display the current state using billboard shader
                 try RenderPass {
-                    try BillboardRenderPipeline(texture: currentTexture)
+                    try BillboardRenderPipeline(specifier: .texture2D(currentTexture))
                 }
             }
         }

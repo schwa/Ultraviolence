@@ -37,7 +37,7 @@ public struct MetalFXDemoView: View {
 
                 RenderView {
                     try RenderPass {
-                        try BillboardRenderPipeline(texture: sourceTexture)
+                        try BillboardRenderPipeline(specifier: .texture2D(sourceTexture))
                     }
                 }
                 .frame(width: Double(sourceTexture.width), height: Double(sourceTexture.height))
@@ -53,7 +53,7 @@ public struct MetalFXDemoView: View {
                         RenderView {
                             MetalFXSpatial(inputTexture: sourceTexture, outputTexture: upscaledTexture)
                             try RenderPass {
-                                try BillboardRenderPipeline(texture: upscaledTexture)
+                                try BillboardRenderPipeline(specifier: .texture2D(upscaledTexture))
                             }
                         }
                         .frame(width: Double(upscaledTexture.width), height: Double(upscaledTexture.height))

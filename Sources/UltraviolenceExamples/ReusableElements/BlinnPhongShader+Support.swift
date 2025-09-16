@@ -38,7 +38,7 @@ extension BlinnPhongMaterial {
             result.ambientSource = UltraviolenceExampleShaders.ColorSource.color
             result.ambientColor = color
         case .texture(let texture, let sampler):
-            result.ambientSource = UltraviolenceExampleShaders.ColorSource.texture
+            result.ambientSource = UltraviolenceExampleShaders.ColorSource.texture2D
             result.ambientTexture = texture.gpuResourceID
             result.ambientSampler = sampler.gpuResourceID
         }
@@ -47,7 +47,7 @@ extension BlinnPhongMaterial {
             result.diffuseSource = UltraviolenceExampleShaders.ColorSource.color
             result.diffuseColor = color
         case .texture(let texture, let sampler):
-            result.diffuseSource = UltraviolenceExampleShaders.ColorSource.texture
+            result.diffuseSource = UltraviolenceExampleShaders.ColorSource.texture2D
             result.diffuseTexture = texture.gpuResourceID
             result.diffuseSampler = sampler.gpuResourceID
         }
@@ -56,7 +56,7 @@ extension BlinnPhongMaterial {
             result.specularSource = UltraviolenceExampleShaders.ColorSource.color
             result.specularColor = color
         case .texture(let texture, let sampler):
-            result.specularSource = UltraviolenceExampleShaders.ColorSource.texture
+            result.specularSource = UltraviolenceExampleShaders.ColorSource.texture2D
             result.specularTexture = texture.gpuResourceID
             result.specularSampler = sampler.gpuResourceID
         }

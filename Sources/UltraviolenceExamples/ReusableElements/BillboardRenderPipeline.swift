@@ -5,8 +5,7 @@ import UltraviolenceSupport
 
 // TODO: #138 Add code to align the texture correctly in the output.
 struct BillboardRenderPipeline: Element {
-    let texture: MTLTexture?
-    let color: SIMD4<Float>?
+    let specifier: Texture2DSpecifier
     let slice: Int
 
     let vertexShader: VertexShader
@@ -14,10 +13,8 @@ struct BillboardRenderPipeline: Element {
     let positions: [SIMD2<Float>]
     let textureCoordinates: [SIMD2<Float>]
 
-    init(texture: MTLTexture? = nil, color: SIMD4<Float>? = nil, slice: Int = 0) throws {
-        precondition(texture != nil || color != nil, "Either texture or color must be provided")
-        self.texture = texture
-        self.color = color
+    init(specifier: Texture2DSpecifier, slice: Int = 0, flippedY: Bool = false) throws {
+        self.specifier = specifier
         self.slice = slice
         let device = _MTLCreateSystemDefaultDevice()
         assert(device.argumentBuffersSupport == .tier2)
@@ -26,33 +23,29 @@ struct BillboardRenderPipeline: Element {
 
         self.vertexShader = try shaderLibrary.vertex_main
         self.fragmentShader = try shaderLibrary.fragment_main
-        positions = [[-1, 1], [-1, -1], [1, 1], [1, -1]]
+        if !flippedY {
+            positions = [[-1, 1], [-1, -1], [1, 1], [1, -1]]
+        }
+        else {
+            positions = [[-1, -1], [-1, 1], [1, -1], [1, 1]]
+        }
         textureCoordinates = [[0, 1], [0, 0], [1, 1], [1, 0]]
     }
 
     var body: some Element {
         get throws {
             try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
+
+                let specifierArgumentBuffer = specifier.toTexture2DSpecifierArgmentBuffer()
+
                 Draw { encoder in
                     encoder.setVertexBytes(positions, length: MemoryLayout<SIMD2<Float>>.stride * positions.count, index: 0)
                     encoder.setVertexBytes(textureCoordinates, length: MemoryLayout<SIMD2<Float>>.stride * textureCoordinates.count, index: 1)
                     encoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: positions.count)
                 }
-                .parameter("input", value: {
-                    if let texture = texture {
-                        if texture.textureType == .type2D {
-                            return 0
-                        }
-                        if texture.textureType == .typeCube {
-                            return 1
-                        }
-                    }
-                    return 2 // color mode
-                }())
+                .parameter("specifier", value: specifierArgumentBuffer)
+                .useResource(specifier.texture2D, usage: .read, stages: .fragment) // TODO: We dont always have a texture2D to use! [FILE THIS]
                 .parameter("slice", value: slice)
-                .parameter("solidColor", value: color ?? SIMD4<Float>(1, 0, 1, 1))
-                .parameter("texture2d", texture: texture?.textureType == .type2D ? texture : nil)
-                .parameter("textureCube", texture: texture?.textureType == .typeCube ? texture : nil)
             }
             .vertexDescriptor(try vertexShader.inferredVertexDescriptor())
         }

@@ -33,8 +33,8 @@ public struct FlatShader <Content>: Element where Content: Element {
 
             try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                 content
-                    .parameter("texture", value: textureSpecifierArgumentBuffer)
-                    .useResource(textureSpecifier.texture, usage: .read, stages: .fragment)
+                    .parameter("specifier", value: textureSpecifierArgumentBuffer)
+                    .useResource(textureSpecifier.texture2D, usage: .read, stages: .fragment) // TODO: We dont always have a texture2D to use! [FILE THIS]
             }
         }
     }
@@ -57,7 +57,7 @@ public enum FlatShaderExample: Example {
                     let cameraMatrix = simd_float4x4(translation: [0, 0, 0])
                     let projectionMatrix = PerspectiveProjection().projectionMatrix(for: .init(width: 1_024, height: 768))
                     let transforms = Transforms(modelMatrix: modelMatrix, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
-                    try FlatShader(textureSpecifier: .texture(texture, sampler)) {
+                    try FlatShader(textureSpecifier: .texture2D(texture, sampler)) {
                         Draw { encoder in
                             encoder.setVertexBuffers(of: mesh)
                             encoder.draw(mesh)

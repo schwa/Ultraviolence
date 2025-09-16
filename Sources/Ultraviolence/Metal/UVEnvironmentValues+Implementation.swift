@@ -1,6 +1,8 @@
 import Metal
 import QuartzCore
 import UltraviolenceSupport
+import ModelIO
+import MetalKit
 
 public extension UVEnvironmentValues {
     // TODO: #114 This is messy and needs organisation and possibly deprecation of unused elements.
@@ -49,4 +51,11 @@ public extension Element {
     func depthCompare(function: MTLCompareFunction, enabled: Bool) -> some Element {
         depthStencilDescriptor(.init(depthCompareFunction: function, isDepthWriteEnabled: enabled))
     }
+}
+
+public extension Element {
+    func vertexDescriptor(_ vertexDescriptor: MDLVertexDescriptor) -> some Element {
+        self.vertexDescriptor(MTKMetalVertexDescriptorFromModelIO(vertexDescriptor).orFatalError(.resourceCreationFailure("Failed to create MTLVertexDescriptor from MDLVertexDescriptor")))
+    }
+
 }
