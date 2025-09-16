@@ -2,9 +2,6 @@ import Metal
 import UltraviolenceSupport
 
 public struct CommandBufferElement <Content>: Element, BodylessContentElement where Content: Element {
-    // @UVEnvironment(\.enableMetalLogging)
-    // var enableMetalLogging
-
     var completion: MTLCommandQueueCompletion
     var content: Content
 
@@ -17,10 +14,9 @@ public struct CommandBufferElement <Content>: Element, BodylessContentElement wh
         let commandQueue = try node.environmentValues.commandQueue.orThrow(.missingEnvironment(\.commandQueue))
         let commandBufferDescriptor = MTLCommandBufferDescriptor()
         // TODO: #97 Users cannot modify the environment here. This is a problem.
-        //        if enableMetalLogging {
-        //            print("ENABLING LOGGING")
-        //            try commandBufferDescriptor.addDefaultLogging()
-        //        }
+        if ProcessInfo.processInfo.metalLoggingEnabled {
+            try commandBufferDescriptor.addDefaultLogging()
+        }
         // TODO: #98 There isn't an opportunity to modify the descriptor here.
         let commandBuffer = try commandQueue._makeCommandBuffer(descriptor: commandBufferDescriptor)
         node.environmentValues.commandBuffer = commandBuffer

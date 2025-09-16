@@ -35,7 +35,6 @@ public struct GaussianSplatView: View {
                 let projectionMatrix = projection.projectionMatrix(for: drawableSize)
                 try GaussianSplatRenderPipeline(splatCloud: splatCloud, projectionMatrix: projectionMatrix, modelMatrix: modelMatrix, cameraMatrix: cameraMatrix, drawableSize: SIMD2<Float>(drawableSize), debugMode: debugMode)
             }
-            .environment(\.enableMetalLogging, true)
         }
         .onDrawableSizeChange { drawableSize = $0 }
         .onChange(of: splatCloud, initial: true) {

@@ -158,7 +158,6 @@ struct SystemSnapshotTests {
 
         let system = System()
         let root = EnvElement()
-            .environment(\.enableMetalLogging, true)
 
         try system.update(root: root)
 

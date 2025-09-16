@@ -55,7 +55,7 @@
          <EnvironmentVariable
             key = "LOGGING"
             value = "YES"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </EnvironmentVariable>
          <EnvironmentVariable
             key = "FATALERROR_ON_THROW"
@@ -69,6 +69,11 @@
          </EnvironmentVariable>
          <EnvironmentVariable
             key = "UV_DUMP_SNAPSHOTS"
+            value = "YES"
+            isEnabled = "NO">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "METAL_LOGGING"
             value = "YES"
             isEnabled = "NO">
          </EnvironmentVariable>
