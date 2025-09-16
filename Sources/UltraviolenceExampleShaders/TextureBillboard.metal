@@ -60,8 +60,7 @@ namespace TextureBillboard {
             return specifier.texture2D.sample(specifier.sampler, in.textureCoordinate);
         } else if (specifier.source == kColorSourceDepth2D) {
             float depth = specifier.depth2D.sample(specifier.sampler, in.textureCoordinate);
-            float d = pow(depth, 50.0);
-            return float4(d, d, d, 1);
+            return float4(depth, depth, depth, 1);
         } else {
             discard_fragment();
             return float4(0.0, 0.0, 0.0, 0.0);
