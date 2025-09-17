@@ -1,6 +1,15 @@
 {
-  "originHash" : "a3bc22604815ea165376371039e9fac64a07167df32c14dcb6dc4405d2012352",
+  "originHash" : "4cd1ccc330d01d789dc45c93eaa974b0ccadcc49481b13d24d9e5895d58a1e33",
   "pins" : [
+    {
+      "identity" : "geometrylite3d",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/schwa/GeometryLite3D",
+      "state" : {
+        "branch" : "main",
+        "revision" : "59e3663e6a6668a5b25cb7bfb5da54dfad1ed8ab"
+      }
+    },
     {
       "identity" : "metalcompilerplugin",
       "kind" : "remoteSourceControl",
