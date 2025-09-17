@@ -82,7 +82,9 @@ public let package = Package(
                 "GeometryLite3D",
             ],
             resources: [
-                .copy("Resources")
+                .copy("Resources/AppleEventVideo.mp4"),
+                .copy("Resources/AppleLogoMask.png"),
+                .copy("Resources/IndoorEnvironmentHDRI013_1K-HDR.exr")
             ],
             swiftSettings: [
 //                .defaultIsolation(nil)

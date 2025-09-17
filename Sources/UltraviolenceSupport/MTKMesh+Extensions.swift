@@ -156,7 +156,6 @@ public extension MTKMesh {
 
         // Generate tangent basis if requested, doesn't exist, and texture coordinates are available
         if options.contains(.generateTangentBasis) && !hasOriginalTangentBasis && hasTextureCoordinates {
-            logger?.info("Creating tangent basis.")
             mdlMesh.addTangentBasis(
                 forTextureCoordinateAttributeNamed: MDLVertexAttributeTextureCoordinate,
                 tangentAttributeNamed: MDLVertexAttributeTangent,

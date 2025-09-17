@@ -68,7 +68,7 @@ public struct RenderPipeline <Content>: Element, BodylessElement, BodylessConten
     }
 
     func workloadEnter(_ node: Node) throws {
-        logger?.verbose?.info("Start render pipeline: \(label ?? "<unlabeled>") (\(node.element.internalDescription))")
+        logger?.verbose?.info("Start render pipeline: \(label ?? "<unlabeled>") (\(node.element.debugName))")
 
         let renderCommandEncoder = try node.environmentValues.renderCommandEncoder.orThrow(.missingEnvironment(\.renderCommandEncoder))
         let renderPipelineState = try node.environmentValues.renderPipelineState.orThrow(.missingEnvironment(\.renderPipelineState))
@@ -81,7 +81,7 @@ public struct RenderPipeline <Content>: Element, BodylessElement, BodylessConten
     }
 
     func workloadExit(_ node: Node) throws {
-        logger?.verbose?.info("Exit render pipeline: \(label ?? "<unlabeled>") (\(node.element.internalDescription))")
+        logger?.verbose?.info("Exit render pipeline: \(label ?? "<unlabeled>") (\(node.element.debugName))")
     }
 
     nonisolated func requiresSetup(comparedTo old: RenderPipeline<Content>) -> Bool {

@@ -51,7 +51,15 @@ struct Texture2DSpecifierArgumentBuffer {
     SAMPLER sampler;
 };
 
+struct FrameUniforms {
+    uint index;
+    float time;
+    float deltaTime;
+    simd_int2 viewportSize;
+};
+
 /// Universal transforms.
+/// TODO: Deprecate
 struct Transforms {
     simd_float4x4 modelMatrix;
     simd_float4x4 cameraMatrix;

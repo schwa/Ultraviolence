@@ -20,7 +20,8 @@ import UltraviolenceExamples
         GameOfLifeDemoView.self,
         AppleEventLogoDemoView.self,
         ColorAdjustDemoView.self,
-        DebugShadersDemoView.self
+        DebugShadersDemoView.self,
+        PBRDemoView.self,
     ]
 
 #if os(macOS)
@@ -139,5 +140,11 @@ extension ColorAdjustDemoView: @retroactive DemoView {
 extension DebugShadersDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(name: "Debug Shaders", description: "Shader debugging visualization with various modes including normals, UV coordinates, depth, wireframe, and distance fields", group: "Basic", keywords: [])
+    }
+}
+
+extension PBRDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(name: "PBR Rendering", description: "Physically Based Rendering with multiple material presets, environment reflections, and animated lighting", group: "* Broken", keywords: [])
     }
 }

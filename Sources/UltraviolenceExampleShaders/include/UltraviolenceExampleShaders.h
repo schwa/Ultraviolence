@@ -5,6 +5,7 @@
 #import "DebugShaders.h"
 #import "AxisLines.h"
 #import "Boxes.h"
+#import "PBRShaders.h"
 
 #ifdef __OBJC__
 #import <Foundation/Foundation.h>
