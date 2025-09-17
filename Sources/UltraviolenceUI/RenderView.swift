@@ -79,7 +79,7 @@ internal struct RenderViewHelper <Content>: View where Content: Element {
             viewModel.content = content
             viewModel.drawableSizeChange = drawableSizeChange
         }
-        .modifier(RenderViewDebugViewModifier<Content>())
+//        .modifier(RenderViewDebugViewModifier<Content>())
         .environment(viewModel)
     }
 }
@@ -174,6 +174,7 @@ internal class RenderViewViewModel <Content>: NSObject, MTKViewDelegate where Co
     }
 }
 
+// TODO: Merge this with environment (ProcessInfo) logic. [FILE ME]
 public struct RenderViewDebugging {
     @MainActor
     static var logFrame = true

@@ -16,7 +16,13 @@ public extension Optional {
     func orThrow(_ error: @autoclosure () -> UltraviolenceError) throws -> Wrapped {
         // swiftlint:disable:next self_binding
         guard let value = self else {
-            throw error()
+            let error = error()
+            if ProcessInfo.processInfo.fatalErrorOnThrow {
+                fatalError("\(error)")
+            }
+            else {
+                throw error
+            }
         }
         return value
     }
