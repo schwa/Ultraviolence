@@ -2,6 +2,7 @@
 
 #import "BlinnPhongShaders.h"
 #import "Support.h"
+#import "DebugShaders.h"
 
 #ifdef __OBJC__
 #import <Foundation/Foundation.h>

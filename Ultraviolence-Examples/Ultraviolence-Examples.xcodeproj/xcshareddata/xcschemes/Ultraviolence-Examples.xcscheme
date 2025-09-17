@@ -60,7 +60,7 @@
          <EnvironmentVariable
             key = "FATALERROR_ON_THROW"
             value = "YES"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </EnvironmentVariable>
          <EnvironmentVariable
             key = "VERBOSE"

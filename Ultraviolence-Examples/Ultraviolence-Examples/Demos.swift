@@ -19,7 +19,8 @@ import UltraviolenceExamples
         LUTDemoView.self,
         GameOfLifeDemoView.self,
         AppleEventLogoDemoView.self,
-        ColorAdjustDemoView.self
+        ColorAdjustDemoView.self,
+        DebugShadersDemoView.self
     ]
 
 #if os(macOS)
@@ -131,8 +132,12 @@ extension MixedDemoView: @retroactive DemoView {
 
 extension ColorAdjustDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
-        DemoMetadata(name: "ColorAdjustDemoView", description: "TODO", group: "Complex", keywords: [])
+        DemoMetadata(name: "ColorAdjustDemoView", description: "TODO", group: "In-progress", keywords: [])
     }
 }
 
-
+extension DebugShadersDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(name: "Debug Shaders", description: "Shader debugging visualization with various modes including normals, UV coordinates, depth, wireframe, and distance fields", group: "Basic", keywords: [])
+    }
+}

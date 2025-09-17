@@ -1,0 +1,97 @@
+import SwiftUI
+
+import Ultraviolence
+import UltraviolenceUI
+import UltraviolenceExampleShaders
+import GeometryLite3D
+import simd
+import MetalKit
+
+public struct DebugShadersDemoView: View {
+
+    @State
+    var projection: any ProjectionProtocol = PerspectiveProjection()
+
+    @State
+    var cameraMatrix: simd_float4x4 = .init(translation: [0, 2, 6])
+
+    @State
+    var drawableSize: CGSize = .zero
+
+    @State
+    var debugMode: DebugShadersMode = .normal
+
+    let teapot = try! MTKMesh(name: "teapot", bundle: .main, options: [.generateTangentBasis, .generateTextureCoordinatesIfMissing, .useSimpleTextureCoordinates])
+
+    public init() {
+    }
+
+    public var body: some View {
+        VStack(spacing: 0) {
+            DebugModePicker(debugMode: $debugMode)
+                .padding()
+
+            WorldView(projection: $projection, cameraMatrix: $cameraMatrix) {
+                RenderView {
+                try! RenderPass(label: "DebugShadersDemo") {
+                    let projectionMatrix = projection.projectionMatrix(for: drawableSize)
+                    let viewMatrix = cameraMatrix.inverse
+                    let viewProjectionMatrix = projectionMatrix * viewMatrix
+
+                    try! DebugRenderPipeline(modelMatrix: .identity, normalMatrix: .init(diagonal: [1, 1, 1]), debugMode: debugMode, lightPosition: [0, 10, 0], cameraPosition: cameraMatrix.translation, viewProjectionMatrix: viewProjectionMatrix) {
+                        Draw(mtkMesh: teapot)
+                    }
+                    .vertexDescriptor(teapot.vertexDescriptor)
+                    .depthCompare(function: .less, enabled: true)
+                }
+            }
+                .metalDepthStencilPixelFormat(.depth32Float)
+                .onDrawableSizeChange { drawableSize = $0 }
+            }
+        }
+
+    }
+}
+
+struct DebugModePicker: View {
+    @Binding var debugMode: DebugShadersMode
+
+    let debugModes: [(DebugShadersMode, String)] = [
+        (.normal, "Normal"),
+        (.texCoord, "Texture Coordinates"),
+        (.tangent, "Tangent"),
+        (.bitangent, "Bitangent"),
+        (.worldPosition, "World Position"),
+        (.localPosition, "Local Position"),
+        (.uvDistortion, "UV Distortion"),
+        (.tbnMatrix, "TBN Matrix"),
+        (.vertexID, "Vertex ID"),
+        (.faceNormal, "Face Normal"),
+        (.uvDerivatives, "UV Derivatives"),
+        (.checkerboard, "Checkerboard"),
+        (.uvGrid, "UV Grid"),
+        (.depth, "Depth"),
+        (.wireframeOverlay, "Wireframe Overlay"),
+        (.normalDeviation, "Normal Deviation"),
+        (.amplificationID, "Amplification ID"),
+        (.instanceID, "Instance ID"),
+        (.quadThread, "Quad Thread"),
+        (.simdGroup, "SIMD Group"),
+        (.barycentricCoord, "Barycentric Coord"),
+        (.frontFacing, "Front Facing"),
+        (.sampleID, "Sample ID"),
+        (.pointCoord, "Point Coord"),
+        (.distanceToLight, "Distance to Light"),
+        (.distanceToOrigin, "Distance to Origin"),
+        (.distanceToCamera, "Distance to Camera")
+    ]
+
+    var body: some View {
+        Picker("Debug Mode", selection: $debugMode) {
+            ForEach(debugModes, id: \.0) { mode, label in
+                Text(label).tag(mode)
+            }
+        }
+        .pickerStyle(.menu)
+    }
+}
