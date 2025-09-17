@@ -39,7 +39,7 @@ public struct DepthDemoView: View {
     using namespace metal;
 
     [[ stitchable ]]
-    float4 adjustColor(float4 inputColor, constant float *inputParameters) {
+    float4 node(float4 inputColor, constant float *inputParameters) {
         return pow(inputColor, inputParameters[0]);
     }
     """
@@ -49,29 +49,27 @@ public struct DepthDemoView: View {
     public init() {
         let device = _MTLCreateSystemDefaultDevice()
 
-        // Compile the stitchable function
-                let sourceLibrary = try! device.makeLibrary(source: adjustSource, options: nil)
+        let sourceLibrary = try! device.makeLibrary(source: adjustSource, options: nil)
+        let inputs = [
+            MTLFunctionStitchingInputNode(argumentIndex: 0),
+            MTLFunctionStitchingInputNode(argumentIndex: 1),
+        ]
+        let adjust = MTLFunctionStitchingFunctionNode(name: "node", arguments: inputs, controlDependencies: [])
 
-                // Build the graph: process_graph(input) -> adjustColor(input)
-                let inputs = [
-                    MTLFunctionStitchingInputNode(argumentIndex: 0),
-                    MTLFunctionStitchingInputNode(argumentIndex: 1),
-                ]
-                let adjust = MTLFunctionStitchingFunctionNode(name: "adjustColor", arguments: inputs, controlDependencies: [])
+        // TODO: Use Ultraviolence's normal texture loading capabilities [FILE TICKET]
+        // TODO: Terrible example of stitchable functions.
+        let graph = MTLFunctionStitchingGraph(functionName: "adjustColor", nodes: [adjust], outputNode: adjust, attributes: [])
 
-                // IMPORTANT: set outputNode to the node whose value you want to return
-                let graph = MTLFunctionStitchingGraph(functionName: "process_graph", nodes: [adjust], outputNode: adjust, attributes: [])
+        let stitchedLibraryDescriptor = MTLStitchedLibraryDescriptor()
+        stitchedLibraryDescriptor.functions = [sourceLibrary.makeFunction(name: "node")!]
+        stitchedLibraryDescriptor.functionGraphs = [graph]
+        let stitchedLibrary = try! device.makeLibrary(stitchedDescriptor: stitchedLibraryDescriptor)
+        let stitchedFunction = stitchedLibrary.makeFunction(name: "adjustColor")!
 
-                let stitchedLibraryDescriptor = MTLStitchedLibraryDescriptor()
-                stitchedLibraryDescriptor.functions = [sourceLibrary.makeFunction(name: "adjustColor")!]
-                stitchedLibraryDescriptor.functionGraphs = [graph]
-                let stitchedLibrary = try! device.makeLibrary(stitchedDescriptor: stitchedLibraryDescriptor)
-                let stitchedFunction = stitchedLibrary.makeFunction(name: "process_graph")!
+        let linkedFunctions = MTLLinkedFunctions()
+        linkedFunctions.privateFunctions = [stitchedFunction]
 
-                let linkedFunctions = MTLLinkedFunctions()
-                linkedFunctions.privateFunctions = [stitchedFunction]
-
-                self.linkedFunctions = linkedFunctions
+        self.linkedFunctions = linkedFunctions
     }
 
     public var body: some View {

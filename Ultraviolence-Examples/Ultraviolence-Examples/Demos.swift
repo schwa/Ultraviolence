@@ -2,6 +2,35 @@ import DemoKit
 import SwiftUI
 import UltraviolenceExamples
 
+@MainActor let allDemos: [any DemoView.Type] = {
+    var demos: [any DemoView.Type] = [
+        EmptyView.self,
+        GaussianSplatDemoView.self,
+        BlinnPhongDemoView.self,
+        GridShaderDemoView.self,
+        SkyboxDemoView.self,
+        TriangleDemoView.self,
+        ComputeDemoView.self,
+        DepthDemoView.self,
+        MetalFXDemoView.self,
+        MixedDemoView.self,
+        BouncingTeapotsDemoView.self,
+        StencilDemoView.self,
+        LUTDemoView.self,
+        GameOfLifeDemoView.self,
+        AppleEventLogoDemoView.self,
+        ColorAdjustDemoView.self
+    ]
+
+#if os(macOS)
+    demos += [
+        OffscreenDemoView.self
+    ]
+#endif
+    return demos
+}()
+
+
 extension EmptyView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(name: "Empty", description: "An empty view.")
@@ -99,3 +128,11 @@ extension MixedDemoView: @retroactive DemoView {
         DemoMetadata(name: "Mixed Techniques", description: "Combination of multiple rendering techniques including lighting and animation", group: "Complex", keywords: ["multipass", "animated"])
     }
 }
+
+extension ColorAdjustDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(name: "ColorAdjustDemoView", description: "TODO", group: "Complex", keywords: [])
+    }
+}
+
+

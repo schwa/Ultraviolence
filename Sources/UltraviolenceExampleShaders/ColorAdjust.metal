@@ -4,7 +4,7 @@
 using namespace metal;
 
 [[ visible ]]
-float4 process_graph(float4 inputColor);
+float4 adjustColor(float4 inputColor, constant void *parameters);
 
 namespace ColorAdjust {
 
@@ -47,7 +47,7 @@ namespace ColorAdjust {
 
     kernel void colorAdjust(
         constant Texture2DSpecifierArgumentBuffer &inputSpecifier [[buffer(0)]],
-        constant uint8 *inputParameters [[buffer(1)]],
+        constant void *inputParameters [[buffer(1)]],
         texture2d<float, access::read_write> outputTexture [[texture(0)]]
     ) {
         bool discard = false;
@@ -56,7 +56,7 @@ namespace ColorAdjust {
         // TODO: Make this a function pointer
 //        float4 newColor = pow(inputColor, 50.0);;
 
-        float4 newColor = process_graph(inputColor);
+        float4 newColor = adjustColor(inputColor, inputParameters);
 
         outputTexture.write(newColor, thread_position_in_grid);
     }
