@@ -46,7 +46,7 @@ extension ComputeDemoView: @retroactive DemoView {
 
 extension DepthDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
-        DemoMetadata(name: "Depth Buffer", description: "Demonstrates rendering depth buffer to texture", group: "Basic", keywords: [])
+        DemoMetadata(name: "Depth Buffer", description: "Demonstrates rendering depth buffer to texture. It also shows how to use customisable private functions.", group: "Complex", keywords: [])
     }
 }
 

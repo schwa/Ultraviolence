@@ -21,6 +21,9 @@ public struct DepthDemoView: View {
     var showDepthMap = true
 
     @State
+    var exponent: Float = 50
+
+    @State
     var colorTexture: MTLTexture?
 
     @State
@@ -36,8 +39,8 @@ public struct DepthDemoView: View {
     using namespace metal;
 
     [[ stitchable ]]
-    float4 adjustColor(float4 inputColor) {
-        return pow(inputColor, 50.0);
+    float4 adjustColor(float4 inputColor, constant float *inputParameters) {
+        return pow(inputColor, inputParameters[0]);
     }
     """
 
@@ -70,7 +73,7 @@ public struct DepthDemoView: View {
                     }
 
                     try ComputePass(label: "ColorAdjust") {
-                        ColorAdjustComputePipeline(inputSpecifier: .depth2D(depthTexture, nil), outputTexture: adjustedDepthTexture)
+                        ColorAdjustComputePipeline(inputSpecifier: .depth2D(depthTexture, nil), inputParameters: exponent, outputTexture: adjustedDepthTexture)
                     }
                     .environment(\.linkedFunctions, linkedFunctions)
 
@@ -99,12 +102,16 @@ public struct DepthDemoView: View {
                 adjustedDepthTexture?.label = "Adjusted Depth Texture"
             }
         }
-        .overlay(alignment: .top) {
-            Toggle("Show Depth Map", isOn: $showDepthMap)
-                .padding()
-                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
-                .padding()
-
+        .overlay(alignment: .topLeading) {
+            Form {
+                Toggle("Show Depth Map", isOn: $showDepthMap)
+                TextField("Exponent", value: $exponent, format: .number)
+                Slider(value: $exponent, in: 1...100)
+            }
+            .frame(maxWidth: 200)
+            .padding()
+            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
+            .padding()
         }
     }
 

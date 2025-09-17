@@ -2,13 +2,15 @@ import Metal
 import Ultraviolence
 import UltraviolenceSupport
 
-public struct ColorAdjustComputePipeline: Element {
+public struct ColorAdjustComputePipeline <T>: Element {
     let inputSpecifier: Texture2DSpecifier
+    let inputParameters: T
     let outputTexture: MTLTexture
     var kernel: ComputeKernel
 
-    init(inputSpecifier: Texture2DSpecifier, outputTexture: MTLTexture) {
+    init(inputSpecifier: Texture2DSpecifier, inputParameters: T, outputTexture: MTLTexture) {
         self.inputSpecifier = inputSpecifier
+        self.inputParameters = inputParameters
         self.outputTexture = outputTexture
         // TODO: This will be compiled every time!
         let shaderLibrary = try! ShaderLibrary(bundle: .ultraviolenceExampleShaders().orFatalError(), namespace: "ColorAdjust")
@@ -26,6 +28,7 @@ public struct ColorAdjustComputePipeline: Element {
                     .useComputeResource(inputSpecifier.texture2D, usage: .read)
                     .useComputeResource(inputSpecifier.textureCube, usage: .read)
                     .useComputeResource(inputSpecifier.depth2D, usage: .read)
+                    .parameter("inputParameters", value: inputParameters)
                     .parameter("outputTexture", texture: outputTexture)
             }
         }
