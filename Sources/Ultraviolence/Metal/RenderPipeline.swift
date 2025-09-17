@@ -9,6 +9,7 @@ public struct RenderPipeline <Content>: Element, BodylessElement, BodylessConten
     @UVEnvironment(\.depthStencilState)
     var depthStencilState
 
+    var label: String?
     var vertexShader: VertexShader
     var fragmentShader: FragmentShader
     var content: Content
@@ -16,7 +17,8 @@ public struct RenderPipeline <Content>: Element, BodylessElement, BodylessConten
     @UVState
     var reflection: Reflection?
 
-    public init(vertexShader: VertexShader, fragmentShader: FragmentShader, @ElementBuilder content: () throws -> Content) throws {
+    public init(label: String? = nil, vertexShader: VertexShader, fragmentShader: FragmentShader, @ElementBuilder content: () throws -> Content) throws {
+        self.label = label
         self.vertexShader = vertexShader
         self.fragmentShader = fragmentShader
         self.content = try content()
@@ -50,6 +52,9 @@ public struct RenderPipeline <Content>: Element, BodylessElement, BodylessConten
            let stencilAttachmentTexture = renderPassDescriptor.stencilAttachment?.texture {
             renderPipelineDescriptor.stencilAttachmentPixelFormat = stencilAttachmentTexture.pixelFormat
         }
+        if let label {
+            renderPipelineDescriptor.label = label
+        }
         let device = try device.orThrow(.missingEnvironment(\.device))
         let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: .bindingInfo)
         self.reflection = .init(reflection.orFatalError(.resourceCreationFailure("Failed to create reflection.")))
@@ -64,6 +69,8 @@ public struct RenderPipeline <Content>: Element, BodylessElement, BodylessConten
     }
 
     func workloadEnter(_ node: Node) throws {
+        logger?.verbose?.info("Start render pipeline: \(label ?? "<unlabeled>") (\(node.element.internalDescription))")
+
         let renderCommandEncoder = try node.environmentValues.renderCommandEncoder.orThrow(.missingEnvironment(\.renderCommandEncoder))
         let renderPipelineState = try node.environmentValues.renderPipelineState.orThrow(.missingEnvironment(\.renderPipelineState))
 
@@ -72,6 +79,10 @@ public struct RenderPipeline <Content>: Element, BodylessElement, BodylessConten
         }
 
         renderCommandEncoder.setRenderPipelineState(renderPipelineState)
+    }
+
+    func workloadExit(_ node: Node) throws {
+        logger?.verbose?.info("Exit render pipeline: \(label ?? "<unlabeled>") (\(node.element.internalDescription))")
     }
 
     nonisolated func requiresSetup(comparedTo old: RenderPipeline<Content>) -> Bool {
