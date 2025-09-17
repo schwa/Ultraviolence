@@ -57,11 +57,16 @@ public struct BlinnPhongDemoView: View {
             TimelineView(.animation) { timeline in
                 RenderView {
                     let projectionMatrix = projection.projectionMatrix(for: drawableSize)
+                    let viewMatrix = cameraMatrix.inverse
+                    let viewProjectionMatrix = projectionMatrix * viewMatrix
 
                     try RenderPass {
                         try SkyboxRenderPipeline(projectionMatrix: projectionMatrix, cameraMatrix: cameraMatrix, texture: skyboxTexture)
 
-                        GridShader(projectionMatrix: projection.projectionMatrix(for: drawableSize), cameraMatrix: cameraMatrix)
+                        GridShader(projectionMatrix: projectionMatrix, cameraMatrix: cameraMatrix)
+
+
+
 
                         let transforms = Transforms(modelMatrix: .init(translation: lighting.lights[0].lightPosition), cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
                         try FlatShader(textureSpecifier: .color(SIMD3<Float>(lighting.lights[0].lightColor))) {
@@ -87,6 +92,8 @@ public struct BlinnPhongDemoView: View {
                         }
                         .vertexDescriptor(MTLVertexDescriptor(models.first!.mesh.vertexDescriptor))
                         .depthCompare(function: .less, enabled: true)
+
+                        try AxisLinesRenderPipeline(mvpMatrix: viewProjectionMatrix, scale: 10000.0)
                     }
                 }
                 .metalDepthStencilPixelFormat(.depth32Float)

@@ -41,7 +41,7 @@ public extension Element {
 }
 
 public extension Element {
-    func vertexDescriptor(_ vertexDescriptor: MTLVertexDescriptor) -> some Element {
+    func vertexDescriptor(_ vertexDescriptor: MTLVertexDescriptor?) -> some Element {
         environment(\.vertexDescriptor, vertexDescriptor)
     }
 

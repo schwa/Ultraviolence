@@ -33,18 +33,22 @@ public struct DebugShadersDemoView: View {
 
             WorldView(projection: $projection, cameraMatrix: $cameraMatrix) {
                 RenderView {
-                try! RenderPass(label: "DebugShadersDemo") {
                     let projectionMatrix = projection.projectionMatrix(for: drawableSize)
                     let viewMatrix = cameraMatrix.inverse
                     let viewProjectionMatrix = projectionMatrix * viewMatrix
 
-                    try! DebugRenderPipeline(modelMatrix: .identity, normalMatrix: .init(diagonal: [1, 1, 1]), debugMode: debugMode, lightPosition: [0, 10, 0], cameraPosition: cameraMatrix.translation, viewProjectionMatrix: viewProjectionMatrix) {
-                        Draw(mtkMesh: teapot)
+                    try RenderPass(label: "Debug") {
+                        try AxisLinesRenderPipeline(mvpMatrix: viewProjectionMatrix, scale: 10000.0)
+
+                        try AxisAlignedWireframeBoxesRenderPipeline(mvpMatrix: viewProjectionMatrix, boxes: [.init(min: [-10, -10, -10], max: [10, 10, 10], color: [1, 1, 1, 1])])
+
+                        try! DebugRenderPipeline(modelMatrix: .identity, normalMatrix: .init(diagonal: [1, 1, 1]), debugMode: debugMode, lightPosition: [0, 10, 0], cameraPosition: cameraMatrix.translation, viewProjectionMatrix: viewProjectionMatrix) {
+                            Draw(mtkMesh: teapot)
+                        }
+                        .vertexDescriptor(teapot.vertexDescriptor)
+                        .depthCompare(function: .less, enabled: true)
                     }
-                    .vertexDescriptor(teapot.vertexDescriptor)
-                    .depthCompare(function: .less, enabled: true)
                 }
-            }
                 .metalDepthStencilPixelFormat(.depth32Float)
                 .onDrawableSizeChange { drawableSize = $0 }
             }

@@ -33,10 +33,9 @@ public struct RenderPipeline <Content>: Element, BodylessElement, BodylessConten
         renderPipelineDescriptor.vertexFunction = vertexShader.function
         renderPipelineDescriptor.fragmentFunction = fragmentShader.function
 
-        guard let vertexDescriptor = environment.vertexDescriptor else {
-            try _throw(UltraviolenceError.configurationError("No vertex descriptor provided. Use .vertexDescriptor() modifier or vertexShader.inferredVertexDescriptor() for simple cases."))
+        if let vertexDescriptor = environment.vertexDescriptor {
+            renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
         }
-        renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
 
         // Only set pixel formats if they haven't been explicitly configured
         // TODO: #103 This is copying everything from the render pass descriptor. But really we should be getting this entirely from the environment.

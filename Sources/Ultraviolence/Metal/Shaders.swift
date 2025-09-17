@@ -50,7 +50,7 @@ public struct VertexShader: ShaderProtocol {
 }
 
 public extension VertexShader {
-    func inferredVertexDescriptor() throws -> MTLVertexDescriptor {
+    func inferredVertexDescriptor() throws -> MTLVertexDescriptor? {
         try function.inferredVertexDescriptor()
     }
 }
