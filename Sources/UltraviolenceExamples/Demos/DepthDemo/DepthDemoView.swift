@@ -56,7 +56,8 @@ public struct DepthDemoView: View {
         ]
         let adjust = MTLFunctionStitchingFunctionNode(name: "node", arguments: inputs, controlDependencies: [])
 
-        // TODO: Use Ultraviolence's normal texture loading capabilities [FILE TICKET]
+        // TODO: Use Ultraviolence's normal shader loading capabilities [FILE TICKET]
+        // TODO: Use property Metal function loading - this one requires all functions to be named the same. [FILE TICKET]
         // TODO: Terrible example of stitchable functions.
         let graph = MTLFunctionStitchingGraph(functionName: "adjustColor", nodes: [adjust], outputNode: adjust, attributes: [])
 

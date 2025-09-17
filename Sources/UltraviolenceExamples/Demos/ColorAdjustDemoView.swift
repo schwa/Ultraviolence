@@ -37,7 +37,8 @@ public struct ColorAdjustDemoView: View {
         adjustedDescriptor.usage = [.shaderRead, .shaderWrite]
         adjustedTexture = device.makeTexture(descriptor: adjustedDescriptor)!
 
-        // TODO: Use Ultraviolence's normal texture loading capabilities [FILE TICKET]
+        // TODO: Use Ultraviolence's normal shader loading capabilities [FILE TICKET]
+        // TODO: Use property Metal function loading - this one requires all functions to be named the same. [FILE TICKET]
         let sourceLibrary = try! device.makeLibrary(source: adjustSource, options: nil)
         let adjustColorFunction = sourceLibrary.makeFunction(name: "adjustColor")!
         let linkedFunctions = MTLLinkedFunctions()

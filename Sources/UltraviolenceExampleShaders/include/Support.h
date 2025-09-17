@@ -21,6 +21,11 @@ using namespace metal;
 #define BUFFER(ADDRESS_SPACE, TYPE) TYPE
 #endif
 
+typedef simd_float4x4 float4x4;
+typedef simd_float3x3 float3x3;
+typedef simd_float4 float4;
+typedef simd_float3 float3;
+
 // Copied from <CoreFoundation/CFAvailability.h>
 #define __UV_ENUM_ATTRIBUTES __attribute__((enum_extensibility(open)))
 #define __UV_ANON_ENUM(_type) enum __UV_ENUM_ATTRIBUTES : _type
