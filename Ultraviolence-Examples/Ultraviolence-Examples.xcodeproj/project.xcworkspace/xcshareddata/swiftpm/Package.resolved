@@ -11,6 +11,15 @@
       }
     },
     {
+      "identity" : "geometrylite3d",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/schwa/GeometryLite3D",
+      "state" : {
+        "branch" : "main",
+        "revision" : "59e3663e6a6668a5b25cb7bfb5da54dfad1ed8ab"
+      }
+    },
+    {
       "identity" : "metalcompilerplugin",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/schwa/MetalCompilerPlugin",
