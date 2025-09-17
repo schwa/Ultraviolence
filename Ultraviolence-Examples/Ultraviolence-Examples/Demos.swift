@@ -22,6 +22,7 @@ import UltraviolenceExamples
         ColorAdjustDemoView.self,
         DebugShadersDemoView.self,
         PBRDemoView.self,
+        SDFDemoView.self,
     ]
 
 #if os(macOS)
@@ -146,5 +147,11 @@ extension DebugShadersDemoView: @retroactive DemoView {
 extension PBRDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(name: "PBR Rendering", description: "Physically Based Rendering with multiple material presets, environment reflections, and animated lighting", group: "* Broken", keywords: [])
+    }
+}
+
+extension SDFDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(name: "SDF Raymarching", description: "Real-time signed distance field raymarching with animated shapes, smooth blending, and dynamic lighting", group: "Complex", keywords: ["animated", "raymarching"])
     }
 }
