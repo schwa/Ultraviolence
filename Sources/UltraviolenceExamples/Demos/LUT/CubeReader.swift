@@ -13,7 +13,7 @@ struct CubeReader {
 
     init(url: URL) throws {
         let string = try String(contentsOf: url, encoding: .utf8)
-        let lines = string.split(separator: "\n")
+        let lines = string.split(whereSeparator: \.isNewline)
         var title: Substring?
         var is3D: Bool?
         var count: Int?
@@ -23,22 +23,22 @@ struct CubeReader {
         let lut3DSizeRegex = #/^LUT_3D_SIZE\s+(\d+)$/#
 
         for line in lines {
-            let line = line.trimmingCharacters(in: .whitespaces)
-            if line.isEmpty {
+            let trimmedLine = line.trimmingCharacters(in: .whitespaces)
+            if trimmedLine.isEmpty {
                 continue
             }
-            if line.hasPrefix("#") {
+            if trimmedLine.hasPrefix("#") {
                 continue
             }
-            if title == nil, let match = try titleRegex.firstMatch(in: String(line)) {
+            if title == nil, let match = try titleRegex.firstMatch(in: String(trimmedLine)) {
                 title = match.output.1
             }
-            else if is3D == nil, let match = try lut3DSizeRegex.firstMatch(in: String(line)) {
+            else if is3D == nil, let match = try lut3DSizeRegex.firstMatch(in: String(trimmedLine)) {
                 is3D = true
                 count = try Int(match.output.1).orThrow(.generic("Failed to parse LUT_3D_SIZE value"))
             }
             else {
-                let components = line.split(separator: " ")
+                let components = trimmedLine.split(separator: " ")
                 guard components.count == 3 else {
                     throw UltraviolenceError.validationError("Invalid LUT entry: expected 3 components, got \(components.count)")
                 }
