@@ -61,7 +61,7 @@ internal struct SuperFilePickerModifier <T>: ViewModifier where T: Transferable 
     }
 
     func findAll() -> [URL] {
-        try! FileManager.default.contentsOfDirectory(at: Bundle.main.resourceURL!, includingPropertiesForKeys: [.contentTypeKey], options: [])
+        try! FileManager.default.contentsOfDirectory(at: Bundle.module.resourceURL!, includingPropertiesForKeys: [.contentTypeKey], options: [])
             .filter { url in
                 guard let contentType = try? url.resourceValues(forKeys: [.contentTypeKey]).contentType else {
                     return false

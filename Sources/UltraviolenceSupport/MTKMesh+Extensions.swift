@@ -13,15 +13,6 @@ public extension MTKMesh {
 }
 
 public extension MTKMesh {
-    static func teapot() -> MTKMesh {
-        do {
-            return try MTKMesh(name: "teapot", bundle: .main)
-        }
-        catch {
-            fatalError("\(error)")
-        }
-    }
-
     static func box(extent: SIMD3<Float> = [1, 1, 1], segments: SIMD3<UInt32> = [1, 1, 1], inwardNormals: Bool = false) -> MTKMesh {
         do {
             let device = _MTLCreateSystemDefaultDevice()

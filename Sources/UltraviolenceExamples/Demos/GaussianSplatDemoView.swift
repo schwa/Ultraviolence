@@ -56,7 +56,7 @@ public struct GaussianSplatDemoView: View {
                             Text("\(String(describing: mode).camelCaseToTitleCase)").tag(mode)
                         }
                     }
-                    URLPicker(title: "Splats", rootURL: Bundle.main.resourceURL!, utiTypes: [.antimatter15Splat, .json]) { url in
+                    URLPicker(title: "Splats", rootURL: Bundle.module.resourceURL!, utiTypes: [.antimatter15Splat, .json]) { url in
                         Task {
                             splatCloud = try! await load(url: url)
                         }
@@ -68,7 +68,7 @@ public struct GaussianSplatDemoView: View {
             }
         }
         .task {
-            let url = Bundle.main.url(forResource: "centered_lastchance", withExtension: "splat")!
+            let url = Bundle.module.url(forResource: "Sample Splats/centered_lastchance", withExtension: "splat")!
             splatCloud = try! await load(url: url)
         }
     }

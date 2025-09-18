@@ -218,8 +218,8 @@ public struct VideoPlaybackDemoView: View {
     }
 
     private func loadDefaultVideo() {
-        if let url = Bundle.main.url(forResource: "sample", withExtension: "mov") ??
-                     Bundle.main.url(forResource: "sample", withExtension: "mp4") {
+        if let url = Bundle.module.url(forResource: "sample", withExtension: "mov") ??
+                     Bundle.module.url(forResource: "sample", withExtension: "mp4") {
             loadVideo(url: url)
         } else {
             errorMessage = "No default video found. Click 'Load Video' to select one."

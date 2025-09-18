@@ -119,7 +119,7 @@ extension SuperDownloadWidget where Label == Text {
 extension FileManager {
     var applicationSpecificCachesDirectory: URL {
         get throws {
-            let url = urls(for: .cachesDirectory, in: .userDomainMask).first.orFatalError().appendingPathComponent(Bundle.main.bundleIdentifier!)
+            let url = urls(for: .cachesDirectory, in: .userDomainMask).first.orFatalError().appendingPathComponent(Bundle.main.bundleIdentifier ?? "com.ultraviolence.cache")
             try createDirectory(at: url, withIntermediateDirectories: true, attributes: nil)
             return url
         }

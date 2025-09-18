@@ -40,14 +40,14 @@ public struct LUTDemoView: View {
         do {
             let device = _MTLCreateSystemDefaultDevice()
             let textureLoader = MTKTextureLoader(device: device)
-            let inputTextureURL = Bundle.main.url(forResource: "DJSI3956", withExtension: "JPG").orFatalError()
+            let inputTextureURL = Bundle.module.url(forResource: "Images/DJSI3956", withExtension: "JPG").orFatalError()
             let sourceTexture = try textureLoader.newTexture(URL: inputTextureURL, options: [
                 .textureUsage: MTLTextureUsage([.shaderRead, .shaderWrite]).rawValue,
                 .origin: MTKTextureLoader.Origin.flippedVertically.rawValue,
                 .SRGB: true
             ])
-            let resourceURL = Bundle.main.resourceURL.orFatalError()
-            let lutTextureURL = resourceURL.appendingPathComponent("Blue Bias.png").assertFileExists()
+            let resourceURL = Bundle.module.resourceURL.orFatalError()
+            let lutTextureURL = resourceURL.appendingPathComponent("Samples/Blue Bias.png").assertFileExists()
             self._lutURL = .init(initialValue: lutTextureURL)
             let lutTexture = try Self.make3DLUTTexture(from: lutTextureURL)
             let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm_srgb, width: sourceTexture.width, height: sourceTexture.height, mipmapped: false)
@@ -78,9 +78,9 @@ public struct LUTDemoView: View {
         .overlay(alignment: .bottom) {
             VStack {
                 Picker("LUT", selection: $lutURL) {
-                    let resourceURL = Bundle.main.resourceURL.orFatalError()
+                    let resourceURL = Bundle.module.resourceURL.orFatalError()
                     ForEach(builtInLUTNames, id: \.self) { name in
-                        let url = resourceURL.appendingPathComponent(name).assertFileExists()
+                        let url = resourceURL.appendingPathComponent("Samples/\(name)").assertFileExists()
                         Text(name).tag(url)
                     }
                 }
