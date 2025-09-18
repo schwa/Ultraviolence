@@ -65,7 +65,7 @@ struct SystemSnapshotTests {
         #expect(tupleNode?.parentIdentifier == parentNode?.identifier)
 
         // TestElement nodes should reference the TupleElement as parent
-        for child in childNodes.filter { $0.elementType == "TestElement" } {
+        for child in childNodes.filter({ $0.elementType == "TestElement" }) {
             #expect(child.parentIdentifier == tupleNode?.identifier)
         }
     }

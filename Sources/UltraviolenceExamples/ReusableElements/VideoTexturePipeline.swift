@@ -32,7 +32,7 @@ public class VideoTexturePipeline: ObservableObject {
         player = AVPlayer(playerItem: playerItem)
         
         // Configure video output for Metal textures
-        let outputSettings: [String: Any] = [
+        let outputSettings: [String: any Sendable] = [
             kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA,
             kCVPixelBufferMetalCompatibilityKey as String: true
         ]
