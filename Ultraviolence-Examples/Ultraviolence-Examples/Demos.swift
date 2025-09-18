@@ -24,7 +24,8 @@ import UltraviolenceExamples
         PBRDemoView.self,
         SDFDemoView.self,
         PointCloudDemoView.self,
-        ParticleEffectsDemoView.self
+        ParticleEffectsDemoView.self,
+        VideoPlaybackDemoView.self
     ]
 
     #if os(macOS)
@@ -166,5 +167,11 @@ extension PointCloudDemoView: @retroactive DemoView {
 extension ParticleEffectsDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(name: "Particle Effects", description: "GPU-accelerated particle system with compute shaders featuring various emitter types like fountains, explosions, and fireworks", group: "Complex", keywords: ["particles", "compute", "animated"])
+    }
+}
+
+extension VideoPlaybackDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(name: "Video Playback", description: "Full screen video playback with streaming textures rendered through billboard pipeline", group: "Basic", keywords: ["video", "streaming", "billboard"])
     }
 }

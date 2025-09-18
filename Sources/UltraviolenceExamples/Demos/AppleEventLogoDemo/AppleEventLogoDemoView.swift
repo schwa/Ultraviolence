@@ -199,7 +199,7 @@ public struct AppleEventLogoDemoView: View {
 
                     // Load Apple logo mask texture from bundle
                     let textureLoader = MTKTextureLoader(device: device)
-                    guard let maskURL = Bundle.module.url(forResource: "Resources/AppleLogoMask", withExtension: "png") else {
+                    guard let maskURL = Bundle.module.url(forResource: "AppleLogoMask", withExtension: "png") else {
                         throw UltraviolenceError.resourceCreationFailure("Could not find AppleLogoMask.png in bundle")
                     }
                     maskTexture = try textureLoader.newTexture(URL: maskURL, options: [
@@ -209,7 +209,7 @@ public struct AppleEventLogoDemoView: View {
                     maskTexture?.label = "Apple Logo Mask"
 
                     // Load video
-                    guard let videoURL = Bundle.module.url(forResource: "Resources/AppleEventVideo", withExtension: "mp4") else {
+                    guard let videoURL = Bundle.module.url(forResource: "AppleEventVideo", withExtension: "mp4") else {
                         throw UltraviolenceError.resourceCreationFailure("Could not find AppleEventVideo.mp4 in bundle")
                     }
                     try videoPlayer.loadVideo(url: videoURL)
