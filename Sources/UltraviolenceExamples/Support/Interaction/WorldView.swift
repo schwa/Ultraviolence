@@ -32,24 +32,25 @@ public struct WorldView<Content: View>: View {
         VStack {
             content
                 .modifier(enabled: freeCameraController == .turntable, TurntableCameraController(constraint: initialTurntableControllerConstraint, transform: $cameraMatrix))
-            HStack {
-                Picker("Mode", selection: $cameraMode) {
-                    Text("Free").tag(CameraMode.free)
-                    ForEach(CameraAngle.allCases, id: \.self) { angle in
-                        Text("\(String(describing: angle))").tag(CameraMode.fixed(angle))
-                    }
-                }
-                .pickerStyle(.menu)
-                .fixedSize()
-
-                Picker("Controller", selection: $freeCameraController) {
-                    ForEach(CameraController.allCases, id: \.self) { value in
-                        Text("\(String(describing: value))").tag(value)
-                    }
-                }
-                .pickerStyle(.menu)
-                .fixedSize()
-            }
+//            HStack {
+//                Picker("Mode", selection: $cameraMode) {
+//                    Text("Free").tag(CameraMode.free)
+//                    ForEach(CameraAngle.allCases, id: \.self) { angle in
+//                        Text("\(String(describing: angle))").tag(CameraMode.fixed(angle))
+//                    }
+//                }
+//                .pickerStyle(.menu)
+//                .fixedSize()
+//
+//                Picker("Controller", selection: $freeCameraController) {
+//                    ForEach(CameraController.allCases, id: \.self) { value in
+//                        Text("\(String(describing: value))").tag(value)
+//                    }
+//                }
+//                .pickerStyle(.menu)
+//                .fixedSize()
+//            }
+//            .hidden()
         }
         .onChange(of: cameraMode) {
             switch cameraMode {

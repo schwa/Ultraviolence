@@ -25,7 +25,8 @@ import UltraviolenceExamples
         SDFDemoView.self,
         PointCloudDemoView.self,
         ParticleEffectsDemoView.self,
-        VideoPlaybackDemoView.self
+        VideoPlaybackDemoView.self,
+        PanoramaDemoView.self
     ]
 
     #if os(macOS)
@@ -173,5 +174,11 @@ extension ParticleEffectsDemoView: @retroactive DemoView {
 extension VideoPlaybackDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(name: "Video Playback", description: "Full screen video playback with streaming textures rendered through billboard pipeline", group: "Basic", keywords: ["video", "streaming", "billboard"])
+    }
+}
+
+extension PanoramaDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(name: "360° Panorama", description: "Interactive 360-degree panoramic photo viewer with spherical projection and WorldView rotation", group: "Basic", keywords: ["panorama", "360", "spherical"])
     }
 }

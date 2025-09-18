@@ -70,8 +70,10 @@ internal struct RenderViewHelper <Content>: View where Content: Element {
     var body: some View {
         ViewAdaptor<MTKView> {
             MTKView()
+
         }
         update: { view in
+            view.layer?.isOpaque = false
             view.device = device
             view.delegate = viewModel
             view.configure(from: environment)

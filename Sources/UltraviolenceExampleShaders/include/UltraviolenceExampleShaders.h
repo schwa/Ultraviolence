@@ -8,6 +8,7 @@
 #import "PBRShaders.h"
 #import "SDFShader.h"
 #import "ParticleEffectsShader.h"
+#import "Panorama.h"
 
 #ifdef __OBJC__
 #import <Foundation/Foundation.h>

@@ -22,6 +22,19 @@ public extension MTKMesh {
         }
     }
 
+    static func box(extent: SIMD3<Float> = [1, 1, 1], segments: SIMD3<UInt32> = [1, 1, 1], inwardNormals: Bool = false) -> MTKMesh {
+        do {
+            let device = _MTLCreateSystemDefaultDevice()
+            let allocator = MTKMeshBufferAllocator(device: device)
+            let mdlMesh = MDLMesh(boxWithExtent: extent, segments: segments, inwardNormals: inwardNormals, geometryType: .triangles, allocator: allocator)
+            return try MTKMesh(mesh: mdlMesh, device: device)
+        }
+        catch {
+            fatalError("\(error)")
+        }
+
+    }
+
     static func sphere(extent: SIMD3<Float> = [1, 1, 1], inwardNormals: Bool = false) -> MTKMesh {
         do {
             let device = _MTLCreateSystemDefaultDevice()
