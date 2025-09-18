@@ -1,12 +1,11 @@
-import SwiftUI
-import Ultraviolence
-import UltraviolenceUI
-import UltraviolenceSupport
 import Metal
 import MetalKit
+import SwiftUI
+import Ultraviolence
+import UltraviolenceSupport
+import UltraviolenceUI
 
 public struct ColorAdjustDemoView: View {
-
     let sourceTexture: MTLTexture
     let adjustedTexture: MTLTexture
 

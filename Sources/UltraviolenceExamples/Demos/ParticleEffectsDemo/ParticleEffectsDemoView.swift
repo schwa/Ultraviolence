@@ -1,11 +1,11 @@
+import GeometryLite3D
+import Metal
+import simd
 import SwiftUI
 import Ultraviolence
+import UltraviolenceExampleShaders
 import UltraviolenceSupport
 import UltraviolenceUI
-import GeometryLite3D
-import simd
-import Metal
-import UltraviolenceExampleShaders
 
 public struct ParticleEffectsDemoView: View {
     @State private var projection: any ProjectionProtocol = PerspectiveProjection()
@@ -13,11 +13,11 @@ public struct ParticleEffectsDemoView: View {
     @State private var drawableSize: CGSize = .zero
 
     // Particle system parameters
-    @State private var particleCount: Int = 5000
+    @State private var particleCount: Int = 5_000
     @State private var particleSize: Float = 20.0
     @State private var gravity: SIMD3<Float> = [0, -2, 0]  // Lower gravity for portal
     @State private var emitterType: EmitterType = .magicPortal
-    @State private var emissionRate: Float = 2000
+    @State private var emissionRate: Float = 2_000
 
     // Particle buffers
     @State private var particleBuffer: MTLBuffer?
@@ -40,59 +40,59 @@ public struct ParticleEffectsDemoView: View {
                 let currentTime = context.frameUniforms.time
 
                 if let particleBuffer, let emitterBuffer {
-                        try Group {
-                            // Update particles using compute shader
-                            try ComputePass {
-                                ParticleUpdateCompute(
-                                    particleBuffer: particleBuffer,
-                                    emitterBuffer: emitterBuffer,
-                                    particleCount: particleCount,
-                                    time: currentTime,
-                                    gravity: gravity,
-                                    emitterType: emitterType,
-                                    emissionRate: emissionRate
-                                )
-                            }
+                    try Group {
+                        // Update particles using compute shader
+                        try ComputePass {
+                            ParticleUpdateCompute(
+                                particleBuffer: particleBuffer,
+                                emitterBuffer: emitterBuffer,
+                                particleCount: particleCount,
+                                time: currentTime,
+                                gravity: gravity,
+                                emitterType: emitterType,
+                                emissionRate: emissionRate
+                            )
+                        }
 
-                            // Render particles
-                            try RenderPass {
-                                ParticleRenderPipeline(
-                                    particleBuffer: particleBuffer,
-                                    particleCount: particleCount,
-                                    viewMatrix: cameraMatrix.inverse,
-                                    projectionMatrix: projection.projectionMatrix(for: drawableSize),
-                                    time: currentTime,
-                                    gravity: gravity,
-                                    baseSize: particleSize
-                                )
-                                .depthCompare(function: .less, enabled: true)
-                            }
+                        // Render particles
+                        try RenderPass {
+                            ParticleRenderPipeline(
+                                particleBuffer: particleBuffer,
+                                particleCount: particleCount,
+                                viewMatrix: cameraMatrix.inverse,
+                                projectionMatrix: projection.projectionMatrix(for: drawableSize),
+                                time: currentTime,
+                                gravity: gravity,
+                                baseSize: particleSize
+                            )
+                            .depthCompare(function: .less, enabled: true)
                         }
                     }
                 }
-                .metalDepthStencilPixelFormat(.depth32Float)
-                .onDrawableSizeChange {
-                    drawableSize = $0
-                }
-                .onAppear {
-                    initializeParticles()
-                }
-                .onChange(of: particleCount) { _, _ in
-                    initializeParticles()
-                }
-                .onChange(of: emitterType) { _, newType in
-                    // Adjust gravity based on emitter type
-                    switch newType {
-                    case .magicPortal:
-                        gravity = [0, -2, 0]  // Less gravity for portal
-                    case .rain:
-                        gravity = [0, -15, 0]  // More gravity for rain
-                    default:
-                        gravity = [0, -9.8, 0]  // Normal gravity
-                    }
-                    initializeParticles()
-                }
             }
+            .metalDepthStencilPixelFormat(.depth32Float)
+            .onDrawableSizeChange {
+                drawableSize = $0
+            }
+            .onAppear {
+                initializeParticles()
+            }
+            .onChange(of: particleCount) { _, _ in
+                initializeParticles()
+            }
+            .onChange(of: emitterType) { _, newType in
+                // Adjust gravity based on emitter type
+                switch newType {
+                case .magicPortal:
+                    gravity = [0, -2, 0]  // Less gravity for portal
+                case .rain:
+                    gravity = [0, -15, 0]  // More gravity for rain
+                default:
+                    gravity = [0, -9.8, 0]  // Normal gravity
+                }
+                initializeParticles()
+            }
+        }
         .overlay(alignment: .topLeading) {
             VStack(alignment: .leading) {
                 Text("Particle Effects Demo")
@@ -106,7 +106,7 @@ public struct ParticleEffectsDemoView: View {
                 .pickerStyle(.menu)
 
                 Label("Particles: \(particleCount)", systemImage: "sparkles")
-                Slider(value: Binding(get: { Double(particleCount) }, set: { particleCount = Int($0) }), in: 1000...20000, step: 1000)
+                Slider(value: Binding(get: { Double(particleCount) }, set: { particleCount = Int($0) }), in: 1_000...20_000, step: 1_000)
 
                 Label("Size: \(particleSize, specifier: "%.1f")", systemImage: "circle.fill")
                 Slider(value: $particleSize, in: 5...50)
@@ -115,7 +115,7 @@ public struct ParticleEffectsDemoView: View {
                 Slider(value: $gravity.y, in: -10...10)
 
                 Label("Emission: \(Int(emissionRate))/s", systemImage: "sparkle")
-                Slider(value: $emissionRate, in: 100...2000)
+                Slider(value: $emissionRate, in: 100...2_000)
 
                 Button("Reset") {
                     initializeParticles()
@@ -159,7 +159,6 @@ public struct ParticleEffectsDemoView: View {
         )
         emitterBuffer = device.makeBuffer(bytes: [emitterParams], length: MemoryLayout<ParticleEmitterParams>.stride, options: [.storageModeShared])
         emitterBuffer?.label = "Emitter Buffer"
-
     }
 
     private var emitterTypeIndex: Int {
@@ -176,13 +175,9 @@ public struct ParticleEffectsDemoView: View {
         case .magicPortal: return SIMD3<Float>(0, 0, 0)
         }
     }
-
 }
 
 // Use the structs from the Metal header
-import UltraviolenceExampleShaders
-
-// Compute element for updating particles
 private struct ParticleUpdateCompute: Element {
     let particleBuffer: MTLBuffer
     let emitterBuffer: MTLBuffer
@@ -250,7 +245,6 @@ private struct ParticleUpdateCompute: Element {
         case .magicPortal: return SIMD3<Float>(0, 0, 0)
         }
     }
-
 }
 
 // Render pipeline for particles

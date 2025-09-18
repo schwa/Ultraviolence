@@ -1,5 +1,5 @@
-import Ultraviolence
 import Foundation
+import Ultraviolence
 import UltraviolenceExampleShaders
 
 public struct DebugRenderPipeline<Content>: Element where Content: Element {

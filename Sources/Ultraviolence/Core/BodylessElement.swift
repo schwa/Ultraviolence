@@ -49,6 +49,6 @@ extension BodylessElement {
 
 extension BodylessElement where Self: Equatable {
     nonisolated func requiresSetup(comparedTo old: Self) -> Bool {
-        return self != old
+        self != old
     }
 }

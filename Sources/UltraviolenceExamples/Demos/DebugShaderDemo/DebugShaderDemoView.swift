@@ -1,22 +1,21 @@
 import SwiftUI
 
-import Ultraviolence
-import UltraviolenceUI
-import UltraviolenceExampleShaders
 import GeometryLite3D
-import simd
 import MetalKit
+import simd
+import Ultraviolence
+import UltraviolenceExampleShaders
+import UltraviolenceUI
 
 public struct DebugShadersDemoView: View {
+    @State
+    private var projection: any ProjectionProtocol = PerspectiveProjection()
 
     @State
-    var projection: any ProjectionProtocol = PerspectiveProjection()
+    private var cameraMatrix: simd_float4x4 = .init(translation: [0, 2, 6])
 
     @State
-    var cameraMatrix: simd_float4x4 = .init(translation: [0, 2, 6])
-
-    @State
-    var debugMode: DebugShadersMode = .normal
+    private var debugMode: DebugShadersMode = .normal
 
     let teapot = try! MTKMesh(name: "teapot", bundle: .main, options: [.generateTangentBasis, .generateTextureCoordinatesIfMissing, .useSimpleTextureCoordinates])
 
@@ -35,7 +34,7 @@ public struct DebugShadersDemoView: View {
                     let viewProjectionMatrix = projectionMatrix * viewMatrix
 
                     try RenderPass(label: "Debug") {
-                        try AxisLinesRenderPipeline(mvpMatrix: viewProjectionMatrix, scale: 10000.0)
+                        try AxisLinesRenderPipeline(mvpMatrix: viewProjectionMatrix, scale: 10_000.0)
 
                         try AxisAlignedWireframeBoxesRenderPipeline(mvpMatrix: viewProjectionMatrix, boxes: [.init(min: [-10, -10, -10], max: [10, 10, 10], color: [1, 1, 1, 1])])
 
@@ -49,7 +48,6 @@ public struct DebugShadersDemoView: View {
                 .metalDepthStencilPixelFormat(.depth32Float)
             }
         }
-
     }
 }
 

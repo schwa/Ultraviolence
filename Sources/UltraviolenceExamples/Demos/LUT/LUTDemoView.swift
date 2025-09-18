@@ -122,7 +122,6 @@ public struct LUTDemoView: View {
     }
 }
 
-
 extension URL {
     func assertFileExists() -> URL {
         guard FileManager.default.fileExists(atPath: path) else {

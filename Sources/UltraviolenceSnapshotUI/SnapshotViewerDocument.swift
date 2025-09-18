@@ -13,20 +13,19 @@ public struct SnapshotViewerDocumentScene: Scene {
     }
 }
 
-
 nonisolated struct SnapshotViewerDocument: FileDocument {
     struct FrameInfo: Codable {
         let number: Int
     }
-    
+
     struct SnapshotRecord: Codable {
         let frame: FrameInfo
         let snapshot: SystemSnapshot
     }
-    
+
     var snapshots: [SnapshotRecord]
     var currentFrameIndex: Int = 0
-    
+
     @MainActor
     var currentSnapshot: SystemSnapshot? {
         guard !snapshots.isEmpty else {
@@ -56,15 +55,15 @@ nonisolated struct SnapshotViewerDocument: FileDocument {
         guard let data = configuration.file.regularFileContents else {
             throw CocoaError(.fileReadCorruptFile)
         }
-        
+
         // Read all lines of the JSONL file
         guard let fileContent = String(data: data, encoding: .utf8) else {
             throw CocoaError(.fileReadCorruptFile)
         }
-        
+
         let lines = fileContent.components(separatedBy: .newlines)
             .filter { !$0.isEmpty }
-        
+
         var records: [SnapshotRecord] = []
         for line in lines {
             guard let lineData = line.data(using: .utf8) else {
@@ -78,11 +77,11 @@ nonisolated struct SnapshotViewerDocument: FileDocument {
                 continue
             }
         }
-        
+
         guard !records.isEmpty else {
             throw CocoaError(.fileReadCorruptFile)
         }
-        
+
         self.snapshots = records
         self.currentFrameIndex = 0
     }
@@ -91,7 +90,7 @@ nonisolated struct SnapshotViewerDocument: FileDocument {
         // Save all snapshots as JSONL
         let encoder = JSONEncoder()
         encoder.outputFormatting = []
-        
+
         var lines: [String] = []
         for record in snapshots {
             let data = try encoder.encode(record)
@@ -99,12 +98,12 @@ nonisolated struct SnapshotViewerDocument: FileDocument {
                 lines.append(line)
             }
         }
-        
+
         let content = lines.joined(separator: "\n")
         guard let data = content.data(using: .utf8) else {
             throw CocoaError(.fileWriteUnknown)
         }
-        
+
         return .init(regularFileWithContents: data)
     }
 }

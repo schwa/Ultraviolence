@@ -10,9 +10,9 @@ public struct AnyElement: Element, BodylessElement {
         try visit(base)
     }
 
-    nonisolated func requiresSetup(comparedTo old: AnyElement) -> Bool {
+    nonisolated func requiresSetup(comparedTo old: Self) -> Bool {
         // Type erasure prevents comparison - be conservative
-        return true
+        true
     }
 }
 

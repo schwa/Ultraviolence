@@ -1,10 +1,10 @@
+import GeometryLite3D
 import simd
 import SwiftUI
 import Ultraviolence
 import UltraviolenceExampleShaders
 import UltraviolenceSupport
 import UltraviolenceUI
-import GeometryLite3D
 
 public struct GridShaderDemoView: View {
     @State
@@ -25,7 +25,6 @@ public struct GridShaderDemoView: View {
         }
     }
 }
-
 
 struct GridShader: Element {
     @State

@@ -10,7 +10,7 @@ public struct SystemSnapshot: Codable, Sendable {
 
     public init(system: System) {
         self.timestamp = Date()
-        
+
         // Extract ordered identifiers from traversal events (only enter events to avoid duplicates)
         var extractedIdentifiers: [StructuralIdentifier] = []
         for event in system.traversalEvents {
@@ -18,7 +18,7 @@ public struct SystemSnapshot: Codable, Sendable {
                 extractedIdentifiers.append(node.id)
             }
         }
-        
+
         self.orderedIdentifiers = extractedIdentifiers.map(\.description)
         self.dirtyIdentifiers = Set(system.dirtyIdentifiers.map(\.description))
         self.activeNodeStackDepth = system.activeNodeStack.count

@@ -94,4 +94,3 @@ public struct TriangleDemoView: View {
         }
     }
 }
-

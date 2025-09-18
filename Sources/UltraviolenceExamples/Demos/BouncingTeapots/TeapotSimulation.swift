@@ -1,7 +1,7 @@
 import Foundation
+import GeometryLite3D
 import simd
 import UltraviolenceSupport
-import GeometryLite3D
 
 internal struct TeapotSimulation {
     var teapots: [Teapot] = []

@@ -14,7 +14,7 @@ internal struct EnvironmentWritingModifier<Content: Element>: Element, BodylessE
     nonisolated func requiresSetup(comparedTo old: EnvironmentWritingModifier<Content>) -> Bool {
         // Environment changes might affect setup if they change pipeline-relevant values
         // Since we can't compare closures, be conservative
-        return true
+        true
     }
 }
 

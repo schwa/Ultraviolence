@@ -10,37 +10,34 @@ public struct GameOfLifeDemoView: View {
     }
 
     public var body: some View {
-            // Render view
-            RenderView { _, _ in
-                GameOfLife(isRunning: isRunning, pattern: pattern)
-            }
+        // Render view
+        RenderView { _, _ in
+            GameOfLife(isRunning: isRunning, pattern: pattern)
+        }
 
-            .overlay(alignment: .bottom) {
-                HStack {
-                    Button(action: { isRunning.toggle() }) {
-                        Image(systemName: isRunning ? "pause.fill" : "play.fill")
+        .overlay(alignment: .bottom) {
+            HStack {
+                Button(action: { isRunning.toggle() }) {
+                    Image(systemName: isRunning ? "pause.fill" : "play.fill")
+                }
+
+                Menu("Fill") {
+                    Button("Glider") {
+                        pattern = .glider
                     }
 
-                    Menu("Fill") {
-                        Button("Glider") {
-                            pattern = .glider
-                        }
+                    Button("Random") {
+                        pattern = .random
+                    }
 
-                        Button("Random") {
-                            pattern = .random
-                        }
-
-                        Button("Clear") {
-                            pattern = .clear
-                        }
+                    Button("Clear") {
+                        pattern = .clear
                     }
                 }
-                .padding()
-                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
-                .padding()
             }
-
-
+            .padding()
+            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
+            .padding()
+        }
     }
 }
-

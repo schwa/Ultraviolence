@@ -1,5 +1,5 @@
-import simd
 import Metal
+import simd
 
 struct HeatParameters {
     var mousePosition: SIMD2<Float>      // 8 bytes (offset: 0)
@@ -11,7 +11,7 @@ struct HeatParameters {
     var textureSize: SIMD2<UInt32>       // 8 bytes (offset: 32)
     var isInteracting: Float             // 4 bytes (offset: 40)
     var _padding_final: UInt32 = 0       // 4 bytes (offset: 44) - total: 48 bytes
-    
+
     init(
         mousePosition: SIMD2<Float> = SIMD2<Float>(0.5, 0.5),
         mouseDirection: SIMD2<Float> = SIMD2<Float>(0, 0),

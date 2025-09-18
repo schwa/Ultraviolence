@@ -1,17 +1,17 @@
+import GeometryLite3D
+import Metal
+import simd
 import SwiftUI
 import Ultraviolence
+import UltraviolenceExampleShaders
 import UltraviolenceSupport
 import UltraviolenceUI
-import GeometryLite3D
-import simd
-import Metal
-import UltraviolenceExampleShaders
 
 public struct PointCloudDemoView: View {
     @State private var projection: any ProjectionProtocol = PerspectiveProjection()
     @State private var cameraMatrix: simd_float4x4 = .init(translation: [0, 0, 5])
     @State private var pointSize: Float = 5.0
-    @State private var pointCount: Int = 25000
+    @State private var pointCount: Int = 25_000
     @State private var drawableSize: CGSize = .zero
 
     // Torus parameters
@@ -26,7 +26,7 @@ public struct PointCloudDemoView: View {
 
     public var body: some View {
         WorldView(projection: $projection, cameraMatrix: $cameraMatrix, targetMatrix: .constant(nil)) {
-            RenderView { context, drawableSize in
+            RenderView { _, drawableSize in
                 if let pointBuffer {
                     try RenderPass {
                         PointCloudRenderPipeline(
@@ -54,7 +54,7 @@ public struct PointCloudDemoView: View {
                     .font(.headline)
 
                 Label("Points: \(pointCount)", systemImage: "circle.grid.3x3.fill")
-                Slider(value: Binding(get: { Double(pointCount) }, set: { pointCount = Int($0) }), in: 1000...200000, step: 1000)
+                Slider(value: Binding(get: { Double(pointCount) }, set: { pointCount = Int($0) }), in: 1_000...200_000, step: 1_000)
                     .onChange(of: pointCount) { _, _ in
                         generatePointCloud()
                     }

@@ -88,6 +88,6 @@ public struct RenderPipeline <Content>: Element, BodylessElement, BodylessConten
         // For now, always return false since shaders rarely change after initial setup
         // This prevents pipeline recreation on every frame
         // TODO: Implement proper comparison when shader constants are added
-        return false
+        false
     }
 }

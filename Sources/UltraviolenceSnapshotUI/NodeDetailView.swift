@@ -4,18 +4,18 @@ import Ultraviolence
 struct ExpandableSection: View {
     let content: String
     @State private var showPopover = false
-    
+
     var needsExpansion: Bool {
         content.contains("\n") || content.count > 80
     }
-    
+
     var body: some View {
         HStack {
             Text(content)
                 .monospaced()
                 .lineLimit(1)
                 .frame(maxWidth: .infinity, alignment: .leading)
-            
+
             if needsExpansion {
                 Button("More") {
                     showPopover = true
@@ -27,7 +27,7 @@ struct ExpandableSection: View {
                             .textSelection(.enabled)
                             .padding()
                     }
-                    .frame(width: 1200, height: 800)
+                    .frame(width: 1_200, height: 800)
                 }
             }
         }
@@ -58,7 +58,7 @@ struct NodeDetailView: View {
                 LabeledContent("Type") {
                     Text(ParsedTypeName(node.elementType).typeName)
                 }
-                
+
                 LabeledContent("Full Type") {
                     Text(ParsedTypeName(node.elementType).fullName)
                 }
@@ -67,7 +67,7 @@ struct NodeDetailView: View {
                     Text(node.identifier)
                         .textSelection(.enabled)
                 }
-                
+
                 LabeledContent("Status") {
                     HStack {
                         if isDirty {
@@ -78,11 +78,11 @@ struct NodeDetailView: View {
                         }
                     }
                 }
-                
+
                 LabeledContent("Parent") {
                     Text(parent != nil ? "Yes" : "No")
                 }
-                
+
                 LabeledContent("Children") {
                     Text("\(children.count)")
                 }

@@ -9,7 +9,7 @@ public struct ThermalVideoBlendPipeline: Element {
     let heatTexture: MTLTexture     // Raw heat values
     let outputTexture: MTLTexture   // Final blended output
     let videoBlendAmount: Float
-    
+
     public init(
         thermalTexture: MTLTexture,
         videoTexture: MTLTexture? = nil,
@@ -23,15 +23,15 @@ public struct ThermalVideoBlendPipeline: Element {
         self.outputTexture = outputTexture
         self.videoBlendAmount = videoBlendAmount
     }
-    
+
     public var body: some Element {
         get throws {
             let shaderLibrary = try ShaderLibrary(
                 bundle: .ultraviolenceExampleShaders().orFatalError(),
                 namespace: "ThermalVideoBlend"
             )
-            
-            if let videoTexture = videoTexture {
+
+            if let videoTexture {
                 // Use full blending kernel when video is available
                 try ComputePipeline(
                     computeKernel: try shaderLibrary.blendThermalWithVideo

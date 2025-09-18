@@ -1,7 +1,7 @@
-import Metal
-import MetalKit
 import CoreGraphics
 import ImageIO
+import Metal
+import MetalKit
 import ModelIO
 import simd
 import SwiftUI
@@ -683,7 +683,7 @@ public extension MTLBuffer {
 public extension MTLCommandBufferDescriptor {
     func addDefaultLogging() throws {
         let logStateDescriptor = MTLLogStateDescriptor()
-        logStateDescriptor.bufferSize = 32 * 1024 * 1_024
+        logStateDescriptor.bufferSize = 32 * 1_024 * 1_024
         let device = _MTLCreateSystemDefaultDevice()
         let logState = try device.makeLogState(descriptor: logStateDescriptor)
         logState.addLogHandler { _, _, _, message in
@@ -881,4 +881,3 @@ public extension MTLBuffer {
         return UnsafeMutablePointer<T>(bitPattern: bits)
     }
 }
-

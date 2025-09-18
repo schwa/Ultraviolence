@@ -24,17 +24,16 @@ import UltraviolenceExamples
         PBRDemoView.self,
         SDFDemoView.self,
         PointCloudDemoView.self,
-        ParticleEffectsDemoView.self,
+        ParticleEffectsDemoView.self
     ]
 
-#if os(macOS)
+    #if os(macOS)
     demos += [
         OffscreenDemoView.self
     ]
-#endif
+    #endif
     return demos
 }()
-
 
 extension EmptyView: @retroactive DemoView {
     public static var metadata: DemoMetadata {

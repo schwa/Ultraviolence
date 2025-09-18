@@ -20,7 +20,7 @@ public struct BlitPass <Content>: Element, BodylessElement, BodylessContentEleme
 
     nonisolated func requiresSetup(comparedTo old: BlitPass<Content>) -> Bool {
         // BlitPass only creates encoders during workload, never needs setup
-        return false
+        false
     }
 }
 
@@ -36,8 +36,8 @@ public struct Blit: Element, BodylessElement {
         try block(blitCommandEncoder)
     }
 
-    nonisolated func requiresSetup(comparedTo old: Blit) -> Bool {
+    nonisolated func requiresSetup(comparedTo old: Self) -> Bool {
         // Blit only encodes during workload, never needs setup
-        return false
+        false
     }
 }

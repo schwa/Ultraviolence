@@ -1,9 +1,9 @@
 import GameController
+import GeometryLite3D
 import Observation
 import simd
 import SwiftUI
 import UltraviolenceSupport
-import GeometryLite3D
 
 public struct GameControllerModifier: ViewModifier {
     @State

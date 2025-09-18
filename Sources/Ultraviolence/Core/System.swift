@@ -1,5 +1,5 @@
-internal import os
 import Foundation
+internal import os
 
 /// Represents a traversal event in the node tree
 internal enum TraversalEvent {
@@ -26,7 +26,7 @@ public class System {
     /// Accessing @UVEnvironment properties outside traversal will cause a crash.
     var activeNodeStack: [Node] = []
     var dirtyIdentifiers: Set<StructuralIdentifier> = []
-    
+
     private let snapshotter = Snapshotter()
 
     private static let _current = OSAllocatedUnfairLock<System?>(uncheckedState: nil)
@@ -43,7 +43,7 @@ public class System {
     public init() {
         // This line intentionally left blank.
     }
-    
+
     /// Mark all nodes as needing setup (e.g., when drawable size changes)
     public func markAllNodesNeedingSetup() {
         for node in nodes.values {
@@ -119,7 +119,7 @@ public class System {
 
                 // Push current node onto active stack
                 activeNodeStack.append(currentNode)
-                defer { 
+                defer {
                     activeNodeStack.removeLast()
                     // Add exit event when we're done with this node
                     newTraversalEvents.append(.exit(currentNode))

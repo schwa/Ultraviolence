@@ -6,8 +6,6 @@ import QuartzCore
 import SwiftUI
 import Ultraviolence
 import UltraviolenceSupport
-import QuartzCore
-
 public extension EnvironmentValues {
     @Entry
     var device: MTLDevice?
@@ -80,7 +78,7 @@ internal struct RenderViewHelper <Content>: View where Content: Element {
             viewModel.content = content
             viewModel.drawableSizeChange = drawableSizeChange
         }
-//        .modifier(RenderViewDebugViewModifier<Content>())
+        //        .modifier(RenderViewDebugViewModifier<Content>())
         .environment(viewModel)
     }
 }
@@ -149,12 +147,12 @@ internal class RenderViewViewModel <Content>: NSObject, MTKViewDelegate where Co
                 let lastFrameTime = frameTime
                 frameTime = currentTime - firstFrameTime
                 let deltaTime = frameTime - lastFrameTime
-                let frameUniforms = FrameUniforms(index: UInt32(frame), time: Float(frameTime), deltaTime: Float(deltaTime), viewportSize:  [UInt32(view.drawableSize.width),UInt32(view.drawableSize.height)])
+                let frameUniforms = FrameUniforms(index: UInt32(frame), time: Float(frameTime), deltaTime: Float(deltaTime), viewportSize: [UInt32(view.drawableSize.width), UInt32(view.drawableSize.height)])
                 let context = RenderViewContext(frameUniformas: frameUniforms)
 
                 // Return the element produced by the content builder
                 let rootElement = try CommandBufferElement(completion: .commit) {
-                    return try self.content(context, currentDrawableSize)
+                    try self.content(context, currentDrawableSize)
                 }
                 .environment(\.device, device)
                 .environment(\.commandQueue, commandQueue)

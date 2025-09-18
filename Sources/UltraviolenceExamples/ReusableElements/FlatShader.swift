@@ -1,11 +1,11 @@
 import CoreGraphics
+import GeometryLite3D
 import Metal
 import MetalKit
 import simd
 import Ultraviolence
 import UltraviolenceExampleShaders
 import UltraviolenceSupport
-import GeometryLite3D
 
 public struct FlatShader <Content>: Element where Content: Element {
     var content: Content

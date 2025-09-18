@@ -24,7 +24,7 @@ public struct GameOfLife: Element {
 
     let isRunning: Bool
     let pattern: InitialPattern
-    
+
     private let gridSize = (width: 256, height: 256)
 
     @UVState
@@ -113,7 +113,6 @@ public struct GameOfLife: Element {
 
         textureA = device.makeTexture(descriptor: textureDescriptor)
         textureB = device.makeTexture(descriptor: textureDescriptor)
-
     }
 
     private func initializeGridIfNeeded() {

@@ -1,11 +1,11 @@
+import GeometryLite3D
 import MetalKit
+import simd
 import SwiftUI
 import Ultraviolence
+import UltraviolenceExampleShaders
 import UltraviolenceSupport
 import UltraviolenceUI
-import UltraviolenceExampleShaders
-import GeometryLite3D
-import simd
 
 public struct SDFDemoView: View {
     @State
@@ -89,8 +89,8 @@ struct SDFRenderPipeline: Element {
                 let vertices: [Packed3<Float>] = [
                     [-1, -1, 0],
                     [ 1, -1, 0],
-                    [-1,  1, 0],
-                    [ 1,  1, 0]
+                    [-1, 1, 0],
+                    [ 1, 1, 0]
                 ]
 
                 // Extract camera position from camera matrix

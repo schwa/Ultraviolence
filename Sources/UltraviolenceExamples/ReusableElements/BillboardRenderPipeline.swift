@@ -35,7 +35,6 @@ struct BillboardRenderPipeline: Element {
     var body: some Element {
         get throws {
             try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
-
                 let specifierArgumentBuffer = specifier.toTexture2DSpecifierArgmentBuffer()
 
                 Draw { encoder in

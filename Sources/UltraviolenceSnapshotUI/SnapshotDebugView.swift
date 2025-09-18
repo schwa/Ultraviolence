@@ -14,9 +14,9 @@ public struct SnapshotDebugView: View {
     public var body: some View {
         NavigationSplitView {
             NodeListView(snapshot: snapshot, selectedNodeID: $selectedNodeID, searchText: searchText)
-            .navigationSplitViewColumnWidth(min: 400, ideal: 400)
-            .navigationTitle("Nodes")
-            .searchable(text: $searchText, prompt: "Search nodes...")
+                .navigationSplitViewColumnWidth(min: 400, ideal: 400)
+                .navigationTitle("Nodes")
+                .searchable(text: $searchText, prompt: "Search nodes...")
         } detail: {
             if let selectedNode = snapshot.nodes.first(where: { $0.identifier == selectedNodeID }) {
                 NodeDetailView(node: selectedNode, snapshot: snapshot)

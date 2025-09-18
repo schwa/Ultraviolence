@@ -9,7 +9,7 @@ public struct ColorRemapComputePipeline: Element {
     let maskTexture: MTLTexture
     let videoTexture: MTLTexture
     let power: Float
-    
+
     public init(
         inputTexture: MTLTexture,
         outputTexture: MTLTexture,
@@ -25,14 +25,14 @@ public struct ColorRemapComputePipeline: Element {
         self.videoTexture = videoTexture
         self.power = power
     }
-    
+
     public var body: some Element {
         get throws {
             let shaderLibrary = try ShaderLibrary(
                 bundle: .ultraviolenceExampleShaders().orFatalError(),
                 namespace: "ColorRemap"
             )
-            
+
             try ComputePipeline(
                 computeKernel: try shaderLibrary.colorRemap
             ) {

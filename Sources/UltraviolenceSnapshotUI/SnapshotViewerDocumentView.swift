@@ -14,49 +14,49 @@ struct SnapshotViewerDocumentView: View {
             }
         }
         .toolbar {
-                ToolbarItemGroup {
-                    if !document.snapshots.isEmpty {
-                        Button(action: {
-                            if selectedFrame > 0 {
-                                selectedFrame -= 1
-                            }
-                        }) {
-                            Image(systemName: "chevron.left")
+            ToolbarItemGroup {
+                if !document.snapshots.isEmpty {
+                    Button(action: {
+                        if selectedFrame > 0 {
+                            selectedFrame -= 1
                         }
-                        .disabled(selectedFrame == 0)
-                        .keyboardShortcut(.leftArrow, modifiers: [])
-                        
-                        Text("Frame:")
-                        
-                        Picker("Frame", selection: $selectedFrame) {
-                            ForEach(0..<document.snapshots.count, id: \.self) { index in
-                                Text("\(document.snapshots[index].frame.number)")
-                                    .tag(index)
-                            }
-                        }
-                        .pickerStyle(.menu)
-                        .frame(width: 100)
-                        
-                        Button(action: {
-                            if selectedFrame < document.snapshots.count - 1 {
-                                selectedFrame += 1
-                            }
-                        }) {
-                            Image(systemName: "chevron.right")
-                        }
-                        .disabled(selectedFrame == document.snapshots.count - 1)
-                        .keyboardShortcut(.rightArrow, modifiers: [])
-                        
-                        Text("\(selectedFrame + 1) / \(document.snapshots.count)")
-                            .monospacedDigit()
+                    }) {
+                        Image(systemName: "chevron.left")
                     }
+                    .disabled(selectedFrame == 0)
+                    .keyboardShortcut(.leftArrow, modifiers: [])
+
+                    Text("Frame:")
+
+                    Picker("Frame", selection: $selectedFrame) {
+                        ForEach(0..<document.snapshots.count, id: \.self) { index in
+                            Text("\(document.snapshots[index].frame.number)")
+                                .tag(index)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                    .frame(width: 100)
+
+                    Button(action: {
+                        if selectedFrame < document.snapshots.count - 1 {
+                            selectedFrame += 1
+                        }
+                    }) {
+                        Image(systemName: "chevron.right")
+                    }
+                    .disabled(selectedFrame == document.snapshots.count - 1)
+                    .keyboardShortcut(.rightArrow, modifiers: [])
+
+                    Text("\(selectedFrame + 1) / \(document.snapshots.count)")
+                        .monospacedDigit()
                 }
             }
-            .onAppear {
-                selectedFrame = document.currentFrameIndex
-            }
-            .onChange(of: selectedFrame) { _, newValue in
-                document.currentFrameIndex = newValue
-            }
+        }
+        .onAppear {
+            selectedFrame = document.currentFrameIndex
+        }
+        .onChange(of: selectedFrame) { _, newValue in
+            document.currentFrameIndex = newValue
+        }
     }
 }

@@ -5,7 +5,7 @@ struct NodeRowView: View {
     let node: NodeSnapshot
     let snapshot: SystemSnapshot
     @Binding var selectedNodeID: String?
-    
+
     private var parsedType: ParsedTypeName {
         ParsedTypeName(node.elementType)
     }
@@ -59,7 +59,7 @@ struct NodeRowView: View {
                         .foregroundStyle(.red)
                         .clipShape(RoundedRectangle(cornerRadius: 4))
                 }
-                
+
                 if node.needsSetup {
                     Text("SETUP")
                         .font(.caption2)

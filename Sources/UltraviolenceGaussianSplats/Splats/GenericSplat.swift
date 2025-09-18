@@ -1,7 +1,7 @@
 #if os(iOS) || (os(macOS) && !arch(x86_64))
+import GeometryLite3D
 import simd
 import UltraviolenceSupport
-import GeometryLite3D
 
 public struct GenericSplat: Equatable, Sendable {
     public var position: SIMD3<Float>

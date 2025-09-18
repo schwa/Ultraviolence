@@ -28,10 +28,10 @@ internal struct AnyBodylessElement: Element, BodylessElement {
         try _workloadExit?(node)
     }
 
-    nonisolated func requiresSetup(comparedTo old: AnyBodylessElement) -> Bool {
+    nonisolated func requiresSetup(comparedTo old: Self) -> Bool {
         // AnyBodylessElement wraps closures - if the closures change, we need setup
         // Since we can't compare closures, always return true for safety
-        return true
+        true
     }
 }
 

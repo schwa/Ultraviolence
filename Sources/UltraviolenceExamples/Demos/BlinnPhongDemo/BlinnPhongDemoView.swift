@@ -1,3 +1,4 @@
+import GeometryLite3D
 import Metal
 import MetalKit
 import simd
@@ -5,7 +6,6 @@ import SwiftUI
 import Ultraviolence
 import UltraviolenceSupport
 import UltraviolenceUI
-import GeometryLite3D
 
 public struct BlinnPhongDemoView: View {
     @State
@@ -62,9 +62,6 @@ public struct BlinnPhongDemoView: View {
 
                         GridShader(projectionMatrix: projectionMatrix, cameraMatrix: cameraMatrix)
 
-
-
-
                         let transforms = Transforms(modelMatrix: .init(translation: lighting.lights[0].lightPosition), cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
                         try FlatShader(textureSpecifier: .color(SIMD3<Float>(lighting.lights[0].lightColor))) {
                             Draw { encoder in
@@ -90,7 +87,7 @@ public struct BlinnPhongDemoView: View {
                         .vertexDescriptor(MTLVertexDescriptor(models.first!.mesh.vertexDescriptor))
                         .depthCompare(function: .less, enabled: true)
 
-                        try AxisLinesRenderPipeline(mvpMatrix: viewProjectionMatrix, scale: 10000.0)
+                        try AxisLinesRenderPipeline(mvpMatrix: viewProjectionMatrix, scale: 10_000.0)
                     }
                 }
                 .metalDepthStencilPixelFormat(.depth32Float)
@@ -109,7 +106,6 @@ public struct BlinnPhongDemoView: View {
         }
     }
 }
-
 
 struct Model: Identifiable {
     var id: String

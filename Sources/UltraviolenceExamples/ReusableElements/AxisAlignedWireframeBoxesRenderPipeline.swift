@@ -4,7 +4,6 @@ import Ultraviolence
 import UltraviolenceExampleShaders
 
 public struct AxisAlignedWireframeBoxesRenderPipeline: Element {
-
     let vertexShader: VertexShader
     let fragmentShader: FragmentShader
     let mvpMatrix: float4x4

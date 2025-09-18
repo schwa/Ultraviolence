@@ -48,13 +48,12 @@ public extension MTKMesh {
 }
 
 public extension MTKMesh {
-
     struct Options: OptionSet, Sendable {
         public let rawValue: Int
 
-        public static let generateTextureCoordinatesIfMissing = Options(rawValue: 1 << 0)
-        public static let generateTangentBasis = Options(rawValue: 1 << 1)
-        public static let useSimpleTextureCoordinates = Options(rawValue: 1 << 2)
+        public static let generateTextureCoordinatesIfMissing = Self(rawValue: 1 << 0)
+        public static let generateTangentBasis = Self(rawValue: 1 << 1)
+        public static let useSimpleTextureCoordinates = Self(rawValue: 1 << 2)
 
         public init(rawValue: Int) {
             self.rawValue = rawValue
@@ -90,7 +89,6 @@ public extension MTKMesh {
         try self.init(mdlMesh: mdlMesh, device: device, options: options)
     }
 
-
     convenience init(mdlMesh: MDLMesh, device: MTLDevice, options: Options) throws {
         // Check what attributes the original model has BEFORE we modify the descriptor
         let hasOriginalTexCoords = mdlMesh.vertexAttributeData(forAttributeNamed: MDLVertexAttributeTextureCoordinate, as: .float2) != nil
@@ -104,7 +102,7 @@ public extension MTKMesh {
         }
 
         // Generate texture coordinates if missing
-        if !hasOriginalTexCoords && options.contains(.generateTextureCoordinatesIfMissing) {
+        if !hasOriginalTexCoords, options.contains(.generateTextureCoordinatesIfMissing) {
             if options.contains(.useSimpleTextureCoordinates) {
                 // Use simple spherical mapping (fast, works for any mesh)
                 logger?.info("Creating spherical texture coordinates.")
@@ -155,7 +153,7 @@ public extension MTKMesh {
         let hasTextureCoordinates = mdlMesh.vertexAttributeData(forAttributeNamed: MDLVertexAttributeTextureCoordinate, as: .float2) != nil
 
         // Generate tangent basis if requested, doesn't exist, and texture coordinates are available
-        if options.contains(.generateTangentBasis) && !hasOriginalTangentBasis && hasTextureCoordinates {
+        if options.contains(.generateTangentBasis), !hasOriginalTangentBasis, hasTextureCoordinates {
             mdlMesh.addTangentBasis(
                 forTextureCoordinateAttributeNamed: MDLVertexAttributeTextureCoordinate,
                 tangentAttributeNamed: MDLVertexAttributeTangent,
@@ -214,5 +212,4 @@ public extension MTKMesh {
 
         try self.init(mesh: mdlMesh, device: device)
     }
-
 }

@@ -1,7 +1,7 @@
+import GeometryLite3D
 import Ultraviolence
 import UltraviolenceExampleShaders
 import UltraviolenceSupport
-import GeometryLite3D
 
 public typealias Transforms = UltraviolenceExampleShaders.Transforms
 

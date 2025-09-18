@@ -99,4 +99,3 @@ public struct StencilDemoView: View {
         }
     }
 }
-

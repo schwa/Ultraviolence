@@ -1,11 +1,11 @@
 #if os(iOS) || (os(macOS) && !arch(x86_64))
+import GeometryLite3D
 internal import os
 import SwiftUI
 import Ultraviolence
 import UltraviolenceGaussianSplatShaders
 import UltraviolenceSupport
 import UltraviolenceUI
-import GeometryLite3D
 
 let logger: Logger? = Logger(subsystem: "gaussian-splats", category: "gaussian-splats")
 

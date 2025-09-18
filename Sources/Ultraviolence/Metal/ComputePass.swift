@@ -59,7 +59,7 @@ public struct ComputePipeline <Content>: Element, BodylessElement, BodylessConte
         // For now, always return false since kernels rarely change after initial setup
         // This prevents pipeline recreation on every frame
         // TODO: Implement proper comparison when shader constants are added
-        return false
+        false
     }
 }
 
@@ -102,8 +102,8 @@ public struct ComputeDispatch: Element, BodylessElement {
         }
     }
 
-    nonisolated func requiresSetup(comparedTo old: ComputeDispatch) -> Bool {
+    nonisolated func requiresSetup(comparedTo old: Self) -> Bool {
         // ComputeDispatch only dispatches during workload, never needs setup
-        return false
+        false
     }
 }

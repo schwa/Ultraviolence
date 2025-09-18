@@ -1,36 +1,35 @@
+import GeometryLite3D
+import MetalKit
+import simd
 import SwiftUI
 import Ultraviolence
 import UltraviolenceSupport
 import UltraviolenceUI
-import GeometryLite3D
-import simd
-import MetalKit
 
 public struct DepthDemoView: View {
+    @State
+    private var projection: any ProjectionProtocol = PerspectiveProjection()
 
     @State
-    var projection: any ProjectionProtocol = PerspectiveProjection()
+    private var cameraMatrix: simd_float4x4 = .init(translation: [0, 0, 5])
 
     @State
-    var cameraMatrix: simd_float4x4 = .init(translation: [0, 0, 5])
+    private var drawableSize: CGSize = .zero
 
     @State
-    var drawableSize: CGSize = .zero
+    private var showDepthMap = true
 
     @State
-    var showDepthMap = true
+    private var exponent: Float = 50
 
     @State
-    var exponent: Float = 50
+    private var colorTexture: MTLTexture?
 
     @State
-    var colorTexture: MTLTexture?
+    private var depthTexture: MTLTexture?
 
     @State
-    var depthTexture: MTLTexture?
-
-    @State
-    var adjustedDepthTexture: MTLTexture?
+    private var adjustedDepthTexture: MTLTexture?
 
     let teapot = MTKMesh.teapot()
 
@@ -52,7 +51,7 @@ public struct DepthDemoView: View {
         let sourceLibrary = try! device.makeLibrary(source: adjustSource, options: nil)
         let inputs = [
             MTLFunctionStitchingInputNode(argumentIndex: 0),
-            MTLFunctionStitchingInputNode(argumentIndex: 1),
+            MTLFunctionStitchingInputNode(argumentIndex: 1)
         ]
         let adjust = MTLFunctionStitchingFunctionNode(name: "node", arguments: inputs, controlDependencies: [])
 
@@ -97,7 +96,7 @@ public struct DepthDemoView: View {
                     .environment(\.linkedFunctions, linkedFunctions)
 
                     try RenderPass(label: "Depth to Screen Pass") {
-                        try BillboardRenderPipeline(specifier:showDepthMap ? .texture2D(adjustedDepthTexture, nil) : .texture2D(colorTexture, nil), flippedY: true)
+                        try BillboardRenderPipeline(specifier: showDepthMap ? .texture2D(adjustedDepthTexture, nil) : .texture2D(colorTexture, nil), flippedY: true)
                     }
                 }
             }
@@ -134,7 +133,6 @@ public struct DepthDemoView: View {
         }
     }
 
-    
     var teapotPipeline: some Element {
         get throws {
             try FlatShader(textureSpecifier: .color([1, 1, 1])) {
@@ -146,5 +144,3 @@ public struct DepthDemoView: View {
         }
     }
 }
-
-

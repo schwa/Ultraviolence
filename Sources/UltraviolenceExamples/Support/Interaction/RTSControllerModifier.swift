@@ -1,11 +1,11 @@
 import Combine
 import GameController
+import GeometryLite3D
 import Observation
 import simd
 import SwiftUI
 import UltraviolenceSupport
 import UltraviolenceUI
-import GeometryLite3D
 
 public struct RTSControllerModifier: ViewModifier {
     @Binding

@@ -13,7 +13,7 @@ internal struct WorkloadModifier <Content>: Element, BodylessElement, BodylessCo
 
     nonisolated func requiresSetup(comparedTo old: WorkloadModifier<Content>) -> Bool {
         // WorkloadModifier only affects the workload phase, never requires setup
-        return false
+        false
     }
 }
 

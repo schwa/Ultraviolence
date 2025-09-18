@@ -15,8 +15,8 @@ public struct Draw: Element, BodylessElement {
         try encodeGeometry(renderCommandEncoder)
     }
 
-    nonisolated func requiresSetup(comparedTo old: Draw) -> Bool {
+    nonisolated func requiresSetup(comparedTo old: Self) -> Bool {
         // Draw only encodes during workload, never needs setup
-        return false
+        false
     }
 }

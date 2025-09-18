@@ -1,10 +1,10 @@
 #if os(iOS) || (os(macOS) && !arch(x86_64))
+import GeometryLite3D
 internal import os
 import SwiftUI
 import UltraviolenceGaussianSplats
 import UltraviolenceGaussianSplatShaders
 import UltraviolenceSupport
-import GeometryLite3D
 
 public struct GaussianSplatDemoView: View {
     @State

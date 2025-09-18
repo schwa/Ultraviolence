@@ -1,59 +1,58 @@
-import SwiftUI
-import UltraviolenceSupport
-import Ultraviolence
-import UltraviolenceUI
-import simd
-import MetalKit
 import AVFoundation
+import MetalKit
+import simd
+import SwiftUI
+import Ultraviolence
+import UltraviolenceSupport
+import UltraviolenceUI
 
 public struct AppleEventLogoDemoView: View {
     @State
-    var device = _MTLCreateSystemDefaultDevice()
+    private var device = _MTLCreateSystemDefaultDevice()
 
     @State
-    var heatTextures: [MTLTexture] = []
+    private var heatTextures: [MTLTexture] = []
 
     @State
-    var coloredTexture: MTLTexture?
+    private var coloredTexture: MTLTexture?
 
     @State
-    var gradientTexture: MTLTexture?
+    private var gradientTexture: MTLTexture?
 
     @State
-    var maskTexture: MTLTexture?
+    private var maskTexture: MTLTexture?
 
     @State
-    var finalTexture: MTLTexture?
+    private var finalTexture: MTLTexture?
 
     @State
-    var offscreenTexture: MTLTexture?
+    private var offscreenTexture: MTLTexture?
 
     @State
-    var upscaledTexture: MTLTexture?
+    private var upscaledTexture: MTLTexture?
 
     @StateObject
-    var videoPlayer = VideoTexturePipeline(device: _MTLCreateSystemDefaultDevice())
+    private var videoPlayer = VideoTexturePipeline(device: _MTLCreateSystemDefaultDevice())
 
     @State
-    var currentTextureIndex = 0
+    private var currentTextureIndex = 0
 
     @State
-    var heatParameters = HeatParameters(radius: 30)
+    private var heatParameters = HeatParameters(radius: 30)
 
     @State
-    var currentHeat: Float = 0
+    private var currentHeat: Float = 0
 
     @State
-    var debugMousePosition: SIMD2<Float> = .zero
+    private var debugMousePosition: SIMD2<Float> = .zero
 
     @State
-    var size: CGSize = .zero
+    private var size: CGSize = .zero
 
     @State
-    var shaderLibrary = try! ShaderLibrary(bundle: .ultraviolenceExampleShaders().orFatalError(), namespace: "AppleEventLogoShaders")
+    private var shaderLibrary = try! ShaderLibrary(bundle: .ultraviolenceExampleShaders().orFatalError(), namespace: "AppleEventLogoShaders")
 
     public init() {
-
     }
 
     public var body: some View {
@@ -67,27 +66,27 @@ public struct AppleEventLogoDemoView: View {
 
                             try ComputePipeline(computeKernel: try shaderLibrary.heatup) {
                                 try ComputeDispatch(threadsPerGrid: MTLSize(width: 256, height: 256, depth: 1), threadsPerThreadgroup: MTLSize(width: 16, height: 16, depth: 1))
-                                .parameter("previousTexture", texture: previousTexture)
-                                .parameter("currentTexture", texture: currentTexture)
-                                .parameter("heatParameters", value: heatParameters)
+                                    .parameter("previousTexture", texture: previousTexture)
+                                    .parameter("currentTexture", texture: currentTexture)
+                                    .parameter("heatParameters", value: heatParameters)
                             }
                         }
                     }
                     // Color remap compute pass
                     try ComputePass {
-                        if heatTextures.count == 2, let coloredTexture = coloredTexture, let gradientTexture = gradientTexture, let maskTexture = maskTexture, let videoTexture = videoPlayer.currentTexture {
+                        if heatTextures.count == 2, let coloredTexture, let gradientTexture, let maskTexture, let videoTexture = videoPlayer.currentTexture {
                             ColorRemapComputePipeline(inputTexture: heatTextures[1 - currentTextureIndex], outputTexture: coloredTexture, gradientTexture: gradientTexture, maskTexture: maskTexture, videoTexture: videoTexture, power: 0.8)
                         }
                     }
                     // Blend thermal with video
                     try ComputePass {
-                        if let coloredTexture = coloredTexture, let finalTexture = finalTexture {
+                        if let coloredTexture, let finalTexture {
                             ThermalVideoBlendPipeline(thermalTexture: coloredTexture, videoTexture: videoPlayer.currentTexture, heatTexture: heatTextures[1 - currentTextureIndex], outputTexture: finalTexture, videoBlendAmount: 0.7)
                         }
                     }
                     // Render the final blended result
-#if canImport(MetalFX)
-                    if let finalTexture = finalTexture, let offscreenTexture = offscreenTexture, let upscaledTexture = upscaledTexture {
+                    #if canImport(MetalFX)
+                    if let finalTexture, let offscreenTexture, let upscaledTexture {
                         // Render to offscreen texture first at 256x256
                         try RenderPass {
                             try BillboardRenderPipeline(specifier: .texture2D(finalTexture))
@@ -104,13 +103,13 @@ public struct AppleEventLogoDemoView: View {
                             try BillboardRenderPipeline(specifier: .texture2D(upscaledTexture))
                         }
                     }
-#else
+                    #else
                     try RenderPass {
-                        if let finalTexture = finalTexture {
+                        if let finalTexture {
                             try BillboardRenderPipeline(texture: finalTexture)
                         }
                     }
-#endif
+                    #endif
                 }
                 .frame(width: 512, height: 512)
                 .aspectRatio(1.0, contentMode: .fit)
@@ -118,7 +117,7 @@ public struct AppleEventLogoDemoView: View {
                     size = newSize
                 }
 
-#if os(macOS)
+                #if os(macOS)
                 .onContinuousHover { phase in
                     switch phase {
                     case .active(let location):
@@ -146,7 +145,7 @@ public struct AppleEventLogoDemoView: View {
                         heatParameters.isInteracting = 0.0
                     }
                 }
-#endif
+                #endif
                 .onChange(of: timeline.date) {
                     // Apply decay every frame
                     currentHeat *= 0.95
@@ -180,7 +179,7 @@ public struct AppleEventLogoDemoView: View {
                     finalTexture = try device.makeTexture(descriptor: colorDescriptor).orThrow(.resourceCreationFailure("Final texture"))
                     finalTexture?.label = "Final Blended Texture"
 
-#if canImport(MetalFX)
+                    #if canImport(MetalFX)
                     // Create offscreen texture for rendering at 256x256
                     let offscreenDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm, width: 256, height: 256, mipmapped: false)
                     offscreenDescriptor.usage = [.shaderRead, .shaderWrite, .renderTarget]
@@ -193,7 +192,7 @@ public struct AppleEventLogoDemoView: View {
                     upscaledDescriptor.storageMode = .private
                     upscaledTexture = try device.makeTexture(descriptor: upscaledDescriptor).orThrow(.resourceCreationFailure("Upscaled texture"))
                     upscaledTexture?.label = "Upscaled Texture"
-#endif
+                    #endif
 
                     // Create thermal gradient texture
                     gradientTexture = try GradientTextureGenerator.createThermalGradient(device: device)
@@ -226,4 +225,3 @@ public struct AppleEventLogoDemoView: View {
         }
     }
 }
-

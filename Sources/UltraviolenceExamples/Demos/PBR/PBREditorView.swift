@@ -1,5 +1,5 @@
-import SwiftUI
 import simd
+import SwiftUI
 import UltraviolenceExampleShaders
 
 struct PBREditorView: View {
@@ -49,12 +49,12 @@ struct PBREditorView: View {
             }
         }
         .onChange(of: lightIntensity) {
-            if !animateLights && !lights.isEmpty {
+            if !animateLights, !lights.isEmpty {
                 lights[0].intensity = lightIntensity
             }
         }
         .onChange(of: lightPosition) {
-            if !animateLights && !lights.isEmpty {
+            if !animateLights, !lights.isEmpty {
                 lights[0].position = lightPosition
             }
         }

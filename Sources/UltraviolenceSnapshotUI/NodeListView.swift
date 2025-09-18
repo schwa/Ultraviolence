@@ -6,25 +6,25 @@ struct NodeListView: View {
     let snapshot: SystemSnapshot
     @Binding var selectedNodeID: String?
     let searchText: String
-    
+
     struct Row: Identifiable {
         let node: NodeSnapshot
         let snapshot: SystemSnapshot
         let filteredNodes: Set<String>
-        
+
         var id: String {
             node.identifier
         }
-        
-        var children: [Row]? {
-            let childNodes = snapshot.nodes.filter { 
-                $0.parentIdentifier == node.identifier && filteredNodes.contains($0.identifier) 
+
+        var children: [Self]? {
+            let childNodes = snapshot.nodes.filter {
+                $0.parentIdentifier == node.identifier && filteredNodes.contains($0.identifier)
             }
-            
+
             guard !childNodes.isEmpty else { return nil }
-            
+
             return childNodes.map { childNode in
-                Row(node: childNode, snapshot: snapshot, filteredNodes: filteredNodes)
+                Self(node: childNode, snapshot: snapshot, filteredNodes: filteredNodes)
             }
         }
     }
@@ -80,4 +80,3 @@ struct NodeListView: View {
         .frame(minWidth: 320, idealWidth: 400)
     }
 }
-
