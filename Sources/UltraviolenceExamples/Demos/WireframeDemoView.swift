@@ -8,7 +8,7 @@ import UltraviolenceSupport
 import UltraviolenceUI
 import UltraviolenceExampleShaders
 
-public struct WireframeTeapotDemoView: View {
+public struct WireframeDemoView: View {
     @State
     private var wireframeColor: SIMD4<Float> = [0, 1, 0, 1]
 
@@ -36,10 +36,8 @@ public struct WireframeTeapotDemoView: View {
 
                 try RenderPass {
                     GridShader(projectionMatrix: projectionMatrix, cameraMatrix: cameraMatrix)
-
-                    try WireframeTeapot(mvpMatrix: mvpMatrix, wireframeColor: wireframeColor, mesh: teapotMesh)
-
                     try AxisLinesRenderPipeline(mvpMatrix: projectionMatrix * viewMatrix, scale: 10_000.0)
+                    try WireframeRenderPipeline(mvpMatrix: mvpMatrix, wireframeColor: wireframeColor, mesh: teapotMesh)
                 }
             }
             .metalDepthStencilPixelFormat(.depth32Float)
@@ -47,7 +45,7 @@ public struct WireframeTeapotDemoView: View {
     }
 }
 
-struct WireframeTeapot: Element {
+struct WireframeRenderPipeline: Element {
     let vertexShader: VertexShader
     let fragmentShader: FragmentShader
     var mvpMatrix: float4x4
@@ -67,21 +65,16 @@ struct WireframeTeapot: Element {
     var body: some Element {
         get throws {
             try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
+                var uniforms = WireframeUniforms(modelViewProjectionMatrix: mvpMatrix, wireframeColor: wireframeColor)
                 Draw { encoder in
                     encoder.setTriangleFillMode(.lines)
-
-                    var uniforms = WireframeUniforms(
-                        modelViewProjectionMatrix: mvpMatrix,
-                        wireframeColor: wireframeColor
-                    )
-                    encoder.setVertexBytes(&uniforms, length: MemoryLayout<WireframeUniforms>.size, index: 1)
-                    encoder.setFragmentBytes(&uniforms, length: MemoryLayout<WireframeUniforms>.size, index: 0)
                     encoder.setVertexBuffers(of: mesh)
                     encoder.draw(mesh)
                 }
+                .parameter("uniforms", functionType: .vertex, value: uniforms)
+                .parameter("uniforms", functionType: .fragment, value: uniforms)
             }
-            .vertexDescriptor(MTLVertexDescriptor(mesh.vertexDescriptor))
-            .depthCompare(function: .less, enabled: true)
+            .vertexDescriptor(mesh.vertexDescriptor)
         }
     }
 }

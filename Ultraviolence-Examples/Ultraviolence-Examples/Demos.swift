@@ -27,7 +27,7 @@ import UltraviolenceExamples
         ParticleEffectsDemoView.self,
         VideoPlaybackDemoView.self,
         PanoramaDemoView.self,
-        WireframeTeapotDemoView.self
+        WireframeDemoView.self
     ]
 
     #if os(macOS)
@@ -184,7 +184,7 @@ extension PanoramaDemoView: @retroactive DemoView {
     }
 }
 
-extension WireframeTeapotDemoView: @retroactive DemoView {
+extension WireframeDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(name: "Wireframe Teapot", description: "Classic teapot rendered as wireframe with animated colors and adjustable line width", group: "Basic", keywords: ["wireframe", "teapot", "animated"])
     }
