@@ -132,13 +132,6 @@ public struct PBRDemoView: View {
     
     private func updateAnimatedLights() {
         let time = Float(animationTime)
-        
-        // Debug: Print to verify animation is running
-        if Int(time * 10) % 10 == 0 {  // Print every ~0.1 seconds to avoid spamming
-            print("PBR Animation time: \(time), lights count: \(lights.count)")
-        }
-        
-        // Animate point light position - orbit around the teapot
         let radius: Float = 5.0
         let height: Float = 3.0 + sin(time * 0.5) * 2.0
         let animatedPosition = SIMD3<Float>(
@@ -146,15 +139,9 @@ public struct PBRDemoView: View {
             height,
             sin(time) * radius
         )
-        
-        // Animate light color - cycle through warm colors
         let hue = (sin(time * 0.3) + 1.0) * 0.5
         let color = hsvToRgb(h: hue * 60, s: 0.8, v: 1.0)
-        
-        // Animate intensity with subtle pulsing
         let animatedIntensity = 10.0 + sin(time * 2.0) * 3.0
-        
-        // Update directional light to slowly rotate
         let sunAngle = time * 0.2
         let sunDirection = normalize(SIMD3<Float>(
             cos(sunAngle) * 0.5,
