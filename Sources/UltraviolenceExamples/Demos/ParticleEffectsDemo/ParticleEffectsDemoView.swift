@@ -15,9 +15,9 @@ public struct ParticleEffectsDemoView: View {
     // Particle system parameters
     @State private var particleCount: Int = 5000
     @State private var particleSize: Float = 20.0
-    @State private var gravity: SIMD3<Float> = [0, -9.8, 0]
-    @State private var emitterType: EmitterType = .fountain
-    @State private var emissionRate: Float = 1000
+    @State private var gravity: SIMD3<Float> = [0, -2, 0]  // Lower gravity for portal
+    @State private var emitterType: EmitterType = .magicPortal
+    @State private var emissionRate: Float = 2000
 
     // Particle buffers
     @State private var particleBuffer: MTLBuffer?
@@ -29,6 +29,7 @@ public struct ParticleEffectsDemoView: View {
         case rain = "Rain"
         case fireworks = "Fireworks"
         case tornado = "Tornado"
+        case magicPortal = "Magic Portal"
     }
 
     public init() {}
@@ -79,7 +80,16 @@ public struct ParticleEffectsDemoView: View {
                 .onChange(of: particleCount) { _, _ in
                     initializeParticles()
                 }
-                .onChange(of: emitterType) { _, _ in
+                .onChange(of: emitterType) { _, newType in
+                    // Adjust gravity based on emitter type
+                    switch newType {
+                    case .magicPortal:
+                        gravity = [0, -2, 0]  // Less gravity for portal
+                    case .rain:
+                        gravity = [0, -15, 0]  // More gravity for rain
+                    default:
+                        gravity = [0, -9.8, 0]  // Normal gravity
+                    }
                     initializeParticles()
                 }
             }
@@ -163,6 +173,7 @@ public struct ParticleEffectsDemoView: View {
         case .rain: return SIMD3<Float>(0, 5, 0)
         case .fireworks: return SIMD3<Float>(0, -3, 0)
         case .tornado: return SIMD3<Float>(0, 0, 0)
+        case .magicPortal: return SIMD3<Float>(0, 0, 0)
         }
     }
 
@@ -236,6 +247,7 @@ private struct ParticleUpdateCompute: Element {
         case .rain: return SIMD3<Float>(0, 5, 0)
         case .fireworks: return SIMD3<Float>(0, -3, 0)
         case .tornado: return SIMD3<Float>(0, 0, 0)
+        case .magicPortal: return SIMD3<Float>(0, 0, 0)
         }
     }
 

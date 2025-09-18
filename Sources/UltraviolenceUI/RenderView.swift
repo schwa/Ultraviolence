@@ -141,6 +141,7 @@ internal class RenderViewViewModel <Content>: NSObject, MTKViewDelegate where Co
                 }
                 let currentRenderPassDescriptor = try view.currentRenderPassDescriptor.orThrow(.resourceCreationFailure("No render pass descriptor available"))
 
+                // Update context
                 let currentTime: CFTimeInterval = CACurrentMediaTime()
                 if firstFrameTime == 0 {
                     firstFrameTime = currentTime
@@ -149,12 +150,9 @@ internal class RenderViewViewModel <Content>: NSObject, MTKViewDelegate where Co
                 frameTime = currentTime - firstFrameTime
                 let deltaTime = frameTime - lastFrameTime
                 let frameUniforms = FrameUniforms(index: UInt32(frame), time: Float(frameTime), deltaTime: Float(deltaTime), viewportSize:  [UInt32(view.drawableSize.width),UInt32(view.drawableSize.height)])
-                print(frameUniforms)
                 let context = RenderViewContext(frameUniformas: frameUniforms)
+
                 // Return the element produced by the content builder
-
-
-
                 let rootElement = try CommandBufferElement(completion: .commit) {
                     return try self.content(context, currentDrawableSize)
                 }

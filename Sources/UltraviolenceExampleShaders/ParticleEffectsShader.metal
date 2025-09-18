@@ -232,6 +232,50 @@ kernel void updateParticles(
                     particle.color = float3(0.8, 0.8, 0.8);
                     break;
                 }
+
+                case 5: { // Magic Portal - Doctor Strange style
+                    // Create particles in a rotating ring with sparks
+                    float portalRadius = 2.0;
+                    float ringThickness = 0.2;
+
+                    // Spawn particles along the ring circumference
+                    float angle = rng.uniform() * 6.28318;
+                    float radiusOffset = rng.range(-ringThickness, ringThickness);
+
+                    // Position on the ring
+                    particle.position = emitter.position + float3(
+                        cos(angle) * (portalRadius + radiusOffset),
+                        sin(angle) * (portalRadius + radiusOffset),
+                        rng.range(-0.1, 0.1)  // Slight z variation
+                    );
+
+                    // Velocity - particles spin around the ring and emit sparks
+                    float spinSpeed = 8.0;
+                    float3 tangent = float3(-sin(angle), cos(angle), 0) * spinSpeed;
+
+                    // Add some outward/inward motion for spark effect
+                    float3 radial = float3(cos(angle), sin(angle), 0) * rng.range(-1.0, 2.0);
+
+                    // Small random perturbation
+                    float3 random = rng.direction() * 0.5;
+
+                    particle.velocity = tangent + radial + random;
+
+                    // Orange/gold color like Doctor Strange portals
+                    float heat = rng.range(0.7, 1.0);
+                    particle.color = float3(
+                        1.0,
+                        heat * 0.6,
+                        heat * 0.1
+                    );
+
+                    // Vary particle size for sparkle effect
+                    particle.size = rng.range(0.3, 1.2);
+
+                    // Shorter life for more dynamic effect
+                    particle.life = rng.range(0.3, 0.8);
+                    break;
+                }
             }
         }
     }
