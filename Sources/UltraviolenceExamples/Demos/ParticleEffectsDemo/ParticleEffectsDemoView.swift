@@ -11,9 +11,6 @@ public struct ParticleEffectsDemoView: View {
     @State private var projection: any ProjectionProtocol = PerspectiveProjection()
     @State private var cameraMatrix: simd_float4x4 = .init(translation: [0, 0, 8])
     @State private var drawableSize: CGSize = .zero
-    @State private var time: Float = 0
-    @State private var frameCount: Int = 0
-    @State private var isPaused: Bool = false
 
     // Particle system parameters
     @State private var particleCount: Int = 5000
@@ -37,25 +34,23 @@ public struct ParticleEffectsDemoView: View {
     public init() {}
 
     public var body: some View {
-        TimelineView(.animation) { context in
-            let _ = updateTime()  // Update time on each frame
-            WorldView(projection: $projection, cameraMatrix: $cameraMatrix, targetMatrix: .constant(nil)) {
-                RenderView { context, drawableSize in
-                    if let particleBuffer, let emitterBuffer {
+        WorldView(projection: $projection, cameraMatrix: $cameraMatrix, targetMatrix: .constant(nil)) {
+            RenderView { context, drawableSize in
+                let currentTime = context.frameUniforms.time
+
+                if let particleBuffer, let emitterBuffer {
                         try Group {
-                            // Update particles using compute shader (only when not paused)
-                            if !isPaused {
-                                try ComputePass {
-                                    ParticleUpdateCompute(
-                                        particleBuffer: particleBuffer,
-                                        emitterBuffer: emitterBuffer,
-                                        particleCount: particleCount,
-                                        time: time,
-                                        gravity: gravity,
-                                        emitterType: emitterType,
-                                        emissionRate: emissionRate
-                                    )
-                                }
+                            // Update particles using compute shader
+                            try ComputePass {
+                                ParticleUpdateCompute(
+                                    particleBuffer: particleBuffer,
+                                    emitterBuffer: emitterBuffer,
+                                    particleCount: particleCount,
+                                    time: currentTime,
+                                    gravity: gravity,
+                                    emitterType: emitterType,
+                                    emissionRate: emissionRate
+                                )
                             }
 
                             // Render particles
@@ -65,7 +60,7 @@ public struct ParticleEffectsDemoView: View {
                                     particleCount: particleCount,
                                     viewMatrix: cameraMatrix.inverse,
                                     projectionMatrix: projection.projectionMatrix(for: drawableSize),
-                                    time: time,
+                                    time: currentTime,
                                     gravity: gravity,
                                     baseSize: particleSize
                                 )
@@ -88,7 +83,6 @@ public struct ParticleEffectsDemoView: View {
                     initializeParticles()
                 }
             }
-        }
         .overlay(alignment: .topLeading) {
             VStack(alignment: .leading) {
                 Text("Particle Effects Demo")
@@ -113,14 +107,8 @@ public struct ParticleEffectsDemoView: View {
                 Label("Emission: \(Int(emissionRate))/s", systemImage: "sparkle")
                 Slider(value: $emissionRate, in: 100...2000)
 
-                HStack {
-                    Button(action: { isPaused.toggle() }) {
-                        Label(isPaused ? "Resume" : "Pause", systemImage: isPaused ? "play.fill" : "pause.fill")
-                    }
-
-                    Button("Reset") {
-                        initializeParticles()
-                    }
+                Button("Reset") {
+                    initializeParticles()
                 }
             }
             .frame(width: 300)
@@ -162,8 +150,6 @@ public struct ParticleEffectsDemoView: View {
         emitterBuffer = device.makeBuffer(bytes: [emitterParams], length: MemoryLayout<ParticleEmitterParams>.stride, options: [.storageModeShared])
         emitterBuffer?.label = "Emitter Buffer"
 
-        time = 0
-        frameCount = 0
     }
 
     private var emitterTypeIndex: Int {
@@ -180,12 +166,6 @@ public struct ParticleEffectsDemoView: View {
         }
     }
 
-    private func updateTime() {
-        if !isPaused {
-            time += 1.0/60.0
-            frameCount += 1
-        }
-    }
 }
 
 // Use the structs from the Metal header
@@ -230,7 +210,7 @@ private struct ParticleUpdateCompute: Element {
             let uniforms = ParticleUniforms(
                 viewMatrix: .identity,
                 projectionMatrix: .identity,
-                time: time,
+                time: self.time,
                 _padding1: (0, 0, 0),
                 gravity: gravity,
                 baseSize: 1.0
