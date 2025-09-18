@@ -25,3 +25,6 @@ coverage-percent:
 format:
     swiftlint --fix --format --quiet
     fd --extension metal --extension h --exec clang-format -i {}
+
+open-container:
+    open "$HOME/Library/Containers/io.schwa.UltraviolenceExamples/Data"
