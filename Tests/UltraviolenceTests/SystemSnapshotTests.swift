@@ -149,8 +149,6 @@ struct SystemSnapshotTests {
     @MainActor
     func testEnvironmentSnapshot() throws {
         struct EnvElement: Element {
-            @UVEnvironment(\.enableMetalLogging) var enableLogging
-
             var body: some Element {
                 EmptyElement()
             }

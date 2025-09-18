@@ -66,7 +66,8 @@ public let package = Package(
                 "UltraviolenceUI",
                 "UltraviolenceSupport",
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
-                .product(name: "SwiftCompilerPlugin", package: "swift-syntax")
+                .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
+                "GeometryLite3D",
             ],
             resources: [
                 .copy("Golden Images")

@@ -107,17 +107,17 @@ public struct DepthDemoView: View {
                 let device = _MTLCreateSystemDefaultDevice()
                 let colorDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm, width: Int($0.width), height: Int($0.height), mipmapped: false)
                 colorDescriptor.usage = [.renderTarget, .shaderRead, .shaderWrite]
-                colorTexture = try? device.makeTexture(descriptor: colorDescriptor)
+                colorTexture = device.makeTexture(descriptor: colorDescriptor)
                 colorTexture?.label = "Color Texture"
 
                 let depthDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: Int($0.width), height: Int($0.height), mipmapped: false)
                 depthDescriptor.usage = [.renderTarget, .shaderRead]
-                depthTexture = try? device.makeTexture(descriptor: depthDescriptor)
+                depthTexture = device.makeTexture(descriptor: depthDescriptor)
                 depthTexture?.label = "Depth Texture"
 
                 let adjustedDepthDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm, width: Int($0.width), height: Int($0.height), mipmapped: false)
                 adjustedDepthDescriptor.usage = [.renderTarget, .shaderRead, .shaderWrite]
-                adjustedDepthTexture = try? device.makeTexture(descriptor: adjustedDepthDescriptor)
+                adjustedDepthTexture = device.makeTexture(descriptor: adjustedDepthDescriptor)
                 adjustedDepthTexture?.label = "Adjusted Depth Texture"
             }
         }

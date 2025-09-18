@@ -19,8 +19,7 @@ public struct TeapotDemo: Element {
     var lightDirection: SIMD3<Float>
 
     public init(transforms: Transforms, color: SIMD3<Float>, lightDirection: SIMD3<Float>) throws {
-        let device = _MTLCreateSystemDefaultDevice()
-        mesh = try MTKMesh.teapot()
+        mesh = MTKMesh.teapot()
         self.transforms = transforms
         self.color = color
         self.lightDirection = lightDirection

@@ -36,7 +36,7 @@ public struct ColorAdjustComputePipeline <T>: Element {
 }
 
 // TODO: Move
-extension MTLSize: ExpressibleByArrayLiteral {
+extension MTLSize: @retroactive ExpressibleByArrayLiteral {
     public init(arrayLiteral elements: Int...) {
         switch elements.count {
         case 0:
