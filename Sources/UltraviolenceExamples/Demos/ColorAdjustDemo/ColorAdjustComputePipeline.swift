@@ -12,7 +12,6 @@ public struct ColorAdjustComputePipeline <T>: Element {
         self.inputSpecifier = inputSpecifier
         self.inputParameters = inputParameters
         self.outputTexture = outputTexture
-        // TODO: This will be compiled every time!
         let shaderLibrary = try! ShaderLibrary(bundle: .ultraviolenceExampleShaders().orFatalError(), namespace: "ColorAdjust")
         self.kernel = try! shaderLibrary.colorAdjust
     }
