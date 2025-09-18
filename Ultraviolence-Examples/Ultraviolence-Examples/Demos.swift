@@ -26,7 +26,8 @@ import UltraviolenceExamples
         PointCloudDemoView.self,
         ParticleEffectsDemoView.self,
         VideoPlaybackDemoView.self,
-        PanoramaDemoView.self
+        PanoramaDemoView.self,
+        WireframeTeapotDemoView.self
     ]
 
     #if os(macOS)
@@ -180,5 +181,11 @@ extension VideoPlaybackDemoView: @retroactive DemoView {
 extension PanoramaDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(name: "360° Panorama", description: "Interactive 360-degree panoramic photo viewer with spherical projection and WorldView rotation", group: "Basic", keywords: ["panorama", "360", "spherical"])
+    }
+}
+
+extension WireframeTeapotDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(name: "Wireframe Teapot", description: "Classic teapot rendered as wireframe with animated colors and adjustable line width", group: "Basic", keywords: ["wireframe", "teapot", "animated"])
     }
 }

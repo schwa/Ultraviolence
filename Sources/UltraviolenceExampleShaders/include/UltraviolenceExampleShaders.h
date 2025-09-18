@@ -9,6 +9,7 @@
 #import "SDFShader.h"
 #import "ParticleEffectsShader.h"
 #import "Panorama.h"
+#import "WireframeShader.h"
 
 #ifdef __OBJC__
 #import <Foundation/Foundation.h>
