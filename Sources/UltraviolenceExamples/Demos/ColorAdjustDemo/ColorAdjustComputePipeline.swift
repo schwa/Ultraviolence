@@ -33,21 +33,3 @@ public struct ColorAdjustComputePipeline <T>: Element {
         }
     }
 }
-
-// TODO: #281 Move
-extension MTLSize: @retroactive ExpressibleByArrayLiteral {
-    public init(arrayLiteral elements: Int...) {
-        switch elements.count {
-        case 0:
-            self = .init(width: 0, height: 0, depth: 0)
-        case 1:
-            self = .init(width: elements[0], height: 0, depth: 0)
-        case 2:
-            self = .init(width: elements[0], height: elements[1], depth: 0)
-        case 3:
-            self = .init(width: elements[0], height: elements[1], depth: elements[2])
-        default:
-            fatalError()
-        }
-    }
-}
