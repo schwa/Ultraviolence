@@ -20,7 +20,7 @@ public struct DepthDemoView: View {
     private var showDepthMap = true
 
     @State
-    private var exponent: Float = 50
+    private var exponent: Float = 0.2
 
     @State
     private var colorTexture: MTLTexture?
@@ -38,38 +38,23 @@ public struct DepthDemoView: View {
     using namespace metal;
 
     [[ stitchable ]]
-    float4 node(float4 inputColor, constant float *inputParameters) {
-        return pow(inputColor, inputParameters[0]);
+    float4 colorAdjustPow(float4 inputColor, float2 inputCoordinate, constant float &inputParameters) {
+        // Invert depth so near objects are white and far objects are black
+        // This makes the depth visualization more intuitive
+        float depth = 1.0 - inputColor.r;
+
+        // Apply power to increase contrast
+        depth = pow(depth, inputParameters);
+
+        return float4(depth, depth, depth, 1.0);
     }
     """
-
-    let linkedFunctions: MTLLinkedFunctions
+    let colorAdjustFunction: MTLFunction
 
     public init() {
         let device = _MTLCreateSystemDefaultDevice()
-
         let sourceLibrary = try! device.makeLibrary(source: adjustSource, options: nil)
-        let inputs = [
-            MTLFunctionStitchingInputNode(argumentIndex: 0),
-            MTLFunctionStitchingInputNode(argumentIndex: 1)
-        ]
-        let adjust = MTLFunctionStitchingFunctionNode(name: "node", arguments: inputs, controlDependencies: [])
-
-        // TODO: #283 Use Ultraviolence's normal shader loading capabilities
-        // TODO: #284 Use proper Metal function loading - this one requires all functions to be named the same.
-        // TODO: #285 Terrible example of stitchable functions.
-        let graph = MTLFunctionStitchingGraph(functionName: "adjustColor", nodes: [adjust], outputNode: adjust, attributes: [])
-
-        let stitchedLibraryDescriptor = MTLStitchedLibraryDescriptor()
-        stitchedLibraryDescriptor.functions = [sourceLibrary.makeFunction(name: "node")!]
-        stitchedLibraryDescriptor.functionGraphs = [graph]
-        let stitchedLibrary = try! device.makeLibrary(stitchedDescriptor: stitchedLibraryDescriptor)
-        let stitchedFunction = stitchedLibrary.makeFunction(name: "adjustColor")!
-
-        let linkedFunctions = MTLLinkedFunctions()
-        linkedFunctions.privateFunctions = [stitchedFunction]
-
-        self.linkedFunctions = linkedFunctions
+        colorAdjustFunction = sourceLibrary.makeFunction(name: "colorAdjustPow")!
     }
 
     public var body: some View {
@@ -91,9 +76,8 @@ public struct DepthDemoView: View {
                     }
 
                     try ComputePass(label: "ColorAdjust") {
-                        ColorAdjustComputePipeline(inputSpecifier: .depth2D(depthTexture, nil), inputParameters: exponent, outputTexture: adjustedDepthTexture)
+                        ColorAdjustComputePipeline(inputSpecifier: .depth2D(depthTexture, nil), inputParameters: exponent, outputTexture: adjustedDepthTexture, colorAdjustFunction: colorAdjustFunction)
                     }
-                    .environment(\.linkedFunctions, linkedFunctions)
 
                     try RenderPass(label: "Depth to Screen Pass") {
                         try BillboardRenderPipeline(specifier: showDepthMap ? .texture2D(adjustedDepthTexture, nil) : .texture2D(colorTexture, nil), flippedY: true)
@@ -123,8 +107,12 @@ public struct DepthDemoView: View {
         .overlay(alignment: .topLeading) {
             Form {
                 Toggle("Show Depth Map", isOn: $showDepthMap)
-                TextField("Exponent", value: $exponent, format: .number)
-                Slider(value: $exponent, in: 1...100)
+                HStack {
+                    Text("Contrast:")
+                    Slider(value: $exponent, in: 0.1...10)
+                    Text("\(exponent, format: .number.precision(.fractionLength(2)))")
+                        .frame(width: 50)
+                }
             }
             .frame(maxWidth: 200)
             .padding()
