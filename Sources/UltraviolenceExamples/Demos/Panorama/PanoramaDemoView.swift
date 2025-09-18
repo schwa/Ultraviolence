@@ -1,5 +1,5 @@
 import GeometryLite3D
-import Metal
+@preconcurrency import Metal
 import MetalKit
 import SwiftUI
 import Ultraviolence
