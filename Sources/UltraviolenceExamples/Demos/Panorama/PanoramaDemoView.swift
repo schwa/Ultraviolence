@@ -20,8 +20,28 @@ public struct PanoramaDemoView: View {
     @State private var mesh: MTKMesh?
     @State private var meshType: MeshType = .sphere
     @State private var showUV = false
+    @State private var applyGammaCorrection = false
+    @State private var gammaValue: Float = 2.2
+    @State private var intermediateTexture: MTLTexture?
+    @State private var outputTexture: MTLTexture?
+
+    let adjustSource = """
+    #include <metal_stdlib>
+    using namespace metal;
+
+    [[ stitchable ]]
+    float4 gamma(float4 inputColor, float2 inputCoordinate, constant float &gamma) {
+        float invGamma = 1.0 / gamma;
+        float3 gammaCorrected = pow(inputColor.rgb, float3(invGamma));
+        return float4(gammaCorrected, inputColor.a);
+    }
+    """
+    let gammaFunction: MTLFunction
 
     public init() {
+        let device = _MTLCreateSystemDefaultDevice()
+        let sourceLibrary = try! device.makeLibrary(source: adjustSource, options: nil)
+        gammaFunction = sourceLibrary.makeFunction(name: "gamma")!
     }
 
     public var body: some View {
@@ -31,9 +51,60 @@ public struct PanoramaDemoView: View {
             WorldView(projection: $projection, cameraMatrix: $cameraMatrix) {
                 if let panoramaTexture, let mesh {
                     RenderView { _, drawableSize in
-                        try RenderPass {
-                            try PanoramaElement(projectionMatrix: projection.projectionMatrix(for: drawableSize), cameraMatrix: cameraMatrix, panoramaTexture: panoramaTexture, mesh: mesh, showUV: showUV)
+                        if applyGammaCorrection, let intermediateTexture, let outputTexture {
+                            // Render panorama to intermediate texture
+                            try RenderPass {
+                                try PanoramaElement(projectionMatrix: projection.projectionMatrix(for: drawableSize), cameraMatrix: cameraMatrix, panoramaTexture: panoramaTexture, mesh: mesh, showUV: showUV)
+                            }
+                            .renderPassDescriptorModifier { descriptor in
+                                descriptor.colorAttachments[0].texture = intermediateTexture
+                                descriptor.colorAttachments[0].loadAction = .clear
+                                descriptor.colorAttachments[0].clearColor = MTLClearColor(red: 0, green: 0, blue: 0, alpha: 1)
+                                descriptor.colorAttachments[0].storeAction = .store
+                            }
+
+                            // Apply gamma correction using ColorAdjustComputePipeline
+                            try ComputePass(label: "GammaCorrection") {
+                                ColorAdjustComputePipeline(inputSpecifier: .texture2D(intermediateTexture, nil), inputParameters: gammaValue, outputTexture: outputTexture, colorAdjustFunction: gammaFunction)
+                            }
+
+                            // Render gamma-corrected result to screen
+                            try RenderPass {
+                                try BillboardRenderPipeline(specifier: .texture2D(outputTexture), flippedY: true)
+                            }
+                        } else {
+                            // Render directly without gamma correction
+                            try RenderPass {
+                                try PanoramaElement(projectionMatrix: projection.projectionMatrix(for: drawableSize), cameraMatrix: cameraMatrix, panoramaTexture: panoramaTexture, mesh: mesh, showUV: showUV)
+                            }
                         }
+                    }
+                    .onDrawableSizeChange { size in
+                        let device = _MTLCreateSystemDefaultDevice()
+                        let width = Int(size.width)
+                        let height = Int(size.height)
+
+                        let intermediateDescriptor = MTLTextureDescriptor.texture2DDescriptor(
+                            pixelFormat: .rgba8Unorm,
+                            width: width,
+                            height: height,
+                            mipmapped: false
+                        )
+                        intermediateDescriptor.usage = [.renderTarget, .shaderRead]
+                        intermediateDescriptor.storageMode = .private
+                        intermediateTexture = device.makeTexture(descriptor: intermediateDescriptor)
+                        intermediateTexture?.label = "Panorama Intermediate Texture"
+
+                        let outputDescriptor = MTLTextureDescriptor.texture2DDescriptor(
+                            pixelFormat: .rgba8Unorm,
+                            width: width,
+                            height: height,
+                            mipmapped: false
+                        )
+                        outputDescriptor.usage = [.shaderRead, .shaderWrite]
+                        outputDescriptor.storageMode = .private
+                        outputTexture = device.makeTexture(descriptor: outputDescriptor)
+                        outputTexture?.label = "Panorama Gamma Output Texture"
                     }
                 } else {
                     Text("Use 'Load Panorama' to load a 360° image")
@@ -54,6 +125,22 @@ public struct PanoramaDemoView: View {
                 }
             }
         }
+        .overlay(alignment: .topLeading) {
+            if applyGammaCorrection {
+                VStack(alignment: .leading) {
+                    Text("Gamma Correction: \(gammaValue, format: .number.precision(.fractionLength(2)))")
+                        .font(.caption)
+                        .foregroundColor(.white)
+                    Slider(value: $gammaValue, in: 0.5...4.0) {
+                        Text("Gamma")
+                    }
+                    .frame(width: 200)
+                }
+                .padding()
+                .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 8))
+                .padding()
+            }
+        }
         .toolbar {
             Picker("Mesh", selection: $meshType) {
                 ForEach(MeshType.allCases, id: \.self) { type in
@@ -62,6 +149,8 @@ public struct PanoramaDemoView: View {
             }
 
             Toggle("Show UV", isOn: $showUV)
+
+            Toggle("Gamma Correction", isOn: $applyGammaCorrection)
 
             CachingImportButton(url: $panoramaURL, identifier: "panorama", allowedContentTypes: [.image])
         }
@@ -94,5 +183,6 @@ public struct PanoramaDemoView: View {
             }
         }
     }
+
 }
 

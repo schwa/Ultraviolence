@@ -85,12 +85,27 @@ struct CachingImportHelper {
 
     var identifier: String
 
-    func storedURL() -> URL? {
+    @discardableResult
+    private func ensureCachesDirectory() throws -> URL {
         let cachesDirectory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
-        print(cachesDirectory)
-        let fileManager = FileManager.default
-        let contents = try? fileManager.contentsOfDirectory(at: cachesDirectory, includingPropertiesForKeys: nil)
-        return contents?.first(where: { $0.lastPathComponent.starts(with: identifier) })
+        var isDirectory: ObjCBool = false
+        let exists = FileManager.default.fileExists(atPath: cachesDirectory.path, isDirectory: &isDirectory)
+        if !(exists && isDirectory.boolValue) {
+            try FileManager.default.createDirectory(at: cachesDirectory, withIntermediateDirectories: true)
+        }
+        return cachesDirectory
+    }
+
+    func storedURL() -> URL? {
+        do {
+            let cachesDirectory = try ensureCachesDirectory()
+            let fileManager = FileManager.default
+            let contents = try? fileManager.contentsOfDirectory(at: cachesDirectory, includingPropertiesForKeys: nil)
+            return contents?.first(where: { $0.lastPathComponent.starts(with: identifier) })
+        } catch {
+            print("Failed to ensure caches directory: \(error)")
+            return nil
+        }
     }
 
     func storeImportedFile(at url: URL) throws -> URL {
@@ -101,7 +116,8 @@ struct CachingImportHelper {
             }
         }
 
-        let cachesDirectory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
+        let cachesDirectory = try ensureCachesDirectory()
+
         let destinationURL = cachesDirectory.appendingPathComponent("\(identifier).\(url.pathExtension)")
         if FileManager.default.fileExists(atPath: destinationURL.path) {
             try FileManager.default.removeItem(at: destinationURL)
