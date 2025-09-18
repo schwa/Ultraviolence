@@ -29,6 +29,10 @@ public struct ShaderLibrary {
     }
 
     public func function<T>(named name: String, type: T.Type, constants: FunctionConstants = FunctionConstants()) throws -> T where T: ShaderProtocol {
+
+        logger?.log("Loading function '\(name)' from library \(library.label ?? "<unnamed>")")
+
+
         let scopedNamed = namespace.map { "\($0)::\(name)" } ?? name
 
         let function: MTLFunction
