@@ -55,9 +55,3 @@ public enum RedTriangleInline {
         return try offscreenRenderer.render(root).texture
     }
 }
-
-extension RedTriangleInline: Example {
-    public static func runExample() throws -> ExampleResult {
-        .texture(try RedTriangleInline.main())
-    }
-}

@@ -112,9 +112,3 @@ public enum TraditionalRedTriangle {
         return texture
     }
 }
-
-extension TraditionalRedTriangle: Example {
-    public static func runExample() throws -> ExampleResult {
-        .texture(try TraditionalRedTriangle.main())
-    }
-}

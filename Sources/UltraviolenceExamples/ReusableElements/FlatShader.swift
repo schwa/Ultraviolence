@@ -41,38 +41,3 @@ public struct FlatShader <Content>: Element where Content: Element {
         }
     }
 }
-
-public enum FlatShaderExample: Example {
-    @MainActor
-    public static func runExample() throws -> ExampleResult {
-        let device = _MTLCreateSystemDefaultDevice()
-        let textureLoader = MTKTextureLoader(device: device)
-        let imageURL = Bundle.main.url(forResource: "HD-Testcard-original", withExtension: "jpg").orFatalError()
-        let texture = try textureLoader.newTexture(URL: imageURL)
-        let samplerDescriptor = MTLSamplerDescriptor(supportArgumentBuffers: true)
-        let sampler = try device._makeSamplerState(descriptor: samplerDescriptor)
-        return try MTLCaptureManager.shared().with(enabled: false) {
-            let mesh = MTKMesh.sphere(inwardNormals: true)
-            let root = try Group {
-                try RenderPass {
-                    let modelMatrix = simd_float4x4(scale: [100, 100, 100])
-                    let cameraMatrix = simd_float4x4(translation: [0, 0, 0])
-                    let projectionMatrix = PerspectiveProjection().projectionMatrix(for: .init(width: 1_024, height: 768))
-                    let transforms = Transforms(modelMatrix: modelMatrix, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
-                    try FlatShader(textureSpecifier: .texture2D(texture, sampler)) {
-                        Draw { encoder in
-                            encoder.setVertexBuffers(of: mesh)
-                            encoder.draw(mesh)
-                        }
-                        .transforms(transforms)
-                    }
-                    .vertexDescriptor(MTLVertexDescriptor(mesh.vertexDescriptor))
-                    .depthCompare(function: .less, enabled: true)
-                }
-            }
-            let offscreenRenderer = try OffscreenRenderer(size: .init(width: 1_024, height: 768))
-            let texture = try offscreenRenderer.render(root).texture
-            return .texture(texture)
-        }
-    }
-}

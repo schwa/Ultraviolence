@@ -54,18 +54,3 @@ public struct CheckerboardKernel_ushort: Element {
         }
     }
 }
-
-extension CheckerboardKernel: Example {
-    @MainActor
-    public static func runExample() throws -> ExampleResult {
-        let device = _MTLCreateSystemDefaultDevice()
-        let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm, width: 512, height: 512, mipmapped: false)
-        textureDescriptor.usage = [.shaderWrite, .shaderRead]
-        let texture = try device.makeTexture(descriptor: textureDescriptor, repeating: UInt32(0xFF000000))
-        let pass = try ComputePass {
-            try CheckerboardKernel(outputTexture: texture, checkerSize: [32, 32], foregroundColor: [1, 1, 1, 1])
-        }
-        try pass.run()
-        return .texture(texture)
-    }
-}

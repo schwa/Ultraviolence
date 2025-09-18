@@ -31,18 +31,3 @@ public struct CircleGridKernel: Element {
         }
     }
 }
-
-extension CircleGridKernel: Example {
-    @MainActor
-    public static func runExample() throws -> ExampleResult {
-        let device = _MTLCreateSystemDefaultDevice()
-        let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm, width: 512, height: 512, mipmapped: false)
-        textureDescriptor.usage = [.shaderWrite, .shaderRead]
-        let texture = try device.makeTexture(descriptor: textureDescriptor, repeating: UInt32(0xFF000000))
-        let pass = try ComputePass {
-            try CircleGridKernel(outputTexture: texture, spacing: [32, 32], radius: 16, foregroundColor: [1, 1, 1, 1])
-        }
-        try pass.run()
-        return .texture(texture)
-    }
-}
