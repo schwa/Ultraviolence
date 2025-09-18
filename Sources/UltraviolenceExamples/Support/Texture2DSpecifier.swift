@@ -2,7 +2,7 @@ import Metal
 import simd
 import UltraviolenceExampleShaders
 
-// TODO: Rename to texture specifier
+// TODO: #286 Rename to texture specifier
 public enum Texture2DSpecifier {
     case texture2D(MTLTexture, MTLSamplerState?)
     case textureCube(MTLTexture, MTLSamplerState?)
@@ -17,7 +17,7 @@ public enum Texture2DSpecifier {
 public extension Texture2DSpecifier {
     var texture2D: MTLTexture? {
         if case let .texture2D(texture, _) = self {
-            // TODO: Assert value is correct.
+            // TODO: #287 Assert value is correct.
             return texture
         }
         return nil
@@ -25,7 +25,7 @@ public extension Texture2DSpecifier {
 
     var textureCube: MTLTexture? {
         if case let .textureCube(texture, _) = self {
-            // TODO: Assert value is correct.
+            // TODO: #287 Assert value is correct.
             return texture
         }
         return nil
@@ -33,7 +33,7 @@ public extension Texture2DSpecifier {
 
     var depth2D: MTLTexture? {
         if case let .depth2D(texture, _) = self {
-            // TODO: Assert value is correct.
+            // TODO: #287 Assert value is correct.
             return texture
         }
         return nil

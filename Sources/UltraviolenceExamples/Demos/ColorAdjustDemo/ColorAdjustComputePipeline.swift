@@ -22,7 +22,7 @@ public struct ColorAdjustComputePipeline <T>: Element {
                 computeKernel: kernel
             ) {
                 try ComputeDispatch(threadsPerGrid: [outputTexture.width, outputTexture.height, 1], threadsPerThreadgroup: [16, 16, 1])
-                    // TODO: mayebe a .argumentBuffer() is a better solution [FILE THIS]
+                    // TODO: #280 Maybe a .argumentBuffer() is a better solution
                     .parameter("inputSpecifier", value: inputSpecifier.toTexture2DSpecifierArgmentBuffer())
                     .useComputeResource(inputSpecifier.texture2D, usage: .read)
                     .useComputeResource(inputSpecifier.textureCube, usage: .read)
@@ -34,7 +34,7 @@ public struct ColorAdjustComputePipeline <T>: Element {
     }
 }
 
-// TODO: Move
+// TODO: #281 Move
 extension MTLSize: @retroactive ExpressibleByArrayLiteral {
     public init(arrayLiteral elements: Int...) {
         switch elements.count {
