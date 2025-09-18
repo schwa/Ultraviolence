@@ -25,6 +25,5 @@ public struct SnapshotDebugView: View {
             }
         }
         .navigationTitle("System Snapshot")
-        .navigationSubtitle("\(snapshot.nodes.count) nodes • \(snapshot.dirtyIdentifiers.count) dirty")
     }
 }

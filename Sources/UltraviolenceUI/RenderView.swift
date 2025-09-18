@@ -73,7 +73,11 @@ internal struct RenderViewHelper <Content>: View where Content: Element {
 
         }
         update: { view in
+            #if os(macOS)
             view.layer?.isOpaque = false
+            #else
+            view.layer.isOpaque = false
+            #endif
             view.device = device
             view.delegate = viewModel
             view.configure(from: environment)
