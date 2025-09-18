@@ -1,4 +1,3 @@
-import DemoKit
 import GeometryLite3D
 import Metal
 import MetalKit
