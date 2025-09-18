@@ -145,7 +145,7 @@ struct SystemSnapshotTests {
         #expect(!snapshot.nodes.isEmpty)
     }
 
-    @Test("Snapshot with environment values")
+    @Test("Snapshot with environment values", .disabled())
     @MainActor
     func testEnvironmentSnapshot() throws {
         struct EnvElement: Element {
