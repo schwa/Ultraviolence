@@ -26,7 +26,7 @@ public struct PointCloudDemoView: View {
 
     public var body: some View {
         WorldView(projection: $projection, cameraMatrix: $cameraMatrix, targetMatrix: .constant(nil)) {
-            RenderView {
+            RenderView { context, drawableSize in
                 if let pointBuffer {
                     try RenderPass {
                         PointCloudRenderPipeline(

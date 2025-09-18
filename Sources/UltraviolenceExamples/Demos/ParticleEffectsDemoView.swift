@@ -40,7 +40,7 @@ public struct ParticleEffectsDemoView: View {
         TimelineView(.animation) { context in
             let _ = updateTime()  // Update time on each frame
             WorldView(projection: $projection, cameraMatrix: $cameraMatrix, targetMatrix: .constant(nil)) {
-                RenderView {
+                RenderView { context, drawableSize in
                     if let particleBuffer, let emitterBuffer {
                         try Group {
                             // Update particles using compute shader (only when not paused)
