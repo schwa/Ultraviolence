@@ -23,6 +23,8 @@ import UltraviolenceExamples
         DebugShadersDemoView.self,
         PBRDemoView.self,
         SDFDemoView.self,
+        PointCloudDemoView.self,
+        ParticleEffectsDemoView.self,
     ]
 
 #if os(macOS)
@@ -153,5 +155,17 @@ extension PBRDemoView: @retroactive DemoView {
 extension SDFDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(name: "SDF Raymarching", description: "Real-time signed distance field raymarching with animated shapes, smooth blending, and dynamic lighting", group: "Complex", keywords: ["animated", "raymarching"])
+    }
+}
+
+extension PointCloudDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(name: "Point Cloud", description: "Interactive point cloud visualization with thousands of colored points arranged in a torus shape", group: "Basic", keywords: ["points", "interactive"])
+    }
+}
+
+extension ParticleEffectsDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(name: "Particle Effects", description: "GPU-accelerated particle system with compute shaders featuring various emitter types like fountains, explosions, and fireworks", group: "Complex", keywords: ["particles", "compute", "animated"])
     }
 }

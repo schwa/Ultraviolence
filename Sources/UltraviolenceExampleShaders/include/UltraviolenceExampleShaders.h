@@ -7,6 +7,7 @@
 #import "Boxes.h"
 #import "PBRShaders.h"
 #import "SDFShader.h"
+#import "ParticleEffectsShader.h"
 
 #ifdef __OBJC__
 #import <Foundation/Foundation.h>
