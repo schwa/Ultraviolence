@@ -16,9 +16,6 @@ public struct DebugShadersDemoView: View {
     var cameraMatrix: simd_float4x4 = .init(translation: [0, 2, 6])
 
     @State
-    var drawableSize: CGSize = .zero
-
-    @State
     var debugMode: DebugShadersMode = .normal
 
     let teapot = try! MTKMesh(name: "teapot", bundle: .main, options: [.generateTangentBasis, .generateTextureCoordinatesIfMissing, .useSimpleTextureCoordinates])
@@ -32,7 +29,7 @@ public struct DebugShadersDemoView: View {
                 .padding()
 
             WorldView(projection: $projection, cameraMatrix: $cameraMatrix) {
-                RenderView {
+                RenderView { _, drawableSize in
                     let projectionMatrix = projection.projectionMatrix(for: drawableSize)
                     let viewMatrix = cameraMatrix.inverse
                     let viewProjectionMatrix = projectionMatrix * viewMatrix
@@ -50,7 +47,6 @@ public struct DebugShadersDemoView: View {
                     }
                 }
                 .metalDepthStencilPixelFormat(.depth32Float)
-                .onDrawableSizeChange { drawableSize = $0 }
             }
         }
 

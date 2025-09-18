@@ -29,9 +29,6 @@ public struct BlinnPhongDemoView: View {
     @State
     private var cameraMatrix: simd_float4x4 = .init(translation: [0, 2, 6])
 
-    @State
-    private var drawableSize: CGSize = .zero
-
     public init() {
         do {
             let device = _MTLCreateSystemDefaultDevice()
@@ -55,7 +52,7 @@ public struct BlinnPhongDemoView: View {
     public var body: some View {
         WorldView(projection: $projection, cameraMatrix: $cameraMatrix, targetMatrix: .constant(nil)) {
             TimelineView(.animation) { timeline in
-                RenderView {
+                RenderView { _, drawableSize in
                     let projectionMatrix = projection.projectionMatrix(for: drawableSize)
                     let viewMatrix = cameraMatrix.inverse
                     let viewProjectionMatrix = projectionMatrix * viewMatrix
@@ -97,7 +94,6 @@ public struct BlinnPhongDemoView: View {
                     }
                 }
                 .metalDepthStencilPixelFormat(.depth32Float)
-                .onDrawableSizeChange { drawableSize = $0 }
                 .onChange(of: timeline.date) {
                     let date = timeline.date.timeIntervalSinceReferenceDate
                     let angle = LinearTimingFunction().value(time: date, period: 1, in: 0 ... 2 * .pi)

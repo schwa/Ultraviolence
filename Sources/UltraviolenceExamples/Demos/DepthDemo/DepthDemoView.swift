@@ -75,7 +75,7 @@ public struct DepthDemoView: View {
 
     public var body: some View {
         WorldView(projection: $projection, cameraMatrix: $cameraMatrix) {
-            RenderView {
+            RenderView { _, _ in
                 if let colorTexture, let depthTexture, let adjustedDepthTexture {
                     try RenderPass(label: "Teapot to Textures Pass") {
                         try teapotPipeline

@@ -59,7 +59,7 @@ public struct AppleEventLogoDemoView: View {
     public var body: some View {
         VStack {
             TimelineView(.animation) { timeline in
-                RenderView {
+                RenderView { _, _ in
                     try ComputePass {
                         if heatTextures.count == 2 {
                             let previousTexture = heatTextures[currentTextureIndex]

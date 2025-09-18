@@ -63,7 +63,7 @@ public struct LUTDemoView: View {
     }
 
     public var body: some View {
-        RenderView {
+        RenderView { _, _ in
             try Group {
                 try ComputePass(label: "LUTDemo") {
                     try LUTComputePipeline(inputTexture: sourceTexture, lutTexture: lutTexture, blend: blend, outputTexture: outputTexture)

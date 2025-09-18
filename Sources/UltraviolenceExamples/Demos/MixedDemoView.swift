@@ -33,7 +33,7 @@ public struct MixedDemoView: View {
         let modelMatrix = simd_float4x4(yRotation: .init(radians: Float(angle.radians)))
         WorldView(projection: $projection, cameraMatrix: $cameraMatrix) {
             TimelineView(.animation) { timeline in
-                RenderView {
+                RenderView { _, _ in
                     let transforms = Transforms(modelMatrix: modelMatrix, cameraMatrix: cameraMatrix, projectionMatrix: projection.projectionMatrix(for: drawableSize))
                     MixedExample(transforms: transforms, color: color, lightDirection: lightDirection)
                     //                        .debugLabel("MIXED EXAMPLE")

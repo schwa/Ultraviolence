@@ -6,6 +6,7 @@ import QuartzCore
 import SwiftUI
 import Ultraviolence
 import UltraviolenceSupport
+import QuartzCore
 
 public extension EnvironmentValues {
     @Entry
@@ -25,7 +26,7 @@ public extension View {
 }
 
 public struct RenderView <Content>: View where Content: Element {
-    var content: () throws -> Content
+    var content: (RenderViewContext, CGSize) throws -> Content
 
     @Environment(\.device)
     var device
@@ -33,7 +34,7 @@ public struct RenderView <Content>: View where Content: Element {
     @Environment(\.commandQueue)
     var commandQueue
 
-    public init(@ElementBuilder content: @escaping () throws -> Content) {
+    public init(@ElementBuilder content: @escaping (RenderViewContext, CGSize) throws -> Content) {
         self.content = content
     }
 
@@ -46,7 +47,7 @@ public struct RenderView <Content>: View where Content: Element {
 
 internal struct RenderViewHelper <Content>: View where Content: Element {
     var device: MTLDevice
-    var content: () throws -> Content
+    var content: (RenderViewContext, CGSize) throws -> Content
 
     @Environment(\.self)
     private var environment
@@ -57,7 +58,7 @@ internal struct RenderViewHelper <Content>: View where Content: Element {
     @State
     private var viewModel: RenderViewViewModel<Content>
 
-    init(device: MTLDevice, commandQueue: MTLCommandQueue, @ElementBuilder content: @escaping () throws -> Content) {
+    init(device: MTLDevice, commandQueue: MTLCommandQueue, @ElementBuilder content: @escaping (RenderViewContext, CGSize) throws -> Content) {
         do {
             self.device = device
             self.viewModel = try RenderViewViewModel(device: device, commandQueue: commandQueue, content: content)
@@ -94,7 +95,7 @@ internal class RenderViewViewModel <Content>: NSObject, MTKViewDelegate where Co
 
     @ObservationIgnored
 
-    var content: () throws -> Content
+    var content: (RenderViewContext, CGSize) throws -> Content
     var lastError: Error?
 
     @ObservationIgnored
@@ -107,9 +108,13 @@ internal class RenderViewViewModel <Content>: NSObject, MTKViewDelegate where Co
     var signpostID = signposter?.makeSignpostID()
 
     var frame: Int = 0
+    var firstFrameTime: CFTimeInterval = .zero
+    var frameTime: CFTimeInterval = .zero
+
+    var currentDrawableSize: CGSize = .zero
 
     @MainActor
-    init(device: MTLDevice, commandQueue: MTLCommandQueue, content: @escaping () throws -> Content) throws {
+    init(device: MTLDevice, commandQueue: MTLCommandQueue, content: @escaping (RenderViewContext, CGSize) throws -> Content) throws {
         self.device = device
         self.content = content
         self.commandQueue = commandQueue
@@ -120,6 +125,7 @@ internal class RenderViewViewModel <Content>: NSObject, MTKViewDelegate where Co
         drawableSizeChange?(size)
         // Mark all nodes as needing setup when drawable size changes
         system.markAllNodesNeedingSetup()
+        self.currentDrawableSize = size
     }
 
     func draw(in view: MTKView) {
@@ -134,8 +140,23 @@ internal class RenderViewViewModel <Content>: NSObject, MTKViewDelegate where Co
                     frame += 1
                 }
                 let currentRenderPassDescriptor = try view.currentRenderPassDescriptor.orThrow(.resourceCreationFailure("No render pass descriptor available"))
-                let content = try CommandBufferElement(completion: .commit) {
-                    try self.content()
+
+                let currentTime: CFTimeInterval = CACurrentMediaTime()
+                if firstFrameTime == 0 {
+                    firstFrameTime = currentTime
+                }
+                let lastFrameTime = frameTime
+                frameTime = currentTime - firstFrameTime
+                let deltaTime = frameTime - lastFrameTime
+                let frameUniforms = FrameUniforms(index: UInt32(frame), time: Float(frameTime), deltaTime: Float(deltaTime), viewportSize:  [UInt32(view.drawableSize.width),UInt32(view.drawableSize.height)])
+                print(frameUniforms)
+                let context = RenderViewContext(frameUniformas: frameUniforms)
+                // Return the element produced by the content builder
+
+
+
+                let rootElement = try CommandBufferElement(completion: .commit) {
+                    return try self.content(context, currentDrawableSize)
                 }
                 .environment(\.device, device)
                 .environment(\.commandQueue, commandQueue)
@@ -145,7 +166,7 @@ internal class RenderViewViewModel <Content>: NSObject, MTKViewDelegate where Co
                 .environment(\.drawableSize, view.drawableSize)
 
                 do {
-                    try system.update(root: content)
+                    try system.update(root: rootElement)
                     // Process setup immediately after update
                     // Only nodes that need setup will be processed
                     try system.processSetup()
@@ -162,11 +183,6 @@ internal class RenderViewViewModel <Content>: NSObject, MTKViewDelegate where Co
     @MainActor
     func handle(error: Error) {
         logger?.error("Error when drawing frame #\(self.frame): \(error)")
-        if RenderViewDebugging.logContent {
-            if let content = try? self.content() {
-                logger?.error("Content: \(String(describing: content))")
-            }
-        }
         if RenderViewDebugging.fatalErrorOnCatch {
             fatalError("Error when drawing #\(self.frame): \(error)")
         }
@@ -180,6 +196,26 @@ public struct RenderViewDebugging {
     static var logFrame = true
     @MainActor
     static var fatalErrorOnCatch = true
-    @MainActor
-    static var logContent = true
+}
+
+public struct RenderViewContext {
+    public private(set) var frameUniforms: FrameUniforms
+
+    internal init(frameUniformas: FrameUniforms) {
+        self.frameUniforms = frameUniformas
+    }
+}
+
+public struct FrameUniforms: Equatable, Sendable {
+    public var index: UInt32
+    public var time: Float
+    public var deltaTime: Float
+    public var viewportSize: SIMD2<UInt32>
+
+    public init(index: UInt32, time: Float, deltaTime: Float, viewportSize: SIMD2<UInt32>) {
+        self.index = index
+        self.time = time
+        self.deltaTime = deltaTime
+        self.viewportSize = viewportSize
+    }
 }

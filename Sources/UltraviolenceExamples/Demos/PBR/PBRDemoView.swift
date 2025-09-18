@@ -12,7 +12,6 @@ import UltraviolenceExampleShaders
 public struct PBRDemoView: View {
     @State var projection: any ProjectionProtocol = PerspectiveProjection()
     @State var cameraMatrix: simd_float4x4 = .init(translation: [0, 2, 6])
-    @State var drawableSize: CGSize = .zero
     @State private var selectedMaterial = MaterialPreset.gold
     @State private var customMaterial = PBRMaterial()
     @State private var animateLights = true
@@ -46,7 +45,7 @@ public struct PBRDemoView: View {
     public var body: some View {
         TimelineView(.animation) { timeline in
             WorldView(projection: $projection, cameraMatrix: $cameraMatrix) {
-                RenderView {
+                RenderView { _, drawableSize in
                     let projectionMatrix = projection.projectionMatrix(for: drawableSize)
                     let viewMatrix = cameraMatrix.inverse
                     let viewProjectionMatrix = projectionMatrix * viewMatrix
@@ -87,7 +86,6 @@ public struct PBRDemoView: View {
                     }
                 }
                 .metalDepthStencilPixelFormat(.depth32Float)
-                .onDrawableSizeChange { drawableSize = $0 }
                 .onChange(of: timeline.date) {
                     // Initialize start time on first frame
                     if animationStartTime == nil {

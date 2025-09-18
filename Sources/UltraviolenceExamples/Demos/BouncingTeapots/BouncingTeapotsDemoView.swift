@@ -69,7 +69,7 @@ public struct BouncingTeapotsDemoView: View {
     func renderView() -> some View {
         WorldView(projection: $projection, cameraMatrix: $cameraMatrix, targetMatrix: .constant(nil)) {
             let transforms = Transforms(modelMatrix: .identity, cameraMatrix: cameraMatrix, projectionMatrix: projection.projectionMatrix(for: drawableSize))
-            RenderView {
+            RenderView { _, _ in
                 if let offscreenTexture, let offscreenDepthTexture, let upscaledTexture {
                     FlyingTeapotsRenderPass(transforms: transforms, simulation: simulation, checkerboardColor: checkerboardColor, offscreenTexture: offscreenTexture, offscreenDepthTexture: offscreenDepthTexture, upscaledTexture: upscaledTexture)
                 }

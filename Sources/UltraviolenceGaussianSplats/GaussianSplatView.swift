@@ -17,9 +17,6 @@ public struct GaussianSplatView: View {
     private var debugMode: GaussianSplatRenderPipeline.DebugMode
 
     @State
-    private var drawableSize: CGSize = .zero
-
-    @State
     private var sortManager: AsyncSortManager<GPUSplat>?
 
     public init(splatCloud: SplatCloud<GPUSplat>, projection: any ProjectionProtocol, cameraMatrix: simd_float4x4, debugMode: GaussianSplatRenderPipeline.DebugMode) {
@@ -30,13 +27,12 @@ public struct GaussianSplatView: View {
     }
 
     public var body: some View {
-        RenderView {
+        RenderView { _, drawableSize in
             try RenderPass {
                 let projectionMatrix = projection.projectionMatrix(for: drawableSize)
                 try GaussianSplatRenderPipeline(splatCloud: splatCloud, projectionMatrix: projectionMatrix, modelMatrix: modelMatrix, cameraMatrix: cameraMatrix, drawableSize: SIMD2<Float>(drawableSize), debugMode: debugMode)
             }
         }
-        .onDrawableSizeChange { drawableSize = $0 }
         .onChange(of: splatCloud, initial: true) {
             sortManager = try! AsyncSortManager(device: _MTLCreateSystemDefaultDevice(), splatCloud: splatCloud, capacity: splatCloud.count, logger: logger)
             Task {

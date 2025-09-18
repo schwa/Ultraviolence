@@ -8,9 +8,6 @@ import GeometryLite3D
 
 public struct GridShaderDemoView: View {
     @State
-    private var drawableSize: CGSize = .zero
-
-    @State
     private var projection: any ProjectionProtocol = PerspectiveProjection()
 
     @State
@@ -21,12 +18,11 @@ public struct GridShaderDemoView: View {
     }
 
     public var body: some View {
-        RenderView {
+        RenderView { _, drawableSize in
             try RenderPass {
                 GridShader(projectionMatrix: projection.projectionMatrix(for: drawableSize), cameraMatrix: cameraMatrix)
             }
         }
-        .onDrawableSizeChange { drawableSize = $0 }
     }
 }
 

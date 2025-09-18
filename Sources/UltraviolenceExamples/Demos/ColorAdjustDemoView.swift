@@ -48,7 +48,7 @@ public struct ColorAdjustDemoView: View {
     }
 
     public var body: some View {
-        RenderView {
+        RenderView { _, _ in
             try ComputePass(label: "ColorAdjust") {
                 ColorAdjustComputePipeline(inputSpecifier: .texture2D(sourceTexture, nil), inputParameters: Float(0.5), outputTexture: adjustedTexture)
             }

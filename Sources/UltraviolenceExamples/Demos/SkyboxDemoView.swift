@@ -15,23 +15,19 @@ public struct SkyboxDemoView: View {
     @State
     private var cameraMatrix: simd_float4x4 = .init(translation: [0, 0, 1])
 
-    @State
-    private var drawableSize: CGSize = .zero
-
     public init() {
         // This line intentionally left blank.
     }
 
     public var body: some View {
         WorldView(projection: $projection, cameraMatrix: $cameraMatrix, targetMatrix: .constant(nil)) {
-            RenderView {
+            RenderView { _, drawableSize in
                 try RenderPass {
                     if let texture {
                         try SkyboxRenderPipeline(projectionMatrix: projection.projectionMatrix(for: drawableSize), cameraMatrix: cameraMatrix, texture: texture)
                     }
                 }
             }
-            .onDrawableSizeChange { drawableSize = $0 }
         }
         .task {
             do {

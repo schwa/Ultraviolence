@@ -35,7 +35,7 @@ public struct MetalFXDemoView: View {
                         badge(name: "swiftui")
                     }
 
-                RenderView {
+                RenderView { _, _ in
                     try RenderPass {
                         try BillboardRenderPipeline(specifier: .texture2D(sourceTexture))
                     }
@@ -50,7 +50,7 @@ public struct MetalFXDemoView: View {
 
                 if let upscaledTexture {
                     ScrollView([.horizontal, .vertical]) {
-                        RenderView {
+                        RenderView { _, _ in
                             MetalFXSpatial(inputTexture: sourceTexture, outputTexture: upscaledTexture)
                             try RenderPass {
                                 try BillboardRenderPipeline(specifier: .texture2D(upscaledTexture))

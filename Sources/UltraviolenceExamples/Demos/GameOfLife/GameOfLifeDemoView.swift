@@ -11,7 +11,7 @@ public struct GameOfLifeDemoView: View {
 
     public var body: some View {
             // Render view
-            RenderView {
+            RenderView { _, _ in
                 GameOfLife(isRunning: isRunning, pattern: pattern)
             }
 

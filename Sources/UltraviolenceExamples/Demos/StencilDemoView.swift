@@ -49,7 +49,7 @@ public struct StencilDemoView: View {
     }
 
     public var body: some View {
-        RenderView {
+        RenderView { _, _ in
             try BlitPass {
                 EnvironmentReader(keyPath: \.renderPassDescriptor) { renderPassDescriptor in
                     let stencilAttachmentTexture = renderPassDescriptor!.stencilAttachment.texture!

@@ -30,7 +30,7 @@ public struct SDFDemoView: View {
     public var body: some View {
         VStack {
             WorldView(projection: $projection, cameraMatrix: $cameraMatrix, targetMatrix: .constant(nil)) {
-                RenderView {
+                RenderView { _, _ in
                     try RenderPass {
                         try SDFRenderPipeline(
                             time: time,
