@@ -45,13 +45,11 @@ public struct PBRDemoView: View {
     public var body: some View {
         TimelineView(.animation) { timeline in
             WorldView(projection: $projection, cameraMatrix: $cameraMatrix) {
-                RenderView { _, drawableSize in
+                RenderView { context, drawableSize in
                     let projectionMatrix = projection.projectionMatrix(for: drawableSize)
                     let viewMatrix = cameraMatrix.inverse
                     let viewProjectionMatrix = projectionMatrix * viewMatrix
-                    
-                    let frameUniforms = FrameUniforms(index: 0, time: 0, deltaTime: 0, viewportSize: [Int32(drawableSize.width), Int32(drawableSize.height)])
-                    
+
                     // Prepare light visualization boxes
                     let lightBoxes: [BoxInstance] = lights.compactMap { light in
                         guard light.type == .point else { return nil }
@@ -77,9 +75,9 @@ public struct PBRDemoView: View {
                                 .pbrUniforms(material: currentMaterial, modelTransform: .identity, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
                                 .pbrLighting(lights)
                                 .pbrEnvironment(environmentTexture)
-                                .parameter("frameUniforms", functionType: .vertex, value: frameUniforms)
-                                .parameter("frameUniforms", functionType: .fragment, value: frameUniforms)
-                            
+                                .parameter("frameUniforms", functionType: .vertex, value: context.frameUniforms)
+                                .parameter("frameUniforms", functionType: .fragment, value: context.frameUniforms)
+
                         }
                         .vertexDescriptor(teapot.vertexDescriptor)
                         .depthCompare(function: .less, enabled: true)
