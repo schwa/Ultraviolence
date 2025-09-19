@@ -12,7 +12,6 @@
 		458D5CBC2E6F668F00BB8979 /* Ultraviolence in Frameworks */ = {isa = PBXBuildFile; productRef = 458D5CBB2E6F668F00BB8979 /* Ultraviolence */; };
 		458D5CBE2E6F668F00BB8979 /* UltraviolenceExamples in Frameworks */ = {isa = PBXBuildFile; productRef = 458D5CBD2E6F668F00BB8979 /* UltraviolenceExamples */; };
 		458D5CC02E6F668F00BB8979 /* UltraviolenceGaussianSplats in Frameworks */ = {isa = PBXBuildFile; productRef = 458D5CBF2E6F668F00BB8979 /* UltraviolenceGaussianSplats */; };
-		458D5CC22E6F668F00BB8979 /* UltraviolenceKit in Frameworks */ = {isa = PBXBuildFile; productRef = 458D5CC12E6F668F00BB8979 /* UltraviolenceKit */; };
 		458D5CC42E6F668F00BB8979 /* UltraviolenceSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 458D5CC32E6F668F00BB8979 /* UltraviolenceSupport */; };
 		45A7372B2E6B64F1000C2B8C /* DemoKit in Frameworks */ = {isa = PBXBuildFile; productRef = 45A7372A2E6B64F1000C2B8C /* DemoKit */; };
 /* End PBXBuildFile section */
@@ -64,7 +63,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				458D5CC02E6F668F00BB8979 /* UltraviolenceGaussianSplats in Frameworks */,
-				458D5CC22E6F668F00BB8979 /* UltraviolenceKit in Frameworks */,
 				4532C3F12E7873F800C561AF /* UltraviolenceSnapshotUI in Frameworks */,
 				458D5CC42E6F668F00BB8979 /* UltraviolenceSupport in Frameworks */,
 				458D5CBC2E6F668F00BB8979 /* Ultraviolence in Frameworks */,
@@ -139,7 +137,6 @@
 				458D5CBB2E6F668F00BB8979 /* Ultraviolence */,
 				458D5CBD2E6F668F00BB8979 /* UltraviolenceExamples */,
 				458D5CBF2E6F668F00BB8979 /* UltraviolenceGaussianSplats */,
-				458D5CC12E6F668F00BB8979 /* UltraviolenceKit */,
 				458D5CC32E6F668F00BB8979 /* UltraviolenceSupport */,
 				4532C3F02E7873F800C561AF /* UltraviolenceSnapshotUI */,
 			);
@@ -324,11 +321,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 45057C682E6F661900C379BE /* XCRemoteSwiftPackageReference "DemoKit" */;
 			productName = UltraviolenceGaussianSplats;
-		};
-		458D5CC12E6F668F00BB8979 /* UltraviolenceKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 45057C682E6F661900C379BE /* XCRemoteSwiftPackageReference "DemoKit" */;
-			productName = UltraviolenceKit;
 		};
 		458D5CC32E6F668F00BB8979 /* UltraviolenceSupport */ = {
 			isa = XCSwiftPackageProductDependency;

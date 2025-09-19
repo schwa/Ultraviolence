@@ -16,7 +16,6 @@ public let package = Package(
         .library(name: "UltraviolenceSupport", targets: ["UltraviolenceSupport"]),
         .library(name: "UltraviolenceExamples", targets: ["UltraviolenceExamples"]),
         .library(name: "UltraviolenceGaussianSplats", targets: ["UltraviolenceGaussianSplats"]),
-        .library(name: "UltraviolenceKit", targets: ["UltraviolenceKit"]),
         .library(name: "UltraviolenceSnapshotUI", targets: ["UltraviolenceSnapshotUI"]),
     ],
     dependencies: [
@@ -120,13 +119,6 @@ public let package = Package(
             name: "UltraviolenceGaussianSplatShaders",
             plugins: [
                 .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
-            ]
-        ),
-        .target(
-            name: "UltraviolenceKit",
-            dependencies: [
-                "Ultraviolence",
-                "UltraviolenceSupport"
             ]
         ),
         .testTarget(
