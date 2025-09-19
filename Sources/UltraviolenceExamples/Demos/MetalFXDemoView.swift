@@ -15,12 +15,13 @@ public struct MetalFXDemoView: View {
     @State
     private var upscaledTexture: MTLTexture?
 
-    let imageName = "4.2.03" // Mandrill https://sipi.usc.edu/database/database.php?volume=misc&image=10#top
-
     public init() {
         let device = _MTLCreateSystemDefaultDevice()
         let textureLoader = MTKTextureLoader(device: device)
-        sourceTexture = try! textureLoader.newTexture(name: "4.2.03", scaleFactor: 1, bundle: .main, options: [
+
+        let url = Bundle.module.url(forResource: "4.2.03", withExtension: "heic")!
+
+        sourceTexture = try! textureLoader.newTexture(URL: url, options: [
             .textureUsage: MTLTextureUsage([.shaderRead, .shaderWrite]).rawValue,
             .origin: MTKTextureLoader.Origin.flippedVertically.rawValue,
             .SRGB: false
@@ -30,11 +31,6 @@ public struct MetalFXDemoView: View {
     public var body: some View {
         VStack {
             HStack {
-                Image(imageName)
-                    .overlay(alignment: .topLeading) {
-                        badge(name: "swiftui")
-                    }
-
                 RenderView { _, _ in
                     try RenderPass {
                         try BillboardRenderPipeline(specifier: .texture2D(sourceTexture))
