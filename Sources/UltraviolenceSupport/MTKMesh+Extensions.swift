@@ -99,10 +99,12 @@ public extension MTKMesh {
         let hasOriginalTangent = mdlMesh.vertexAttributeData(forAttributeNamed: MDLVertexAttributeTangent, as: .float3) != nil
         let hasOriginalBitangent = mdlMesh.vertexAttributeData(forAttributeNamed: MDLVertexAttributeBitangent, as: .float3) != nil
         let hasOriginalTangentBasis = hasOriginalTangent && hasOriginalBitangent
+        var regenerateVertexDescriptor = false
 
         // Ensure normals exist
         if mdlMesh.vertexAttributeData(forAttributeNamed: MDLVertexAttributeNormal, as: .float3) == nil {
             mdlMesh.addNormals(withAttributeNamed: MDLVertexAttributeNormal, creaseThreshold: 0.0)
+            regenerateVertexDescriptor = true
         }
 
         // Generate texture coordinates if missing
@@ -145,11 +147,13 @@ public extension MTKMesh {
                         texCoords.append(SIMD2<Float>(u, v))
                     }
                     mdlMesh.addAttribute(withName: MDLVertexAttributeTextureCoordinate, format: .float2)
+                    regenerateVertexDescriptor = true
                 }
             } else {
                 // Use ModelIO's automatic unwrapping (can be slow/hang on complex meshes)
                 logger?.info("Creating unwrapped texture coordinates.")
                 mdlMesh.addUnwrappedTextureCoordinates(forAttributeNamed: MDLVertexAttributeTextureCoordinate)
+                regenerateVertexDescriptor = true
             }
         }
 
@@ -163,56 +167,60 @@ public extension MTKMesh {
                 tangentAttributeNamed: MDLVertexAttributeTangent,
                 bitangentAttributeNamed: MDLVertexAttributeBitangent
             )
+            regenerateVertexDescriptor = true
         }
 
-        // NOW create and apply our vertex descriptor to ensure all attributes are in buffer 0
-        let vertexDescriptor = MDLVertexDescriptor()
+        // TODO: unsure why we need to do this...
+        if regenerateVertexDescriptor {
+            // NOW create and apply our vertex descriptor to ensure all attributes are in buffer 0
+            let vertexDescriptor = MDLVertexDescriptor()
 
-        // Position at attribute 0
-        vertexDescriptor.attributes[0] = MDLVertexAttribute(
-            name: MDLVertexAttributePosition,
-            format: .float3,
-            offset: 0,
-            bufferIndex: 0
-        )
+            // Position at attribute 0
+            vertexDescriptor.attributes[0] = MDLVertexAttribute(
+                name: MDLVertexAttributePosition,
+                format: .float3,
+                offset: 0,
+                bufferIndex: 0
+            )
 
-        // Normal at attribute 1
-        vertexDescriptor.attributes[1] = MDLVertexAttribute(
-            name: MDLVertexAttributeNormal,
-            format: .float3,
-            offset: 12,
-            bufferIndex: 0
-        )
+            // Normal at attribute 1
+            vertexDescriptor.attributes[1] = MDLVertexAttribute(
+                name: MDLVertexAttributeNormal,
+                format: .float3,
+                offset: 12,
+                bufferIndex: 0
+            )
 
-        // Texture coordinate at attribute 2
-        vertexDescriptor.attributes[2] = MDLVertexAttribute(
-            name: MDLVertexAttributeTextureCoordinate,
-            format: .float2,
-            offset: 24,
-            bufferIndex: 0
-        )
+            // Texture coordinate at attribute 2
+            vertexDescriptor.attributes[2] = MDLVertexAttribute(
+                name: MDLVertexAttributeTextureCoordinate,
+                format: .float2,
+                offset: 24,
+                bufferIndex: 0
+            )
 
-        // Tangent at attribute 3
-        vertexDescriptor.attributes[3] = MDLVertexAttribute(
-            name: MDLVertexAttributeTangent,
-            format: .float3,
-            offset: 32,
-            bufferIndex: 0
-        )
+            // Tangent at attribute 3
+            vertexDescriptor.attributes[3] = MDLVertexAttribute(
+                name: MDLVertexAttributeTangent,
+                format: .float3,
+                offset: 32,
+                bufferIndex: 0
+            )
 
-        // Bitangent at attribute 4
-        vertexDescriptor.attributes[4] = MDLVertexAttribute(
-            name: MDLVertexAttributeBitangent,
-            format: .float3,
-            offset: 44,
-            bufferIndex: 0
-        )
+            // Bitangent at attribute 4
+            vertexDescriptor.attributes[4] = MDLVertexAttribute(
+                name: MDLVertexAttributeBitangent,
+                format: .float3,
+                offset: 44,
+                bufferIndex: 0
+            )
 
-        // Set the layout for buffer 0
-        vertexDescriptor.layouts[0] = MDLVertexBufferLayout(stride: 56)
+            // Set the layout for buffer 0
+            vertexDescriptor.layouts[0] = MDLVertexBufferLayout(stride: 56)
 
-        // Apply our vertex descriptor to repack all attributes into buffer 0
-        mdlMesh.vertexDescriptor = vertexDescriptor
+            // Apply our vertex descriptor to repack all attributes into buffer 0
+            mdlMesh.vertexDescriptor = vertexDescriptor
+        }
 
         try self.init(mesh: mdlMesh, device: device)
     }
