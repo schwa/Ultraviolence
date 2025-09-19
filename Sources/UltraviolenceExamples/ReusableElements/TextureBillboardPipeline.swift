@@ -3,7 +3,38 @@ import MetalKit
 import Ultraviolence
 import UltraviolenceSupport
 
-// TODO: #138 Add code to align the texture correctly in the output.
+struct Quad {
+    var min: SIMD2<Float>
+    var max: SIMD2<Float>
+}
+
+extension Quad {
+    var minXMinY: SIMD2<Float> {
+        SIMD2<Float>(min.x, min.y)
+    }
+    var minXMaxY: SIMD2<Float> {
+        SIMD2<Float>(min.x, max.y)
+    }
+    var maxXMinY: SIMD2<Float> {
+        SIMD2<Float>(max.x, min.y)
+    }
+    var maxXMaxY: SIMD2<Float> {
+        SIMD2<Float>(max.x, max.y)
+    }
+}
+
+extension Quad {
+    static let unit = Quad(min: [0, 0], max: [1, 1])
+
+    /// Clip space quad from (-1, -1) to (1, 1)
+    static let clip = Quad(min: [-1, -1], max: [1, 1])
+}
+
+extension Quad {
+    var flippedY: Quad {
+        Quad(min: SIMD2<Float>(min.x, max.y), max: SIMD2<Float>(max.x, min.y))
+    }
+}
 
 struct TextureBillboardPipeline: Element {
     let specifierA: Texture2DSpecifier
@@ -18,10 +49,10 @@ struct TextureBillboardPipeline: Element {
     let colorTransformGraph: SimpleStitchedFunctionGraph
 
     // TODO: #138 Get rid of flippedY
-    init(specifierA: Texture2DSpecifier, sliceA: Int = 0, specifierB: Texture2DSpecifier, sliceB: Int = 0, flippedY: Bool = false, colorTransform: VisibleFunction? = nil) throws {
+    init(specifierA: Texture2DSpecifier, sliceA: Int = 0, specifierB: Texture2DSpecifier, sliceB: Int = 0, positions: Quad = .clip, textureCoordinates: Quad = .unit, colorTransform: VisibleFunction? = nil) throws {
         let device = _MTLCreateSystemDefaultDevice()
         #if os(iOS)
-        assert(device.supportsFeatureSet(.iOS_GPUFamily4_v1)) // For argument buffers tier
+        assert(device.supportsFeatureSet(.iOS_GPUFamily4_v1)) // For argument buffers tier. TODO: Look this up.
         #endif
         self.specifierA = specifierA
         self.sliceA = sliceA
@@ -33,13 +64,13 @@ struct TextureBillboardPipeline: Element {
 
         self.vertexShader = try shaderLibrary.vertex_main
         self.fragmentShader = try shaderLibrary.fragment_main
-        if !flippedY {
-            positions = [[-1, 1], [-1, -1], [1, 1], [1, -1]]
-        }
-        else {
-            positions = [[-1, -1], [-1, 1], [1, -1], [1, 1]]
-        }
-        textureCoordinates = [[0, 1], [0, 0], [1, 1], [1, 0]]
+        self.positions = [
+            positions.minXMinY, // bottom-left
+            positions.maxXMinY, // bottom-right
+            positions.minXMaxY, // top-left
+            positions.maxXMaxY  // top-right
+        ]
+        self.textureCoordinates = [textureCoordinates.minXMaxY, textureCoordinates.maxXMaxY, textureCoordinates.minXMinY, textureCoordinates.maxXMinY]
 
         let colorTransform = try colorTransform ?? shaderLibrary.function(named: "colorTransformIdentity", type: VisibleFunction.self)
         colorTransformGraph = try SimpleStitchedFunctionGraph(name: "TextureBillboard::colorTransform", function: colorTransform)
@@ -48,13 +79,12 @@ struct TextureBillboardPipeline: Element {
     var body: some Element {
         get throws {
             try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
-                let specifierArgumentBuffer = specifierA.toTexture2DSpecifierArgmentBuffer()
-
                 Draw { encoder in
                     encoder.setVertexBytes(positions, length: MemoryLayout<SIMD2<Float>>.stride * positions.count, index: 0)
                     encoder.setVertexBytes(textureCoordinates, length: MemoryLayout<SIMD2<Float>>.stride * textureCoordinates.count, index: 1)
                     encoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: positions.count)
                 }
+                // TODO: We really need an argument buffer abstraction.
                 .parameter("specifierA", value: specifierA.toTexture2DSpecifierArgmentBuffer())
                 .parameter("sliceA", value: sliceA)
                 .parameter("specifierB", value: specifierB.toTexture2DSpecifierArgmentBuffer())
@@ -74,18 +104,16 @@ struct TextureBillboardPipeline: Element {
 }
 
 extension TextureBillboardPipeline {
-
-    init(specifierA: Texture2DSpecifier, sliceA: Int = 0, specifierB: Texture2DSpecifier, sliceB: Int = 0, flippedY: Bool = false, colorTransformFunctionName: String) throws {
+    init(specifierA: Texture2DSpecifier, sliceA: Int = 0, specifierB: Texture2DSpecifier, sliceB: Int = 0, positions: Quad = .clip, textureCoordinates: Quad = .unit, colorTransformFunctionName: String) throws {
         let device = _MTLCreateSystemDefaultDevice()
         let shaderBundle = Bundle.ultraviolenceExampleShaders().orFatalError()
         let shaderLibrary = try ShaderLibrary(bundle: shaderBundle, namespace: "TextureBillboard")
         let colorTransform = try shaderLibrary.function(named: colorTransformFunctionName, type: VisibleFunction.self)
-
-        try self.init(specifierA: specifierA, sliceA: sliceA, specifierB: specifierB, sliceB: sliceB, flippedY: flippedY, colorTransform: colorTransform)
+        try self.init(specifierA: specifierA, sliceA: sliceA, specifierB: specifierB, sliceB: sliceB, positions: positions, textureCoordinates: textureCoordinates, colorTransform: colorTransform)
     }
 
-    init(specifier: Texture2DSpecifier, slice: Int = 0, flippedY: Bool = false, colorTransform: VisibleFunction? = nil) throws {
-        try self.init(specifierA: specifier, sliceA: slice, specifierB: specifier, sliceB: slice, flippedY: flippedY, colorTransform: colorTransform)
+    init(specifier: Texture2DSpecifier, slice: Int = 0, positions: Quad = .clip, textureCoordinates: Quad = .unit, colorTransform: VisibleFunction? = nil) throws {
+        try self.init(specifierA: specifier, sliceA: slice, specifierB: specifier, sliceB: slice, positions: positions, textureCoordinates: textureCoordinates, colorTransform: colorTransform)
     }
 }
 

@@ -53,7 +53,7 @@ public struct PanoramaDemoView: View {
 
                             // Render gamma-corrected result to screen
                             try RenderPass {
-                                try TextureBillboardPipeline(specifier: .texture2D(outputTexture), flippedY: true)
+                                try TextureBillboardPipeline(specifier: .texture2D(outputTexture))
                             }
                         } else {
                             // Render directly without gamma correction

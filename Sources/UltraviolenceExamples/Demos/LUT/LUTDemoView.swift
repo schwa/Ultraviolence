@@ -43,7 +43,6 @@ public struct LUTDemoView: View {
             let inputTextureURL = Bundle.module.url(forResource: "DSC_2595", withExtension: "JPG").orFatalError()
             let sourceTexture = try textureLoader.newTexture(URL: inputTextureURL, options: [
                 .textureUsage: MTLTextureUsage([.shaderRead, .shaderWrite]).rawValue,
-                .origin: MTKTextureLoader.Origin.flippedVertically.rawValue,
                 .SRGB: true
             ])
             let resourceURL = Bundle.module.resourceURL.orFatalError()

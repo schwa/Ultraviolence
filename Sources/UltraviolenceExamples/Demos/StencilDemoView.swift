@@ -76,6 +76,7 @@ public struct StencilDemoView: View {
                 renderPassDescriptor.stencilAttachment.loadAction = .load
             }
         }
+        .aspectRatio(1.0, contentMode: .fit)
         .metalClearColor(.init(red: 0.1, green: 0.2, blue: 0.1, alpha: 1.0))
         .metalDepthStencilPixelFormat(.stencil8)
         .metalDepthStencilAttachmentTextureUsage([.shaderWrite, .renderTarget])

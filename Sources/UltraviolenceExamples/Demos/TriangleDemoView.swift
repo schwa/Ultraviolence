@@ -70,6 +70,7 @@ public struct TriangleDemoView: View {
                     kernelTime = commandBuffer.kernelEndTime - commandBuffer.kernelStartTime
                 }
             }
+            .aspectRatio(1.0, contentMode: .fit)
             .overlay(alignment: .topLeading) {
                 Form {
                     let gpuTime = Measurement(value: gpuTime, unit: UnitDuration.seconds).converted(to: .milliseconds)

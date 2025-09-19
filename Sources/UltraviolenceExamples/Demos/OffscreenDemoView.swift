@@ -18,6 +18,7 @@ public struct OffscreenDemoView: View {
                     .resizable()
             }
         }
+        .aspectRatio(1, contentMode: .fit)
         .overlay(alignment: .bottom) {
             Group {
                 if case let .success(image) = result {

@@ -89,7 +89,6 @@ public struct ColorAdjustDemoView: View {
 
         sourceTexture = try! textureLoader.newTexture(URL: url, options: [
             .textureUsage: MTLTextureUsage([.shaderRead, .shaderWrite]).rawValue,
-            .origin: MTKTextureLoader.Origin.flippedVertically.rawValue,
             .SRGB: false
         ])
 

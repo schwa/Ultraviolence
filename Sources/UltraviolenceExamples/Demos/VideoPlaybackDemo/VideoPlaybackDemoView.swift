@@ -50,12 +50,12 @@ public struct VideoPlaybackDemoView: View {
 
                         // Render the distorted texture
                         try RenderPass {
-                            try TextureBillboardPipeline(specifier: .texture2D(distortedTexture), flippedY: true)
+                            try TextureBillboardPipeline(specifier: .texture2D(distortedTexture))
                         }
                     } else {
                         // Render original video without effects
                         try RenderPass {
-                            try TextureBillboardPipeline(specifier: .texture2D(videoTexture), flippedY: true)
+                            try TextureBillboardPipeline(specifier: .texture2D(videoTexture))
                         }
                     }
                 }
