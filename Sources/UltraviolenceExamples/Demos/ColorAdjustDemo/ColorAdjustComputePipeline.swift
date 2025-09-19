@@ -11,18 +11,11 @@ public struct ColorAdjustComputePipeline <T>: Element {
 
     init(inputSpecifier: Texture2DSpecifier, inputParameters: T, outputTexture: MTLTexture, colorAdjustFunction: MTLFunction) {
         let device = _MTLCreateSystemDefaultDevice()
-
         self.inputSpecifier = inputSpecifier
         self.inputParameters = inputParameters
         self.outputTexture = outputTexture
         let shaderLibrary = try! ShaderLibrary(bundle: .ultraviolenceExampleShaders().orFatalError(), namespace: "ColorAdjust")
         self.kernel = try! shaderLibrary.colorAdjust
-
-
-        // TODO: #283 Use Ultraviolence's normal shader loading capabilities
-        // TODO: #284 Use proper Metal function loading - this one requires all functions to be named the same.
-        // TODO: #285 Terrible example of stitchable functions.
-
         let inputs = [
             MTLFunctionStitchingInputNode(argumentIndex: 0),
             MTLFunctionStitchingInputNode(argumentIndex: 1),
@@ -49,7 +42,15 @@ public struct ColorAdjustComputePipeline <T>: Element {
                     .parameter("outputTexture", texture: outputTexture)
             }
             .environment(\.linkedFunctions, linkedFunctions)
-
         }
+    }
+}
+
+extension ColorAdjustComputePipeline where T == Float {
+    static func gammaAdjustPipeline(inputSpecifier: Texture2DSpecifier, inputParameters: Float, outputTexture: MTLTexture) -> Self {
+        let device = _MTLCreateSystemDefaultDevice()
+        let shaderLibrary = try! ShaderLibrary(bundle: .ultraviolenceExampleShaders().orFatalError())
+        let colorAdjustFunction = try! shaderLibrary.function(named: "gamma", type: VisibleFunction.self)
+        return ColorAdjustComputePipeline(inputSpecifier: inputSpecifier, inputParameters: inputParameters, outputTexture: outputTexture, colorAdjustFunction: colorAdjustFunction.function)
     }
 }

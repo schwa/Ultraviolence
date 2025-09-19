@@ -21,27 +21,10 @@ public struct PanoramaDemoView: View {
     @State private var meshType: MeshType = .sphere
     @State private var showUV = false
     @State private var applyGammaCorrection = false
-    @State private var gammaValue: Float = 2.2
     @State private var intermediateTexture: MTLTexture?
     @State private var outputTexture: MTLTexture?
 
-    let adjustSource = """
-    #include <metal_stdlib>
-    using namespace metal;
-
-    [[ stitchable ]]
-    float4 gamma(float4 inputColor, float2 inputCoordinate, constant float &gamma) {
-        float invGamma = 1.0 / gamma;
-        float3 gammaCorrected = pow(inputColor.rgb, float3(invGamma));
-        return float4(gammaCorrected, inputColor.a);
-    }
-    """
-    let gammaFunction: MTLFunction
-
     public init() {
-        let device = _MTLCreateSystemDefaultDevice()
-        let sourceLibrary = try! device.makeLibrary(source: adjustSource, options: nil)
-        gammaFunction = sourceLibrary.makeFunction(name: "gamma")!
     }
 
     public var body: some View {
@@ -65,7 +48,7 @@ public struct PanoramaDemoView: View {
 
                             // Apply gamma correction using ColorAdjustComputePipeline
                             try ComputePass(label: "GammaCorrection") {
-                                ColorAdjustComputePipeline(inputSpecifier: .texture2D(intermediateTexture, nil), inputParameters: gammaValue, outputTexture: outputTexture, colorAdjustFunction: gammaFunction)
+                                ColorAdjustComputePipeline.gammaAdjustPipeline(inputSpecifier: .texture2D(intermediateTexture), inputParameters: 2.2, outputTexture: outputTexture)
                             }
 
                             // Render gamma-corrected result to screen
@@ -123,22 +106,6 @@ public struct PanoramaDemoView: View {
                     .padding()
                     .allowsHitTesting(false)
                 }
-            }
-        }
-        .overlay(alignment: .topLeading) {
-            if applyGammaCorrection {
-                VStack(alignment: .leading) {
-                    Text("Gamma Correction: \(gammaValue, format: .number.precision(.fractionLength(2)))")
-                        .font(.caption)
-                        .foregroundColor(.white)
-                    Slider(value: $gammaValue, in: 0.5...4.0) {
-                        Text("Gamma")
-                    }
-                    .frame(width: 200)
-                }
-                .padding()
-                .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 8))
-                .padding()
             }
         }
         .toolbar {
