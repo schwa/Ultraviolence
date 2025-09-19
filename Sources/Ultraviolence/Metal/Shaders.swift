@@ -49,12 +49,6 @@ public struct VertexShader: ShaderProtocol {
     }
 }
 
-public extension VertexShader {
-    func inferredVertexDescriptor() throws -> MTLVertexDescriptor? {
-        try function.inferredVertexDescriptor()
-    }
-}
-
 // MARK: -
 
 public struct FragmentShader: ShaderProtocol {
@@ -65,3 +59,16 @@ public struct FragmentShader: ShaderProtocol {
         self.function = function
     }
 }
+
+// MARK: -
+
+// TODO: Not really a "Shader". Sounds like we have a grand renaming coming. [FILE ISSUE]
+public struct VisibleFunction: ShaderProtocol {
+    public static let functionType: MTLFunctionType = .visible
+    public var function: MTLFunction
+
+    public init(_ function: MTLFunction) {
+        self.function = function
+    }
+}
+

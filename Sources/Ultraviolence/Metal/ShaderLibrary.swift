@@ -67,6 +67,12 @@ public struct ShaderLibrary {
                 try _throw(UltraviolenceError.resourceCreationFailure("Function \(scopedNamed) is not a kernel function."))
             }
             return (ComputeKernel(function) as? T).orFatalError(.resourceCreationFailure("Failed to create ComputeKernel."))
+
+        case is VisibleFunction.Type:
+            guard function.functionType == .visible else {
+                try _throw(UltraviolenceError.resourceCreationFailure("Function \(scopedNamed) is not a visible function."))
+            }
+            return (VisibleFunction(function) as? T).orFatalError(.resourceCreationFailure("Failed to create ComputeKernel."))
         default:
             try _throw(UltraviolenceError.resourceCreationFailure("Unknown shader type \(type)."))
         }

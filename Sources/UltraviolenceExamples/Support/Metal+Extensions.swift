@@ -77,3 +77,18 @@ extension MTLSize: @retroactive ExpressibleByArrayLiteral {
         }
     }
 }
+
+extension MTLLinkedFunctions {
+    convenience init(functions: [MTLFunction]) {
+        self.init()
+        self.functions = functions
+    }
+}
+
+extension MTLStitchedLibraryDescriptor {
+    convenience init(functions: [MTLFunction], functionGraphs: [MTLFunctionStitchingGraph]) {
+        self.init()
+        self.functions = functions
+        self.functionGraphs = functionGraphs
+    }
+}
