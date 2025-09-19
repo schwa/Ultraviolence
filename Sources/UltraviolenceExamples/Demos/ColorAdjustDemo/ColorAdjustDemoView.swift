@@ -85,7 +85,9 @@ public struct ColorAdjustDemoView: View {
 
         let textureLoader = MTKTextureLoader(device: device)
 
-        sourceTexture = try! textureLoader.newTexture(name: "4.2.03", scaleFactor: 1, bundle: .main, options: [
+        let url = Bundle.module.url(forResource: "DSC_2595", withExtension: "JPG")!
+
+        sourceTexture = try! textureLoader.newTexture(URL: url, options: [
             .textureUsage: MTLTextureUsage([.shaderRead, .shaderWrite]).rawValue,
             .origin: MTKTextureLoader.Origin.flippedVertically.rawValue,
             .SRGB: false
@@ -178,6 +180,7 @@ public struct ColorAdjustDemoView: View {
                 try BillboardRenderPipeline(specifier: .texture2D(adjustedTexture))
             }
         }
+        .aspectRatio(Double(sourceTexture.width) / Double(sourceTexture.height), contentMode: .fit)
         .overlay(alignment: .topTrailing) {
             Form {
                 VStack(alignment: .leading) {

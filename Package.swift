@@ -84,11 +84,14 @@ public let package = Package(
             resources: [
                 .copy("Resources/AppleEventVideo.mp4"),
                 .copy("Resources/AppleLogoMask.png"),
+                .copy("Resources/DJSI3956.JPG"),
+                .copy("Resources/DSC_2595.JPG"),
+                .copy("Resources/HD-Testcard-original.jpg"),
                 .copy("Resources/IndoorEnvironmentHDRI013_1K-HDR.exr"),
-                .copy("Resources/Images"),
                 .copy("Resources/Sample Splats"),
                 .copy("Resources/Samples"),
-                .copy("Resources/teapot.obj")
+                .copy("Resources/teapot.obj"),
+                .copy("Resources/4.2.03.heic"),
             ],
             swiftSettings: [
 //                .defaultIsolation(nil)
