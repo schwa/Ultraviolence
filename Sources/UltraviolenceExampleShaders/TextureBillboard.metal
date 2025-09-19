@@ -23,8 +23,7 @@ namespace TextureBillboard {
     // TODO: Move this into SHARED helper function - SHARED WITH TEXTUREBILLBOARD & FLATSHADER & BLINN PHONG
     float4 resolveSpecifiedColor(
         constant Texture2DSpecifierArgumentBuffer &specifier,
-        float2 textureCoordinate,
-        uint slice
+        float2 textureCoordinate
     ) {
         if (specifier.source == kColorSourceColor) {
             return float4(specifier.color, 1);
@@ -33,7 +32,7 @@ namespace TextureBillboard {
         } else if (specifier.source == kColorSourceTextureCube) {
             float2 uv = textureCoordinate;
             float3 direction;
-            switch (slice) {
+            switch (specifier.slice) {
             case 0:
                 direction = float3(1.0, uv.y, -uv.x);
                 break; // +X
@@ -75,14 +74,12 @@ namespace TextureBillboard {
     [[fragment]] float4 fragment_main(
         VertexOut in [[stage_in]],
         constant Texture2DSpecifierArgumentBuffer &specifierA [[buffer(0)]],
-        constant int &sliceA [[buffer(1)]],
         constant Texture2DSpecifierArgumentBuffer &specifierB [[buffer(2)]],
-        constant int &sliceB [[buffer(3)]],
         constant void *transformColorParameters [[buffer(4)]]
 
     ) {
-        float4 colorA = resolveSpecifiedColor(specifierA, in.textureCoordinate, sliceA);
-        float4 colorB = resolveSpecifiedColor(specifierB, in.textureCoordinate, sliceB);
+        float4 colorA = resolveSpecifiedColor(specifierA, in.textureCoordinate);
+        float4 colorB = resolveSpecifiedColor(specifierB, in.textureCoordinate);
         return colorTransform(colorA, colorB, in.textureCoordinate, transformColorParameters);
     }
 

@@ -37,33 +37,30 @@ extension Quad {
 }
 
 struct TextureBillboardPipeline: Element {
-    let specifierA: Texture2DSpecifier
-    let sliceA: Int
-    let specifierB: Texture2DSpecifier
-    let sliceB: Int
-
     let vertexShader: VertexShader
     let fragmentShader: FragmentShader
+
+    let specifierA: Texture2DSpecifier
+    let specifierB: Texture2DSpecifier
     let positions: [SIMD2<Float>]
     let textureCoordinates: [SIMD2<Float>]
     let colorTransformGraph: SimpleStitchedFunctionGraph
 
     // TODO: #138 Get rid of flippedY
-    init(specifierA: Texture2DSpecifier, sliceA: Int = 0, specifierB: Texture2DSpecifier, sliceB: Int = 0, positions: Quad = .clip, textureCoordinates: Quad = .unit, colorTransform: VisibleFunction? = nil) throws {
+    init(specifierA: Texture2DSpecifier, specifierB: Texture2DSpecifier, positions: Quad = .clip, textureCoordinates: Quad = .unit, colorTransform: VisibleFunction? = nil) throws {
         let device = _MTLCreateSystemDefaultDevice()
         #if os(iOS)
         assert(device.supportsFeatureSet(.iOS_GPUFamily4_v1)) // For argument buffers tier. TODO: Look this up.
         #endif
-        self.specifierA = specifierA
-        self.sliceA = sliceA
-        self.specifierB = specifierB
-        self.sliceB = sliceB
         assert(device.argumentBuffersSupport == .tier2)
         let shaderBundle = Bundle.ultraviolenceExampleShaders().orFatalError()
         let shaderLibrary = try ShaderLibrary(bundle: shaderBundle, namespace: "TextureBillboard")
-
         self.vertexShader = try shaderLibrary.vertex_main
         self.fragmentShader = try shaderLibrary.fragment_main
+
+        self.specifierA = specifierA
+        self.specifierB = specifierB
+
         self.positions = [
             positions.minXMinY, // bottom-left
             positions.maxXMinY, // bottom-right
@@ -86,9 +83,7 @@ struct TextureBillboardPipeline: Element {
                 }
                 // TODO: We really need an argument buffer abstraction.
                 .parameter("specifierA", value: specifierA.toTexture2DSpecifierArgmentBuffer())
-                .parameter("sliceA", value: sliceA)
                 .parameter("specifierB", value: specifierB.toTexture2DSpecifierArgmentBuffer())
-                .parameter("sliceB", value: sliceB)
                 .parameter("transformColorParameters", value: Int32(0)) // TODO: Placeholder
                 .useResource(specifierA.texture2D, usage: .read, stages: .fragment)
                 .useResource(specifierA.textureCube, usage: .read, stages: .fragment)
@@ -104,16 +99,16 @@ struct TextureBillboardPipeline: Element {
 }
 
 extension TextureBillboardPipeline {
-    init(specifierA: Texture2DSpecifier, sliceA: Int = 0, specifierB: Texture2DSpecifier, sliceB: Int = 0, positions: Quad = .clip, textureCoordinates: Quad = .unit, colorTransformFunctionName: String) throws {
+    init(specifierA: Texture2DSpecifier, specifierB: Texture2DSpecifier, positions: Quad = .clip, textureCoordinates: Quad = .unit, colorTransformFunctionName: String) throws {
         let device = _MTLCreateSystemDefaultDevice()
         let shaderBundle = Bundle.ultraviolenceExampleShaders().orFatalError()
         let shaderLibrary = try ShaderLibrary(bundle: shaderBundle, namespace: "TextureBillboard")
         let colorTransform = try shaderLibrary.function(named: colorTransformFunctionName, type: VisibleFunction.self)
-        try self.init(specifierA: specifierA, sliceA: sliceA, specifierB: specifierB, sliceB: sliceB, positions: positions, textureCoordinates: textureCoordinates, colorTransform: colorTransform)
+        try self.init(specifierA: specifierA, specifierB: specifierB, positions: positions, textureCoordinates: textureCoordinates, colorTransform: colorTransform)
     }
 
-    init(specifier: Texture2DSpecifier, slice: Int = 0, positions: Quad = .clip, textureCoordinates: Quad = .unit, colorTransform: VisibleFunction? = nil) throws {
-        try self.init(specifierA: specifier, sliceA: slice, specifierB: specifier, sliceB: slice, positions: positions, textureCoordinates: textureCoordinates, colorTransform: colorTransform)
+    init(specifier: Texture2DSpecifier, positions: Quad = .clip, textureCoordinates: Quad = .unit, colorTransform: VisibleFunction? = nil) throws {
+        try self.init(specifierA: specifier, specifierB: .color([0, 0, 0]), positions: positions, textureCoordinates: textureCoordinates, colorTransform: colorTransform)
     }
 }
 
@@ -124,7 +119,7 @@ struct SimpleStitchedFunctionGraph {
         let function = function.function
         let device = _MTLCreateSystemDefaultDevice()
         let inputs = [
-            // TODO: Assumed 3 inputs for now. Generalize.
+            // TODO: Assumed N inputs for now. Generalize.
             MTLFunctionStitchingInputNode(argumentIndex: 0),
             MTLFunctionStitchingInputNode(argumentIndex: 1),
             MTLFunctionStitchingInputNode(argumentIndex: 2),

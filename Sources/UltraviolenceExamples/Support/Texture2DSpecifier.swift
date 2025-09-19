@@ -5,7 +5,7 @@ import UltraviolenceExampleShaders
 // TODO: #286 Rename to texture specifier
 public enum Texture2DSpecifier {
     case texture2D(MTLTexture, MTLSamplerState?)
-    case textureCube(MTLTexture, MTLSamplerState?)
+    case textureCube(MTLTexture, MTLSamplerState?, Int)
     case depth2D(MTLTexture, MTLSamplerState?)
     case color(SIMD3<Float>)
 
@@ -24,7 +24,7 @@ public extension Texture2DSpecifier {
     }
 
     var textureCube: MTLTexture? {
-        if case let .textureCube(texture, _) = self {
+        if case let .textureCube(texture, _, _) = self {
             // TODO: #287 Assert value is correct.
             return texture
         }
@@ -41,11 +41,18 @@ public extension Texture2DSpecifier {
 
     var sampler: MTLSamplerState? {
         switch self {
-        case let .texture2D(_, sampler), let .textureCube(_, sampler), let .depth2D(_, sampler):
+        case let .texture2D(_, sampler), let .textureCube(_, sampler, _), let .depth2D(_, sampler):
             return sampler
         default:
             return nil
         }
+    }
+
+    var slice: Int? {
+        if case let .textureCube(_, _, slice) = self {
+            return slice
+        }
+        return nil
     }
 
     var color: SIMD3<Float>? {
@@ -64,10 +71,11 @@ public extension Texture2DSpecifier {
             result.source = .texture2D
             result.texture2D = texture.gpuResourceID
             result.sampler = sampler.map(\.gpuResourceID) ?? .init()
-        case .textureCube(let texture, let sampler):
+        case .textureCube(let texture, let sampler, let slice):
             result.source = .textureCube
             result.textureCube = texture.gpuResourceID
             result.sampler = sampler.map(\.gpuResourceID) ?? .init()
+            result.slice = UInt32(slice)
         case .depth2D(let texture, let sampler):
             result.source = .depth2D
             result.depth2D = texture.gpuResourceID

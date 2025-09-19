@@ -47,6 +47,7 @@ struct Texture2DSpecifierArgumentBuffer {
     simd_float3 color;
     TEXTURE2D(float, access::sample) texture2D;
     TEXTURECUBE(float, access::sample) textureCube;
+    uint slice;
     DEPTH2D(float, access::sample) depth2D;
     SAMPLER sampler;
 };
