@@ -1,5 +1,4 @@
 internal extension Element {
-    // TODO: #224 Rename configureNode to better reflect its purpose (e.g., setupNode, initializeNode)
     func configureNode(_ node: Node) throws {
         guard let system = System.current else {
             preconditionFailure("No System is currently active.")

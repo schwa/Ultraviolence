@@ -27,6 +27,47 @@ public extension SIMD4<Float> {
     }
 }
 
+
+extension Color {
+    // TODO: Not linear
+    var float4: SIMD4<Float> {
+        get {
+            let resolved = self.resolve(in: .init())
+            return [Float(resolved.red), Float(resolved.green), Float(resolved.blue), Float(resolved.opacity)]
+        }
+        set {
+            self = Color(red: Double(newValue[0]), green: Double(newValue[1]), blue: Double(newValue[2]), opacity: Double(newValue[3]))
+        }
+    }
+}
+
+extension SIMD4<Float> {
+    var color: Color {
+        get {
+            // Construct a SwiftUI Color from the SIMD components
+            Color(red: Double(self.x), green: Double(self.y), blue: Double(self.z), opacity: Double(self.w))
+        }
+        set {
+            let resolved = newValue.resolve(in: .init())
+            self = [Float(resolved.red), Float(resolved.green), Float(resolved.blue), Float(resolved.opacity)]
+        }
+    }
+}
+
+extension SIMD3<Float> {
+    // TODO: Not linear
+    var color: Color {
+        get {
+            Color(red: Double(self.x), green: Double(self.y), blue: Double(self.z))
+        }
+        set {
+            let resolved = newValue.resolve(in: .init())
+            self = [Float(resolved.red), Float(resolved.green), Float(resolved.blue)]
+        }
+    }
+}
+
+
 public extension ClosedRange where Bound == Angle {
     var degrees: ClosedRange<Double> {
         lowerBound.degrees ... upperBound.degrees

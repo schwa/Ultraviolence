@@ -96,13 +96,7 @@ public struct ColorAdjustDemoView: View {
         let adjustedDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm, width: sourceTexture.width, height: sourceTexture.height, mipmapped: false)
         adjustedDescriptor.usage = [.shaderRead, .shaderWrite]
         adjustedTexture = device.makeTexture(descriptor: adjustedDescriptor)!
-
-        // TODO: #278 Use Ultraviolence's normal shader loading capabilities
-        // TODO: #279 Use proper Metal function loading - this one requires all functions to be named the same.
         shaderLibrary = try! ShaderLibrary(bundle: .ultraviolenceExampleShaders().orFatalError())
-
-
-
     }
 
     var currentParameter: Any {
