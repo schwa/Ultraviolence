@@ -6,31 +6,11 @@ import UltraviolenceExampleShaders
 import UltraviolenceSupport
 import UltraviolenceUI
 
-public struct GridShaderDemoView: View {
-    @State
-    private var projection: any ProjectionProtocol = PerspectiveProjection()
-
-    @State
-    private var cameraMatrix: simd_float4x4 = .init(translation: [0, 2, 4])
-
-    public init() {
-        // This line intentionally left blank.
-    }
-
-    public var body: some View {
-        RenderView { _, drawableSize in
-            try RenderPass {
-                GridShader(projectionMatrix: projection.projectionMatrix(for: drawableSize), cameraMatrix: cameraMatrix)
-            }
-        }
-    }
-}
-
 struct GridShader: Element {
-    @State
+    @UVState
     var vertexShader: VertexShader
 
-    @State
+    @UVState
     var fragmentShader: FragmentShader
 
     var projectionMatrix: simd_float4x4

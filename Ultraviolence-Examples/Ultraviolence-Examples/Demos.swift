@@ -7,7 +7,6 @@ import UltraviolenceExamples
         EmptyView.self,
         GaussianSplatDemoView.self,
         BlinnPhongDemoView.self,
-        GridShaderDemoView.self,
         SkyboxDemoView.self,
         TriangleDemoView.self,
         ComputeDemoView.self,
@@ -47,12 +46,6 @@ extension EmptyView: @retroactive DemoView {
 extension TriangleDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(name: "Triangle", description: "Basic triangle rendering with animated colors and performance metrics", group: "Basic", keywords: ["animated"])
-    }
-}
-
-extension GridShaderDemoView: @retroactive DemoView {
-    public static var metadata: DemoMetadata {
-        DemoMetadata(name: "Grid Shader", description: "Procedural grid rendering using fragment shaders for geometric patterns", group: "Basic", keywords: [])
     }
 }
 
