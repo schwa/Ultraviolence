@@ -22,7 +22,7 @@ namespace TextureBillboard {
 
     // TODO: Move this into SHARED helper function - SHARED WITH TEXTUREBILLBOARD & FLATSHADER & BLINN PHONG
     float4 resolveSpecifiedColor(
-        constant Texture2DSpecifierArgumentBuffer &specifier,
+        constant ColorSpecifierArgumentBuffer &specifier,
         float2 textureCoordinate
     ) {
         if (specifier.source == kColorSourceColor) {
@@ -73,8 +73,8 @@ namespace TextureBillboard {
 
     [[fragment]] float4 fragment_main(
         VertexOut in [[stage_in]],
-        constant Texture2DSpecifierArgumentBuffer &specifierA [[buffer(0)]],
-        constant Texture2DSpecifierArgumentBuffer &specifierB [[buffer(2)]],
+        constant ColorSpecifierArgumentBuffer &specifierA [[buffer(0)]],
+        constant ColorSpecifierArgumentBuffer &specifierB [[buffer(2)]],
         constant void *transformColorParameters [[buffer(4)]]
 
     ) {

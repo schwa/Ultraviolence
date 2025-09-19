@@ -14,7 +14,7 @@ namespace ColorAdjust {
 
     // TODO: Move
     float4 resolveSpecifiedColor(
-        constant Texture2DSpecifierArgumentBuffer &specifier,
+        constant ColorSpecifierArgumentBuffer &specifier,
         float2 textureCoordinate,
         thread bool &discard
     ) {
@@ -32,7 +32,7 @@ namespace ColorAdjust {
 
     // TODO: Move
     float2 textureCoordinateForPixel(
-        constant Texture2DSpecifierArgumentBuffer &specifier,
+        constant ColorSpecifierArgumentBuffer &specifier,
         uint2 position
     ) {
         if (specifier.source == kColorSourceTexture2D) {
@@ -48,7 +48,7 @@ namespace ColorAdjust {
     }
 
     kernel void colorAdjust(
-        constant Texture2DSpecifierArgumentBuffer &inputSpecifier [[buffer(0)]],
+        constant ColorSpecifierArgumentBuffer &inputSpecifier [[buffer(0)]],
         constant void *inputParameters [[buffer(1)]],
         texture2d<float, access::read_write> outputTexture [[texture(0)]],
         uint2 thread_position_in_grid [[thread_position_in_grid]]

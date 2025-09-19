@@ -40,14 +40,14 @@ struct TextureBillboardPipeline: Element {
     let vertexShader: VertexShader
     let fragmentShader: FragmentShader
 
-    let specifierA: Texture2DSpecifier
-    let specifierB: Texture2DSpecifier
+    let specifierA: ColorSpecifier
+    let specifierB: ColorSpecifier
     let positions: [SIMD2<Float>]
     let textureCoordinates: [SIMD2<Float>]
     let colorTransformGraph: SimpleStitchedFunctionGraph
 
     // TODO: #138 Get rid of flippedY
-    init(specifierA: Texture2DSpecifier, specifierB: Texture2DSpecifier, positions: Quad = .clip, textureCoordinates: Quad = .unit, colorTransform: VisibleFunction? = nil) throws {
+    init(specifierA: ColorSpecifier, specifierB: ColorSpecifier, positions: Quad = .clip, textureCoordinates: Quad = .unit, colorTransform: VisibleFunction? = nil) throws {
         let device = _MTLCreateSystemDefaultDevice()
         #if os(iOS)
         assert(device.supportsFeatureSet(.iOS_GPUFamily4_v1)) // For argument buffers tier. TODO: Look this up.
@@ -82,8 +82,8 @@ struct TextureBillboardPipeline: Element {
                     encoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: positions.count)
                 }
                 // TODO: We really need an argument buffer abstraction.
-                .parameter("specifierA", value: specifierA.toTexture2DSpecifierArgmentBuffer())
-                .parameter("specifierB", value: specifierB.toTexture2DSpecifierArgmentBuffer())
+                .parameter("specifierA", value: specifierA.toColorSpecifierArgmentBuffer())
+                .parameter("specifierB", value: specifierB.toColorSpecifierArgmentBuffer())
                 .parameter("transformColorParameters", value: Int32(0)) // TODO: Placeholder
                 .useResource(specifierA.texture2D, usage: .read, stages: .fragment)
                 .useResource(specifierA.textureCube, usage: .read, stages: .fragment)
@@ -99,7 +99,7 @@ struct TextureBillboardPipeline: Element {
 }
 
 extension TextureBillboardPipeline {
-    init(specifierA: Texture2DSpecifier, specifierB: Texture2DSpecifier, positions: Quad = .clip, textureCoordinates: Quad = .unit, colorTransformFunctionName: String) throws {
+    init(specifierA: ColorSpecifier, specifierB: ColorSpecifier, positions: Quad = .clip, textureCoordinates: Quad = .unit, colorTransformFunctionName: String) throws {
         let device = _MTLCreateSystemDefaultDevice()
         let shaderBundle = Bundle.ultraviolenceExampleShaders().orFatalError()
         let shaderLibrary = try ShaderLibrary(bundle: shaderBundle, namespace: "TextureBillboard")
@@ -107,7 +107,7 @@ extension TextureBillboardPipeline {
         try self.init(specifierA: specifierA, specifierB: specifierB, positions: positions, textureCoordinates: textureCoordinates, colorTransform: colorTransform)
     }
 
-    init(specifier: Texture2DSpecifier, positions: Quad = .clip, textureCoordinates: Quad = .unit, colorTransform: VisibleFunction? = nil) throws {
+    init(specifier: ColorSpecifier, positions: Quad = .clip, textureCoordinates: Quad = .unit, colorTransform: VisibleFunction? = nil) throws {
         try self.init(specifierA: specifier, specifierB: .color([0, 0, 0]), positions: positions, textureCoordinates: textureCoordinates, colorTransform: colorTransform)
     }
 }

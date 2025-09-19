@@ -3,13 +3,13 @@ import Ultraviolence
 import UltraviolenceSupport
 
 public struct ColorAdjustComputePipeline <T>: Element {
-    let inputSpecifier: Texture2DSpecifier
+    let inputSpecifier: ColorSpecifier
     let inputParameters: T
     let outputTexture: MTLTexture
     let kernel: ComputeKernel
     let linkedFunctions: MTLLinkedFunctions
 
-    init(inputSpecifier: Texture2DSpecifier, inputParameters: T, outputTexture: MTLTexture, colorAdjustFunction: MTLFunction) {
+    init(inputSpecifier: ColorSpecifier, inputParameters: T, outputTexture: MTLTexture, colorAdjustFunction: MTLFunction) {
         let device = _MTLCreateSystemDefaultDevice()
         self.inputSpecifier = inputSpecifier
         self.inputParameters = inputParameters
@@ -34,7 +34,7 @@ public struct ColorAdjustComputePipeline <T>: Element {
             try ComputePipeline(computeKernel: kernel) {
                 try ComputeDispatch(threadsPerGrid: [outputTexture.width, outputTexture.height, 1], threadsPerThreadgroup: [16, 16, 1])
                     // TODO: #280 Maybe a .argumentBuffer() is a better solution
-                    .parameter("inputSpecifier", value: inputSpecifier.toTexture2DSpecifierArgmentBuffer())
+                    .parameter("inputSpecifier", value: inputSpecifier.toColorSpecifierArgmentBuffer())
                     .useComputeResource(inputSpecifier.texture2D, usage: .read)
                     .useComputeResource(inputSpecifier.textureCube, usage: .read)
                     .useComputeResource(inputSpecifier.depth2D, usage: .read)
@@ -47,7 +47,7 @@ public struct ColorAdjustComputePipeline <T>: Element {
 }
 
 extension ColorAdjustComputePipeline where T == Float {
-    static func gammaAdjustPipeline(inputSpecifier: Texture2DSpecifier, inputParameters: Float, outputTexture: MTLTexture) -> Self {
+    static func gammaAdjustPipeline(inputSpecifier: ColorSpecifier, inputParameters: Float, outputTexture: MTLTexture) -> Self {
         let device = _MTLCreateSystemDefaultDevice()
         let shaderLibrary = try! ShaderLibrary(bundle: .ultraviolenceExampleShaders().orFatalError())
         let colorAdjustFunction = try! shaderLibrary.function(named: "gamma", type: VisibleFunction.self)

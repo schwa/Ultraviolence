@@ -30,7 +30,7 @@ namespace FlatShader {
     [[fragment]] float4
     fragment_main(
                   VertexOut in [[stage_in]],
-                  constant Texture2DSpecifierArgumentBuffer &specifier [[buffer(0)]]
+                  constant ColorSpecifierArgumentBuffer &specifier [[buffer(0)]]
     ) {
         // TODO: Move this into helper function - SHARED WITH TEXTUREBILLBOARD & FLATSHADER & BLINN PHONG
         if (specifier.source == kColorSourceColor) {

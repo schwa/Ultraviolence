@@ -42,7 +42,7 @@ typedef UV_ENUM(int, ColorSource){
     kColorSourceDepth2D = 3,
 };
 
-struct Texture2DSpecifierArgumentBuffer {
+struct ColorSpecifierArgumentBuffer {
     ColorSource source;
     simd_float3 color;
     TEXTURE2D(float, access::sample) texture2D;

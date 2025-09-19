@@ -16,9 +16,9 @@ public struct FlatShader <Content>: Element where Content: Element {
     @UVState
     var fragmentShader: FragmentShader
 
-    var textureSpecifier: Texture2DSpecifier
+    var textureSpecifier: ColorSpecifier
 
-    public init(textureSpecifier: Texture2DSpecifier, @ElementBuilder content: () throws -> Content) throws {
+    public init(textureSpecifier: ColorSpecifier, @ElementBuilder content: () throws -> Content) throws {
         self.textureSpecifier = textureSpecifier
         self.content = try content()
         let shaderBundle = Bundle.ultraviolenceExampleShaders().orFatalError()
@@ -29,7 +29,7 @@ public struct FlatShader <Content>: Element where Content: Element {
 
     public var body: some Element {
         get throws {
-            let textureSpecifierArgumentBuffer = textureSpecifier.toTexture2DSpecifierArgmentBuffer()
+            let textureSpecifierArgumentBuffer = textureSpecifier.toColorSpecifierArgmentBuffer()
 
             try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                 content
