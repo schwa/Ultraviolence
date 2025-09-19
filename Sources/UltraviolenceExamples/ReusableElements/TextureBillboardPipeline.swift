@@ -5,7 +5,7 @@ import UltraviolenceSupport
 
 // TODO: #138 Add code to align the texture correctly in the output.
 
-struct BillboardRenderPipeline: Element {
+struct TextureBillboardPipeline: Element {
     let specifierA: Texture2DSpecifier
     let sliceA: Int
     let specifierB: Texture2DSpecifier
@@ -73,7 +73,7 @@ struct BillboardRenderPipeline: Element {
     }
 }
 
-extension BillboardRenderPipeline {
+extension TextureBillboardPipeline {
 
     init(specifierA: Texture2DSpecifier, sliceA: Int = 0, specifierB: Texture2DSpecifier, sliceB: Int = 0, flippedY: Bool = false, colorTransformFunctionName: String) throws {
         let device = _MTLCreateSystemDefaultDevice()

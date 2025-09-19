@@ -48,7 +48,7 @@ public struct ARKitDemoView: View {
                         let projectionMatrix = currentFrame.camera.projectionMatrix(for: orientation, viewportSize: drawableSize, zNear: 0.001, zFar: 1000)
                         let viewProjectionMatrix = projectionMatrix * cameraMatrix
 
-                        try BillboardRenderPipeline(specifierA: .texture2D(textureY), specifierB: .texture2D(textureCbCr), flippedY: true, colorTransformFunctionName: "colorTransformYCbCrToRGB")
+                        try TextureBillboardPipeline(specifierA: .texture2D(textureY), specifierB: .texture2D(textureCbCr), flippedY: true, colorTransformFunctionName: "colorTransformYCbCrToRGB")
 
 //                        try PBRShader {
 //                            Draw(mtkMesh: teapot)

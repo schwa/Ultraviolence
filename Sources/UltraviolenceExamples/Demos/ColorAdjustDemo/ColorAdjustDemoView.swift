@@ -171,7 +171,7 @@ public struct ColorAdjustDemoView: View {
                 }
             }
             try RenderPass {
-                try BillboardRenderPipeline(specifier: .texture2D(adjustedTexture))
+                try TextureBillboardPipeline(specifier: .texture2D(adjustedTexture))
             }
         }
         .aspectRatio(Double(sourceTexture.width) / Double(sourceTexture.height), contentMode: .fit)

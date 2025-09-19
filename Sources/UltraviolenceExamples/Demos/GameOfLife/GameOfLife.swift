@@ -82,7 +82,7 @@ public struct GameOfLife: Element {
 
                 // Display the current state using billboard shader
                 try RenderPass {
-                    try BillboardRenderPipeline(specifier: .texture2D(currentTexture))
+                    try TextureBillboardPipeline(specifier: .texture2D(currentTexture))
                 }
             }
         }

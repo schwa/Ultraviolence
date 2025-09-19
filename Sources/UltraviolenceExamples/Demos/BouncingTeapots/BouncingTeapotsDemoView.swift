@@ -187,7 +187,7 @@ struct FlyingTeapotsRenderPass: Element {
             #if canImport(MetalFX)
             MetalFXSpatial(inputTexture: offscreenTexture, outputTexture: upscaledTexture)
             try RenderPass {
-                try BillboardRenderPipeline(specifier: .texture2D(upscaledTexture))
+                try TextureBillboardPipeline(specifier: .texture2D(upscaledTexture))
             }
             .depthCompare(function: .always, enabled: false)
             #endif

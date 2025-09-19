@@ -80,7 +80,7 @@ public struct DepthDemoView: View {
                     }
 
                     try RenderPass(label: "Depth to Screen Pass") {
-                        try BillboardRenderPipeline(specifier: showDepthMap ? .texture2D(adjustedDepthTexture, nil) : .texture2D(colorTexture, nil), flippedY: true)
+                        try TextureBillboardPipeline(specifier: showDepthMap ? .texture2D(adjustedDepthTexture, nil) : .texture2D(colorTexture, nil), flippedY: true)
                     }
                 }
             }

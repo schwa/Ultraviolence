@@ -89,7 +89,7 @@ public struct AppleEventLogoDemoView: View {
                     if let finalTexture, let offscreenTexture, let upscaledTexture {
                         // Render to offscreen texture first at 256x256
                         try RenderPass {
-                            try BillboardRenderPipeline(specifier: .texture2D(finalTexture))
+                            try TextureBillboardPipeline(specifier: .texture2D(finalTexture))
                         }
                         .renderPassDescriptorModifier { descriptor in
                             descriptor.colorAttachments[0].texture = offscreenTexture
@@ -100,13 +100,13 @@ public struct AppleEventLogoDemoView: View {
 
                         // Final render of upscaled texture at 512x512
                         try RenderPass {
-                            try BillboardRenderPipeline(specifier: .texture2D(upscaledTexture))
+                            try TextureBillboardPipeline(specifier: .texture2D(upscaledTexture))
                         }
                     }
                     #else
                     try RenderPass {
                         if let finalTexture {
-                            try BillboardRenderPipeline(texture: finalTexture)
+                            try TextureBillboardPipeline(texture: finalTexture)
                         }
                     }
                     #endif
