@@ -34,6 +34,12 @@ import UltraviolenceExamples
         OffscreenDemoView.self
     ]
     #endif
+
+    #if os(iOS)
+    demos += [
+        ARKitDemoView.self
+    ]
+    #endif
     return demos
 }()
 
@@ -182,3 +188,11 @@ extension WireframeDemoView: @retroactive DemoView {
         DemoMetadata(name: "Wireframe Teapot", description: "Wireframe demo", group: "Basic", keywords: [])
     }
 }
+
+#if os(iOS)
+extension ARKitDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(name: "ARKit Demo", description: "TODO", group: "WIP", keywords: [])
+    }
+}
+#endif

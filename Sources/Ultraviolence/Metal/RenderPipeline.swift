@@ -33,6 +33,13 @@ public struct RenderPipeline <Content>: Element, BodylessElement, BodylessConten
         renderPipelineDescriptor.vertexFunction = vertexShader.function
         renderPipelineDescriptor.fragmentFunction = fragmentShader.function
 
+        if let linkedFunctions = node.environmentValues.linkedFunctions {
+            // TODO: How do we handle separate linked functions for vertex and fragment? [FILE ME]
+            renderPipelineDescriptor.vertexLinkedFunctions = linkedFunctions
+            renderPipelineDescriptor.fragmentLinkedFunctions = linkedFunctions
+        }
+
+
         if let vertexDescriptor = environment.vertexDescriptor {
             renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
         }
