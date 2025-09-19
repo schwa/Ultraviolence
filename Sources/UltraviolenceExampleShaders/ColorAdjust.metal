@@ -6,6 +6,10 @@ using namespace metal;
 [[ visible ]]
 float4 colorAdjustFunction(float4 inputColor, float2 inputCoordinate, constant void *parameters);
 
+float2 mapTextureCoordinate(float2 textureCoordinate, constant void *parameters) {
+    return textureCoordinate;
+}
+
 namespace ColorAdjust {
 
     // TODO: Move
@@ -50,16 +54,16 @@ namespace ColorAdjust {
         uint2 thread_position_in_grid [[thread_position_in_grid]]
     ) {
         bool discard = false;
-        const float2 textureCoordinate = textureCoordinateForPixel(inputSpecifier, thread_position_in_grid);
+        float2 textureCoordinate = textureCoordinateForPixel(inputSpecifier, thread_position_in_grid);
+        textureCoordinate = mapTextureCoordinate(textureCoordinate, inputParameters);
         const float4 inputColor = resolveSpecifiedColor(inputSpecifier, textureCoordinate, discard);
-        // TODO: Make this a function pointer
-//        float4 newColor = pow(inputColor, 50.0);;
 
         float4 newColor = colorAdjustFunction(inputColor, textureCoordinate, inputParameters);
-
         outputTexture.write(newColor, thread_position_in_grid);
     }
 }
+
+// MARK: -
 
 [[ stitchable ]]
 float4 multiply(float4 inputColor, float2 inputCoordinate, constant float &inputParameters) {
