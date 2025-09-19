@@ -168,24 +168,24 @@ extension PointCloudDemoView: @retroactive DemoView {
 
 extension ParticleEffectsDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
-        DemoMetadata(name: "Particle Effects", description: "GPU-accelerated particle system with compute shaders featuring various emitter types like fountains, explosions, and fireworks", group: "Complex", keywords: ["particles", "compute", "animated"])
+        DemoMetadata(name: "Particle Effects", description: "GPU-accelerated particle system with compute shaders featuring various emitter types like fountains, explosions, and fireworks", group: "Complex", keywords: ["compute", "animated"])
     }
 }
 
 extension VideoPlaybackDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
-        DemoMetadata(name: "Video Playback", description: "Full screen video playback with streaming textures rendered through billboard pipeline", group: "Basic", keywords: ["video", "streaming", "billboard"])
+        DemoMetadata(name: "Video Playback", description: "Full screen video playback with streaming textures rendered through billboard pipeline", group: "Basic", keywords: ["video", "billboard"])
     }
 }
 
 extension PanoramaDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
-        DemoMetadata(name: "360° Panorama", description: "Interactive 360-degree panoramic photo viewer with spherical projection and WorldView rotation", group: "Basic", keywords: ["panorama", "360", "spherical"])
+        DemoMetadata(name: "360° Panorama", description: "Interactive 360-degree panoramic photo viewer with spherical projection and WorldView rotation", group: "Basic", keywords: [])
     }
 }
 
 extension WireframeDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
-        DemoMetadata(name: "Wireframe Teapot", description: "Classic teapot rendered as wireframe with animated colors and adjustable line width", group: "Basic", keywords: ["wireframe", "teapot", "animated"])
+        DemoMetadata(name: "Wireframe Teapot", description: "Wireframe demo", group: "Basic", keywords: [])
     }
 }
