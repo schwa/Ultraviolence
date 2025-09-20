@@ -46,7 +46,7 @@ public struct ShaderLibrary {
         } else {
             // No constants, just get the function directly
             guard let basicFunction = library.makeFunction(name: scopedNamed) else {
-                try _throw(UltraviolenceError.resourceCreationFailure("Function '\(scopedNamed)' not found in library"))
+                try _throw(UltraviolenceError.resourceCreationFailure("Function '\(scopedNamed)' not found in library (available: \(library.functionNames))."))
             }
             function = basicFunction
         }

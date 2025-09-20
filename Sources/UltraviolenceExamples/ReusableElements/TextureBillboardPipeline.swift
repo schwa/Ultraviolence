@@ -70,7 +70,7 @@ struct TextureBillboardPipeline: Element {
         self.textureCoordinates = [textureCoordinates.minXMaxY, textureCoordinates.maxXMaxY, textureCoordinates.minXMinY, textureCoordinates.maxXMinY]
 
         let colorTransform = try colorTransform ?? shaderLibrary.function(named: "colorTransformIdentity", type: VisibleFunction.self)
-        colorTransformGraph = try SimpleStitchedFunctionGraph(name: "TextureBillboard::colorTransform", function: colorTransform)
+        colorTransformGraph = try SimpleStitchedFunctionGraph(name: "TextureBillboard::colorTransform", function: colorTransform, inputs: 4)
     }
 
     var body: some Element {
@@ -112,24 +112,25 @@ extension TextureBillboardPipeline {
     }
 }
 
+// TODO: Move - shared with ColorAdjust
 struct SimpleStitchedFunctionGraph {
-    let linkedFunctions: MTLLinkedFunctions
+    let stitchedFunctions: [MTLFunction]
 
-    init(name: String, function: VisibleFunction) throws {
+    init(name: String, function: VisibleFunction, inputs: Int) throws {
         let function = function.function
         let device = _MTLCreateSystemDefaultDevice()
-        let inputs = [
-            // TODO: Assumed N inputs for now. Generalize.
-            MTLFunctionStitchingInputNode(argumentIndex: 0),
-            MTLFunctionStitchingInputNode(argumentIndex: 1),
-            MTLFunctionStitchingInputNode(argumentIndex: 2),
-            MTLFunctionStitchingInputNode(argumentIndex: 3),
-        ]
+        let inputs = (0..<inputs).map { MTLFunctionStitchingInputNode(argumentIndex: $0) }
         let node = MTLFunctionStitchingFunctionNode(name: function.name, arguments: inputs, controlDependencies: [])
         let graph = MTLFunctionStitchingGraph(functionName: name, nodes: [node], outputNode: node, attributes: [])
         let stitchedLibraryDescriptor = MTLStitchedLibraryDescriptor(functions: [function], functionGraphs: [graph])
-        let stitchedLibrary = try! device.makeLibrary(stitchedDescriptor: stitchedLibraryDescriptor)
-        let stitchedFunction = try stitchedLibrary.makeFunction(name: name).orThrow(.resourceCreationFailure("Failed to create stitched function"))
-        linkedFunctions = MTLLinkedFunctions(functions: [stitchedFunction])
+        print(stitchedLibraryDescriptor)
+        let stitchedLibrary = try device.makeLibrary(stitchedDescriptor: stitchedLibraryDescriptor)
+        stitchedFunctions = [
+            try stitchedLibrary.makeFunction(name: name).orThrow(.resourceCreationFailure("Failed to create stitched function"))
+        ]
+    }
+
+    var linkedFunctions: MTLLinkedFunctions {
+        MTLLinkedFunctions(functions: stitchedFunctions)
     }
 }

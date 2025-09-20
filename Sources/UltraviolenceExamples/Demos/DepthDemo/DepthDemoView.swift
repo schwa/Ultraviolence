@@ -53,8 +53,12 @@ public struct DepthDemoView: View {
 
     public init() {
         let device = _MTLCreateSystemDefaultDevice()
-        let sourceLibrary = try! device.makeLibrary(source: adjustSource, options: nil)
-        colorAdjustFunction = sourceLibrary.makeFunction(name: "colorAdjustPow")!
+
+//        let library = ShaderLibrary(source: adjustSource)
+//
+//        let sourceLibrary = try! device.makeLibrary(source: adjustSource, options: nil)
+//        colorAdjustFunction = sourceLibrary.makeFunction(name: "colorAdjustPow")!
+        fatalError()
     }
 
     public var body: some View {
@@ -75,9 +79,9 @@ public struct DepthDemoView: View {
                         renderPassDescriptor.depthAttachment.storeAction = .store
                     }
 
-                    try ComputePass(label: "ColorAdjust") {
-                        ColorAdjustComputePipeline(inputSpecifier: .depth2D(depthTexture, nil), inputParameters: exponent, outputTexture: adjustedDepthTexture, colorAdjustFunction: colorAdjustFunction)
-                    }
+//                    try ComputePass(label: "ColorAdjust") {
+//                        ColorAdjustComputePipeline(inputSpecifier: .depth2D(depthTexture, nil), inputParameters: exponent, outputTexture: adjustedDepthTexture, colorAdjustFunction: colorAdjustFunction)
+//                    }
 
                     try RenderPass(label: "Depth to Screen Pass") {
                         try TextureBillboardPipeline(specifier: showDepthMap ? .texture2D(adjustedDepthTexture, nil) : .texture2D(colorTexture, nil))

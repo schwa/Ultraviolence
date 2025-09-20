@@ -7,26 +7,21 @@ public struct ColorAdjustComputePipeline <T>: Element {
     let inputParameters: T
     let outputTexture: MTLTexture
     let kernel: ComputeKernel
-    let linkedFunctions: MTLLinkedFunctions
+    let mapTextureCoordinateGraph: SimpleStitchedFunctionGraph
+    let colorAdjustGraph: SimpleStitchedFunctionGraph
 
-    init(inputSpecifier: ColorSpecifier, inputParameters: T, outputTexture: MTLTexture, colorAdjustFunction: MTLFunction) {
+    // TODO: the two VisibleFunction parameters should be documented well.
+    init(inputSpecifier: ColorSpecifier, inputParameters: T, outputTexture: MTLTexture, mapTextureCoordinateFunction: VisibleFunction? = nil, colorAdjustFunction: VisibleFunction) throws {
         let device = _MTLCreateSystemDefaultDevice()
         self.inputSpecifier = inputSpecifier
         self.inputParameters = inputParameters
         self.outputTexture = outputTexture
-        let shaderLibrary = try! ShaderLibrary(bundle: .ultraviolenceExampleShaders().orFatalError(), namespace: "ColorAdjust")
-        self.kernel = try! shaderLibrary.colorAdjust
-        let inputs = [
-            MTLFunctionStitchingInputNode(argumentIndex: 0),
-            MTLFunctionStitchingInputNode(argumentIndex: 1),
-            MTLFunctionStitchingInputNode(argumentIndex: 2),
-        ]
-        let colorAdjustNode = MTLFunctionStitchingFunctionNode(name: colorAdjustFunction.name, arguments: inputs, controlDependencies: [])
-        let colorAdjustGraph = MTLFunctionStitchingGraph(functionName: "colorAdjustFunction", nodes: [colorAdjustNode], outputNode: colorAdjustNode, attributes: [])
-        let stitchedLibraryDescriptor = MTLStitchedLibraryDescriptor(functions: [colorAdjustFunction], functionGraphs: [colorAdjustGraph])
-        let stitchedLibrary = try! device.makeLibrary(stitchedDescriptor: stitchedLibraryDescriptor)
-        let stitchedFunction = stitchedLibrary.makeFunction(name: "colorAdjustFunction")!
-        self.linkedFunctions = MTLLinkedFunctions(functions: [stitchedFunction])
+        let shaderLibrary = try ShaderLibrary(bundle: .ultraviolenceExampleShaders().orFatalError(), namespace: "ColorAdjust")
+        self.kernel = try shaderLibrary.colorAdjust
+
+        let mapTextureCoordinateFunction = try mapTextureCoordinateFunction ?? shaderLibrary.function(named: "mapTextureCoordinateIdentity", type: VisibleFunction.self)
+        mapTextureCoordinateGraph = try! SimpleStitchedFunctionGraph(name: "ColorAdjust::mapTextureCoordinateFunction", function: mapTextureCoordinateFunction, inputs: 2)
+        colorAdjustGraph = try! SimpleStitchedFunctionGraph(name: "ColorAdjust::colorAdjustFunction", function: colorAdjustFunction, inputs: 3)
     }
 
     public var body: some Element {
@@ -35,13 +30,13 @@ public struct ColorAdjustComputePipeline <T>: Element {
                 try ComputeDispatch(threadsPerGrid: [outputTexture.width, outputTexture.height, 1], threadsPerThreadgroup: [16, 16, 1])
                     // TODO: #280 Maybe a .argumentBuffer() is a better solution
                     .parameter("inputSpecifier", value: inputSpecifier.toColorSpecifierArgmentBuffer())
+                    .parameter("inputParameters", value: inputParameters)
+                    .parameter("outputTexture", texture: outputTexture)
                     .useComputeResource(inputSpecifier.texture2D, usage: .read)
                     .useComputeResource(inputSpecifier.textureCube, usage: .read)
                     .useComputeResource(inputSpecifier.depth2D, usage: .read)
-                    .parameter("inputParameters", value: inputParameters)
-                    .parameter("outputTexture", texture: outputTexture)
             }
-            .environment(\.linkedFunctions, linkedFunctions)
+            .environment(\.linkedFunctions, MTLLinkedFunctions(functions: mapTextureCoordinateGraph.stitchedFunctions + colorAdjustGraph.stitchedFunctions))
         }
     }
 }
@@ -49,8 +44,9 @@ public struct ColorAdjustComputePipeline <T>: Element {
 extension ColorAdjustComputePipeline where T == Float {
     static func gammaAdjustPipeline(inputSpecifier: ColorSpecifier, inputParameters: Float, outputTexture: MTLTexture) -> Self {
         let device = _MTLCreateSystemDefaultDevice()
-        let shaderLibrary = try! ShaderLibrary(bundle: .ultraviolenceExampleShaders().orFatalError())
+        let shaderLibrary = try! ShaderLibrary(bundle: .ultraviolenceExampleShaders().orFatalError(), namespace: "ColorAdjust")
         let colorAdjustFunction = try! shaderLibrary.function(named: "gamma", type: VisibleFunction.self)
-        return ColorAdjustComputePipeline(inputSpecifier: inputSpecifier, inputParameters: inputParameters, outputTexture: outputTexture, colorAdjustFunction: colorAdjustFunction.function)
+        return try! ColorAdjustComputePipeline(inputSpecifier: inputSpecifier, inputParameters: inputParameters, outputTexture: outputTexture, colorAdjustFunction: colorAdjustFunction)
     }
 }
+
