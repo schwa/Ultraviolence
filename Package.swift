@@ -22,6 +22,8 @@ public let package = Package(
         .package(url: "https://github.com/schwa/MetalCompilerPlugin", from: "0.1.0"),
         .package(url: "https://github.com/apple/swift-collections", from: "1.2.0"),
         .package(url: "https://github.com/schwa/GeometryLite3D", branch: "main"),
+        .package(url: "https://github.com/schwa/SwiftGLTF", branch: "main"),
+        .package(url: "https://github.com/schwa/Panels", branch: "main"),
     ],
     targets: [
         .target(
@@ -80,6 +82,8 @@ public let package = Package(
                 "GeometryLite3D",
                 .product(name: "Collections", package: "swift-collections"),
                 "MikkTSpace",
+                .product(name: "SwiftGLTF", package: "SwiftGLTF"),
+                "Panels",
             ],
             resources: [
                 .copy("Resources/AppleEventVideo.mp4"),

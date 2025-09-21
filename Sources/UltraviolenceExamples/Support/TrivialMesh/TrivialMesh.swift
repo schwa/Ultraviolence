@@ -11,6 +11,28 @@ struct TrivialMesh: Equatable, Sendable {
     var tangents: [SIMD3<Float>]?
     var bitangents: [SIMD3<Float>]?
     var colors: [SIMD4<Float>]?
+
+    init() {
+        self.label = nil
+        self.indices = []
+        self.positions = []
+        self.textureCoordinates = nil
+        self.normals = nil
+        self.tangents = nil
+        self.bitangents = nil
+        self.colors = nil
+    }
+
+    init(label: String? = nil, indices: [Int], positions: [SIMD3<Float>], textureCoordinates: [SIMD2<Float>]? = nil, normals: [SIMD3<Float>]? = nil, tangents: [SIMD3<Float>]? = nil, bitangents: [SIMD3<Float>]? = nil, colors: [SIMD4<Float>]? = nil) {
+        self.label = label
+        self.indices = indices
+        self.positions = positions
+        self.textureCoordinates = textureCoordinates
+        self.normals = normals
+        self.tangents = tangents
+        self.bitangents = bitangents
+        self.colors = colors
+    }
 }
 
 extension TrivialMesh {

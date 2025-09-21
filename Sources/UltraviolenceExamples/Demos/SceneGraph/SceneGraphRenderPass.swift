@@ -19,13 +19,19 @@ struct SceneGraphRenderPass: Element {
         self.cameraMatrix = cameraMatrix
         self.projectionMatrix = projectionMatrix
 
+        // TODO: We are generating this every frame! [FILE ME]
         let lights = sceneGraph.filter { node in
             node.light != nil
         }.compactMap { node in
             let light = node.light!
             return (node.transform.translation, light)
         }
-        self.lighting = try! .init(ambientLightColor: [1, 1, 1], lights: lights)
+        if lights.isEmpty {
+            self.lighting = try! Lighting.demo()
+        }
+        else {
+            self.lighting = try! .init(ambientLightColor: [1, 1, 1], lights: lights)
+        }
     }
 
     var body: some Element {

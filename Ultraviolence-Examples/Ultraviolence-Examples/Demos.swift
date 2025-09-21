@@ -27,7 +27,8 @@ import UltraviolenceExamples
         PanoramaDemoView.self,
         WireframeDemoView.self,
         TrivialMeshDemoView.self,
-        SceneGraphDemoView.self
+        SceneGraphDemoView.self,
+        GLTFDemoView.self,
     ]
 
 #if os(macOS)
@@ -201,5 +202,11 @@ extension TrivialMeshDemoView: @retroactive DemoView {
 extension SceneGraphDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(name: "Scene Graph", description: "Simple scene graph demonstration with a cube, Blinn-Phong lighting, and camera", group: "Basic", keywords: ["scene", "graph", "lighting"])
+    }
+}
+
+extension GLTFDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(name: "glTF Model Viewer", description: "TODO", group: "Complex", keywords: [])
     }
 }

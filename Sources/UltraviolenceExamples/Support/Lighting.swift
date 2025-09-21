@@ -18,6 +18,7 @@ struct Lighting {
 
 extension Lighting {
     init(ambientLightColor: SIMD3<Float>, lights: [(SIMD3<Float>, Light)], capacity: Int? = nil) throws {
+        assert(!lights.isEmpty)
         let device = _MTLCreateSystemDefaultDevice()
         self.ambientLightColor = ambientLightColor
         self.count = lights.count

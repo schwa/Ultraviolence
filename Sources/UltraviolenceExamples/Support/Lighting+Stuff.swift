@@ -22,7 +22,7 @@ extension Lighting {
     static func demo() throws -> Lighting {
         let device = _MTLCreateSystemDefaultDevice()
         let lights = [
-            Light(type: .point, color: [1, 0, 0], intensity: 50)
+            Light(type: .point, color: [1, 1, 1], intensity: 50)
         ]
         let positions = [
             SIMD3<Float>(1, 5, 0)

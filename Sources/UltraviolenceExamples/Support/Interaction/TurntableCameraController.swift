@@ -4,14 +4,14 @@ import SwiftUI
 import UltraviolenceSupport
 
 public struct TurntableCameraController: ViewModifier {
-    @State
+    @Binding
     private var constraint: TurntableControllerConstraint
 
     @Binding
     var transform: simd_float4x4
 
-    public init(constraint: TurntableControllerConstraint, transform: Binding<simd_float4x4>) {
-        self._constraint = State(initialValue: constraint)
+    public init(constraint: Binding<TurntableControllerConstraint>, transform: Binding<simd_float4x4>) {
+        self._constraint = constraint
         self._transform = transform
         // TODO: #132 compute pitch yaw from transform
     }
@@ -20,9 +20,19 @@ public struct TurntableCameraController: ViewModifier {
         content
             .draggableValue($constraint.pitch.degrees, axis: .vertical, scale: 0.1, behavior: constraint.pitchBehavior)
             .draggableValue($constraint.yaw.degrees, axis: .horizontal, scale: 0.1, behavior: constraint.yawBehavior)
+            // TODO: Should not need an axis for .magnify
+            .draggableValue($constraint.radius.double, axis: .vertical, scale: -10, behavior: .linear, gestureKind: .magnify)
             .onChange(of: constraint, initial: true) {
                 transform = constraint.transform
             }
+    }
+}
+
+private extension Float {
+    // TODO: Rename
+    var double: Double {
+        get { Double(self) }
+        set { self = Float(newValue) }
     }
 }
 
@@ -30,7 +40,11 @@ public struct TurntableCameraController: ViewModifier {
 
 public struct TurntableControllerConstraint: Equatable {
     public var target: SIMD3<Float>
-    public var radius: Float
+    public var radius: Float {
+        didSet {
+            print("RADIUS DID CHANGE: \(radius)")
+        }
+    }
     // TODO: #133 Pitch and yaw are NOT constraints and should be in the controller not here.
     public var pitch: Angle = .zero
     public var yaw: Angle = .zero
@@ -58,6 +72,7 @@ public struct TurntableControllerConstraint: Equatable {
     }
 }
 
+// TODO: Move to GeometryLite3D
 public extension simd_float4x4 {
     /// Computes the yaw (rotation about Y-axis) from the transformation matrix.
     /// Assumes no shear and uniform scaling.
@@ -109,5 +124,27 @@ public extension simd_float4x4 {
     /// Helper function to clamp values.
     private func clamp(_ value: Float, min: Float, max: Float) -> Float {
         Swift.max(min, Swift.min(max, value))
+    }
+}
+
+struct TurntableCameraControllerEditor: View {
+    @Binding
+    var constraint: TurntableControllerConstraint
+
+    var body: some View {
+        LabeledContent("Target") {
+            Text("(\(constraint.target.x, format: .number), \(constraint.target.y, format: .number), \(constraint.target.z, format: .number))")
+        }
+        LabeledContent("Radius") {
+            TextField("radius", value: $constraint.radius, format: .number)
+        }
+        LabeledContent("Pitch") {
+            Text("\(constraint.pitch.degrees, format: .number)°")
+        }
+        LabeledContent("Yaw") {
+            Text("\(constraint.yaw.degrees, format: .number)°")
+        }
+        // TODO: More
+
     }
 }

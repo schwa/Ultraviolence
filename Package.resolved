@@ -36,6 +36,15 @@
         "revision" : "0687f71944021d616d34d922343dcef086855920",
         "version" : "600.0.1"
       }
+    },
+    {
+      "identity" : "swiftgltf",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/schwa/SwiftGLTF",
+      "state" : {
+        "branch" : "main",
+        "revision" : "4160ed7e89b7cfcccf5ff7a0cbfd5b055fada771"
+      }
     }
   ],
   "version" : 3
