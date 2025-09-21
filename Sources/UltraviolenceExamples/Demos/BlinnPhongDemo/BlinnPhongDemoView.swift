@@ -80,7 +80,7 @@ public struct BlinnPhongDemoView: View {
                             }
                             .transforms(transforms)
                         }
-                        .vertexDescriptor(MTLVertexDescriptor(lightMarker.vertexDescriptor))
+                        .vertexDescriptor(lightMarker.vertexDescriptor)
                         .depthCompare(function: .less, enabled: true)
 
                         try BlinnPhongShader {
@@ -94,7 +94,7 @@ public struct BlinnPhongDemoView: View {
                             }
                             .lighting(lighting)
                         }
-                        .vertexDescriptor(MTLVertexDescriptor(models.first!.mesh.vertexDescriptor))
+                        .vertexDescriptor(models.first!.mesh.vertexDescriptor)
                         .depthCompare(function: .less, enabled: true)
 
                         try AxisLinesRenderPipeline(mvpMatrix: viewProjectionMatrix, scale: 10_000.0)

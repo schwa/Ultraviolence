@@ -25,20 +25,21 @@ import UltraviolenceExamples
         ParticleEffectsDemoView.self,
         VideoPlaybackDemoView.self,
         PanoramaDemoView.self,
-        WireframeDemoView.self
+        WireframeDemoView.self,
+        TrivialMeshDemoView.self
     ]
 
-    #if os(macOS)
+#if os(macOS)
     demos += [
         OffscreenDemoView.self
     ]
-    #endif
+#endif
 
-    #if os(iOS)
+#if os(iOS)
     demos += [
         ARKitDemoView.self
     ]
-    #endif
+#endif
     return demos
 }()
 
@@ -189,3 +190,9 @@ extension ARKitDemoView: @retroactive DemoView {
     }
 }
 #endif
+
+extension TrivialMeshDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(name: "Trivial Mesh", description: "Demonstration of procedurally generated geometric primitives (box, tetrahedron, octahedron) with Blinn-Phong lighting", group: "Basic", keywords: ["mesh", "procedural", "lighting", "animated"])
+    }
+}
