@@ -26,7 +26,8 @@ import UltraviolenceExamples
         VideoPlaybackDemoView.self,
         PanoramaDemoView.self,
         WireframeDemoView.self,
-        TrivialMeshDemoView.self
+        TrivialMeshDemoView.self,
+        SceneGraphDemoView.self
     ]
 
 #if os(macOS)
@@ -194,5 +195,11 @@ extension ARKitDemoView: @retroactive DemoView {
 extension TrivialMeshDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(name: "Trivial Mesh", description: "Demonstration of procedurally generated geometric primitives (box, tetrahedron, octahedron) with Blinn-Phong lighting", group: "Basic", keywords: ["mesh", "procedural", "lighting", "animated"])
+    }
+}
+
+extension SceneGraphDemoView: @retroactive DemoView {
+    public static var metadata: DemoMetadata {
+        DemoMetadata(name: "Scene Graph", description: "Simple scene graph demonstration with a cube, Blinn-Phong lighting, and camera", group: "Basic", keywords: ["scene", "graph", "lighting"])
     }
 }

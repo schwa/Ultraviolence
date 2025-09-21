@@ -57,7 +57,6 @@ public extension Element {
     }
 
     func vertexDescriptor(_ vertexDescriptor: MDLVertexDescriptor) -> some Element {
-        print(vertexDescriptor)
         return self.vertexDescriptor(MTKMetalVertexDescriptorFromModelIO(vertexDescriptor).orFatalError(.resourceCreationFailure("Failed to create MTLVertexDescriptor from MDLVertexDescriptor")))
     }
 }

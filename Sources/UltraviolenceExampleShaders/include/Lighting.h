@@ -12,6 +12,7 @@ struct Light {
     LightType type;
     simd_float3 color;
     float intensity;
+    float range;
 };
 typedef struct Light Light;
 

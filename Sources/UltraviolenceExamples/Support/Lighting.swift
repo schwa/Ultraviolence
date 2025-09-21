@@ -3,11 +3,28 @@ import Ultraviolence
 import UltraviolenceExampleShaders
 import UltraviolenceSupport
 
+extension Light {
+    init(type: LightType, color: SIMD3<Float> = [1, 1, 1], intensity: Float = 1.0) {
+        self.init(type: type, color: color, intensity: intensity, range: .infinity)
+    }
+}
+
 struct Lighting {
     var ambientLightColor: simd_float3
     var count: Int
     var lights: MTLBuffer
     var lightPositions: MTLBuffer
+}
+
+extension Lighting {
+    init(ambientLightColor: SIMD3<Float>, lights: [(SIMD3<Float>, Light)], capacity: Int? = nil) throws {
+        let device = _MTLCreateSystemDefaultDevice()
+        self.ambientLightColor = ambientLightColor
+        self.count = lights.count
+        let capacity = capacity ?? lights.count
+        self.lights = try device.makeBuffer(view: .init(count: capacity), values: lights.map(\.1), options: [])
+        self.lightPositions = try device.makeBuffer(view: .init(count: capacity), values: lights.map(\.0), options: [])
+    }
 }
 
 extension Lighting {
