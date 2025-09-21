@@ -21,6 +21,7 @@ public let package = Package(
         .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.0-latest"),
         .package(url: "https://github.com/schwa/MetalCompilerPlugin", from: "0.1.0"),
         .package(url: "https://github.com/apple/swift-async-algorithms", from: "1.0.0"),
+        .package(url: "https://github.com/apple/swift-collections", from: "1.2.0"),
         .package(url: "https://github.com/schwa/GeometryLite3D", branch: "main"),
     ],
     targets: [
@@ -78,6 +79,7 @@ public let package = Package(
                 "UltraviolenceExampleShaders",
                 "UltraviolenceUI",
                 "GeometryLite3D",
+                .product(name: "Collections", package: "swift-collections"),
             ],
             resources: [
                 .copy("Resources/AppleEventVideo.mp4"),
