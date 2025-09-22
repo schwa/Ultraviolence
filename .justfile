@@ -28,3 +28,10 @@ format:
 
 open-container:
     open "$HOME/Library/Containers/io.schwa.UltraviolenceExamples/Data"
+
+clean:
+    swift package clean
+    rm -rf .build
+    rm -rf .swiftpm
+    rm -rf Sources/Ultraviolence/.swiftpm/
+    rm -rf Ultraviolence-Examples/Ultraviolence-Examples.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/
