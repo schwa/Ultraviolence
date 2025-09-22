@@ -21,7 +21,7 @@ namespace BlinnPhong {
         float3 modelPosition,
         float3 cameraPosition,
         float3 normal,
-        constant BlinnPhongLightingModelArgumentBuffer &lightingModel,
+        constant BlinnPhongLightingModelArgumentBuffer &lighting,
         float shininess,
         float3 ambientColor,
         float3 diffuseColor,
@@ -62,7 +62,7 @@ namespace BlinnPhong {
 
     [[fragment]] float4 fragment_main(
         Fragment in [[stage_in]],
-        constant BlinnPhongLightingModelArgumentBuffer &lightingModel [[buffer(1)]],
+        constant BlinnPhongLightingModelArgumentBuffer &lighting [[buffer(1)]],
         constant BlinnPhongMaterialArgumentBuffer *material [[buffer(2)]],
         constant Transforms *transforms [[buffer(3)]]
     ) {
@@ -98,7 +98,7 @@ namespace BlinnPhong {
         auto cameraPosition = transforms[instance_id].cameraMatrix.columns[3].xyz;
 
         float3 color = CalculateBlinnPhong(
-            in.worldPosition, cameraPosition, in.normal, lightingModel, material[instance_id].shininess, ambientColor,
+            in.worldPosition, cameraPosition, in.normal, lighting, material[instance_id].shininess, ambientColor,
             diffuseColor, specularColor
         );
         return float4(color, 1.0);
@@ -119,7 +119,7 @@ namespace BlinnPhong {
     ///   - modelPosition: The world-space position of the surface point.
     ///   - cameraPosition: The world-space position of the camera.
     ///   - normal: The normalized surface normal at the surface point.
-    ///   - lightingModel: A buffer containing all active lights in the scene.
+    ///   - lighting: A buffer containing all active lights in the scene.
     ///   - shininess: The shininess exponent controlling the size of specular
     ///   highlights.
     ///   - ambientColor: The base ambient color contribution.
@@ -132,7 +132,7 @@ namespace BlinnPhong {
         const float3 modelPosition,
         const float3 cameraPosition,
         const float3 normal,
-        constant BlinnPhongLightingModelArgumentBuffer &lightingModel,
+        constant BlinnPhongLightingModelArgumentBuffer &lighting,
         const float shininess,
         const float3 ambientColor,
         const float3 diffuseColor,
@@ -148,11 +148,13 @@ namespace BlinnPhong {
         // so we clamp it to 0.
         const float3 viewDirection = normalize(cameraPosition - modelPosition);
 
-        for (int index = 0; index < lightingModel.lightCount; ++index) {
-            const auto light = lightingModel.lights[index];
+        for (int index = 0; index < lighting.lightCount; ++index) {
+            // TODO: We're ignoing the light type here. [FILE ME]
+            const auto light = lighting.lights[index];
+            const float3 lightPosition = lighting.lightPositions[index];
 
             // Compute the direction from the surface point to the light source
-            float3 lightDirection = light.position - modelPosition;
+            float3 lightDirection = lightPosition - modelPosition;
             const float distanceSquared = length_squared(lightDirection);
             lightDirection = normalize(lightDirection);
 
@@ -208,7 +210,7 @@ namespace BlinnPhong {
 
         // Compute final color by combining ambient, diffuse, and specular
         // components.
-        return lightingModel.ambientLightColor * ambientColor + accumulatedDiffuseColor + accumulatedSpecularColor;
+        return lighting.ambientLightColor * ambientColor + accumulatedDiffuseColor + accumulatedSpecularColor;
     }
 
 } // namespace BlinnPhong

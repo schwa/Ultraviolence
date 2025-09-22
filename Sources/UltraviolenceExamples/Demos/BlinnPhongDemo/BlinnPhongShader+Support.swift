@@ -65,27 +65,25 @@ extension BlinnPhongMaterial {
     }
 }
 
-public struct BlinnPhongLighting {
-    public var ambientLightColor: simd_float3
-    public var lights: TypedMTLBuffer<BlinnPhongLight>
-
-    public init(ambientLightColor: simd_float3, lights: TypedMTLBuffer<BlinnPhongLight>) {
-        self.ambientLightColor = ambientLightColor
-        self.lights = lights
-    }
+struct BlinnPhongLighting {
+    var ambientLightColor: simd_float3
+    var count: Int
+    var lights: MTLBuffer
+    var lightPositions: MTLBuffer
 }
 
 extension BlinnPhongLighting {
     func toArgumentBuffer() throws -> BlinnPhongLightingModelArgumentBuffer {
-        BlinnPhongLightingModelArgumentBuffer(
-            lightCount: Int32(lights.count),
+        return BlinnPhongLightingModelArgumentBuffer(
+            lightCount: Int32(count),
             ambientLightColor: ambientLightColor,
-            lights: lights.unsafeMTLBuffer.gpuAddressAsUnsafeMutablePointer(type: BlinnPhongLight.self).orFatalError()
+            lights: lights.gpuAddressAsUnsafeMutablePointer(type: BlinnPhongLight.self).orFatalError(),
+            lightPositions: lightPositions.gpuAddressAsUnsafeMutablePointer(type: SIMD3<Float>.self).orFatalError()
         )
     }
 }
 
-public extension Element {
+extension Element {
     func blinnPhongMaterial(_ material: BlinnPhongMaterial) throws -> some Element {
         self
             .parameter("material", value: try material.toArgumentBuffer())
@@ -96,7 +94,8 @@ public extension Element {
 
     func blinnPhongLighting(_ lighting: BlinnPhongLighting) throws -> some Element {
         self
-            .parameter("lightingModel", value: try lighting.toArgumentBuffer())
-            .useResource(lighting.lights.unsafeMTLBuffer, usage: .read, stages: .fragment)
+            .parameter("lighting", value: try lighting.toArgumentBuffer())
+            .useResource(lighting.lights, usage: .read, stages: .fragment)
+            .useResource(lighting.lightPositions, usage: .read, stages: .fragment)
     }
 }

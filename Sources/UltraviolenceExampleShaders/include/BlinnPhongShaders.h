@@ -33,10 +33,8 @@ typedef UV_ENUM(int, BlinnPhongLightType) {
     kBlinnPhongLightTypeSpot = 2,
 };
 
-
 struct BlinnPhongLight {
     BlinnPhongLightType type;
-    simd_float3 position;
     simd_float3 color;
     float intensity;
 };
@@ -44,7 +42,7 @@ typedef struct BlinnPhongLight BlinnPhongLight;
 
 struct BlinnPhongLightingModelArgumentBuffer {
     int lightCount;
-    simd_float3 ambientLightColor; // TODO
-    BUFFER(constant, BlinnPhongLight *)
-    lights;
+    simd_float3 ambientLightColor;
+    BUFFER(constant, BlinnPhongLight *) lights;
+    BUFFER(constant, simd_float3 *) lightPositions;
 };

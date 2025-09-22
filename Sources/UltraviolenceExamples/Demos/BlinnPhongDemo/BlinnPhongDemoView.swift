@@ -34,11 +34,17 @@ public struct BlinnPhongDemoView: View {
             let device = _MTLCreateSystemDefaultDevice()
 
             let lights = [
-                BlinnPhongLight(type: .point, position: [5, 5, 0], color: [1, 0, 0], intensity: 50)
+                BlinnPhongLight(type: .point, color: [1, 0, 0], intensity: 50)
             ]
+            let positions = [
+                SIMD3<Float>(1, 5, 0)
+            ]
+            assert(lights.count == positions.count)
             let lighting = BlinnPhongLighting(
                 ambientLightColor: [0, 0, 0],
-                lights: try device.makeTypedBuffer(values: lights, options: [])
+                count: lights.count,
+                lights: try device.makeBuffer(view: .init(count: lights.count), values: lights, options: []),
+                lightPositions: try device.makeBuffer(view: .init(count: positions.count), values: positions, options: [])
             )
             self.lighting = lighting
 
@@ -62,8 +68,11 @@ public struct BlinnPhongDemoView: View {
 
                         GridShader(projectionMatrix: projectionMatrix, cameraMatrix: cameraMatrix)
 
-                        let transforms = Transforms(modelMatrix: .init(translation: lighting.lights[0].position), cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
-                        try FlatShader(textureSpecifier: .color(SIMD3<Float>(lighting.lights[0].color))) {
+                        let lightPosition = lighting.lightPositions[BufferView<SIMD3<Float>>(count: lighting.count), 0]
+                        let light = lighting.lights[BufferView<BlinnPhongLight>(count: lighting.count), 0]
+
+                        let transforms = Transforms(modelMatrix: .init(translation: lightPosition), cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
+                        try FlatShader(textureSpecifier: .color(light.color)) {
                             Draw { encoder in
                                 encoder.setVertexBuffers(of: lightMarker)
                                 encoder.draw(lightMarker)
@@ -92,17 +101,21 @@ public struct BlinnPhongDemoView: View {
                 }
                 .metalDepthStencilPixelFormat(.depth32Float)
                 .onChange(of: timeline.date) {
-                    let date = timeline.date.timeIntervalSinceReferenceDate
-                    let angle = LinearTimingFunction().value(time: date, period: 1, in: 0 ... 2 * .pi)
-                    lighting.lights[0].position = simd_quatf(angle: angle, axis: [0, 1, 0]).act([1, 5, 0])
-                    lighting.lights[0].color = [
-                        ForwardAndReverseTimingFunction(SinusoidalTimingFunction()).value(time: date, period: 1.0, offset: 0.0, in: 0.5 ... 1.0),
-                        ForwardAndReverseTimingFunction(SinusoidalTimingFunction()).value(time: date, period: 1.2, offset: 0.2, in: 0.5 ... 1.0),
-                        ForwardAndReverseTimingFunction(SinusoidalTimingFunction()).value(time: date, period: 1.4, offset: 0.6, in: 0.5 ... 1.0)
-                    ]
+                    animateLights(date: timeline.date)
                 }
             }
         }
+    }
+
+    func animateLights(date: Date) {
+        let date = date.timeIntervalSinceReferenceDate
+        let angle = LinearTimingFunction().value(time: date, period: 1, in: 0 ... 2 * .pi)
+        lighting.lights[BufferView<BlinnPhongLight>(count: lighting.count), 0].color = [
+            ForwardAndReverseTimingFunction(SinusoidalTimingFunction()).value(time: date, period: 1.0, offset: 0.0, in: 0.5 ... 1.0),
+            ForwardAndReverseTimingFunction(SinusoidalTimingFunction()).value(time: date, period: 1.2, offset: 0.2, in: 0.5 ... 1.0),
+            ForwardAndReverseTimingFunction(SinusoidalTimingFunction()).value(time: date, period: 1.4, offset: 0.6, in: 0.5 ... 1.0)
+        ]
+        lighting.lightPositions[BufferView<SIMD3<Float>>(count: lighting.count), 0] = simd_quatf(angle: angle, axis: [0, 1, 0]).act([1, 5, 0])
     }
 }
 
