@@ -155,3 +155,16 @@ public func lookAtMatrix(eye: SIMD3<Float>, target: SIMD3<Float>, up: SIMD3<Floa
         SIMD4<Float>(-dot(right, eye), -dot(newUp, eye), -dot(forward, eye), 1) // FIXED: Negate forward dot product
     )
 }
+
+
+extension View {
+    @ViewBuilder
+    func modifier(enabled: Bool, _ modifier: (some ViewModifier)) -> some View {
+        if enabled {
+            self.modifier(modifier)
+        }
+        else {
+            self
+        }
+    }
+}

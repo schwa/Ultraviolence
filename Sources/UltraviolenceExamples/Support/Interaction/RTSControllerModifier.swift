@@ -13,6 +13,9 @@ public struct RTSControllerModifier: ViewModifier {
 
     var floorPlane: Plane
 
+    @FocusState
+    var isFocused: Bool
+
     @State
     private var controller: RTSController?
 
@@ -31,6 +34,7 @@ public struct RTSControllerModifier: ViewModifier {
         #if os(macOS)
         .modifier(IgnoreKeysViewModifier())
         #endif
+        .focused($isFocused)
         .focusable()
         .focusEffectDisabled()
         .onChange(of: controller?.cameraMatrix) {
@@ -40,6 +44,7 @@ public struct RTSControllerModifier: ViewModifier {
         }
         .onAppear {
             controller = RTSController(cameraMatrix: cameraMatrix, floorPlane: floorPlane)
+            isFocused = true
         }
     }
 }
@@ -74,10 +79,6 @@ internal class RTSController {
         //
         // self.direction = ???
         self.position = cameraMatrix.translation
-    }
-
-    deinit {
-        print("DEINIT)")
     }
 
     func update() {
@@ -157,8 +158,11 @@ internal class RTSControllerInput {
 
         Task {
             print("Looking for keyboard")
+
+            if let keyboard = GCKeyboard.coalesced {
+                self.foundKeyboard(keyboard)
+            }
             for await notification in NotificationCenter.default.notifications(named: .GCKeyboardDidConnect) {
-                print("Keyboard connected")
                 guard let keyboard = notification.object as? GCKeyboard else {
                     continue
                 }
@@ -185,6 +189,7 @@ internal class RTSControllerInput {
     }
 
     func foundKeyboard(_ keyboard: GCKeyboard) {
+        print("Found keyboard: \(keyboard)")
         if let coalesced = GCKeyboard.coalesced {
             self.keyboard = coalesced
         }

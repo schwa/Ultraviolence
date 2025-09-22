@@ -21,6 +21,9 @@ public struct WorldView<Content: View>: View {
     @State
     private var freeCameraController: CameraController = .turntable
 
+    @State
+    private var isPopoverPresented = false
+
     public init(projection: Binding<any ProjectionProtocol>, cameraMatrix: Binding<simd_float4x4>, targetMatrix: Binding<simd_float4x4?> = .constant(nil), @ViewBuilder content: @escaping () -> Content) {
         self._projection = projection
         self._cameraMatrix = cameraMatrix
@@ -29,37 +32,28 @@ public struct WorldView<Content: View>: View {
     }
 
     public var body: some View {
-        VStack {
-            content
-                .modifier(enabled: freeCameraController == .turntable, TurntableCameraController(constraint: initialTurntableControllerConstraint, transform: $cameraMatrix))
-//            HStack {
-//                Picker("Mode", selection: $cameraMode) {
-//                    Text("Free").tag(CameraMode.free)
-//                    ForEach(CameraAngle.allCases, id: \.self) { angle in
-//                        Text("\(String(describing: angle))").tag(CameraMode.fixed(angle))
-//                    }
-//                }
-//                .pickerStyle(.menu)
-//                .fixedSize()
-//
-//                Picker("Controller", selection: $freeCameraController) {
-//                    ForEach(CameraController.allCases, id: \.self) { value in
-//                        Text("\(String(describing: value))").tag(value)
-//                    }
-//                }
-//                .pickerStyle(.menu)
-//                .fixedSize()
-//            }
-//            .hidden()
-        }
-        .onChange(of: cameraMode) {
-            switch cameraMode {
-            case .fixed(let cameraAngle):
-                cameraMatrix = cameraAngle.matrix
-            default:
-                break
+        content
+            .modifier(enabled: freeCameraController == .turntable, TurntableCameraController(constraint: initialTurntableControllerConstraint, transform: $cameraMatrix))
+            .modifier(RTSControllerModifier(cameraMatrix: $cameraMatrix))
+            .toolbar {
+                Button("Camera", systemImage: "camera.aperture") {
+                    isPopoverPresented = true
+                }
+                .popover(isPresented: $isPopoverPresented) {
+                    Form {
+                        settingsView
+                    }
+                    .padding()
+                }
             }
-        }
+            .onChange(of: cameraMode) {
+                switch cameraMode {
+                case .fixed(let cameraAngle):
+                    cameraMatrix = cameraAngle.matrix
+                default:
+                    break
+                }
+            }
     }
 
     var initialTurntableControllerConstraint: TurntableControllerConstraint {
@@ -68,12 +62,30 @@ public struct WorldView<Content: View>: View {
         let radius = length(target - camera)
         return TurntableControllerConstraint(target: target, radius: radius)
     }
+
+    @ViewBuilder
+    var settingsView: some View {
+        Picker("Mode", selection: $cameraMode) {
+            Text("Free").tag(CameraMode.free)
+            ForEach(CameraAngle.allCases, id: \.self) { angle in
+                Text("\(String(describing: angle))").tag(CameraMode.fixed(angle))
+            }
+        }
+        .fixedSize()
+
+        Picker("Controller", selection: $freeCameraController) {
+            ForEach(CameraController.allCases, id: \.self) { value in
+                Text("\(String(describing: value))").tag(value)
+            }
+        }
+        .fixedSize()
+    }
 }
 
 public enum CameraController: Hashable, CaseIterable {
     case turntable
     //    case arcball
-    //    case flight
+        case flight
     //    case walk
     //    case hover
     //    case pan
@@ -108,18 +120,6 @@ extension CameraAngle {
             return float4x4.look(at: [0, 0, 0], from: [0, 0, 1], up: [0, 1, 0])
         case .back:
             return float4x4.look(at: [0, 0, 0], from: [0, 0, -1], up: [0, 1, 0])
-        }
-    }
-}
-
-extension View {
-    @ViewBuilder
-    func modifier(enabled: Bool, _ modifier: (some ViewModifier)) -> some View {
-        if enabled {
-            self.modifier(modifier)
-        }
-        else {
-            self
         }
     }
 }

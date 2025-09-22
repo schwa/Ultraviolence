@@ -102,7 +102,6 @@ public struct BlinnPhongDemoView: View {
                     ]
                 }
             }
-            .modifier(RTSControllerModifier(cameraMatrix: $cameraMatrix))
         }
     }
 }
