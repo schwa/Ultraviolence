@@ -15,7 +15,6 @@ public let package = Package(
         .library(name: "UltraviolenceUI", targets: ["UltraviolenceUI"]),
         .library(name: "UltraviolenceSupport", targets: ["UltraviolenceSupport"]),
         .library(name: "UltraviolenceExamples", targets: ["UltraviolenceExamples"]),
-        .library(name: "UltraviolenceGaussianSplats", targets: ["UltraviolenceGaussianSplats"]),
         .library(name: "UltraviolenceSnapshotUI", targets: ["UltraviolenceSnapshotUI"]),
     ],
     dependencies: [
@@ -78,7 +77,6 @@ public let package = Package(
                 "Ultraviolence",
                 "UltraviolenceExampleShaders",
                 "UltraviolenceUI",
-                "UltraviolenceGaussianSplats",
                 "GeometryLite3D",
             ],
             resources: [
@@ -88,7 +86,6 @@ public let package = Package(
                 .copy("Resources/DSC_2595.JPG"),
                 .copy("Resources/HD-Testcard-original.jpg"),
                 .copy("Resources/IndoorEnvironmentHDRI013_1K-HDR.exr"),
-                .copy("Resources/Sample Splats"),
                 .copy("Resources/Samples"),
                 .copy("Resources/teapot.obj"),
                 .copy("Resources/4.2.03.heic"),
@@ -103,23 +100,6 @@ public let package = Package(
                 "BlinnPhongShaders.metal",
                 "FlatShader.metal"
             ],
-            plugins: [
-                .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
-            ]
-        ),
-        .target(
-            name: "UltraviolenceGaussianSplats",
-            dependencies: [
-                "Ultraviolence",
-                "UltraviolenceSupport",
-                "UltraviolenceGaussianSplatShaders",
-                "UltraviolenceUI",
-                .product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
-                "GeometryLite3D",
-            ]
-        ),
-        .target(
-            name: "UltraviolenceGaussianSplatShaders",
             plugins: [
                 .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
             ]

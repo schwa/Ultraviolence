@@ -5,7 +5,6 @@ import UltraviolenceExamples
 @MainActor let allDemos: [any DemoView.Type] = {
     var demos: [any DemoView.Type] = [
         EmptyView.self,
-        GaussianSplatDemoView.self,
         BlinnPhongDemoView.self,
         SkyboxDemoView.self,
         TriangleDemoView.self,
@@ -64,12 +63,6 @@ extension GameOfLifeDemoView: @retroactive DemoView {
 extension StencilDemoView: @retroactive DemoView {
     public static var metadata: DemoMetadata {
         DemoMetadata(name: "Stencil Buffer", description: "Stencil buffer masking demonstration with checkerboard pattern clipping", group: "Basic", keywords: [])
-    }
-}
-
-extension GaussianSplatDemoView: @retroactive DemoView {
-    public static var metadata: DemoMetadata {
-        DemoMetadata(name: "Gaussian Splatting", description: "Real-time point cloud rendering using Gaussian splatting techniques for 3D scene reconstruction", group: "Complex", keywords: [])
     }
 }
 

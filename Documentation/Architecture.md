@@ -148,7 +148,6 @@ Example implementations and demos:
 Metal shader libraries:
 
 - **UltraviolenceExampleShaders**: Common shaders for examples
-- **GaussianSplatShaders**: Specialized Gaussian splatting shaders
 
 ## Rendering Pipeline
 
