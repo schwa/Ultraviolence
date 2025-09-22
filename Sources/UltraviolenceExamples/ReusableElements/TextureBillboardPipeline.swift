@@ -100,7 +100,6 @@ struct TextureBillboardPipeline: Element {
 
 extension TextureBillboardPipeline {
     init(specifierA: ColorSpecifier, specifierB: ColorSpecifier, positions: Quad = .clip, textureCoordinates: Quad = .unit, colorTransformFunctionName: String) throws {
-        let device = _MTLCreateSystemDefaultDevice()
         let shaderBundle = Bundle.ultraviolenceExampleShaders().orFatalError()
         let shaderLibrary = try ShaderLibrary(bundle: shaderBundle, namespace: "TextureBillboard")
         let colorTransform = try shaderLibrary.function(named: colorTransformFunctionName, type: VisibleFunction.self)

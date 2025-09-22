@@ -60,7 +60,7 @@ extension VertexDescriptor.Layout: CustomDebugStringConvertible {
 
 extension VertexDescriptor.Layout {
     init(bufferIndex: Int) {
-        self.init(bufferIndex: bufferIndex, stride: 0, stepFunction: .perVertex, stepRate: 0) // TODO: Is 1 the default stepRate? [FILE ME]
+        self.init(bufferIndex: bufferIndex, stride: 0, stepFunction: .perVertex, stepRate: 1)
     }
 }
 
@@ -306,7 +306,7 @@ extension MTLVertexFormat {
     }
 }
 
-extension MTLVertexFormat: CustomDebugStringConvertible {
+extension MTLVertexFormat: @retroactive CustomDebugStringConvertible {
     public var debugDescription: String {
         switch self {
         case .invalid:
@@ -424,7 +424,7 @@ extension MTLVertexFormat: CustomDebugStringConvertible {
 }
 
 
-extension MTLVertexStepFunction: CustomDebugStringConvertible {
+extension MTLVertexStepFunction: @retroactive CustomDebugStringConvertible {
     public var debugDescription: String {
         switch self {
         case .constant:

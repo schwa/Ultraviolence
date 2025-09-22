@@ -23,7 +23,7 @@ struct WireframeRenderPipeline: Element {
     var body: some Element {
         get throws {
             try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
-                var uniforms = WireframeUniforms(modelViewProjectionMatrix: mvpMatrix, wireframeColor: wireframeColor)
+                let uniforms = WireframeUniforms(modelViewProjectionMatrix: mvpMatrix, wireframeColor: wireframeColor)
                 Draw { encoder in
                     encoder.setTriangleFillMode(.lines)
                     encoder.setVertexBuffers(of: mesh)

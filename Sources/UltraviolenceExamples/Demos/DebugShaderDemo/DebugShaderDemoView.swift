@@ -17,7 +17,7 @@ public struct DebugShadersDemoView: View {
     @State
     private var debugMode: DebugShadersMode = .normal
 
-    let teapot = try! MTKMesh.teapot(options: [.generateTangentBasis, .generateTextureCoordinatesIfMissing, .useSimpleTextureCoordinates])
+    let teapot = MTKMesh.teapot(options: [.generateTangentBasis, .generateTextureCoordinatesIfMissing, .useSimpleTextureCoordinates])
 
     public init() {
     }

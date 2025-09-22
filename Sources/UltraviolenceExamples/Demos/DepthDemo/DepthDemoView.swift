@@ -52,7 +52,7 @@ public struct DepthDemoView: View {
     let colorAdjustFunction: MTLFunction
 
     public init() {
-        let device = _MTLCreateSystemDefaultDevice()
+//        let device = _MTLCreateSystemDefaultDevice()
 
 //        let library = ShaderLibrary(source: adjustSource)
 //

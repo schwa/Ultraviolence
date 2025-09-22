@@ -12,7 +12,6 @@ public struct ColorAdjustComputePipeline <T>: Element {
 
     // TODO: the two VisibleFunction parameters should be documented well.
     init(inputSpecifier: ColorSpecifier, inputParameters: T, outputTexture: MTLTexture, mapTextureCoordinateFunction: VisibleFunction? = nil, colorAdjustFunction: VisibleFunction) throws {
-        let device = _MTLCreateSystemDefaultDevice()
         self.inputSpecifier = inputSpecifier
         self.inputParameters = inputParameters
         self.outputTexture = outputTexture
@@ -43,7 +42,6 @@ public struct ColorAdjustComputePipeline <T>: Element {
 
 extension ColorAdjustComputePipeline where T == Float {
     static func gammaAdjustPipeline(inputSpecifier: ColorSpecifier, inputParameters: Float, outputTexture: MTLTexture) -> Self {
-        let device = _MTLCreateSystemDefaultDevice()
         let shaderLibrary = try! ShaderLibrary(bundle: .ultraviolenceExampleShaders().orFatalError(), namespace: "ColorAdjust")
         let colorAdjustFunction = try! shaderLibrary.function(named: "gamma", type: VisibleFunction.self)
         return try! ColorAdjustComputePipeline(inputSpecifier: inputSpecifier, inputParameters: inputParameters, outputTexture: outputTexture, colorAdjustFunction: colorAdjustFunction)

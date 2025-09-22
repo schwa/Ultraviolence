@@ -62,17 +62,17 @@ struct CachingImportWell <Content>: View where Content: View {
             }
             else {
                 ContentUnavailableView("No File", systemImage: "exclamationmark.triangle")
-                    .onDrop(of: allowedContentTypes, isTargeted: $isDropTargeted) { providers in
-                        if let provider = providers.first {
-                            do {
-                                //self.url = try CachingImportHelper(identifier: identifier).storeImportedFile(at: url)
-                            }
-                            catch {
-                                print("Failed to store imported file: \(error)")
-                            }
-                        }
-                        return false
-                    }
+//                    .onDrop(of: allowedContentTypes, isTargeted: $isDropTargeted) { providers in
+//                        if let provider = providers.first {
+//                            do {
+//                                //self.url = try CachingImportHelper(identifier: identifier).storeImportedFile(at: url)
+//                            }
+//                            catch {
+//                                print("Failed to store imported file: \(error)")
+//                            }
+//                        }
+//                        return false
+//                    }
             }
         }
         .onChange(of: identifier, initial: true) {
