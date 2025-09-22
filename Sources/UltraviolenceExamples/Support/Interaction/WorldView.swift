@@ -34,7 +34,7 @@ public struct WorldView<Content: View>: View {
     public var body: some View {
         content
             .modifier(enabled: freeCameraController == .turntable, TurntableCameraController(constraint: initialTurntableControllerConstraint, transform: $cameraMatrix))
-            .modifier(RTSControllerModifier(cameraMatrix: $cameraMatrix))
+//            .modifier(RTSControllerModifier(cameraMatrix: $cameraMatrix))
             .toolbar {
                 Button("Camera", systemImage: "camera.aperture") {
                     isPopoverPresented = true
