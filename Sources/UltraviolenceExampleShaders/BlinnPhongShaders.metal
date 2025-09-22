@@ -21,7 +21,7 @@ namespace BlinnPhong {
         float3 modelPosition,
         float3 cameraPosition,
         float3 normal,
-        constant BlinnPhongLightingModelArgumentBuffer &lighting,
+        constant LightingArgumentBuffer &lighting,
         float shininess,
         float3 ambientColor,
         float3 diffuseColor,
@@ -62,7 +62,7 @@ namespace BlinnPhong {
 
     [[fragment]] float4 fragment_main(
         Fragment in [[stage_in]],
-        constant BlinnPhongLightingModelArgumentBuffer &lighting [[buffer(1)]],
+        constant LightingArgumentBuffer &lighting [[buffer(1)]],
         constant BlinnPhongMaterialArgumentBuffer *material [[buffer(2)]],
         constant Transforms *transforms [[buffer(3)]]
     ) {
@@ -132,7 +132,7 @@ namespace BlinnPhong {
         const float3 modelPosition,
         const float3 cameraPosition,
         const float3 normal,
-        constant BlinnPhongLightingModelArgumentBuffer &lighting,
+        constant LightingArgumentBuffer &lighting,
         const float shininess,
         const float3 ambientColor,
         const float3 diffuseColor,

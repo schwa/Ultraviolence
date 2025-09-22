@@ -1,6 +1,7 @@
 #pragma once
 
 #import "Support.h"
+#import "Lighting.h"
 
 // long ambientTexture, long ambientSampler
 struct BlinnPhongMaterialArgumentBuffer {
@@ -25,24 +26,3 @@ struct BlinnPhongMaterialArgumentBuffer {
     float shininess;
 };
 
-// MARK: -
-
-typedef UV_ENUM(int, BlinnPhongLightType) {
-    kBlinnPhongLightTypeDirectional = 0,
-    kBlinnPhongLightTypePoint = 1,
-    kBlinnPhongLightTypeSpot = 2,
-};
-
-struct BlinnPhongLight {
-    BlinnPhongLightType type;
-    simd_float3 color;
-    float intensity;
-};
-typedef struct BlinnPhongLight BlinnPhongLight;
-
-struct BlinnPhongLightingModelArgumentBuffer {
-    int lightCount;
-    simd_float3 ambientLightColor;
-    BUFFER(constant, BlinnPhongLight *) lights;
-    BUFFER(constant, simd_float3 *) lightPositions;
-};
