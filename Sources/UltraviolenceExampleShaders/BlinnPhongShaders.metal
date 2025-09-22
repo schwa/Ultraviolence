@@ -152,7 +152,7 @@ namespace BlinnPhong {
             const auto light = lightingModel.lights[index];
 
             // Compute the direction from the surface point to the light source
-            float3 lightDirection = light.lightPosition - modelPosition;
+            float3 lightDirection = light.position - modelPosition;
             const float distanceSquared = length_squared(lightDirection);
             lightDirection = normalize(lightDirection);
 
@@ -198,7 +198,7 @@ namespace BlinnPhong {
 
             // Scale light intensity based on its color, power, and attenuation
             // factor
-            const float3 lightContribution = light.lightColor * light.lightPower * attenuation;
+            const float3 lightContribution = light.color * light.intensity * attenuation;
 
             // Accumulate diffuse and specular contributions from this light
             // source

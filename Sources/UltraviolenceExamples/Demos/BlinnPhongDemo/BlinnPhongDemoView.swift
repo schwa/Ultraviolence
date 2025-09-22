@@ -34,7 +34,7 @@ public struct BlinnPhongDemoView: View {
             let device = _MTLCreateSystemDefaultDevice()
 
             let lights = [
-                BlinnPhongLight(lightPosition: [5, 5, 0], lightColor: [1, 0, 0], lightPower: 50)
+                BlinnPhongLight(type: .point, position: [5, 5, 0], color: [1, 0, 0], intensity: 50)
             ]
             let lighting = BlinnPhongLighting(
                 ambientLightColor: [0, 0, 0],
@@ -62,8 +62,8 @@ public struct BlinnPhongDemoView: View {
 
                         GridShader(projectionMatrix: projectionMatrix, cameraMatrix: cameraMatrix)
 
-                        let transforms = Transforms(modelMatrix: .init(translation: lighting.lights[0].lightPosition), cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
-                        try FlatShader(textureSpecifier: .color(SIMD3<Float>(lighting.lights[0].lightColor))) {
+                        let transforms = Transforms(modelMatrix: .init(translation: lighting.lights[0].position), cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
+                        try FlatShader(textureSpecifier: .color(SIMD3<Float>(lighting.lights[0].color))) {
                             Draw { encoder in
                                 encoder.setVertexBuffers(of: lightMarker)
                                 encoder.draw(lightMarker)
@@ -94,8 +94,8 @@ public struct BlinnPhongDemoView: View {
                 .onChange(of: timeline.date) {
                     let date = timeline.date.timeIntervalSinceReferenceDate
                     let angle = LinearTimingFunction().value(time: date, period: 1, in: 0 ... 2 * .pi)
-                    lighting.lights[0].lightPosition = simd_quatf(angle: angle, axis: [0, 1, 0]).act([1, 5, 0])
-                    lighting.lights[0].lightColor = [
+                    lighting.lights[0].position = simd_quatf(angle: angle, axis: [0, 1, 0]).act([1, 5, 0])
+                    lighting.lights[0].color = [
                         ForwardAndReverseTimingFunction(SinusoidalTimingFunction()).value(time: date, period: 1.0, offset: 0.0, in: 0.5 ... 1.0),
                         ForwardAndReverseTimingFunction(SinusoidalTimingFunction()).value(time: date, period: 1.2, offset: 0.2, in: 0.5 ... 1.0),
                         ForwardAndReverseTimingFunction(SinusoidalTimingFunction()).value(time: date, period: 1.4, offset: 0.6, in: 0.5 ... 1.0)

@@ -27,10 +27,18 @@ struct BlinnPhongMaterialArgumentBuffer {
 
 // MARK: -
 
+typedef UV_ENUM(int, BlinnPhongLightType) {
+    kBlinnPhongLightTypeDirectional = 0,
+    kBlinnPhongLightTypePoint = 1,
+    kBlinnPhongLightTypeSpot = 2,
+};
+
+
 struct BlinnPhongLight {
-    simd_float3 lightPosition;
-    simd_float3 lightColor;
-    float lightPower;
+    BlinnPhongLightType type;
+    simd_float3 position;
+    simd_float3 color;
+    float intensity;
 };
 typedef struct BlinnPhongLight BlinnPhongLight;
 
