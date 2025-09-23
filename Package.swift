@@ -79,6 +79,7 @@ public let package = Package(
                 "UltraviolenceUI",
                 "GeometryLite3D",
                 .product(name: "Collections", package: "swift-collections"),
+                "MikkTSpace",
             ],
             resources: [
                 .copy("Resources/AppleEventVideo.mp4"),
@@ -109,6 +110,10 @@ public let package = Package(
         .testTarget(
             name: "UltraviolenceExamplesTests",
             dependencies: ["UltraviolenceExamples"]
+        ),
+        .target(
+            name: "MikkTSpace",
+            publicHeadersPath: ".",
         )
     ],
     swiftLanguageModes: [.v6]
