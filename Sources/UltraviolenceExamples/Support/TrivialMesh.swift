@@ -73,6 +73,10 @@ extension TrivialMesh {
             attributes.append(VertexDescriptor.Attribute(semantic: .texcoord, format: .float2, offset: 0, bufferIndex: 0 ))
         }
 
+        if tangents != nil {
+            attributes.append(VertexDescriptor.Attribute(semantic: .tangent, format: .float3, offset: 0, bufferIndex: 0 ))
+        }
+
         // Color attribute (optional)
         if colors != nil {
             attributes.append(VertexDescriptor.Attribute(semantic: .color, format: .float4, offset: 0, bufferIndex: 0))
