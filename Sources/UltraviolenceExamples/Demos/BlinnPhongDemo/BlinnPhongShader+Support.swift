@@ -4,12 +4,12 @@ import UltraviolenceExampleShaders
 import UltraviolenceSupport
 
 public struct BlinnPhongMaterial {
-    public var ambient: ColorSpecifier
-    public var diffuse: ColorSpecifier
-    public var specular: ColorSpecifier
+    public var ambient: ColorSource
+    public var diffuse: ColorSource
+    public var specular: ColorSource
     public var shininess: Float
 
-    public init(ambient: ColorSpecifier, diffuse: ColorSpecifier, specular: ColorSpecifier, shininess: Float) {
+    public init(ambient: ColorSource, diffuse: ColorSource, specular: ColorSource, shininess: Float) {
         self.ambient = ambient
         self.diffuse = diffuse
         self.specular = specular

@@ -66,9 +66,9 @@ namespace BlinnPhong {
     ) {
         uint instance_id = in.instance_id;
 
-        float3 ambientColor = resolveSpecifiedColor(material[instance_id].ambient, in.textureCoordinate).xyz;
-        float3 diffuseColor = resolveSpecifiedColor(material[instance_id].diffuse, in.textureCoordinate).xyz;
-        float3 specularColor = resolveSpecifiedColor(material[instance_id].specular, in.textureCoordinate).xyz;
+        float3 ambientColor = material[instance_id].ambient.resolve(in.textureCoordinate).xyz;
+        float3 diffuseColor = material[instance_id].diffuse.resolve(in.textureCoordinate).xyz;
+        float3 specularColor = material[instance_id].specular.resolve(in.textureCoordinate).xyz;
 
         auto cameraPosition = transforms[instance_id].cameraMatrix.columns[3].xyz;
 

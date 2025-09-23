@@ -1,18 +1,18 @@
 #pragma once
 
-#import "ColorSpecifier.h"
+#import "ColorSource.h"
 #import "Support.h"
 
 struct PBRMaterialArgumentBuffer {
-    ColorSpecifierArgumentBuffer albedo;
+    ColorSourceArgumentBuffer albedo;
     TEXTURE2D(float, access::sample) normal;
-    ColorSpecifierArgumentBuffer metallic;
-    ColorSpecifierArgumentBuffer roughness;
-    ColorSpecifierArgumentBuffer ambientOcclusion;
-    ColorSpecifierArgumentBuffer emissive;
+    ColorSourceArgumentBuffer metallic;
+    ColorSourceArgumentBuffer roughness;
+    ColorSourceArgumentBuffer ambientOcclusion;
+    ColorSourceArgumentBuffer emissive;
     float emissiveIntensity;
-    float clearcoat; // TODO: ColorSpecifierArgumentBuffer
-    float clearcoatRoughness; // TODO: ColorSpecifierArgumentBuffer
+    float clearcoat; // TODO: ColorSourceArgumentBuffer
+    float clearcoatRoughness; // TODO: ColorSourceArgumentBuffer
     float softScattering;
     float3 softScatteringDepth;
     float3 softScatteringTint;

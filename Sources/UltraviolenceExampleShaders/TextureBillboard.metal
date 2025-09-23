@@ -29,13 +29,13 @@ namespace TextureBillboard {
 
     [[fragment]] float4 fragment_main(
         VertexOut in [[stage_in]],
-        constant ColorSpecifierArgumentBuffer &specifierA [[buffer(0)]],
-        constant ColorSpecifierArgumentBuffer &specifierB [[buffer(2)]],
+        constant ColorSourceArgumentBuffer &specifierA [[buffer(0)]],
+        constant ColorSourceArgumentBuffer &specifierB [[buffer(2)]],
         constant void *transformColorParameters [[buffer(4)]]
 
     ) {
-        float4 colorA = resolveSpecifiedColor(specifierA, in.textureCoordinate);
-        float4 colorB = resolveSpecifiedColor(specifierB, in.textureCoordinate);
+        float4 colorA = specifierA.resolve(in.textureCoordinate);
+        float4 colorB = specifierB.resolve(in.textureCoordinate);
         return colorTransform(colorA, colorB, in.textureCoordinate, transformColorParameters);
     }
 

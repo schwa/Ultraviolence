@@ -16,10 +16,10 @@ public struct FlatShader <Content>: Element where Content: Element {
     @UVState
     var fragmentShader: FragmentShader
 
-    var textureSpecifier: ColorSpecifier
+    var textureSpecifier: ColorSource
 
     // TODO: Remove texture specifier and use a parameter/element extension [FILE ME]
-    public init(textureSpecifier: ColorSpecifier, @ElementBuilder content: () throws -> Content) throws {
+    public init(textureSpecifier: ColorSource, @ElementBuilder content: () throws -> Content) throws {
         self.textureSpecifier = textureSpecifier
         self.content = try content()
         let shaderBundle = Bundle.ultraviolenceExampleShaders().orFatalError()

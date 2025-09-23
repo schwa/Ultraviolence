@@ -3,12 +3,12 @@ import UltraviolenceExampleShaders
 import simd
 
 struct PBRMaterialNew: @unchecked Sendable {
-    var albedo: ColorSpecifier
+    var albedo: ColorSource
     var normal: MTLTexture?
-    var metallic: ColorSpecifier
-    var roughness: ColorSpecifier
-    var ambientOcclusion: ColorSpecifier
-    var emissive: ColorSpecifier
+    var metallic: ColorSource
+    var roughness: ColorSource
+    var ambientOcclusion: ColorSource
+    var emissive: ColorSource
     var emissiveIntensity: Float
     var clearcoat: Float
     var clearcoatRoughness: Float
@@ -21,9 +21,9 @@ extension PBRMaterialNew {
     init() {
         albedo = .color([1, 1, 1])
         normal = nil
-        metallic = .color([0, 0, 0]) // TODO: use 1 scalar
-        roughness = .color([0, 0, 0]) // TODO: use 1 scalar
-        ambientOcclusion = .color([1, 1, 1]) // TODO: use 1 scalar
+        metallic = .color(0) // TODO: use 1 scalar
+        roughness = .color(0) // TODO: use 1 scalar
+        ambientOcclusion = .color(1) // TODO: use 1 scalar
         emissive = .color([0, 0, 0])
         emissiveIntensity = 0.0
         clearcoat = 0.0
@@ -72,9 +72,9 @@ extension PBRMaterialNew {
     init(albedo: SIMD3<Float> = [0.5, 0.5, 0.5], metallic: Float = 0.0, roughness: Float = 0.5, ambientOcclusion: Float = 1.0, emissive: SIMD3<Float> = [0.0, 0.0, 0.0], emissiveIntensity: Float = 0.0, clearcoat: Float = 0.0, clearcoatRoughness: Float = 0.04, softScattering: Float = 0.0, softScatteringDepth: SIMD3<Float> = [0.0, 0.0, 0.0], softScatteringTint: SIMD3<Float> = [1.0, 1.0, 1.0]) {
         self.init()
         self.albedo = .color(albedo)
-        self.metallic = .color([metallic, metallic, metallic]) // TODO: Use only scalar
-        self.roughness = .color([roughness, roughness, roughness]) // TODO: Use only scalar
-        self.ambientOcclusion = .color([ambientOcclusion, ambientOcclusion, ambientOcclusion]) // TODO: Use only scalar
+        self.metallic = .color(metallic)
+        self.roughness = .color(roughness)
+        self.ambientOcclusion = .color(ambientOcclusion)
         self.emissive = .color(emissive)
         self.emissiveIntensity = emissiveIntensity
         self.clearcoat = clearcoat

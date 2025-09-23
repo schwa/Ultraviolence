@@ -1,6 +1,6 @@
 #import <metal_stdlib>
 
-#import "ColorSpecifier.h"
+#import "ColorSource.h"
 #import "UltraviolenceExampleShaders.h"
 
 using namespace metal;
@@ -15,14 +15,14 @@ namespace ColorAdjust {
 
     // TODO: Move
     float2 textureCoordinateForPixel(
-        constant ColorSpecifierArgumentBuffer &specifier,
+        constant ColorSourceArgumentBuffer &specifier,
         uint2 position
     ) {
-        if (specifier.source == kColorSourceTexture2D) {
+        if (specifier.source == kColorSourceTypeTexture2D) {
             float2 size = float2(specifier.texture2D.get_width(), specifier.texture2D.get_height());
             return (float2(position) + 0.5) / size;
         }
-        else if (specifier.source == kColorSourceDepth2D) {
+        else if (specifier.source == kColorSourceTypeDepth2D) {
             float2 size = float2(specifier.depth2D.get_width(), specifier.depth2D.get_height());
             return  (float2(position) + 0.5) / size;
         } else {
@@ -31,14 +31,14 @@ namespace ColorAdjust {
     }
 
     kernel void colorAdjust(
-        constant ColorSpecifierArgumentBuffer &inputSpecifier [[buffer(0)]],
+        constant ColorSourceArgumentBuffer &inputSpecifier [[buffer(0)]],
         constant void *inputParameters [[buffer(1)]],
         texture2d<float, access::read_write> outputTexture [[texture(0)]],
         uint2 thread_position_in_grid [[thread_position_in_grid]]
     ) {
         float2 textureCoordinate = textureCoordinateForPixel(inputSpecifier, thread_position_in_grid);
         textureCoordinate = mapTextureCoordinateFunction(textureCoordinate, inputParameters);
-        const float4 inputColor = resolveSpecifiedColor(inputSpecifier, textureCoordinate);
+        const float4 inputColor = inputSpecifier.resolve(textureCoordinate);
 
         float4 newColor = colorAdjustFunction(inputColor, textureCoordinate, inputParameters);
         outputTexture.write(newColor, thread_position_in_grid);

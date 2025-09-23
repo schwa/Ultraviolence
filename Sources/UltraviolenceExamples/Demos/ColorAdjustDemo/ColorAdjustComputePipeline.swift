@@ -3,7 +3,7 @@ import Ultraviolence
 import UltraviolenceSupport
 
 public struct ColorAdjustComputePipeline <T>: Element {
-    let inputSpecifier: ColorSpecifier
+    let inputSpecifier: ColorSource
     let inputParameters: T
     let outputTexture: MTLTexture
     let kernel: ComputeKernel
@@ -11,7 +11,7 @@ public struct ColorAdjustComputePipeline <T>: Element {
     let colorAdjustGraph: SimpleStitchedFunctionGraph
 
     // TODO: the two VisibleFunction parameters should be documented well.
-    init(inputSpecifier: ColorSpecifier, inputParameters: T, outputTexture: MTLTexture, mapTextureCoordinateFunction: VisibleFunction? = nil, colorAdjustFunction: VisibleFunction) throws {
+    init(inputSpecifier: ColorSource, inputParameters: T, outputTexture: MTLTexture, mapTextureCoordinateFunction: VisibleFunction? = nil, colorAdjustFunction: VisibleFunction) throws {
         self.inputSpecifier = inputSpecifier
         self.inputParameters = inputParameters
         self.outputTexture = outputTexture
@@ -41,7 +41,7 @@ public struct ColorAdjustComputePipeline <T>: Element {
 }
 
 extension ColorAdjustComputePipeline where T == Float {
-    static func gammaAdjustPipeline(inputSpecifier: ColorSpecifier, inputParameters: Float, outputTexture: MTLTexture) -> Self {
+    static func gammaAdjustPipeline(inputSpecifier: ColorSource, inputParameters: Float, outputTexture: MTLTexture) -> Self {
         let shaderLibrary = try! ShaderLibrary(bundle: .ultraviolenceExampleShaders().orFatalError(), namespace: "ColorAdjust")
         let colorAdjustFunction = try! shaderLibrary.function(named: "gamma", type: VisibleFunction.self)
         return try! ColorAdjustComputePipeline(inputSpecifier: inputSpecifier, inputParameters: inputParameters, outputTexture: outputTexture, colorAdjustFunction: colorAdjustFunction)

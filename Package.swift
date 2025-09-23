@@ -24,6 +24,7 @@ public let package = Package(
         .package(url: "https://github.com/schwa/GeometryLite3D", branch: "main"),
         .package(url: "https://github.com/schwa/SwiftGLTF", branch: "main"),
         .package(url: "https://github.com/schwa/Panels", branch: "main"),
+        .package(url: "https://github.com/weichsel/ZIPFoundation.git", from: "0.9.0"),
     ],
     targets: [
         .target(
@@ -36,7 +37,8 @@ public let package = Package(
             name: "UltraviolenceUI",
             dependencies: [
                 "Ultraviolence",
-                "UltraviolenceSupport"
+                "UltraviolenceSupport",
+                "ZIPFoundation"
             ]
         ),
         .target(

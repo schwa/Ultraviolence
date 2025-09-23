@@ -1,5 +1,5 @@
 {
-  "originHash" : "fd7463ef1dad2ec5295e823b84f47a5dbb12577051d8838e2ec63229146e0752",
+  "originHash" : "95bf6dea55fd7e7c1b98df641780b4d7a442ac69432d870e9da8879bb59311da",
   "pins" : [
     {
       "identity" : "geometrylite3d",
@@ -17,6 +17,15 @@
       "state" : {
         "revision" : "1db3b5dcabd648e0316f3a472646e72af24a5bde",
         "version" : "0.1.0"
+      }
+    },
+    {
+      "identity" : "panels",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/schwa/Panels",
+      "state" : {
+        "branch" : "main",
+        "revision" : "cc70504f14f77a44864d8ed7d2508556d8ff3252"
       }
     },
     {
@@ -44,6 +53,15 @@
       "state" : {
         "branch" : "main",
         "revision" : "4160ed7e89b7cfcccf5ff7a0cbfd5b055fada771"
+      }
+    },
+    {
+      "identity" : "zipfoundation",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/weichsel/ZIPFoundation.git",
+      "state" : {
+        "revision" : "02b6abe5f6eef7e3cbd5f247c5cc24e246efcfe0",
+        "version" : "0.9.19"
       }
     }
   ],

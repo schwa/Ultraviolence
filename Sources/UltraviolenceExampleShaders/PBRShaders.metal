@@ -129,11 +129,11 @@ namespace PBR {
         float3 cameraPos = amplifiedUniforms[in.amplificationID].cameraPosition;
 
         // Sample textures or use material values
-        float3 albedo = resolveSpecifiedColor(material.albedo, in.texCoord).rgb;
-        float metallic = resolveSpecifiedColor(material.metallic, in.texCoord).r;
-        float roughness = resolveSpecifiedColor(material.roughness, in.texCoord).r;
-        float ambientOcclusion = resolveSpecifiedColor(material.ambientOcclusion, in.texCoord).r;
-        float3 emissive = resolveSpecifiedColor(material.emissive, in.texCoord).rgb * material.emissiveIntensity;
+        float3 albedo = material.albedo.resolve(in.texCoord).rgb;
+        float metallic = material.metallic.resolve(in.texCoord).r;
+        float roughness = material.roughness.resolve(in.texCoord).r;
+        float ambientOcclusion = material.ambientOcclusion.resolve(in.texCoord).r;
+        float3 emissive = material.emissive.resolve(in.texCoord).rgb * material.emissiveIntensity;
 
         // Normal mapping
         float3 N = normalize(in.worldNormal);

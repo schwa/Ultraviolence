@@ -3,7 +3,8 @@ import simd
 import Ultraviolence
 import UltraviolenceExampleShaders
 
-public enum ColorSpecifier {
+
+public enum ColorSource {
     case texture2D(MTLTexture, MTLSamplerState?)
     case textureCube(MTLTexture, MTLSamplerState?, Int)
     case depth2D(MTLTexture, MTLSamplerState?)
@@ -12,9 +13,14 @@ public enum ColorSpecifier {
     static func texture2D(_ texture: MTLTexture) -> Self {
         .texture2D(texture, nil)
     }
+
+    static func color(_ scalar: Float) -> Self {
+        // TODO: We shouldn't have to do this.
+        .color([scalar, scalar, scalar])
+    }
 }
 
-public extension ColorSpecifier {
+public extension ColorSource {
     var texture2D: MTLTexture? {
         if case let .texture2D(texture, _) = self {
             // TODO: #287 Assert value is correct.
@@ -63,10 +69,10 @@ public extension ColorSpecifier {
     }
 }
 
-public extension ColorSpecifier {
+public extension ColorSource {
     // TODO: We may want some kind of `argumentBufferRepresentable` protocol. Should also support `useResource` [FILE ME]
-    func toArgumentBuffer() -> ColorSpecifierArgumentBuffer {
-        var result = ColorSpecifierArgumentBuffer()
+    func toArgumentBuffer() -> ColorSourceArgumentBuffer {
+        var result = ColorSourceArgumentBuffer()
         switch self {
         case .texture2D(let texture, let sampler):
             result.source = .texture2D
@@ -90,10 +96,10 @@ public extension ColorSpecifier {
 }
 
 extension Element {
-    func useResource(_ colorSpecifier: ColorSpecifier, usage: MTLResourceUsage, stages: MTLRenderStages) -> some Element {
+    func useResource(_ color: ColorSource, usage: MTLResourceUsage, stages: MTLRenderStages) -> some Element {
         self
-            .useResource(colorSpecifier.texture2D, usage: usage, stages: stages)
-            .useResource(colorSpecifier.textureCube, usage: usage, stages: stages)
+            .useResource(color.texture2D, usage: usage, stages: stages)
+            .useResource(color.textureCube, usage: usage, stages: stages)
         // TODO: This causes a hang. [FILE ME]
 //            .useResource(colorSpecifier.depth2D, usage: usage, stages: stages)
     }

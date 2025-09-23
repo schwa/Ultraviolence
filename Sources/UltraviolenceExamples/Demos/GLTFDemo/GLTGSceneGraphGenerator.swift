@@ -9,12 +9,16 @@ import SwiftGLTF
 import GeometryLite3D
 import UltraviolenceSupport
 import UltraviolenceExampleShaders
+import MetalKit
 
 class GLTGSceneGraphGenerator {
     let container: Container
+    let textureLoader: MTKTextureLoader
 
     init(container: Container) {
         self.container = container
+        let device = _MTLCreateSystemDefaultDevice()
+        textureLoader = MTKTextureLoader(device: device)
     }
 
     var document: Document {
@@ -127,24 +131,35 @@ class GLTGSceneGraphGenerator {
     func makeMaterial(from material: SwiftGLTF.Material) throws -> PBRMaterialNew {
         var uvMaterial = PBRMaterialNew()
         if let pbrMetallicRoughness = material.pbrMetallicRoughness {
-//            uvMaterial.albedo = pbrMetallicRoughness.baseColorFactor.xyz
-//            uvMaterial.metallic = pbrMetallicRoughness.metallicFactor
-//            uvMaterial.roughness = pbrMetallicRoughness.roughnessFactor
-//            if let textureInfo = pbrMetallicRoughness.baseColorTexture {
-//                let texture = try textureInfo.index.resolve(in: document)
-//                let source = try texture.source!.resolve(in: document)
-//                let data = try container.data(for: source)
-//                let image = try CGImage.image(with: data)
-//                print(image)
-//                ////                let textureResource = try TextureResource.generate(from: image, options: .init(semantic: .color))
-//                ////                reTexture = MaterialParameters.Texture(textureResource)
-//            }
+            uvMaterial.albedo = .color(pbrMetallicRoughness.baseColorFactor.xyz)
+            uvMaterial.metallic = .color(pbrMetallicRoughness.metallicFactor)
+            uvMaterial.roughness = .color(pbrMetallicRoughness.roughnessFactor)
+            if let textureInfo = pbrMetallicRoughness.baseColorTexture {
+                let mtlTexture = try mtlTexture(for: textureInfo)
+                uvMaterial.albedo = .texture2D(mtlTexture)
+            }
+            if let textureInfo = pbrMetallicRoughness.metallicRoughnessTexture {
+                let mtlTexture = try mtlTexture(for: textureInfo)
+                uvMaterial.metallic = .texture2D(mtlTexture)
+                uvMaterial.roughness = .texture2D(mtlTexture)
+
+            }
         }
-
-        print(uvMaterial)
-
+        
         return uvMaterial
     }
+}
+
+extension GLTGSceneGraphGenerator {
+    func mtlTexture(for textureInfo: TextureInfo) throws -> MTLTexture {
+        let texture = try textureInfo.index.resolve(in: document)
+        let source = try texture.source!.resolve(in: document)
+        let data = try container.data(for: source)
+        let image = try CGImage.image(with: data)
+        let mtlTexture = try textureLoader.newTexture(cgImage: image, options: [:])
+        return mtlTexture
+    }
+
 }
 
 extension Container {
