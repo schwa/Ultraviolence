@@ -1,6 +1,6 @@
 #import <metal_stdlib>
-#import "include/UltraviolenceExampleShaders.h"
-#import "include/WireframeShader.h"
+#import "UltraviolenceExampleShaders.h"
+#import "WireframeShader.h"
 
 using namespace metal;
 

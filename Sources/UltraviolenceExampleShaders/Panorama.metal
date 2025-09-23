@@ -1,5 +1,5 @@
-#import "include/UltraviolenceExampleShaders.h"
-#import "include/Panorama.h"
+#import "UltraviolenceExampleShaders.h"
+#import "Panorama.h"
 #include <metal_stdlib>
 
 using namespace metal;

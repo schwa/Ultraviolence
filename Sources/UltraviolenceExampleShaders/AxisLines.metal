@@ -1,5 +1,5 @@
 #include <metal_stdlib>
-#include "include/UltraviolenceExampleShaders.h"
+#include "UltraviolenceExampleShaders.h"
 using namespace metal;
 
 namespace AxisLines {

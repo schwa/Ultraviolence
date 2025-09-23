@@ -1,7 +1,7 @@
 #import <metal_stdlib>
 #import <simd/simd.h>
 #import <metal_logging>
-#import "include/UltraviolenceExampleShaders.h"
+#import "UltraviolenceExampleShaders.h"
 
 using namespace metal;
 

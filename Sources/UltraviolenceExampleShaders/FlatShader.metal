@@ -1,5 +1,5 @@
 #import <metal_stdlib>
-#import "include/UltraviolenceExampleShaders.h"
+#import "UltraviolenceExampleShaders.h"
 
 using namespace metal;
 

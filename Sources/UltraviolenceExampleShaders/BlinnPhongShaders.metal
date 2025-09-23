@@ -1,9 +1,9 @@
 #import <metal_stdlib>
 #import <simd/simd.h>
-// #include "include/BlinnPhongShaders.h"
-// #include "include/Support.h"
-// #include "include/Shaders.h"
-#import "include/BlinnPhongShaders.h"
+// #include "BlinnPhongShaders.h"
+// #include "Support.h"
+// #include "Shaders.h"
+#import "BlinnPhongShaders.h"
 
 // https://en.wikipedia.org/wiki/Blinn–Phong_reflection_model
 
