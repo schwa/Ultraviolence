@@ -10,7 +10,6 @@ namespace PBR {
     typedef PBRMaterial Material;
     typedef PBRUniforms Uniforms;
     typedef PBRAmplifiedUniforms AmplifiedUniforms;
-    typedef PBRLight Light;
 
     struct VertexIn {
         float3 position [[attribute(0)]];
@@ -122,7 +121,7 @@ namespace PBR {
         constant Uniforms& uniforms [[buffer(1)]],
         constant AmplifiedUniforms *amplifiedUniforms [[buffer(2)]],
         constant Light* lights [[buffer(3)]],
-        constant uint& lightCount [[buffer(4)]],
+        constant LightingArgumentBuffer &lighting [[buffer(5)]],
         texture2d<float> albedoTexture [[texture(0)]],
         texture2d<float> normalTexture [[texture(1)]],
         texture2d<float> metallicRoughnessTexture [[texture(2)]],
@@ -189,18 +188,19 @@ namespace PBR {
         float3 Lo = float3(0.0);
 
         // Calculate lighting from each light source
-        for (uint i = 0; i < lightCount && i < 16; ++i) {
-            Light light = lights[i];
+        for (int i = 0; i < lighting.lightCount && i < 16; ++i) {
+            const Light light = lighting.lights[i];
+            const float3 lightPosition = lighting.lightPositions[i];
 
             float3 L;
             float attenuation = 1.0;
 
             if (light.type == 0) { // Directional light
                 // For directional lights, position is the direction TO the light
-                L = normalize(light.position);
+                L = normalize(lightPosition);
             } else { // Point light
-                L = normalize(light.position - in.worldPosition);
-                float distance = length(light.position - in.worldPosition);
+                L = normalize(lightPosition - in.worldPosition);
+                float distance = length(lightPosition - in.worldPosition);
                 attenuation = 1.0 / (distance * distance);
             }
 

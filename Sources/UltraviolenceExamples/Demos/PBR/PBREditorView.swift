@@ -6,9 +6,8 @@ struct PBREditorView: View {
     @Binding var selectedMaterial: MaterialPreset
     @Binding var customMaterial: PBRMaterial
     @Binding var animateLights: Bool
-    @Binding var lightIntensity: Float
-    @Binding var lightPosition: SIMD3<Float>
-    @Binding var lights: [PBRLight]
+//    @Binding var lightIntensity: Float
+//    @Binding var lightPosition: SIMD3<Float>
 
     var body: some View {
         Form {
@@ -26,38 +25,38 @@ struct PBREditorView: View {
 
             Section("Lighting") {
                 Toggle("Animate Lights", isOn: $animateLights)
-
-                if !animateLights {
-                    LabeledContent("Intensity") {
-                        HStack {
-                            Slider(value: $lightIntensity, in: 0...50)
-                            Text("\(lightIntensity, format: .number.precision(.fractionLength(1)))")
-                                .monospacedDigit()
-                                .frame(width: 50)
-                        }
-                    }
-
-                    LabeledContent("Position") {
-                        HStack {
-                            TextField("X", value: $lightPosition.x, format: .number)
-                            TextField("Y", value: $lightPosition.y, format: .number)
-                            TextField("Z", value: $lightPosition.z, format: .number)
-                        }
-                        .textFieldStyle(.roundedBorder)
-                    }
-                }
+//
+//                if !animateLights {
+//                    LabeledContent("Intensity") {
+//                        HStack {
+//                            Slider(value: $lightIntensity, in: 0...50)
+//                            Text("\(lightIntensity, format: .number.precision(.fractionLength(1)))")
+//                                .monospacedDigit()
+//                                .frame(width: 50)
+//                        }
+//                    }
+//
+//                    LabeledContent("Position") {
+//                        HStack {
+//                            TextField("X", value: $lightPosition.x, format: .number)
+//                            TextField("Y", value: $lightPosition.y, format: .number)
+//                            TextField("Z", value: $lightPosition.z, format: .number)
+//                        }
+//                        .textFieldStyle(.roundedBorder)
+//                    }
+//                }
             }
         }
-        .onChange(of: lightIntensity) {
-            if !animateLights, !lights.isEmpty {
-                lights[0].intensity = lightIntensity
-            }
-        }
-        .onChange(of: lightPosition) {
-            if !animateLights, !lights.isEmpty {
-                lights[0].position = lightPosition
-            }
-        }
+//        .onChange(of: lightIntensity) {
+//            if !animateLights, !lights.isEmpty {
+//                lights[0].intensity = lightIntensity
+//            }
+//        }
+//        .onChange(of: lightPosition) {
+//            if !animateLights, !lights.isEmpty {
+//                lights[0].position = lightPosition
+//            }
+//        }
     }
 
     @ViewBuilder

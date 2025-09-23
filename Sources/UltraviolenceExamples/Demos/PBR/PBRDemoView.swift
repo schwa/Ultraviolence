@@ -15,19 +15,13 @@ public struct PBRDemoView: View {
     @State private var selectedMaterial = MaterialPreset.gold
     @State private var customMaterial = PBRMaterial()
     @State private var animateLights = true
-    @State private var lightIntensity: Float = 10.0
-    @State private var lightPosition = SIMD3<Float>(5, 5, 5)
     @State private var showingInspector = true
     @State private var animationStartTime: Date?
     @State private var animationTime: Double = 0
+    @State private var lighting: Lighting
 
     let teapot: MTKMesh
     let environmentTexture: MTLTexture
-
-    @State private var lights: [PBRLight] = [
-        PBRLight(position: [5, 5, 5], color: [1, 1, 1], intensity: 10.0, type: .point),
-        PBRLight(position: normalize([0.5, 1.0, 0.5]), color: [1.0, 0.95, 0.8], intensity: 3.0, type: .directional)
-    ]
 
     public init() {
         teapot = MTKMesh.teapot(options: [.generateTangentBasis, .generateTextureCoordinatesIfMissing, .useSimpleTextureCoordinates])
@@ -40,6 +34,8 @@ public struct PBRDemoView: View {
             .generateMipmaps: true,
             .SRGB: false
         ])
+
+        lighting = try! .demo()
     }
 
     public var body: some View {
@@ -50,30 +46,15 @@ public struct PBRDemoView: View {
                     let viewMatrix = cameraMatrix.inverse
                     let viewProjectionMatrix = projectionMatrix * viewMatrix
 
-                    // Prepare light visualization boxes
-                    let lightBoxes: [BoxInstance] = lights.compactMap { light in
-                        guard light.type == .point else { return nil }
-                        let pos = light.position
-                        return BoxInstance(
-                            min: pos - SIMD3<Float>(repeating: 0.2),
-                            max: pos + SIMD3<Float>(repeating: 0.2),
-                            color: SIMD4<Float>(light.color.x, light.color.y, light.color.z, 1.0)
-                        )
-                    }
 
                     try RenderPass {
                         try AxisLinesRenderPipeline(mvpMatrix: viewProjectionMatrix, scale: 10_000.0)
                         try AxisAlignedWireframeBoxesRenderPipeline(mvpMatrix: viewProjectionMatrix, boxes: [.init(min: [-10, -10, -10], max: [10, 10, 10], color: [1, 1, 1, 1])])
-
-                        // Visualize light positions as small colored boxes
-                        if !lightBoxes.isEmpty {
-                            try AxisAlignedWireframeBoxesRenderPipeline(mvpMatrix: viewProjectionMatrix, boxes: lightBoxes)
-                        }
-
+                        LightingVisualizer(cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix, lighting: lighting)
                         try PBRShader {
-                            Draw(mtkMesh: teapot)
+                            try Draw(mtkMesh: teapot)
                                 .pbrUniforms(material: currentMaterial, modelTransform: .identity, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
-                                .pbrLighting(lights)
+                                .lighting(lighting)
                                 .pbrEnvironment(environmentTexture)
                                 .parameter("frameUniforms", functionType: .vertex, value: context.frameUniforms)
                                 .parameter("frameUniforms", functionType: .fragment, value: context.frameUniforms)
@@ -94,9 +75,7 @@ public struct PBRDemoView: View {
                         animationTime = timeline.date.timeIntervalSince(startTime)
                     }
 
-                    if animateLights {
-                        updateAnimatedLights()
-                    }
+                    LightingAnimator.run(date: timeline.date, lighting: &lighting)
                 }
             }
         }
@@ -104,10 +83,7 @@ public struct PBRDemoView: View {
             PBREditorView(
                 selectedMaterial: $selectedMaterial,
                 customMaterial: $customMaterial,
-                animateLights: $animateLights,
-                lightIntensity: $lightIntensity,
-                lightPosition: $lightPosition,
-                lights: $lights
+                animateLights: $animateLights
             )
             .padding()
             .inspectorColumnWidth(ideal: 400)
@@ -148,21 +124,21 @@ public struct PBRDemoView: View {
             sin(sunAngle) * 0.5
         ))
 
-        lights = [
-            PBRLight(position: animatedPosition, color: color, intensity: Float(animatedIntensity), type: .point),
-            PBRLight(position: sunDirection, color: [1.0, 0.95, 0.8], intensity: 3.0, type: .directional),
-            // Add a second orbiting light in opposite phase
-            PBRLight(
-                position: SIMD3<Float>(
-                    cos(time + .pi) * radius,
-                    height,
-                    sin(time + .pi) * radius
-                ),
-                color: hsvToRgb(h: (hue + 0.5).truncatingRemainder(dividingBy: 1.0) * 60, s: 0.8, v: 1.0),
-                intensity: Float(animatedIntensity * 0.7),
-                type: .point
-            )
-        ]
+//        lights = [
+//            PBRLight(position: animatedPosition, color: color, intensity: Float(animatedIntensity), type: .point),
+//            PBRLight(position: sunDirection, color: [1.0, 0.95, 0.8], intensity: 3.0, type: .directional),
+//            // Add a second orbiting light in opposite phase
+//            PBRLight(
+//                position: SIMD3<Float>(
+//                    cos(time + .pi) * radius,
+//                    height,
+//                    sin(time + .pi) * radius
+//                ),
+//                color: hsvToRgb(h: (hue + 0.5).truncatingRemainder(dividingBy: 1.0) * 60, s: 0.8, v: 1.0),
+//                intensity: Float(animatedIntensity * 0.7),
+//                type: .point
+//            )
+//        ]
     }
 
     private func hsvToRgb(h: Float, s: Float, v: Float) -> SIMD3<Float> {

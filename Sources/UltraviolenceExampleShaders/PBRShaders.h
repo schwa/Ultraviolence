@@ -33,18 +33,3 @@ struct PBRAmplifiedUniforms {
     float4x4 viewProjectionMatrix;
     float3 cameraPosition;
 };
-
-// Light types
-typedef UV_ENUM(uint, PBRLightType) {
-    kPBRLightTypeDirectional = 0,
-    kPBRLightTypePoint = 1,
-};
-
-// Light structure
-struct PBRLight {
-    float3 position;
-    float3 color;
-    float intensity;
-    PBRLightType type;
-};
-

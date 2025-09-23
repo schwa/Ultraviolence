@@ -18,6 +18,7 @@ public struct FlatShader <Content>: Element where Content: Element {
 
     var textureSpecifier: ColorSpecifier
 
+    // TODO: Remove texture specifier and use a parameter/element extension [FILE ME]
     public init(textureSpecifier: ColorSpecifier, @ElementBuilder content: () throws -> Content) throws {
         self.textureSpecifier = textureSpecifier
         self.content = try content()

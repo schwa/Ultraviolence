@@ -52,12 +52,12 @@ public extension Element {
             .parameter("amplifiedUniforms", functionType: .fragment, values: viewUniforms)
     }
 
-    func pbrLighting(_ lights: [PBRLight]) -> some Element {
-        let lightCount = UInt32(lights.count)
-        return self
-            .parameter("lights", functionType: .fragment, values: lights)
-            .parameter("lightCount", functionType: .fragment, value: lightCount)
-    }
+//    func pbrLighting(_ lights: light) -> some Element {
+//        let lightCount = UInt32(lights.count)
+//        return self
+//            .parameter("lights", functionType: .fragment, values: lights)
+//            .parameter("lightCount", functionType: .fragment, value: lightCount)
+//    }
 
     func pbrEnvironment(_ texture: MTLTexture?) -> some Element {
         self

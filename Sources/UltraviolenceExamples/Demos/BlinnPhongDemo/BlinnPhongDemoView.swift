@@ -18,37 +18,17 @@ public struct BlinnPhongDemoView: View {
 
     @State
     private var lighting: Lighting
-
     @State
     private var skyboxTexture: MTLTexture
-
-    let lightMarker = MTKMesh.sphere(extent: [0.1, 0.1, 0.1]).relabeled("light-marker-0")
-
     @State
     private var projection: any ProjectionProtocol = PerspectiveProjection()
-
     @State
     private var cameraMatrix: simd_float4x4 = .init(translation: [0, 2, 6])
 
     public init() {
         do {
+            self.lighting = try! .demo()
             let device = _MTLCreateSystemDefaultDevice()
-
-            let lights = [
-                Light(type: .point, color: [1, 0, 0], intensity: 50)
-            ]
-            let positions = [
-                SIMD3<Float>(1, 5, 0)
-            ]
-            assert(lights.count == positions.count)
-            let lighting = Lighting(
-                ambientLightColor: [0, 0, 0],
-                count: lights.count,
-                lights: try device.makeBuffer(view: .init(count: lights.count), values: lights, options: []),
-                lightPositions: try device.makeBuffer(view: .init(count: positions.count), values: positions, options: [])
-            )
-            self.lighting = lighting
-
             self.skyboxTexture = try! device.makeTextureCubeFromCrossTexture(texture: try device.makeTexture(name: "Skybox", bundle: .main))
         }
         catch {
@@ -69,19 +49,7 @@ public struct BlinnPhongDemoView: View {
 
                         GridShader(projectionMatrix: projectionMatrix, cameraMatrix: cameraMatrix)
 
-                        let lightPosition = lighting.lightPositions[SIMD3<Float>.self, 0]
-                        let light = lighting.lights[Light.self, 0]
-
-                        let transforms = Transforms(modelMatrix: .init(translation: lightPosition), cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
-                        try FlatShader(textureSpecifier: .color(light.color)) {
-                            Draw { encoder in
-                                encoder.setVertexBuffers(of: lightMarker)
-                                encoder.draw(lightMarker)
-                            }
-                            .transforms(transforms)
-                        }
-                        .vertexDescriptor(lightMarker.vertexDescriptor)
-                        .depthCompare(function: .less, enabled: true)
+                        LightingVisualizer(cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix, lighting: lighting)
 
                         try BlinnPhongShader {
                             try ForEach(models) { model in
@@ -102,21 +70,10 @@ public struct BlinnPhongDemoView: View {
                 }
                 .metalDepthStencilPixelFormat(.depth32Float)
                 .onChange(of: timeline.date) {
-                    animateLights(date: timeline.date)
+                    LightingAnimator.run(date: timeline.date, lighting: &lighting)
                 }
             }
         }
-    }
-
-    func animateLights(date: Date) {
-        let date = date.timeIntervalSinceReferenceDate
-        let angle = LinearTimingFunction().value(time: date, period: 1, in: 0 ... 2 * .pi)
-        lighting.lights[Light.self, 0].color = [
-            ForwardAndReverseTimingFunction(SinusoidalTimingFunction()).value(time: date, period: 1.0, offset: 0.0, in: 0.5 ... 1.0),
-            ForwardAndReverseTimingFunction(SinusoidalTimingFunction()).value(time: date, period: 1.2, offset: 0.2, in: 0.5 ... 1.0),
-            ForwardAndReverseTimingFunction(SinusoidalTimingFunction()).value(time: date, period: 1.4, offset: 0.6, in: 0.5 ... 1.0)
-        ]
-        lighting.lightPositions[SIMD3<Float>.self, 0] = simd_quatf(angle: angle, axis: [0, 1, 0]).act([1, 5, 0])
     }
 }
 

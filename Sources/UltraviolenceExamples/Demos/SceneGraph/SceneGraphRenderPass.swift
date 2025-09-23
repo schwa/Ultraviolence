@@ -33,7 +33,7 @@ struct SceneGraphRenderPass: Element {
             try RenderPass {
                 GridShader(projectionMatrix: projectionMatrix, cameraMatrix: cameraMatrix)
                 try blinnPhong
-//                try pbr
+                try pbr
             }
         }
     }
