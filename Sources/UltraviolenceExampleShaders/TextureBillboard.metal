@@ -20,50 +20,6 @@ namespace TextureBillboard {
 
     // MARK: -
 
-    // TODO: Move this into SHARED helper function - SHARED WITH TEXTUREBILLBOARD & FLATSHADER & BLINN PHONG
-    float4 resolveSpecifiedColor(
-        constant ColorSpecifierArgumentBuffer &specifier,
-        float2 textureCoordinate
-    ) {
-        if (specifier.source == kColorSourceColor) {
-            return float4(specifier.color, 1);
-        } else if (specifier.source == kColorSourceTexture2D) {
-            return specifier.texture2D.sample(specifier.sampler, textureCoordinate);
-        } else if (specifier.source == kColorSourceTextureCube) {
-            float2 uv = textureCoordinate;
-            float3 direction;
-            switch (specifier.slice) {
-            case 0:
-                direction = float3(1.0, uv.y, -uv.x);
-                break; // +X
-            case 1:
-                direction = float3(-1.0, uv.y, uv.x);
-                break; // -X
-            case 2:
-                direction = float3(uv.x, 1.0, -uv.y);
-                break; // +Y
-            case 3:
-                direction = float3(uv.x, -1.0, uv.y);
-                break; // -Y
-            case 4:
-                direction = float3(uv.x, uv.y, 1.0);
-                break; // +Z
-            case 5:
-                direction = float3(-uv.x, uv.y, -1.0);
-                break; // -Z
-            }
-            auto color = specifier.textureCube.sample(specifier.sampler, direction);
-            color.a = 1.0;
-            return color;
-        } else if (specifier.source == kColorSourceDepth2D) {
-            return specifier.depth2D.sample(specifier.sampler, textureCoordinate);
-        } else {
-            return float4(0.0, 0.0, 0.0, 0.0);
-        }
-    }
-
-    // MARK: -
-
     [[vertex]] VertexOut vertex_main(const VertexIn in [[stage_in]]) {
         VertexOut out;
         out.position = float4(in.position, 0.0, 1.0);

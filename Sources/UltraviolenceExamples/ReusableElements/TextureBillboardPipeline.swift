@@ -82,8 +82,8 @@ struct TextureBillboardPipeline: Element {
                     encoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: positions.count)
                 }
                 // TODO: We really need an argument buffer abstraction.
-                .parameter("specifierA", value: specifierA.toColorSpecifierArgmentBuffer())
-                .parameter("specifierB", value: specifierB.toColorSpecifierArgmentBuffer())
+                .parameter("specifierA", value: specifierA.toArgumentBuffer())
+                .parameter("specifierB", value: specifierB.toArgumentBuffer())
                 .parameter("transformColorParameters", value: Int32(0)) // TODO: Placeholder
                 .useResource(specifierA.texture2D, usage: .read, stages: .fragment)
                 .useResource(specifierA.textureCube, usage: .read, stages: .fragment)

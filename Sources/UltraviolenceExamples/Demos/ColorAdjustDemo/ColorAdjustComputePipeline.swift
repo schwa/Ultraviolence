@@ -28,7 +28,7 @@ public struct ColorAdjustComputePipeline <T>: Element {
             try ComputePipeline(computeKernel: kernel) {
                 try ComputeDispatch(threadsPerGrid: [outputTexture.width, outputTexture.height, 1], threadsPerThreadgroup: [16, 16, 1])
                     // TODO: #280 Maybe a .argumentBuffer() is a better solution
-                    .parameter("inputSpecifier", value: inputSpecifier.toColorSpecifierArgmentBuffer())
+                    .parameter("inputSpecifier", value: inputSpecifier.toArgumentBuffer())
                     .parameter("inputParameters", value: inputParameters)
                     .parameter("outputTexture", texture: outputTexture)
                     .useComputeResource(inputSpecifier.texture2D, usage: .read)

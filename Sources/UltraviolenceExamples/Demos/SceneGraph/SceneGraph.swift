@@ -6,7 +6,7 @@ class SceneGraph {
     class Node: Identifiable {
         enum Material {
             case blinnPhong(BlinnPhongMaterial)
-            case pbr(PBRMaterial)
+            case pbr(PBRMaterialNew)
         }
 
 

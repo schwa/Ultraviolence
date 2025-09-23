@@ -35,7 +35,7 @@ extension SceneGraph {
         let sphereNode = Node(sceneGraph: nil, parent: rootNode, transform: .init(translation: [1, 0, 0]))
         let sphereTrivialMesh = TrivialMesh.sphere().generateTangents()
         sphereNode.mesh = Mesh(sphereTrivialMesh, device: device)
-        sphereNode.material = .pbr(PBRMaterial())
+        sphereNode.material = .pbr(PBRMaterialNew())
 
         // Set up hierarchy
         rootNode.children = [cameraNode, lightNode, cubeNode, sphereNode]

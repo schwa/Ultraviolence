@@ -6,8 +6,6 @@
 using namespace metal;
 
 namespace PBR {
-
-    typedef PBRMaterial Material;
     typedef PBRUniforms Uniforms;
     typedef PBRAmplifiedUniforms AmplifiedUniforms;
 
@@ -120,53 +118,27 @@ namespace PBR {
         constant FrameUniforms& frameUniforms [[buffer(0)]],
         constant Uniforms& uniforms [[buffer(1)]],
         constant AmplifiedUniforms *amplifiedUniforms [[buffer(2)]],
-        constant Light* lights [[buffer(3)]],
+        constant PBRMaterialArgumentBuffer& material [[buffer(3)]],
+        constant Light* lights [[buffer(4)]],
         constant LightingArgumentBuffer &lighting [[buffer(5)]],
-        texture2d<float> albedoTexture [[texture(0)]],
-        texture2d<float> normalTexture [[texture(1)]],
-        texture2d<float> metallicRoughnessTexture [[texture(2)]],
-        texture2d<float> aoTexture [[texture(3)]],
-        texture2d<float> emissiveTexture [[texture(4)]],
         texture2d<float> environmentTexture [[texture(5)]]
-      ) {
+    ) {
         constexpr sampler textureSampler(mag_filter::linear, min_filter::linear, address::repeat);
 
         // Get camera position for this view
         float3 cameraPos = amplifiedUniforms[in.amplificationID].cameraPosition;
 
         // Sample textures or use material values
-        float3 albedo = uniforms.material.albedo;
-        float metallic = uniforms.material.metallic;
-        float roughness = uniforms.material.roughness;
-        float ao = uniforms.material.ao;
-
-
-        float3 emissive = uniforms.material.emissive * uniforms.material.emissiveIntensity;
-
-        // If textures are bound, use them instead
-        if (!is_null_texture(albedoTexture)) {
-            float4 albedoSample = albedoTexture.sample(textureSampler, in.texCoord);
-            albedo = albedoSample.rgb;
-        }
-
-        if (!is_null_texture(metallicRoughnessTexture)) {
-            float4 metallicRoughnessSample = metallicRoughnessTexture.sample(textureSampler, in.texCoord);
-            metallic = metallicRoughnessSample.b;  // Blue channel for metallic
-            roughness = metallicRoughnessSample.g; // Green channel for roughness
-        }
-
-        if (!is_null_texture(aoTexture)) {
-            ao = aoTexture.sample(textureSampler, in.texCoord).r;
-        }
-
-        if (!is_null_texture(emissiveTexture)) {
-            emissive = emissiveTexture.sample(textureSampler, in.texCoord).rgb * uniforms.material.emissiveIntensity;
-        }
+        float3 albedo = resolveSpecifiedColor(material.albedo, in.texCoord).rgb;
+        float metallic = resolveSpecifiedColor(material.metallic, in.texCoord).r;
+        float roughness = resolveSpecifiedColor(material.roughness, in.texCoord).r;
+        float ambientOcclusion = resolveSpecifiedColor(material.ambientOcclusion, in.texCoord).r;
+        float3 emissive = resolveSpecifiedColor(material.emissive, in.texCoord).rgb * material.emissiveIntensity;
 
         // Normal mapping
         float3 N = normalize(in.worldNormal);
-        if (!is_null_texture(normalTexture)) {
-            float3 normalSample = normalTexture.sample(textureSampler, in.texCoord).rgb;
+        if (!is_null_texture(material.normal)) {
+            float3 normalSample = material.normal.sample(textureSampler, in.texCoord).xyz;
             normalSample = normalSample * 2.0 - 1.0; // Convert from [0,1] to [-1,1]
 
             // Create TBN matrix
@@ -238,14 +210,14 @@ namespace PBR {
 
             // Soft scattering - cheap subsurface scattering approximation
             // Simulates light diffusion within translucent materials like wax, skin, or marble
-            if (uniforms.material.softScattering > 0.001) {
+            if (material.softScattering > 0.001) {
                 // View-dependent edge softening
                 // Slightly offset toward normal
                 float3 H_soft = normalize(L + N * 0.3);
                 float VdotH = saturate(dot(V, -H_soft));
 
                 // Power function for falloff - different per color channel. Red softens most, blue least
-                float3 scatter = pow(saturate(VdotH), float3(1.0, 2.0, 4.0) / uniforms.material.softScatteringDepth);
+                float3 scatter = pow(saturate(VdotH), float3(1.0, 2.0, 4.0) / material.softScatteringDepth);
 
                 // Wrapped diffuse for shadow softening
                 float wrap = 0.3;
@@ -256,15 +228,15 @@ namespace PBR {
                 float edgeSoftness = 1.0 - NdotV * NdotV;
 
                 // Combine wrapped diffuse and edge softening
-                float3 softContribution = albedo * uniforms.material.softScatteringTint * radiance * (NdotL_wrapped * 0.5 + scatter * edgeSoftness) * uniforms.material.softScattering;
+                float3 softContribution = albedo * material.softScatteringTint * radiance * (NdotL_wrapped * 0.5 + scatter * edgeSoftness) * material.softScattering;
 
                 Lo += softContribution;
             }
 
             // Clearcoat layer (additive on top of base layer)
-            if (uniforms.material.clearcoat > 0.001) {
+            if (material.clearcoat > 0.001) {
                 float3 clearcoatF0 = float3(0.04); // IOR 1.5
-                float clearcoatRoughness = uniforms.material.clearcoatRoughness;
+                float clearcoatRoughness = material.clearcoatRoughness;
 
                 // Clearcoat BRDF
                 float clearcoatNDF = distributionGGX(N, H, clearcoatRoughness);
@@ -275,7 +247,7 @@ namespace PBR {
                                        (4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001);
 
                 // Add clearcoat contribution
-                Lo += clearcoatBRDF * radiance * NdotL * uniforms.material.clearcoat;
+                Lo += clearcoatBRDF * radiance * NdotL * material.clearcoat;
             }
         }
 
@@ -310,24 +282,24 @@ namespace PBR {
             float3 diffuseEnv = irradiance * albedo * kD;
             float3 specularEnv = envColor * F;
 
-            environmentContribution = (diffuseEnv + specularEnv) * ao;
+            environmentContribution = (diffuseEnv + specularEnv) * ambientOcclusion;
 
             // Clearcoat environment reflection
-            if (uniforms.material.clearcoat > 0.001) {
+            if (material.clearcoat > 0.001) {
                 float3 clearcoatF0 = float3(0.04);
                 float3 clearcoatF = fresnelSchlick(max(dot(N, V), 0.0), clearcoatF0);
 
                 // Sample environment at clearcoat roughness
-                float clearcoatMipLevel = uniforms.material.clearcoatRoughness * 8.0;
+                float clearcoatMipLevel = material.clearcoatRoughness * 8.0;
                 float3 clearcoatEnv = environmentTexture.sample(envSampler, envUV, level(clearcoatMipLevel)).rgb;
 
                 // Add clearcoat environment contribution
-                environmentContribution += clearcoatEnv * clearcoatF * uniforms.material.clearcoat * ao;
+                environmentContribution += clearcoatEnv * clearcoatF * material.clearcoat * ambientOcclusion;
             }
         }
 
         // Ambient lighting (simple approximation) - increased for visibility
-        float3 ambient = float3(0.2) * albedo * ao;
+        float3 ambient = float3(0.2) * albedo * ambientOcclusion;
 
         float3 color = ambient + Lo + emissive + environmentContribution;
 

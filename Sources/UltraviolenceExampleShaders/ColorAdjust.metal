@@ -1,4 +1,6 @@
 #import <metal_stdlib>
+
+#import "ColorSpecifier.h"
 #import "UltraviolenceExampleShaders.h"
 
 using namespace metal;
@@ -11,31 +13,11 @@ namespace ColorAdjust {
     [[ visible ]]
     float4 colorAdjustFunction(float4 inputColor, float2 inputCoordinate, constant void *parameters);
 
-
-
-    // TODO: Move
-    float4 resolveSpecifiedColor(
-                                 constant ColorSpecifierArgumentBuffer &specifier,
-                                 float2 textureCoordinate,
-                                 thread bool &discard
-                                 ) {
-        if (specifier.source == kColorSourceColor) {
-            return float4(specifier.color, 1);
-        } else if (specifier.source == kColorSourceTexture2D) {
-            return specifier.texture2D.sample(specifier.sampler, textureCoordinate);
-        } else if (specifier.source == kColorSourceDepth2D) {
-            return specifier.depth2D.sample(specifier.sampler, textureCoordinate);
-        } else {
-            discard = true;
-            return float4(0.0, 0.0, 0.0, 0.0);
-        }
-    }
-
     // TODO: Move
     float2 textureCoordinateForPixel(
-                                     constant ColorSpecifierArgumentBuffer &specifier,
-                                     uint2 position
-                                     ) {
+        constant ColorSpecifierArgumentBuffer &specifier,
+        uint2 position
+    ) {
         if (specifier.source == kColorSourceTexture2D) {
             float2 size = float2(specifier.texture2D.get_width(), specifier.texture2D.get_height());
             return (float2(position) + 0.5) / size;
@@ -49,15 +31,14 @@ namespace ColorAdjust {
     }
 
     kernel void colorAdjust(
-                            constant ColorSpecifierArgumentBuffer &inputSpecifier [[buffer(0)]],
-                            constant void *inputParameters [[buffer(1)]],
-                            texture2d<float, access::read_write> outputTexture [[texture(0)]],
-                            uint2 thread_position_in_grid [[thread_position_in_grid]]
-                            ) {
-        bool discard = false;
+        constant ColorSpecifierArgumentBuffer &inputSpecifier [[buffer(0)]],
+        constant void *inputParameters [[buffer(1)]],
+        texture2d<float, access::read_write> outputTexture [[texture(0)]],
+        uint2 thread_position_in_grid [[thread_position_in_grid]]
+    ) {
         float2 textureCoordinate = textureCoordinateForPixel(inputSpecifier, thread_position_in_grid);
         textureCoordinate = mapTextureCoordinateFunction(textureCoordinate, inputParameters);
-        const float4 inputColor = resolveSpecifiedColor(inputSpecifier, textureCoordinate, discard);
+        const float4 inputColor = resolveSpecifiedColor(inputSpecifier, textureCoordinate);
 
         float4 newColor = colorAdjustFunction(inputColor, textureCoordinate, inputParameters);
         outputTexture.write(newColor, thread_position_in_grid);

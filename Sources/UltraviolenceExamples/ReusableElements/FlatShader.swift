@@ -30,7 +30,7 @@ public struct FlatShader <Content>: Element where Content: Element {
 
     public var body: some Element {
         get throws {
-            let textureSpecifierArgumentBuffer = textureSpecifier.toColorSpecifierArgmentBuffer()
+            let textureSpecifierArgumentBuffer = textureSpecifier.toArgumentBuffer()
 
             try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                 content

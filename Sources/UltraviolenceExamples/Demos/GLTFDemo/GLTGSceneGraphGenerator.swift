@@ -124,21 +124,21 @@ class GLTGSceneGraphGenerator {
         }
     }
 
-    func makeMaterial(from material: SwiftGLTF.Material) throws -> PBRMaterial {
-        var uvMaterial = PBRMaterial()
+    func makeMaterial(from material: SwiftGLTF.Material) throws -> PBRMaterialNew {
+        var uvMaterial = PBRMaterialNew()
         if let pbrMetallicRoughness = material.pbrMetallicRoughness {
-            uvMaterial.albedo = pbrMetallicRoughness.baseColorFactor.xyz
-            uvMaterial.metallic = pbrMetallicRoughness.metallicFactor
-            uvMaterial.roughness = pbrMetallicRoughness.roughnessFactor
-            if let textureInfo = pbrMetallicRoughness.baseColorTexture {
-                let texture = try textureInfo.index.resolve(in: document)
-                let source = try texture.source!.resolve(in: document)
-                let data = try container.data(for: source)
-                let image = try CGImage.image(with: data)
-                print(image)
-                ////                let textureResource = try TextureResource.generate(from: image, options: .init(semantic: .color))
-                ////                reTexture = MaterialParameters.Texture(textureResource)
-            }
+//            uvMaterial.albedo = pbrMetallicRoughness.baseColorFactor.xyz
+//            uvMaterial.metallic = pbrMetallicRoughness.metallicFactor
+//            uvMaterial.roughness = pbrMetallicRoughness.roughnessFactor
+//            if let textureInfo = pbrMetallicRoughness.baseColorTexture {
+//                let texture = try textureInfo.index.resolve(in: document)
+//                let source = try texture.source!.resolve(in: document)
+//                let data = try container.data(for: source)
+//                let image = try CGImage.image(with: data)
+//                print(image)
+//                ////                let textureResource = try TextureResource.generate(from: image, options: .init(semantic: .color))
+//                ////                reTexture = MaterialParameters.Texture(textureResource)
+//            }
         }
 
         print(uvMaterial)

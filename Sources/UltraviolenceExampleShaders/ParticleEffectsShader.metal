@@ -10,7 +10,7 @@ struct ParticleVertexOut {
 };
 
 vertex ParticleVertexOut particleEffectsVertex(
-    const device Particle* particles [[buffer(0)]],
+    constant Particle* particles [[buffer(0)]],
     constant ParticleUniforms& uniforms [[buffer(1)]],
     uint vertexID [[vertex_id]]
 ) {

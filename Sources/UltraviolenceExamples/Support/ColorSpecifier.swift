@@ -1,5 +1,6 @@
 import Metal
 import simd
+import Ultraviolence
 import UltraviolenceExampleShaders
 
 public enum ColorSpecifier {
@@ -63,7 +64,8 @@ public extension ColorSpecifier {
 }
 
 public extension ColorSpecifier {
-    func toColorSpecifierArgmentBuffer() -> ColorSpecifierArgumentBuffer {
+    // TODO: We may want some kind of `argumentBufferRepresentable` protocol. Should also support `useResource` [FILE ME]
+    func toArgumentBuffer() -> ColorSpecifierArgumentBuffer {
         var result = ColorSpecifierArgumentBuffer()
         switch self {
         case .texture2D(let texture, let sampler):
@@ -86,3 +88,15 @@ public extension ColorSpecifier {
         return result
     }
 }
+
+extension Element {
+    func useResource(_ colorSpecifier: ColorSpecifier, usage: MTLResourceUsage, stages: MTLRenderStages) -> some Element {
+        self
+            .useResource(colorSpecifier.texture2D, usage: usage, stages: stages)
+            .useResource(colorSpecifier.textureCube, usage: usage, stages: stages)
+        // TODO: This causes a hang. [FILE ME]
+//            .useResource(colorSpecifier.depth2D, usage: usage, stages: stages)
+    }
+
+}
+

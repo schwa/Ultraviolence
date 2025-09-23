@@ -1,8 +1,6 @@
 #import <metal_stdlib>
 #import <simd/simd.h>
-// #include "BlinnPhongShaders.h"
-// #include "Support.h"
-// #include "Shaders.h"
+
 #import "BlinnPhongShaders.h"
 
 // https://en.wikipedia.org/wiki/Blinn–Phong_reflection_model
@@ -68,32 +66,9 @@ namespace BlinnPhong {
     ) {
         uint instance_id = in.instance_id;
 
-        float3 ambientColor;
-        if (material[instance_id].ambientSource == kColorSourceColor) {
-            ambientColor = material[instance_id].ambientColor.xyz;
-        } else {
-            ambientColor = material[instance_id]
-                               .ambientTexture.sample(material[instance_id].ambientSampler, in.textureCoordinate)
-                               .rgb;
-        }
-
-        float3 diffuseColor;
-        if (material[instance_id].diffuseSource == kColorSourceColor) {
-            diffuseColor = material[instance_id].diffuseColor.xyz;
-        } else {
-            diffuseColor = material[instance_id]
-                               .diffuseTexture.sample(material[instance_id].diffuseSampler, in.textureCoordinate)
-                               .rgb;
-        }
-
-        float3 specularColor;
-        if (material[instance_id].specularSource == kColorSourceColor) {
-            specularColor = material[instance_id].specularColor.xyz;
-        } else {
-            specularColor = material[instance_id]
-                                .specularTexture.sample(material[instance_id].specularSampler, in.textureCoordinate)
-                                .rgb;
-        }
+        float3 ambientColor = resolveSpecifiedColor(material[instance_id].ambient, in.textureCoordinate).xyz;
+        float3 diffuseColor = resolveSpecifiedColor(material[instance_id].diffuse, in.textureCoordinate).xyz;
+        float3 specularColor = resolveSpecifiedColor(material[instance_id].specular, in.textureCoordinate).xyz;
 
         auto cameraPosition = transforms[instance_id].cameraMatrix.columns[3].xyz;
 

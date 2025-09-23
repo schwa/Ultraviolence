@@ -13,7 +13,7 @@ public struct PBRDemoView: View {
     @State private var projection: any ProjectionProtocol = PerspectiveProjection()
     @State private var cameraMatrix: simd_float4x4 = .init(translation: [0, 2, 6])
     @State private var selectedMaterial = MaterialPreset.gold
-    @State private var customMaterial = PBRMaterial()
+    @State private var customMaterial = PBRMaterialNew()
     @State private var animateLights = true
     @State private var showingInspector = true
     @State private var animationStartTime: Date?
@@ -53,7 +53,8 @@ public struct PBRDemoView: View {
                         LightingVisualizer(cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix, lighting: lighting)
                         try PBRShader {
                             try Draw(mtkMesh: teapot)
-                                .pbrUniforms(material: currentMaterial, modelTransform: .identity, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
+                                .pbrMaterial(currentMaterial)
+                                .pbrUniforms(modelTransform: .identity, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
                                 .lighting(lighting)
                                 .pbrEnvironment(environmentTexture)
                                 .parameter("frameUniforms", functionType: .vertex, value: context.frameUniforms)
@@ -79,18 +80,9 @@ public struct PBRDemoView: View {
                 }
             }
         }
-        .inspector(isPresented: $showingInspector) {
-            PBREditorView(
-                selectedMaterial: $selectedMaterial,
-                customMaterial: $customMaterial,
-                animateLights: $animateLights
-            )
-            .padding()
-            .inspectorColumnWidth(ideal: 400)
-        }
         .onChange(of: selectedMaterial, initial: false) {
             if selectedMaterial == .custom {
-                customMaterial = PBRMaterial()
+                customMaterial = PBRMaterialNew()
             }
         }
         .onChange(of: animateLights) {
@@ -101,66 +93,7 @@ public struct PBRDemoView: View {
         }
     }
 
-    private var currentMaterial: PBRMaterial {
+    private var currentMaterial: PBRMaterialNew {
         selectedMaterial == .custom ? customMaterial : selectedMaterial.material
-    }
-
-    private func updateAnimatedLights() {
-        let time = Float(animationTime)
-        let radius: Float = 5.0
-        let height: Float = 3.0 + sin(time * 0.5) * 2.0
-        let animatedPosition = SIMD3<Float>(
-            cos(time) * radius,
-            height,
-            sin(time) * radius
-        )
-        let hue = (sin(time * 0.3) + 1.0) * 0.5
-        let color = hsvToRgb(h: hue * 60, s: 0.8, v: 1.0)
-        let animatedIntensity = 10.0 + sin(time * 2.0) * 3.0
-        let sunAngle = time * 0.2
-        let sunDirection = normalize(SIMD3<Float>(
-            cos(sunAngle) * 0.5,
-            1.0,
-            sin(sunAngle) * 0.5
-        ))
-
-//        lights = [
-//            PBRLight(position: animatedPosition, color: color, intensity: Float(animatedIntensity), type: .point),
-//            PBRLight(position: sunDirection, color: [1.0, 0.95, 0.8], intensity: 3.0, type: .directional),
-//            // Add a second orbiting light in opposite phase
-//            PBRLight(
-//                position: SIMD3<Float>(
-//                    cos(time + .pi) * radius,
-//                    height,
-//                    sin(time + .pi) * radius
-//                ),
-//                color: hsvToRgb(h: (hue + 0.5).truncatingRemainder(dividingBy: 1.0) * 60, s: 0.8, v: 1.0),
-//                intensity: Float(animatedIntensity * 0.7),
-//                type: .point
-//            )
-//        ]
-    }
-
-    private func hsvToRgb(h: Float, s: Float, v: Float) -> SIMD3<Float> {
-        let c = v * s
-        let x = c * (1 - abs((h / 60).truncatingRemainder(dividingBy: 2) - 1))
-        let m = v - c
-
-        var rgb: SIMD3<Float>
-        if h < 60 {
-            rgb = [c, x, 0]
-        } else if h < 120 {
-            rgb = [x, c, 0]
-        } else if h < 180 {
-            rgb = [0, c, x]
-        } else if h < 240 {
-            rgb = [0, x, c]
-        } else if h < 300 {
-            rgb = [x, 0, c]
-        } else {
-            rgb = [c, 0, x]
-        }
-
-        return rgb + SIMD3<Float>(repeating: m)
     }
 }

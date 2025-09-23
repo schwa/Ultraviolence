@@ -35,29 +35,13 @@ typedef simd_float3 float3;
 #define __UV_ENUM_GET_MACRO(_1, _2, NAME, ...) NAME
 #define UV_ENUM(...) __UV_ENUM_GET_MACRO(__VA_ARGS__, __UV_NAMED_ENUM, __UV_ANON_ENUM, )(__VA_ARGS__)
 
-typedef UV_ENUM(int, ColorSource){
-    kColorSourceColor = 0,
-    kColorSourceTexture2D = 1,
-    kColorSourceTextureCube = 2,
-    kColorSourceDepth2D = 3,
-};
-
-struct ColorSpecifierArgumentBuffer {
-    ColorSource source;
-    simd_float3 color;
-    TEXTURE2D(float, access::sample) texture2D;
-    TEXTURECUBE(float, access::sample) textureCube;
-    uint slice;
-    DEPTH2D(float, access::sample) depth2D;
-    SAMPLER sampler;
-};
-
 struct FrameUniforms {
     uint index;
     float time;
     float deltaTime;
     simd_int2 viewportSize;
 };
+typedef struct FrameUniforms FrameUniforms;
 
 /// Universal transforms.
 /// TODO: Deprecate

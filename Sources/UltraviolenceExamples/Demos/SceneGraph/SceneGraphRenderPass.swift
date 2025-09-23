@@ -84,7 +84,8 @@ struct SceneGraphRenderPass: Element {
                         try Draw { encoder in
                             encoder.draw(mesh: mesh)
                         }
-                        .pbrUniforms(material: material, modelTransform: node.transform, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
+                        .pbrMaterial(material)
+                        .pbrUniforms(modelTransform: node.transform, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
                     }
                 }
                 .lighting(lighting)

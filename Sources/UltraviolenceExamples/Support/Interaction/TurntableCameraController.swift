@@ -40,11 +40,7 @@ private extension Float {
 
 public struct TurntableControllerConstraint: Equatable {
     public var target: SIMD3<Float>
-    public var radius: Float {
-        didSet {
-            print("RADIUS DID CHANGE: \(radius)")
-        }
-    }
+    public var radius: Float
     // TODO: #133 Pitch and yaw are NOT constraints and should be in the controller not here.
     public var pitch: Angle = .zero
     public var yaw: Angle = .zero
