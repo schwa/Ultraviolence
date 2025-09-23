@@ -20,6 +20,13 @@ struct Mesh {
         var count: Int
         var offset: Int
     }
+
+    init(label: String? = nil, submeshes: [Submesh], vertexDescriptor: VertexDescriptor, vertexBuffers: [Buffer]) {
+        self.label = label
+        self.submeshes = submeshes
+        self.vertexDescriptor = vertexDescriptor
+        self.vertexBuffers = vertexBuffers
+    }
 }
 
 extension MTLRenderCommandEncoder {

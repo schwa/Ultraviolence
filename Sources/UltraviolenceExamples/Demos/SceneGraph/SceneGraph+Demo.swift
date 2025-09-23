@@ -20,12 +20,12 @@ extension SceneGraph {
 
         // Create cube node with BlinnPhong material
         let cubeNode = Node(sceneGraph: nil, parent: rootNode, transform: .identity)
-        let cubeTrivialMesh = TrivialMesh.box()
+        let cubeTrivialMesh = TrivialMesh.box().generateTangents()
         cubeNode.mesh = Mesh(cubeTrivialMesh, device: device)
         cubeNode.material = .blinnPhong(
             BlinnPhongMaterial(
                 ambient: .color([0.1, 0.1, 0.1]),
-                diffuse: .color([0.2, 0.2, 0.2]),
+                diffuse: .color([0.8, 0.2, 0.2]),
                 specular: .color([1.0, 1.0, 1.0]),
                 shininess: 32.0
             )
@@ -34,8 +34,6 @@ extension SceneGraph {
         // Create cube node with BlinnPhong material
         let sphereNode = Node(sceneGraph: nil, parent: rootNode, transform: .init(translation: [1, 0, 0]))
         let sphereTrivialMesh = TrivialMesh.sphere().generateTangents()
-        sphereTrivialMesh.vertexDescriptor().dump()
-        fatalError()
         sphereNode.mesh = Mesh(sphereTrivialMesh, device: device)
         sphereNode.material = .pbr(PBRMaterial())
 

@@ -98,10 +98,6 @@ public let package = Package(
         ),
         .target(
             name: "UltraviolenceExampleShaders",
-            exclude: [
-//                "BlinnPhongShaders.metal",
-//                "FlatShader.metal"
-            ],
             publicHeadersPath: ".",
             plugins: [
                 .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")

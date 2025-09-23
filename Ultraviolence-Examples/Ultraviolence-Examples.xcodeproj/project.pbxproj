@@ -79,7 +79,6 @@
 				458B57A22D9DB77F008ADACC /* ci_scripts */,
 				45D6606D2D8377EA00CD91F5 /* xcconfig */,
 				455C19072CD483FC009A25A6 /* Ultraviolence-Examples */,
-				45E0A14B2D9DAF420091ED9E /* Frameworks */,
 				455C19062CD483FC009A25A6 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -103,13 +102,6 @@
 				45D6606C2D8377EA00CD91F5 /* Ultraviolence-Examples-Shared.xcconfig */,
 			);
 			path = xcconfig;
-			sourceTree = "<group>";
-		};
-		45E0A14B2D9DAF420091ED9E /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

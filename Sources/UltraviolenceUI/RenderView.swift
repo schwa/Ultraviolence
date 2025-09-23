@@ -6,6 +6,7 @@ import QuartzCore
 import SwiftUI
 import Ultraviolence
 import UltraviolenceSupport
+
 public extension EnvironmentValues {
     @Entry
     var device: MTLDevice?

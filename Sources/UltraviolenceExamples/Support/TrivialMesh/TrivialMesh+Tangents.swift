@@ -8,12 +8,13 @@ extension SMikkTSpaceContext {
     }
 }
 
-
 extension TrivialMesh {
     func generateTangents() -> Self {
         var copy = self
 
         copy.tangents = Array(repeating: SIMD3<Float>.zero, count: copy.positions.count)
+        copy.bitangents = Array(repeating: SIMD3<Float>.zero, count: copy.positions.count)
+
         let result = withUnsafeMutablePointer(to: &copy) { mesh in
             var interface = SMikkTSpaceInterface()
             interface.m_getNumFaces = { context in
@@ -46,13 +47,24 @@ extension TrivialMesh {
                 positionOut![0] = textureCoordinates.x
                 positionOut![1] = textureCoordinates.y
             }
-            interface.m_setTSpaceBasic = { context, fvTangent, fSign, face, vert in
+//            interface.m_setTSpaceBasic = { context, fvTangent, fSign, face, vert in
+//                let meshPointer = context!.pointee.m_pUserData!.assumingMemoryBound(to: TrivialMesh.self)
+//                let mesh = meshPointer.pointee
+//                let index = Int(mesh.indices[Int(face) * 3 + Int(vert)])
+//                let tangent = SIMD3<Float>(fvTangent![0], fvTangent![1], fvTangent![2])
+//                meshPointer.pointee.tangents![index] = tangent
+//            }
+
+            interface.m_setTSpace = { context, fvTangent, fvBiTangent, fMagS, fMagT, bIsOrientationPreserving, face, vert in
                 let meshPointer = context!.pointee.m_pUserData!.assumingMemoryBound(to: TrivialMesh.self)
                 let mesh = meshPointer.pointee
                 let index = Int(mesh.indices[Int(face) * 3 + Int(vert)])
                 let tangent = SIMD3<Float>(fvTangent![0], fvTangent![1], fvTangent![2])
                 meshPointer.pointee.tangents![index] = tangent
+                let bitangents = SIMD3<Float>(fvBiTangent![0], fvBiTangent![1], fvBiTangent![2])
+                meshPointer.pointee.bitangents![index] = bitangents
             }
+
             var context = SMikkTSpaceContext()
             context.m_pUserData = UnsafeMutableRawPointer(mesh)
             return withUnsafeMutablePointer(to: &interface) { interface in
