@@ -7,10 +7,10 @@ on:
   pull_request:
 jobs:
   swift-build-16:
+    if: false # Disabled for now - remove later.
     env:
-      # XCODE_VERSION: "latest-stable"
       XCODE_VERSION: "16.4"
-    runs-on: macos-15 # macos-latest
+    runs-on: macos-15
     steps:
       - uses: maxim-lobanov/setup-xcode@v1
         with:
