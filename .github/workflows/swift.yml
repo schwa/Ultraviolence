@@ -6,20 +6,6 @@ on:
   push:
   pull_request:
 jobs:
-  swift-build-16:
-    if: false # Disabled for now - remove later.
-    env:
-      XCODE_VERSION: "16.4"
-    runs-on: macos-15
-    steps:
-      - uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: ${{ env.XCODE_VERSION }}
-      - uses: actions/checkout@v3
-      - name: Trust plugins
-        run: defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidation -bool YES
-      - run: swift build -v
-      - run: swift test -v
   swift-build-26:
     env:
       XCODE_VERSION: "latest-stable"
@@ -35,30 +21,3 @@ jobs:
         run: defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidation -bool YES
       - run: swift build -v
       - run: swift test -v
-  xcode-build-26:
-    env:
-      XCODE_VERSION: "latest-stable"
-      XCODE_PROJECT: "Ultraviolence-Examples/Ultraviolence-Examples.xcodeproj"
-      XCODE_SCHEME: "Ultraviolence-Examples"
-      XCODE_CONFIGURATION: "Release"
-    runs-on: macos-15 # macos-latest
-    steps:
-      - uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: ${{ env.XCODE_VERSION }}
-      - uses: actions/checkout@v3
-        with:
-          submodules: true
-      - name: Download MetalToolchain
-        run: xcodebuild -downloadComponent MetalToolchain
-      - run: defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidation -bool YES
-      - run: |
-          xcodebuild \
-            -project "${{ env.XCODE_PROJECT }}" \
-            -scheme "${{ env.XCODE_SCHEME }}" \
-            -destination "generic/platform=macOS" \
-            -skipPackagePluginValidation build \
-            -configuration "${{ env.XCODE_CONFIGURATION }}" \
-            ARCHS=arm64 \
-            ONLY_ACTIVE_ARCH=NO \
-            CODE_SIGNING_ALLOWED=NO
