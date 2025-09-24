@@ -12,6 +12,10 @@ See [Documentation](./Documentation/) for more information:
 - [Architecture](./Documentation/Architecture.md) - Technical architecture details
 - [Internals](./Documentation/Internals.md) - Implementation details
 
+Related repositories:
+
+- [Ultraviolence-Examples](https://github.com/schwa/Ultraviolence-Examples) - Example projects using Ultraviolence
+
 ## AI Usage
 
 Note: The majority of the code in this project was written without AI assistance. Some demos showing how to use the framework were generated with the help of AI tools.
