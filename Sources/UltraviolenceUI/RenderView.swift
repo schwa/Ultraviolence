@@ -71,7 +71,6 @@ internal struct RenderViewHelper <Content>: View where Content: Element {
     var body: some View {
         ViewAdaptor<MTKView> {
             MTKView()
-
         }
         update: { view in
             #if os(macOS)

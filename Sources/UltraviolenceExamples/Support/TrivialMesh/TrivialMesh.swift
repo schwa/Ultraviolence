@@ -1,6 +1,6 @@
-import simd
-import Metal
 import Collections
+import Metal
+import simd
 
 struct TrivialMesh: Equatable, Sendable {
     var label: String?
@@ -39,15 +39,15 @@ extension TrivialMesh {
     func scaled(_ scale: SIMD3<Float>) -> TrivialMesh {
         var result = self
         result.positions = positions.map { $0 * scale }
-        if let normals = normals {
+        if let normals {
             let inverseScale = SIMD3<Float>(1.0 / scale.x, 1.0 / scale.y, 1.0 / scale.z)
             result.normals = normals.map { normalize($0 * inverseScale) }
         }
-        if let tangents = tangents {
+        if let tangents {
             let inverseScale = SIMD3<Float>(1.0 / scale.x, 1.0 / scale.y, 1.0 / scale.z)
             result.tangents = tangents.map { normalize($0 * inverseScale) }
         }
-        if let bitangents = bitangents {
+        if let bitangents {
             let inverseScale = SIMD3<Float>(1.0 / scale.x, 1.0 / scale.y, 1.0 / scale.z)
             result.bitangents = bitangents.map { normalize($0 * inverseScale) }
         }
@@ -64,13 +64,13 @@ extension TrivialMesh {
         var result = self
         let rotationMatrix = float3x3(rotation)
         result.positions = positions.map { rotationMatrix * $0 }
-        if let normals = normals {
+        if let normals {
             result.normals = normals.map { rotationMatrix * $0 }
         }
-        if let tangents = tangents {
+        if let tangents {
             result.tangents = tangents.map { rotationMatrix * $0 }
         }
-        if let bitangents = bitangents {
+        if let bitangents {
             result.bitangents = bitangents.map { rotationMatrix * $0 }
         }
         return result
@@ -108,11 +108,10 @@ extension TrivialMesh {
             attributes.append(VertexDescriptor.Attribute(semantic: .color, format: .float4, offset: 0, bufferIndex: 0))
         }
 
-        let result = VertexDescriptor(
+        return VertexDescriptor(
             attributes: attributes,
             layouts: [.init(bufferIndex: 0, stride: 0, stepFunction: .perVertex, stepRate: 1)]
         )
         .normalized()
-        return result
     }
 }

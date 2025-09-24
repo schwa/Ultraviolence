@@ -1,5 +1,5 @@
-#import "UltraviolenceExampleShaders.h"
 #import "SDFShader.h"
+#import "UltraviolenceExampleShaders.h"
 #import <metal_stdlib>
 
 using namespace metal;
@@ -46,10 +46,14 @@ namespace SDFShader {
         p = abs(p);
         float m = p.x + p.y + p.z - s;
         float3 q;
-        if (3.0 * p.x < m) q = p.xyz;
-        else if (3.0 * p.y < m) q = p.yzx;
-        else if (3.0 * p.z < m) q = p.zxy;
-        else return m * 0.57735027;
+        if (3.0 * p.x < m)
+            q = p.xyz;
+        else if (3.0 * p.y < m)
+            q = p.yzx;
+        else if (3.0 * p.z < m)
+            q = p.zxy;
+        else
+            return m * 0.57735027;
         float k = clamp(0.5 * (q.z - q.y + s), 0.0, s);
         return length(float3(q.x, q.y - s + k, q.z - k));
     }
@@ -144,7 +148,8 @@ namespace SDFShader {
             float h = sceneSDF(ro + rd * t, time);
             res = min(res, k * h / t);
             t += clamp(h, 0.02, 0.10);
-            if (h < 0.001 || t > maxt) break;
+            if (h < 0.001 || t > maxt)
+                break;
         }
         return clamp(res, 0.0, 1.0);
     }
@@ -193,8 +198,8 @@ namespace SDFShader {
 
                 // Material colors with variation based on position - vibrant palette
                 float3 baseColor = float3(0.4, 0.6, 1.0); // Bright blue
-                float3 color2 = float3(0.9, 0.3, 0.6);     // Magenta
-                float3 color3 = float3(0.3, 1.0, 0.8);     // Cyan
+                float3 color2 = float3(0.9, 0.3, 0.6);    // Magenta
+                float3 color3 = float3(0.3, 1.0, 0.8);    // Cyan
 
                 // Blend colors based on position and time
                 float blend1 = sin(p.x * 2.0 + time) * 0.5 + 0.5;
@@ -215,7 +220,8 @@ namespace SDFShader {
             }
 
             t += d;
-            if (t > maxDist) break;
+            if (t > maxDist)
+                break;
         }
 
         // Solid background color - no hit

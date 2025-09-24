@@ -1,9 +1,8 @@
-import Testing
 import Metal
+import Testing
 @testable import UltraviolenceExamples
 
 struct VertexDescriptorTests {
-
     @Test
     func testAttributeInitialization() {
         let attribute = VertexDescriptor.Attribute(

@@ -11,7 +11,7 @@ struct PBRMaterialArgumentBuffer {
     ColorSourceArgumentBuffer ambientOcclusion;
     ColorSourceArgumentBuffer emissive;
     float emissiveIntensity;
-    float clearcoat; // TODO: ColorSourceArgumentBuffer
+    float clearcoat;          // TODO: ColorSourceArgumentBuffer
     float clearcoatRoughness; // TODO: ColorSourceArgumentBuffer
     float softScattering;
     float3 softScatteringDepth;

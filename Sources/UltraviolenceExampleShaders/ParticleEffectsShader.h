@@ -15,7 +15,7 @@ struct ParticleUniforms {
     simd_float4x4 viewMatrix;
     simd_float4x4 projectionMatrix;
     float time;
-    float _padding1[3];  // Align to 16 bytes
+    float _padding1[3]; // Align to 16 bytes
     simd_float3 gravity;
     float baseSize;
 };

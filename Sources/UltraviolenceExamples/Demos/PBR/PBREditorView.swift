@@ -1,8 +1,8 @@
-//import simd
-//import SwiftUI
-//import UltraviolenceExampleShaders
+// import simd
+// import SwiftUI
+// import UltraviolenceExampleShaders
 //
-//struct PBREditorView: View {
+// struct PBREditorView: View {
 //    @Binding var selectedMaterial: MaterialPreset
 //    @Binding var customMaterial: PBRMaterialNew
 //    @Binding var animateLights: Bool
@@ -115,5 +115,5 @@
 //            }
 //        }
 //    }
-//}
+// }
 //

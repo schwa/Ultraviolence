@@ -1,9 +1,9 @@
 import Metal
+import MetalKit
 import SwiftUI
 import Ultraviolence
-import UltraviolenceSupport
 import UltraviolenceExampleShaders
-import MetalKit
+import UltraviolenceSupport
 
 struct LightingAnimator {
     static func run(date: Date, lighting: inout Lighting) {
@@ -28,18 +28,16 @@ extension Lighting {
             SIMD3<Float>(1, 5, 0)
         ]
         assert(lights.count == positions.count)
-        let lighting = Lighting(
+        return Lighting(
             ambientLightColor: [0, 0, 0],
             count: lights.count,
             lights: try device.makeBuffer(view: .init(count: lights.count), values: lights, options: []),
             lightPositions: try device.makeBuffer(view: .init(count: positions.count), values: positions, options: [])
         )
-        return lighting
     }
 }
 
 struct LightingVisualizer: Element {
-
     let cameraMatrix: float4x4
     let projectionMatrix: float4x4
     let lighting: Lighting
@@ -47,13 +45,11 @@ struct LightingVisualizer: Element {
 
     var body: some Element {
         get throws {
-
             try FlatShader(textureSpecifier: .color([1, 1, 1])) {
                 ForEach(Array(0 ..< lighting.count), id: \.self) { index in
                     let lightPosition = lighting.lightPositions[SIMD3<Float>.self, index]
                     let light = lighting.lights[Light.self, index]
                     let transforms = Transforms(modelMatrix: .init(translation: lightPosition), cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
-
 
                     Draw { encoder in
                         encoder.setVertexBuffers(of: lightMarker)
@@ -68,12 +64,9 @@ struct LightingVisualizer: Element {
     }
 }
 
-
-
 struct LightingEditorView: View {
-
     @State
-    var lighting: Lighting
+    private var lighting: Lighting
 
     var body: some View {
     }

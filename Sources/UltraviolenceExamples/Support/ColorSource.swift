@@ -3,7 +3,6 @@ import simd
 import Ultraviolence
 import UltraviolenceExampleShaders
 
-
 public enum ColorSource {
     case texture2D(MTLTexture, MTLSamplerState?)
     case textureCube(MTLTexture, MTLSamplerState?, Int)
@@ -101,8 +100,6 @@ extension Element {
             .useResource(color.texture2D, usage: usage, stages: stages)
             .useResource(color.textureCube, usage: usage, stages: stages)
         // TODO: This causes a hang. [FILE ME]
-//            .useResource(colorSpecifier.depth2D, usage: usage, stages: stages)
+        //            .useResource(colorSpecifier.depth2D, usage: usage, stages: stages)
     }
-
 }
-

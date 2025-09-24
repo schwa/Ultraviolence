@@ -132,5 +132,4 @@ namespace GameOfLifeShader {
         texture.write(float4(0.0, 0.0, 0.0, 1.0), gid);
     }
 
-
 } // namespace GameOfLifeShader

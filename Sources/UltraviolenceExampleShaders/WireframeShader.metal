@@ -1,6 +1,6 @@
-#import <metal_stdlib>
 #import "UltraviolenceExampleShaders.h"
 #import "WireframeShader.h"
+#import <metal_stdlib>
 
 using namespace metal;
 
@@ -16,20 +16,15 @@ namespace WireframeShader {
         float4 position [[position]];
     };
 
-    [[vertex]] VertexOut vertex_main(
-        const VertexIn in [[stage_in]],
-        constant WireframeUniforms &uniforms [[buffer(1)]]
-    ) {
+    [[vertex]] VertexOut
+    vertex_main(const VertexIn in [[stage_in]], constant WireframeUniforms &uniforms [[buffer(1)]]) {
         VertexOut out;
         float4 objectSpace = float4(in.position, 1.0);
         out.position = uniforms.modelViewProjectionMatrix * objectSpace;
         return out;
     }
 
-    [[fragment]] float4 fragment_main(
-        VertexOut in [[stage_in]],
-        constant WireframeUniforms &uniforms [[buffer(0)]]
-    ) {
+    [[fragment]] float4 fragment_main(VertexOut in [[stage_in]], constant WireframeUniforms &uniforms [[buffer(0)]]) {
         return uniforms.wireframeColor;
     }
 

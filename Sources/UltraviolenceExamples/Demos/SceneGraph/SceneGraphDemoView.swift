@@ -1,21 +1,20 @@
+import GeometryLite3D
+import Metal
+import Panels
+import simd
 import SwiftUI
 import Ultraviolence
 import UltraviolenceSupport
-import GeometryLite3D
-import simd
 import UltraviolenceUI
-import Metal
-import Panels
 
 public struct SceneGraphDemoView: View {
-
     let sceneGraph: SceneGraph
 
     @State
-    var projection: any ProjectionProtocol = PerspectiveProjection()
+    private var projection: any ProjectionProtocol = PerspectiveProjection()
 
     @State
-    var cameraMatrix: simd_float4x4 = simd_float4x4(translation: [0, 2, 5])
+    private var cameraMatrix = simd_float4x4(translation: [0, 2, 5])
 
     public init() {
         let device = _MTLCreateSystemDefaultDevice()
@@ -28,7 +27,7 @@ public struct SceneGraphDemoView: View {
 
     public var body: some View {
         WorldView(projection: $projection, cameraMatrix: $cameraMatrix, targetMatrix: .constant(nil)) {
-            RenderView { conext, drawableSize in
+            RenderView { _, drawableSize in
                 SceneGraphRenderPass(sceneGraph: sceneGraph, cameraMatrix: cameraMatrix, projectionMatrix: projection.projectionMatrix(for: drawableSize))
             }
             .metalDepthStencilPixelFormat(.depth32Float)
@@ -43,7 +42,7 @@ struct SceneGraphEditorView: View {
     let sceneGraph: SceneGraph
 
     @State
-    var selectedNode: SceneGraph.Node.ID?
+    private var selectedNode: SceneGraph.Node.ID?
 
     var body: some View {
         List([sceneGraph.root], children: \.listChildren, selection: $selectedNode) { node in
@@ -68,12 +67,11 @@ struct SceneGraphEditorView: View {
                 }
             }
         }
-
     }
 }
 
 extension SceneGraph.Node {
     var listChildren: [SceneGraph.Node]? {
-        return children.isEmpty ? nil : children
+        children.isEmpty ? nil : children
     }
 }

@@ -1,6 +1,6 @@
 import Metal
-import SwiftUI
 import MetalKit
+import SwiftUI
 import Ultraviolence
 import UltraviolenceSupport
 

@@ -36,13 +36,13 @@ struct PanoramaElement: Element {
         get throws {
             try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                 Draw(mtkMesh: mesh)
-                .transforms(Transforms(modelMatrix: .identity, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix))
-                .parameter("panoramaTexture", texture: panoramaTexture)
-                .parameter("uniforms", value: PanoramaUniforms(
-                    showUV: showUV ? 1 : 0,
-                    cameraLocation: SIMD3<Float>(0, 0, 0),  // Camera at origin in model space
-                    rotation: 0  // No rotation
-                ))
+                    .transforms(Transforms(modelMatrix: .identity, cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix))
+                    .parameter("panoramaTexture", texture: panoramaTexture)
+                    .parameter("uniforms", value: PanoramaUniforms(
+                        showUV: showUV ? 1 : 0,
+                        cameraLocation: SIMD3<Float>(0, 0, 0),  // Camera at origin in model space
+                        rotation: 0  // No rotation
+                    ))
             }
             .vertexDescriptor(mesh.vertexDescriptor)
         }
@@ -80,8 +80,8 @@ struct PanoramaMinimapElement: Element {
                     let vertices: [SIMD3<Float>] = [
                         [-1, -1, 0],
                         [ 1, -1, 0],
-                        [-1,  1, 0],
-                        [ 1,  1, 0]
+                        [-1, 1, 0],
+                        [ 1, 1, 0]
                     ]
                     let texCoords: [SIMD2<Float>] = [
                         [0, 1],

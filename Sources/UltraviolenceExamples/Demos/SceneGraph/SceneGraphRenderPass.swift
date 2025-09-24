@@ -1,14 +1,13 @@
-import Ultraviolence
-import UltraviolenceSupport
-import UltraviolenceExampleShaders
 import Metal
 import simd
+import Ultraviolence
+import UltraviolenceExampleShaders
+import UltraviolenceSupport
 
 // TODO: Currently not using parents transforms
 // TODO: Lighing is static once generated.
 
 struct SceneGraphRenderPass: Element {
-
     var sceneGraph: SceneGraph
     var cameraMatrix: simd_float4x4
     var projectionMatrix: simd_float4x4
@@ -53,7 +52,7 @@ struct SceneGraphRenderPass: Element {
                 return false
             }
             return try BlinnPhongShader {
-                try ForEach(Array(blinnPhongNodes.enumerated()), id: \.offset) { offset, node in
+                try ForEach(Array(blinnPhongNodes.enumerated()), id: \.offset) { _, node in
                     if let mesh = node.mesh, case let .blinnPhong(material) = node.material {
                         try Draw { encoder in
                             encoder.draw(mesh: mesh)
@@ -66,7 +65,6 @@ struct SceneGraphRenderPass: Element {
             }
             .vertexDescriptor(.default)
             .depthCompare(function: .less, enabled: true)
-
         }
     }
 
@@ -79,7 +77,7 @@ struct SceneGraphRenderPass: Element {
                 return false
             }
             return try PBRShader {
-                try ForEach(Array(pbrNodes.enumerated()), id: \.offset) { offset, node in
+                try ForEach(Array(pbrNodes.enumerated()), id: \.offset) { _, node in
                     if let mesh = node.mesh, case let .pbr(material) = node.material {
                         try Draw { encoder in
                             encoder.draw(mesh: mesh)
@@ -94,8 +92,6 @@ struct SceneGraphRenderPass: Element {
             .depthCompare(function: .less, enabled: true)
         }
     }
-
-
 }
 
 extension SceneGraph {
@@ -131,8 +127,6 @@ extension SceneGraph {
     }
 }
 
-
-
 extension VertexDescriptor {
     static var `default`: Self {
         .init(attributes: [
@@ -140,7 +134,7 @@ extension VertexDescriptor {
             .init(semantic: .normal, format: .float3, offset: 0, bufferIndex: 0),
             .init(semantic: .texcoord, format: .float2, offset: 0, bufferIndex: 0),
             .init(semantic: .tangent, format: .float3, offset: 0, bufferIndex: 0),
-            .init(semantic: .bitangent, format: .float3, offset: 0, bufferIndex: 0),
+            .init(semantic: .bitangent, format: .float3, offset: 0, bufferIndex: 0)
         ], layouts: [
             .init(bufferIndex: 0)
         ])

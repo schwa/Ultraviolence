@@ -23,7 +23,6 @@ public extension View {
 // TODO: #134 Make generic for any VectorArithmetic and add a transform closure for axis handling?
 // TODO: "GestureBasedValueModifier"/"InteractiveValueModifier"?
 public struct DraggableValueViewModifier: ViewModifier {
-
     public enum GestureKind {
         case drag
         case magnify

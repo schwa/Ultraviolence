@@ -46,7 +46,6 @@ public struct PBRDemoView: View {
                     let viewMatrix = cameraMatrix.inverse
                     let viewProjectionMatrix = projectionMatrix * viewMatrix
 
-
                     try RenderPass {
                         try AxisLinesRenderPipeline(mvpMatrix: viewProjectionMatrix, scale: 10_000.0)
                         try AxisAlignedWireframeBoxesRenderPipeline(mvpMatrix: viewProjectionMatrix, boxes: [.init(min: [-10, -10, -10], max: [10, 10, 10], color: [1, 1, 1, 1])])

@@ -18,10 +18,7 @@ struct Uniforms {
     float pointSize;
 };
 
-vertex PointVertexOut pointCloudVertex(
-    PointVertex in [[stage_in]],
-    constant Uniforms& uniforms [[buffer(1)]]
-) {
+vertex PointVertexOut pointCloudVertex(PointVertex in [[stage_in]], constant Uniforms &uniforms [[buffer(1)]]) {
     PointVertexOut out;
 
     // Transform position through view and projection
@@ -38,10 +35,7 @@ vertex PointVertexOut pointCloudVertex(
     return out;
 }
 
-fragment float4 pointCloudFragment(
-    PointVertexOut in [[stage_in]],
-    float2 pointCoord [[point_coord]]
-) {
+fragment float4 pointCloudFragment(PointVertexOut in [[stage_in]], float2 pointCoord [[point_coord]]) {
     // Calculate distance from center of point sprite
     float2 fromCenter = pointCoord - float2(0.5);
     float dist = length(fromCenter);

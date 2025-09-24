@@ -1,5 +1,5 @@
-#include <metal_stdlib>
 #include "UltraviolenceExampleShaders.h"
+#include <metal_stdlib>
 using namespace metal;
 
 namespace Boxes {
@@ -14,12 +14,12 @@ namespace Boxes {
     vertex VertexOut vertex_main(
         uint vertexID [[vertex_id]],
         uint instanceID [[instance_id]],
-        constant BoxesUniforms& uniforms [[buffer(0)]],
-        constant BoxInstance* instances [[buffer(1)]]
+        constant BoxesUniforms &uniforms [[buffer(0)]],
+        constant BoxInstance *instances [[buffer(1)]]
     ) {
         VertexOut out;
 
-        constant BoxInstance& box = instances[instanceID];
+        constant BoxInstance &box = instances[instanceID];
 
         // 8 vertices of a box
         float3 vertices[8] = {
@@ -36,11 +36,11 @@ namespace Boxes {
         // Line indices for the 12 edges (24 vertices for line list)
         uint lineVertices[24] = {
             // Bottom face
-            0, 1,  1, 2,  2, 3,  3, 0,
+            0, 1, 1, 2, 2, 3, 3, 0,
             // Top face
-            4, 5,  5, 6,  6, 7,  7, 4,
+            4, 5, 5, 6, 6, 7, 7, 4,
             // Vertical edges
-            0, 4,  1, 5,  2, 6,  3, 7
+            0, 4, 1, 5, 2, 6, 3, 7
         };
 
         uint vertexIndex = lineVertices[vertexID];
@@ -56,4 +56,5 @@ namespace Boxes {
     fragment float4 fragment_main(VertexOut in [[stage_in]]) {
         return in.color;
     }
-}
+
+} // namespace Boxes

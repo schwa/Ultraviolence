@@ -1,21 +1,20 @@
-import SwiftUI
 import SwiftGLTF
+import SwiftUI
 import UltraviolenceUI
 import UniformTypeIdentifiers
 
 public struct GLTFDemoView: View {
+    @State
+    private var url: URL?
 
     @State
-    var url: URL?
+    private var document: Document?
 
     @State
-    var document: Document?
+    private var sceneGraph: SceneGraph?
 
     @State
-    var sceneGraph: SceneGraph?
-
-    @State
-    var downloadedPath: URL?
+    private var downloadedPath: URL?
 
     @State
     private var showingFilePicker = false
@@ -24,7 +23,6 @@ public struct GLTFDemoView: View {
     private var availableFiles: [URL] = []
 
     public init() {
-
     }
 
     public var body: some View {
@@ -35,7 +33,7 @@ public struct GLTFDemoView: View {
                     loadAvailableFiles(from: path)
                 }
 
-                if downloadedPath != nil && !availableFiles.isEmpty {
+                if downloadedPath != nil, !availableFiles.isEmpty {
                     Button("Browse Files") {
                         showingFilePicker = true
                     }
@@ -84,7 +82,7 @@ public struct GLTFDemoView: View {
         if fileManager.fileExists(atPath: path.path) {
             do {
                 let contents = try fileManager.contentsOfDirectory(at: path, includingPropertiesForKeys: nil)
-                print("Directory contents: \(contents.map { $0.lastPathComponent })")
+                print("Directory contents: \(contents.map(\.lastPathComponent))")
             } catch {
                 print("Error listing directory: \(error)")
             }
@@ -112,6 +110,3 @@ extension UTType {
     static let gltf = UTType(filenameExtension: "gltf")!
     static let glb = UTType(filenameExtension: "glb")!
 }
-
-
-

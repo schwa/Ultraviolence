@@ -1,6 +1,6 @@
-import simd
 import GeometryLite3D
 import Metal
+import simd
 import UltraviolenceSupport
 
 struct Mesh {

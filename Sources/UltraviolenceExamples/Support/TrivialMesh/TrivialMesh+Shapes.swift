@@ -6,40 +6,40 @@ extension TrivialMesh {
         // Unit cube vertices (-0.5 to 0.5 on each axis)
         let positions: [SIMD3<Float>] = [
             // Front face (z = 0.5)
-            [-0.5, -0.5,  0.5], // 0: bottom-left
-            [ 0.5, -0.5,  0.5], // 1: bottom-right
-            [ 0.5,  0.5,  0.5], // 2: top-right
-            [-0.5,  0.5,  0.5], // 3: top-left
+            [-0.5, -0.5, 0.5], // 0: bottom-left
+            [ 0.5, -0.5, 0.5], // 1: bottom-right
+            [ 0.5, 0.5, 0.5], // 2: top-right
+            [-0.5, 0.5, 0.5], // 3: top-left
 
             // Back face (z = -0.5)
             [-0.5, -0.5, -0.5], // 4: bottom-left
             [ 0.5, -0.5, -0.5], // 5: bottom-right
-            [ 0.5,  0.5, -0.5], // 6: top-right
-            [-0.5,  0.5, -0.5], // 7: top-left
+            [ 0.5, 0.5, -0.5], // 6: top-right
+            [-0.5, 0.5, -0.5], // 7: top-left
 
             // Top face (y = 0.5)
-            [-0.5,  0.5,  0.5], // 8: front-left
-            [ 0.5,  0.5,  0.5], // 9: front-right
-            [ 0.5,  0.5, -0.5], // 10: back-right
-            [-0.5,  0.5, -0.5], // 11: back-left
+            [-0.5, 0.5, 0.5], // 8: front-left
+            [ 0.5, 0.5, 0.5], // 9: front-right
+            [ 0.5, 0.5, -0.5], // 10: back-right
+            [-0.5, 0.5, -0.5], // 11: back-left
 
             // Bottom face (y = -0.5)
-            [-0.5, -0.5,  0.5], // 12: front-left
-            [ 0.5, -0.5,  0.5], // 13: front-right
+            [-0.5, -0.5, 0.5], // 12: front-left
+            [ 0.5, -0.5, 0.5], // 13: front-right
             [ 0.5, -0.5, -0.5], // 14: back-right
             [-0.5, -0.5, -0.5], // 15: back-left
 
             // Right face (x = 0.5)
-            [ 0.5, -0.5,  0.5], // 16: front-bottom
+            [ 0.5, -0.5, 0.5], // 16: front-bottom
             [ 0.5, -0.5, -0.5], // 17: back-bottom
-            [ 0.5,  0.5, -0.5], // 18: back-top
-            [ 0.5,  0.5,  0.5], // 19: front-top
+            [ 0.5, 0.5, -0.5], // 18: back-top
+            [ 0.5, 0.5, 0.5], // 19: front-top
 
             // Left face (x = -0.5)
-            [-0.5, -0.5,  0.5], // 20: front-bottom
+            [-0.5, -0.5, 0.5], // 20: front-bottom
             [-0.5, -0.5, -0.5], // 21: back-bottom
-            [-0.5,  0.5, -0.5], // 22: back-top
-            [-0.5,  0.5,  0.5], // 23: front-top
+            [-0.5, 0.5, -0.5], // 22: back-top
+            [-0.5, 0.5, 0.5] // 23: front-top
         ]
 
         let textureCoordinates: [SIMD2<Float>] = [
@@ -54,7 +54,7 @@ extension TrivialMesh {
             // Right face
             [0, 1], [1, 1], [1, 0], [0, 0],
             // Left face
-            [1, 1], [0, 1], [0, 0], [1, 0],
+            [1, 1], [0, 1], [0, 0], [1, 0]
         ]
 
         let normals: [SIMD3<Float>] = [
@@ -69,23 +69,23 @@ extension TrivialMesh {
             // Right face
             [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0],
             // Left face
-            [-1, 0, 0], [-1, 0, 0], [-1, 0, 0], [-1, 0, 0],
+            [-1, 0, 0], [-1, 0, 0], [-1, 0, 0], [-1, 0, 0]
         ]
 
         // Counter-clockwise winding order for front faces
         let indices: [Int] = [
             // Front face
-            0, 1, 2,    0, 2, 3,
+            0, 1, 2, 0, 2, 3,
             // Back face
-            4, 6, 5,    4, 7, 6,
+            4, 6, 5, 4, 7, 6,
             // Top face
-            8, 9, 10,   8, 10, 11,
+            8, 9, 10, 8, 10, 11,
             // Bottom face
             12, 14, 13, 12, 15, 14,
             // Right face
             16, 17, 18, 16, 18, 19,
             // Left face
-            20, 22, 21, 20, 23, 22,
+            20, 22, 21, 20, 23, 22
         ]
 
         return TrivialMesh(
@@ -104,30 +104,30 @@ extension TrivialMesh {
         // Regular tetrahedron centered at origin
         // Height chosen so it fits in unit cube (-0.5 to 0.5)
         let a: Float = 0.5 // Half edge length for unit size
-        let h: Float = sqrt(2.0/3.0) * a // Height from base to top
-        let r: Float = sqrt(3.0)/3.0 * a // Radius from center of base to vertex
+        let h: Float = sqrt(2.0 / 3.0) * a // Height from base to top
+        let r: Float = sqrt(3.0) / 3.0 * a // Radius from center of base to vertex
 
         // 4 faces x 3 vertices = 12 vertices (duplicated for proper normals/UVs)
         let positions: [SIMD3<Float>] = [
             // Bottom face (looking up)
-            [0, -h/2, r],           // 0: front vertex
-            [r * cos(7*Float.pi/6), -h/2, r * sin(7*Float.pi/6)], // 1: back-left
-            [r * cos(11*Float.pi/6), -h/2, r * sin(11*Float.pi/6)], // 2: back-right
+            [0, -h / 2, r],           // 0: front vertex
+            [r * cos(7 * Float.pi / 6), -h / 2, r * sin(7 * Float.pi / 6)], // 1: back-left
+            [r * cos(11 * Float.pi / 6), -h / 2, r * sin(11 * Float.pi / 6)], // 2: back-right
 
             // Front face
-            [0, -h/2, r],           // 3: bottom-front
-            [r * cos(11*Float.pi/6), -h/2, r * sin(11*Float.pi/6)], // 4: bottom-right
-            [0, h/2, 0],            // 5: top
+            [0, -h / 2, r],           // 3: bottom-front
+            [r * cos(11 * Float.pi / 6), -h / 2, r * sin(11 * Float.pi / 6)], // 4: bottom-right
+            [0, h / 2, 0],            // 5: top
 
             // Right face
-            [r * cos(11*Float.pi/6), -h/2, r * sin(11*Float.pi/6)], // 6: bottom-right
-            [r * cos(7*Float.pi/6), -h/2, r * sin(7*Float.pi/6)], // 7: bottom-left
-            [0, h/2, 0],            // 8: top
+            [r * cos(11 * Float.pi / 6), -h / 2, r * sin(11 * Float.pi / 6)], // 6: bottom-right
+            [r * cos(7 * Float.pi / 6), -h / 2, r * sin(7 * Float.pi / 6)], // 7: bottom-left
+            [0, h / 2, 0],            // 8: top
 
             // Left face
-            [r * cos(7*Float.pi/6), -h/2, r * sin(7*Float.pi/6)], // 9: bottom-left
-            [0, -h/2, r],           // 10: bottom-front
-            [0, h/2, 0],            // 11: top
+            [r * cos(7 * Float.pi / 6), -h / 2, r * sin(7 * Float.pi / 6)], // 9: bottom-left
+            [0, -h / 2, r],           // 10: bottom-front
+            [0, h / 2, 0]            // 11: top
         ]
 
         // UV coordinates for each face
@@ -139,7 +139,7 @@ extension TrivialMesh {
             // Right face
             [0, 0], [1, 0], [0.5, 1],
             // Left face
-            [0, 0], [1, 0], [0.5, 1],
+            [0, 0], [1, 0], [0.5, 1]
         ]
 
         // Calculate normals for each face
@@ -156,7 +156,7 @@ extension TrivialMesh {
             // Right face
             rightNormal, rightNormal, rightNormal,
             // Left face
-            leftNormal, leftNormal, leftNormal,
+            leftNormal, leftNormal, leftNormal
         ]
 
         let indices: [Int] = [
@@ -167,7 +167,7 @@ extension TrivialMesh {
             // Right face
             6, 7, 8,
             // Left face
-            9, 10, 11,
+            9, 10, 11
         ]
 
         return TrivialMesh(
@@ -228,7 +228,7 @@ extension TrivialMesh {
             // Left face
             [0, -r, 0],    // 21: bottom
             [-r, 0, 0],    // 22: left
-            [0, 0, -r],    // 23: back
+            [0, 0, -r]    // 23: back
         ]
 
         // UV coordinates for each triangular face
@@ -242,7 +242,7 @@ extension TrivialMesh {
             [0.5, 0], [1, 1], [0, 1],  // Front
             [0.5, 0], [1, 1], [0, 1],  // Right
             [0.5, 0], [1, 1], [0, 1],  // Back
-            [0.5, 0], [1, 1], [0, 1],  // Left
+            [0.5, 0], [1, 1], [0, 1]  // Left
         ]
 
         // Calculate normals for each face
@@ -278,20 +278,20 @@ extension TrivialMesh {
         // The 12 vertices of an icosahedron
         let v: [SIMD3<Float>] = [
             // Rectangle on XY plane
-            [-1,  phi, 0],
-            [ 1,  phi, 0],
+            [-1, phi, 0],
+            [ 1, phi, 0],
             [-1, -phi, 0],
             [ 1, -phi, 0],
             // Rectangle on YZ plane
-            [0, -1,  phi],
-            [0,  1,  phi],
+            [0, -1, phi],
+            [0, 1, phi],
             [0, -1, -phi],
-            [0,  1, -phi],
+            [0, 1, -phi],
             // Rectangle on XZ plane
             [ phi, 0, -1],
-            [ phi, 0,  1],
+            [ phi, 0, 1],
             [-phi, 0, -1],
-            [-phi, 0,  1],
+            [-phi, 0, 1]
         ].map { $0 * scale }
 
         // 20 triangular faces (each face gets its own vertices for proper normals)
@@ -303,7 +303,7 @@ extension TrivialMesh {
             // 5 adjacent faces
             [3, 9, 4], [3, 4, 2], [3, 2, 6], [3, 6, 8], [3, 8, 9],
             // 5 faces around bottom vertex
-            [4, 9, 5], [2, 4, 11], [6, 2, 10], [8, 6, 7], [9, 8, 1],
+            [4, 9, 5], [2, 4, 11], [6, 2, 10], [8, 6, 7], [9, 8, 1]
         ]
 
         var positions: [SIMD3<Float>] = []
@@ -356,11 +356,11 @@ extension TrivialMesh {
             [-1, -1, -1], [1, -1, -1], [1, 1, -1], [-1, 1, -1],
             [-1, -1, 1], [1, -1, 1], [1, 1, 1], [-1, 1, 1],
             // Rectangle on XY plane
-            [0, -1/phi, -phi], [0, 1/phi, -phi], [0, 1/phi, phi], [0, -1/phi, phi],
+            [0, -1 / phi, -phi], [0, 1 / phi, -phi], [0, 1 / phi, phi], [0, -1 / phi, phi],
             // Rectangle on YZ plane
-            [-1/phi, -phi, 0], [1/phi, -phi, 0], [1/phi, phi, 0], [-1/phi, phi, 0],
+            [-1 / phi, -phi, 0], [1 / phi, -phi, 0], [1 / phi, phi, 0], [-1 / phi, phi, 0],
             // Rectangle on XZ plane
-            [-phi, 0, -1/phi], [-phi, 0, 1/phi], [phi, 0, 1/phi], [phi, 0, -1/phi],
+            [-phi, 0, -1 / phi], [-phi, 0, 1 / phi], [phi, 0, 1 / phi], [phi, 0, -1 / phi]
         ].map { $0 * scale }
 
         // 12 pentagonal faces (each split into 3 triangles from center)
@@ -376,7 +376,7 @@ extension TrivialMesh {
             [0, 12, 13, 1, 8],  // Bottom face
             [2, 14, 15, 3, 9],  // Top face
             [4, 11, 5, 13, 12], // Left-back face
-            [6, 10, 7, 15, 14], // Right-top face
+            [6, 10, 7, 15, 14] // Right-top face
         ]
 
         var positions: [SIMD3<Float>] = []
@@ -571,7 +571,7 @@ extension TrivialMesh {
         let halfHeight = height * 0.5
 
         // Generate top hemisphere
-        for ring in 0...rings/2 {
+        for ring in 0...rings / 2 {
             let theta = Float(ring) * Float.pi / Float(rings)
             let sinTheta = sin(theta)
             let cosTheta = cos(theta)
@@ -610,13 +610,13 @@ extension TrivialMesh {
                 normals.append(normalize([cosPhi, 0, sinPhi]))
 
                 let u = Float(segment) / Float(segments)
-                let v = (Float(rings/2) + Float(i) * 2) / Float(rings + 2)
+                let v = (Float(rings / 2) + Float(i) * 2) / Float(rings + 2)
                 textureCoordinates.append([u, v])
             }
         }
 
         // Generate bottom hemisphere
-        for ring in rings/2...rings {
+        for ring in rings / 2...rings {
             let theta = Float(ring) * Float.pi / Float(rings)
             let sinTheta = sin(theta)
             let cosTheta = cos(theta)
@@ -1059,28 +1059,28 @@ extension TrivialMesh {
         let positions: [SIMD3<Float>] = [
             [-0.5, -0.5, 0], // 0: bottom-left
             [ 0.5, -0.5, 0], // 1: bottom-right
-            [ 0.5,  0.5, 0], // 2: top-right
-            [-0.5,  0.5, 0], // 3: top-left
+            [ 0.5, 0.5, 0], // 2: top-right
+            [-0.5, 0.5, 0] // 3: top-left
         ]
 
         let textureCoordinates: [SIMD2<Float>] = [
             [0, 0], // bottom-left
             [1, 0], // bottom-right
             [1, 1], // top-right
-            [0, 1], // top-left
+            [0, 1] // top-left
         ]
 
         let normals: [SIMD3<Float>] = [
             [0, 0, 1],
             [0, 0, 1],
             [0, 0, 1],
-            [0, 0, 1],
+            [0, 0, 1]
         ]
 
         // Two triangles to form a quad
         let indices: [Int] = [
             0, 1, 2,  // First triangle
-            0, 2, 3,  // Second triangle
+            0, 2, 3  // Second triangle
         ]
 
         return TrivialMesh(
@@ -1100,21 +1100,21 @@ extension TrivialMesh {
         let height: Float = sqrt(3.0) / 2.0 * 0.5
 
         let positions: [SIMD3<Float>] = [
-            [0, height * 2.0/3.0, 0],      // 0: top vertex
-            [-0.5, -height/3.0, 0],        // 1: bottom-left
-            [0.5, -height/3.0, 0],         // 2: bottom-right
+            [0, height * 2.0 / 3.0, 0],      // 0: top vertex
+            [-0.5, -height / 3.0, 0],        // 1: bottom-left
+            [0.5, -height / 3.0, 0]         // 2: bottom-right
         ]
 
         let textureCoordinates: [SIMD2<Float>] = [
             [0.5, 1],   // top
             [0, 0],     // bottom-left
-            [1, 0],     // bottom-right
+            [1, 0]     // bottom-right
         ]
 
         let normals: [SIMD3<Float>] = [
             [0, 0, 1],
             [0, 0, 1],
-            [0, 0, 1],
+            [0, 0, 1]
         ]
 
         let indices: [Int] = [0, 1, 2]
@@ -1131,4 +1131,3 @@ extension TrivialMesh {
         )
     }
 }
-

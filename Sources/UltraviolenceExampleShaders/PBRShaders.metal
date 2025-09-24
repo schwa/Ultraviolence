@@ -1,11 +1,12 @@
+#import "UltraviolenceExampleShaders.h"
+#import <metal_logging>
 #import <metal_stdlib>
 #import <simd/simd.h>
-#import <metal_logging>
-#import "UltraviolenceExampleShaders.h"
 
 using namespace metal;
 
 namespace PBR {
+
     typedef PBRUniforms Uniforms;
     typedef PBRAmplifiedUniforms AmplifiedUniforms;
 
@@ -80,12 +81,13 @@ namespace PBR {
     // MARK: -
 
     // Vertex shader
-    vertex VertexOut vertex_main(VertexIn in [[stage_in]],
+    vertex VertexOut vertex_main(
+        VertexIn in [[stage_in]],
         uint vertex_id [[vertex_id]],
         uint instance_id [[instance_id]],
         uint amplification_id [[amplification_id]],
-        constant FrameUniforms& frameUniforms [[buffer(0)]],
-        constant Uniforms& uniforms [[buffer(1)]],
+        constant FrameUniforms &frameUniforms [[buffer(0)]],
+        constant Uniforms &uniforms [[buffer(1)]],
         constant AmplifiedUniforms *amplifiedUniforms [[buffer(2)]]
     ) {
         float4x4 modelMatrix = uniforms.modelMatrix;
@@ -115,11 +117,11 @@ namespace PBR {
     // PBR Fragment shader
     fragment float4 fragment_main(
         VertexOut in [[stage_in]],
-        constant FrameUniforms& frameUniforms [[buffer(0)]],
-        constant Uniforms& uniforms [[buffer(1)]],
+        constant FrameUniforms &frameUniforms [[buffer(0)]],
+        constant Uniforms &uniforms [[buffer(1)]],
         constant AmplifiedUniforms *amplifiedUniforms [[buffer(2)]],
-        constant PBRMaterialArgumentBuffer& material [[buffer(3)]],
-        constant Light* lights [[buffer(4)]],
+        constant PBRMaterialArgumentBuffer &material [[buffer(3)]],
+        constant Light *lights [[buffer(4)]],
         constant LightingArgumentBuffer &lighting [[buffer(5)]],
         texture2d<float> environmentTexture [[texture(5)]]
     ) {
@@ -228,7 +230,8 @@ namespace PBR {
                 float edgeSoftness = 1.0 - NdotV * NdotV;
 
                 // Combine wrapped diffuse and edge softening
-                float3 softContribution = albedo * material.softScatteringTint * radiance * (NdotL_wrapped * 0.5 + scatter * edgeSoftness) * material.softScattering;
+                float3 softContribution = albedo * material.softScatteringTint * radiance *
+                                          (NdotL_wrapped * 0.5 + scatter * edgeSoftness) * material.softScattering;
 
                 Lo += softContribution;
             }
@@ -254,7 +257,9 @@ namespace PBR {
         // Environment reflections (IBL) - using equirectangular environment map
         float3 environmentContribution = float3(0.0);
         if (!is_null_texture(environmentTexture)) {
-            constexpr sampler envSampler(mag_filter::linear, min_filter::linear, mip_filter::linear, address::clamp_to_edge);
+            constexpr sampler envSampler(
+                mag_filter::linear, min_filter::linear, mip_filter::linear, address::clamp_to_edge
+            );
 
             // Calculate reflection vector
             float3 R = reflect(-V, N);
@@ -307,7 +312,7 @@ namespace PBR {
         color = color / (color + float3(1.0));
 
         // Gamma correction
-        color = pow(color, float3(1.0/2.2));
+        color = pow(color, float3(1.0 / 2.2));
 
         return float4(color, 1.0);
     }

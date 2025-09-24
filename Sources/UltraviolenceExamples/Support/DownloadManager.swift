@@ -47,7 +47,6 @@ extension DownloadManager: URLSessionDownloadDelegate {
     }
 
     nonisolated func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
-
         // Move to a temporary location since the original will be deleted
         let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         do {
@@ -65,7 +64,7 @@ extension DownloadManager: URLSessionDownloadDelegate {
     }
 
     nonisolated func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        if let error = error {
+        if let error {
             Task { @MainActor in
                 self.continuation?.resume(throwing: error)
                 self.continuation = nil

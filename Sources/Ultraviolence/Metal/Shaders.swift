@@ -71,4 +71,3 @@ public struct VisibleFunction: ShaderProtocol {
         self.function = function
     }
 }
-

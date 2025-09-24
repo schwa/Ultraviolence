@@ -1,6 +1,6 @@
+import simd
 import Ultraviolence
 import UltraviolenceExampleShaders
-import simd
 
 struct PBRMaterialNew: @unchecked Sendable {
     var albedo: ColorSource
@@ -38,7 +38,7 @@ extension PBRMaterialNew {
     func toArgumentBuffer() -> PBRMaterialArgumentBuffer {
         var argumentBuffer = PBRMaterialArgumentBuffer()
         argumentBuffer.albedo = albedo.toArgumentBuffer()
-//        argumentBuffer.normal = normal?.gpuResourceID
+        //        argumentBuffer.normal = normal?.gpuResourceID
         argumentBuffer.metallic = metallic.toArgumentBuffer()
         argumentBuffer.roughness = roughness.toArgumentBuffer()
         argumentBuffer.ambientOcclusion = ambientOcclusion.toArgumentBuffer()
@@ -55,7 +55,7 @@ extension PBRMaterialNew {
 
 extension Element {
     func pbrMaterial(_ material: PBRMaterialNew) -> some Element {
-//        self.parameter("material", functionType: .fragment, value: material)
+        //        self.parameter("material", functionType: .fragment, value: material)
 
         let argumentBuffer = material.toArgumentBuffer()
 
@@ -98,7 +98,6 @@ extension PBRMaterialNew {
     public static let skin = Self(albedo: [0.8, 0.6, 0.5], metallic: 0.0, roughness: 0.4, softScattering: 0.7, softScatteringDepth: [1.0, 0.2, 0.1], softScatteringTint: [0.9, 0.5, 0.3])
     public static let marble = Self(albedo: [0.9, 0.9, 0.85], metallic: 0.0, roughness: 0.2, softScattering: 0.3, softScatteringDepth: [0.5, 0.5, 0.5], softScatteringTint: [0.95, 0.95, 0.9])
 }
-
 
 enum MaterialPreset: String, CaseIterable {
     case gold = "Gold"

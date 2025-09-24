@@ -28,9 +28,7 @@ public struct PanoramaDemoView: View {
     }
 
     public var body: some View {
-
-
-        CachingImportWell(url: $panoramaURL, identifier: "panorama", allowedContentTypes: [.image]) { url in
+        CachingImportWell(url: $panoramaURL, identifier: "panorama", allowedContentTypes: [.image]) { _ in
             WorldView(projection: $projection, cameraMatrix: $cameraMatrix) {
                 if let panoramaTexture, let mesh {
                     RenderView { _, drawableSize in
@@ -143,13 +141,11 @@ public struct PanoramaDemoView: View {
                 let textureLoader = MTKTextureLoader(device: device)
                 let texture = try await textureLoader.newTexture(URL: url, options: [.textureUsage: MTLTextureUsage.shaderRead.rawValue, .textureStorageMode: MTLStorageMode.private.rawValue])
                 await MainActor.run {
-                    self.panoramaTexture = texture
+                    panoramaTexture = texture
                 }
             } catch {
                 print("Failed to load panorama: \(error)")
             }
         }
     }
-
 }
-

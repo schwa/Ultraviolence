@@ -28,7 +28,6 @@ extension BlinnPhongMaterial {
     }
 }
 
-
 extension Element {
     func blinnPhongMaterial(_ material: BlinnPhongMaterial) throws -> some Element {
         self

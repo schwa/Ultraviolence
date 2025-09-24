@@ -60,7 +60,7 @@ public struct VideoPlaybackDemoView: View {
                     }
                 }
             }
-            .aspectRatio(16.0/9.0, contentMode: .fit)
+            .aspectRatio(16.0 / 9.0, contentMode: .fit)
             .background(Color.black)
 
             // Controls
@@ -219,7 +219,7 @@ public struct VideoPlaybackDemoView: View {
 
     private func loadDefaultVideo() {
         if let url = Bundle.module.url(forResource: "sample", withExtension: "mov") ??
-                     Bundle.module.url(forResource: "sample", withExtension: "mp4") {
+            Bundle.module.url(forResource: "sample", withExtension: "mp4") {
             loadVideo(url: url)
         } else {
             errorMessage = "No default video found. Click 'Load Video' to select one."

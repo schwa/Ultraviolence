@@ -99,7 +99,6 @@ public struct DownloadButton: View {
                 alreadyDownloaded = true
                 onCompletion?(unzipDestination)
             }
-
         } catch {
             await MainActor.run {
                 downloadError = error

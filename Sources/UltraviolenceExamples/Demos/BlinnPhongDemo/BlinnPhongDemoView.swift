@@ -4,9 +4,9 @@ import MetalKit
 import simd
 import SwiftUI
 import Ultraviolence
+import UltraviolenceExampleShaders
 import UltraviolenceSupport
 import UltraviolenceUI
-import UltraviolenceExampleShaders
 
 public struct BlinnPhongDemoView: View {
     @State

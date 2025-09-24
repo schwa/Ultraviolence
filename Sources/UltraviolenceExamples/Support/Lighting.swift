@@ -30,7 +30,7 @@ extension Lighting {
 
 extension Lighting {
     func toArgumentBuffer() throws -> LightingArgumentBuffer {
-        return LightingArgumentBuffer(
+        LightingArgumentBuffer(
             ambientLightColor: ambientLightColor,
             lightCount: Int32(count),
             lights: lights.gpuAddressAsUnsafeMutablePointer(type: Light.self).orFatalError(),
@@ -42,8 +42,8 @@ extension Lighting {
 extension Element {
     func lighting(_ lighting: Lighting) throws -> some Element {
         self
-        .parameter("lighting", value: try lighting.toArgumentBuffer())
-        .useResource(lighting.lights, usage: .read, stages: .fragment)
-        .useResource(lighting.lightPositions, usage: .read, stages: .fragment)
+            .parameter("lighting", value: try lighting.toArgumentBuffer())
+            .useResource(lighting.lights, usage: .read, stages: .fragment)
+            .useResource(lighting.lightPositions, usage: .read, stages: .fragment)
     }
 }

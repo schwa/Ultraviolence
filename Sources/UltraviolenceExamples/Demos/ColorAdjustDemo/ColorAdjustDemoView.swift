@@ -39,16 +39,16 @@ public struct ColorAdjustDemoView: View {
     let shaderLibrary: Ultraviolence.ShaderLibrary
 
     @State
-    var selectedFunction: AdjustmentFunction = .gamma
+    private var selectedFunction: AdjustmentFunction = .gamma
 
     @State
-    var multiplyValue: Float = 2.0
+    private var multiplyValue: Float = 2.0
 
     @State
-    var gammaValue: Float = 2.2
+    private var gammaValue: Float = 2.2
 
     @State
-    var matrixValues = float4x4(
+    private var matrixValues = float4x4(
         [1.0, 0.0, 0.0, 0.0],
         [0.0, 1.0, 0.0, 0.0],
         [0.0, 0.0, 1.0, 0.0],
@@ -56,29 +56,29 @@ public struct ColorAdjustDemoView: View {
     )
 
     @State
-    var brightnessContrastValues = SIMD2<Float>(0.0, 1.0) // brightness, contrast
+    private var brightnessContrastValues = SIMD2<Float>(0.0, 1.0) // brightness, contrast
 
     @State
-    var hsvValues = SIMD3<Float>(0.0, 1.0, 1.0) // hue shift (degrees), saturation multiplier, value multiplier
+    private var hsvValues = SIMD3<Float>(0.0, 1.0, 1.0) // hue shift (degrees), saturation multiplier, value multiplier
 
     @State
-    var colorBalanceValues = float3x2(
+    private var colorBalanceValues = float3x2(
         [0.0, 0.0], // shadows R/C, highlights R/C
         [0.0, 0.0], // shadows G/M, highlights G/M
         [0.0, 0.0]  // shadows B/Y, highlights B/Y
     )
 
     @State
-    var levelsValues = SIMD4<Float>(0.0, 1.0, 1.0, 1.0) // input black, input white, gamma, output range
+    private var levelsValues = SIMD4<Float>(0.0, 1.0, 1.0, 1.0) // input black, input white, gamma, output range
 
     @State
-    var temperatureTintValues = SIMD2<Float>(0.0, 0.0) // temperature, tint
+    private var temperatureTintValues = SIMD2<Float>(0.0, 0.0) // temperature, tint
 
     @State
-    var thresholdValues = SIMD2<Float>(0.5, 0.05) // threshold, smoothness
+    private var thresholdValues = SIMD2<Float>(0.5, 0.05) // threshold, smoothness
 
     @State
-    var vignetteValues = SIMD4<Float>(0.5, 0.5, 0.8, 0.8) // center x, center y, intensity, radius
+    private var vignetteValues = SIMD4<Float>(0.5, 0.5, 0.8, 0.8) // center x, center y, intensity, radius
 
     public init() {
         let device = _MTLCreateSystemDefaultDevice()
@@ -167,7 +167,6 @@ public struct ColorAdjustDemoView: View {
         case .vignette:
             try! ColorAdjustComputePipeline(inputSpecifier: .texture2D(sourceTexture, nil), inputParameters: vignetteValues, outputTexture: adjustedTexture, colorAdjustFunction: colorAdjustFunction)
         }
-
     }
 
     @ViewBuilder
@@ -556,6 +555,5 @@ public struct ColorAdjustDemoView: View {
             .frame(minWidth: 350)
             .fixedSize(horizontal: true, vertical: false)
         }
-
     }
 }

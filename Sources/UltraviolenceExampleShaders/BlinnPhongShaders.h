@@ -1,8 +1,8 @@
 #pragma once
 
 #import "ColorSource.h"
-#import "Support.h"
 #import "Lighting.h"
+#import "Support.h"
 
 // long ambientTexture, long ambientSampler
 struct BlinnPhongMaterialArgumentBuffer {
@@ -11,4 +11,3 @@ struct BlinnPhongMaterialArgumentBuffer {
     ColorSourceArgumentBuffer specular;
     float shininess;
 };
-

@@ -23,7 +23,6 @@ public extension MTKMesh {
         catch {
             fatalError("\(error)")
         }
-
     }
 
     static func sphere(extent: SIMD3<Float> = [1, 1, 1], inwardNormals: Bool = false) -> MTKMesh {

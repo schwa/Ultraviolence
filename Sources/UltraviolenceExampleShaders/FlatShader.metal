@@ -30,10 +30,7 @@ namespace FlatShader {
     }
 
     [[fragment]] float4
-    fragment_main(
-                  VertexOut in [[stage_in]],
-                  constant ColorSourceArgumentBuffer &specifier [[buffer(0)]]
-    ) {
+    fragment_main(VertexOut in [[stage_in]], constant ColorSourceArgumentBuffer &specifier [[buffer(0)]]) {
         return specifier.resolve(in.textureCoordinate);
     }
 

@@ -7,24 +7,18 @@ using namespace metal;
 
 namespace ColorAdjust {
 
-    [[ visible ]]
-    float2 mapTextureCoordinateFunction(float2 textureCoordinate, constant void *parameters);
+    [[visible]] float2 mapTextureCoordinateFunction(float2 textureCoordinate, constant void *parameters);
 
-    [[ visible ]]
-    float4 colorAdjustFunction(float4 inputColor, float2 inputCoordinate, constant void *parameters);
+    [[visible]] float4 colorAdjustFunction(float4 inputColor, float2 inputCoordinate, constant void *parameters);
 
     // TODO: Move
-    float2 textureCoordinateForPixel(
-        constant ColorSourceArgumentBuffer &specifier,
-        uint2 position
-    ) {
+    float2 textureCoordinateForPixel(constant ColorSourceArgumentBuffer &specifier, uint2 position) {
         if (specifier.source == kColorSourceTypeTexture2D) {
             float2 size = float2(specifier.texture2D.get_width(), specifier.texture2D.get_height());
             return (float2(position) + 0.5) / size;
-        }
-        else if (specifier.source == kColorSourceTypeDepth2D) {
+        } else if (specifier.source == kColorSourceTypeDepth2D) {
             float2 size = float2(specifier.depth2D.get_width(), specifier.depth2D.get_height());
-            return  (float2(position) + 0.5) / size;
+            return (float2(position) + 0.5) / size;
         } else {
             return float2(0, 0);
         }
@@ -46,25 +40,21 @@ namespace ColorAdjust {
 
     // MARK: -
 
-    [[ stitchable ]]
-    float4 multiply(float4 inputColor, float2 inputCoordinate, constant float &inputParameters) {
+    [[stitchable]] float4 multiply(float4 inputColor, float2 inputCoordinate, constant float &inputParameters) {
         return inputColor * inputParameters;
     }
 
-    [[ stitchable ]]
-    float4 gamma(float4 inputColor, float2 inputCoordinate, constant float &gamma) {
+    [[stitchable]] float4 gamma(float4 inputColor, float2 inputCoordinate, constant float &gamma) {
         float invGamma = 1.0 / gamma;
         float3 gammaCorrected = pow(inputColor.rgb, float3(invGamma));
         return float4(gammaCorrected, inputColor.a);
     }
 
-    [[ stitchable ]]
-    float4 matrix(float4 inputColor, float2 inputCoordinate, constant float4x4 &matrix) {
+    [[stitchable]] float4 matrix(float4 inputColor, float2 inputCoordinate, constant float4x4 &matrix) {
         return matrix * inputColor;
     }
 
-    [[ stitchable ]]
-    float4 brightnessContrast(float4 inputColor, float2 inputCoordinate, constant float2 &params) {
+    [[stitchable]] float4 brightnessContrast(float4 inputColor, float2 inputCoordinate, constant float2 &params) {
         float brightness = params.x;
         float contrast = params.y;
         float3 color = inputColor.rgb + brightness;
@@ -72,8 +62,7 @@ namespace ColorAdjust {
         return float4(saturate(color), inputColor.a);
     }
 
-    [[ stitchable ]]
-    float4 hsvAdjust(float4 inputColor, float2 inputCoordinate, constant float3 &params) {
+    [[stitchable]] float4 hsvAdjust(float4 inputColor, float2 inputCoordinate, constant float3 &params) {
         float hueShift = params.x * 3.14159 / 180.0; // Convert degrees to radians
         float saturation = params.y;
         float value = params.z;
@@ -128,8 +117,7 @@ namespace ColorAdjust {
         return float4(rgb_out + m, inputColor.a);
     }
 
-    [[ stitchable ]]
-    float4 colorBalance(float4 inputColor, float2 inputCoordinate, constant float3x2 &params) {
+    [[stitchable]] float4 colorBalance(float4 inputColor, float2 inputCoordinate, constant float3x2 &params) {
         float3 shadows = float3(params[0][0], params[1][0], params[2][0]);
         float3 highlights = float3(params[0][1], params[1][1], params[2][1]);
 
@@ -144,8 +132,7 @@ namespace ColorAdjust {
         return float4(saturate(color), inputColor.a);
     }
 
-    [[ stitchable ]]
-    float4 levels(float4 inputColor, float2 inputCoordinate, constant float4 &params) {
+    [[stitchable]] float4 levels(float4 inputColor, float2 inputCoordinate, constant float4 &params) {
         float inputBlack = params.x;
         float inputWhite = params.y;
         float gamma = params.z;
@@ -159,8 +146,7 @@ namespace ColorAdjust {
         return float4(saturate(color), inputColor.a);
     }
 
-    [[ stitchable ]]
-    float4 temperatureTint(float4 inputColor, float2 inputCoordinate, constant float2 &params) {
+    [[stitchable]] float4 temperatureTint(float4 inputColor, float2 inputCoordinate, constant float2 &params) {
         float temperature = params.x;
         float tint = params.y;
 
@@ -178,8 +164,7 @@ namespace ColorAdjust {
         return float4(saturate(color), inputColor.a);
     }
 
-    [[ stitchable ]]
-    float4 threshold(float4 inputColor, float2 inputCoordinate, constant float2 &params) {
+    [[stitchable]] float4 threshold(float4 inputColor, float2 inputCoordinate, constant float2 &params) {
         float threshold = params.x;
         float smoothness = params.y;
 
@@ -192,8 +177,7 @@ namespace ColorAdjust {
         return float4(float3(alpha), inputColor.a);
     }
 
-    [[ stitchable ]]
-    float4 vignette(float4 inputColor, float2 inputCoordinate, constant float4 &params) {
+    [[stitchable]] float4 vignette(float4 inputColor, float2 inputCoordinate, constant float4 &params) {
         float2 center = params.xy;
         float intensity = params.z;
         float radius = params.w;
@@ -207,9 +191,8 @@ namespace ColorAdjust {
         return float4(inputColor.rgb * vignette, inputColor.a);
     }
 
-    [[ stitchable ]]
-    float2 mapTextureCoordinateIdentity(float2 textureCoordinate, constant void *parameters) {
+    [[stitchable]] float2 mapTextureCoordinateIdentity(float2 textureCoordinate, constant void *parameters) {
         return textureCoordinate;
-
     }
-}
+
+} // namespace ColorAdjust

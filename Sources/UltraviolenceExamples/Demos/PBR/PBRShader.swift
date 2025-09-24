@@ -57,4 +57,3 @@ public extension Element {
             .parameter("environmentTexture", functionType: .fragment, texture: texture)
     }
 }
-

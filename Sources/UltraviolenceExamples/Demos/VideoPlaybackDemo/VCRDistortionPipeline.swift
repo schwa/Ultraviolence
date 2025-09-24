@@ -1,8 +1,8 @@
 import Metal
 import MetalKit
 import Ultraviolence
-import UltraviolenceUI
 import UltraviolenceSupport
+import UltraviolenceUI
 
 // Parts based on: https://godotshaders.com/shader/vcr-analog-distortions/
 
@@ -88,7 +88,7 @@ public struct VCRDistortionPipeline: Element {
 
         texture.replace(
             region: MTLRegion(origin: MTLOrigin(x: 0, y: 0, z: 0),
-                             size: MTLSize(width: 256, height: 256, depth: 1)),
+                              size: MTLSize(width: 256, height: 256, depth: 1)),
             mipmapLevel: 0,
             withBytes: noiseData,
             bytesPerRow: 256

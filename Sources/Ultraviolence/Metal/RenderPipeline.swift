@@ -39,7 +39,6 @@ public struct RenderPipeline <Content>: Element, BodylessElement, BodylessConten
             renderPipelineDescriptor.fragmentLinkedFunctions = linkedFunctions
         }
 
-
         if let vertexDescriptor = environment.vertexDescriptor {
             renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
         }

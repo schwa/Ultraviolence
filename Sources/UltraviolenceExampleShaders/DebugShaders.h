@@ -2,7 +2,7 @@
 
 #import "Support.h"
 
-typedef UV_ENUM(int, DebugShadersMode) {
+typedef UV_ENUM(int, DebugShadersMode){
     kDebugShadersModeNormal = 0,
     kDebugShadersModeTexCoord = 1,
     kDebugShadersModeTangent = 2,

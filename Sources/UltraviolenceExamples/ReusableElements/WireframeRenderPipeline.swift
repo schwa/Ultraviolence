@@ -1,7 +1,7 @@
 import Metal
+import MetalKit
 import Ultraviolence
 import UltraviolenceExampleShaders
-import MetalKit
 
 struct WireframeRenderPipeline: Element {
     let vertexShader: VertexShader

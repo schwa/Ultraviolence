@@ -28,20 +28,20 @@ import UltraviolenceExamples
         WireframeDemoView.self,
         TrivialMeshDemoView.self,
         SceneGraphDemoView.self,
-        GLTFDemoView.self,
+        GLTFDemoView.self
     ]
 
-#if os(macOS)
+    #if os(macOS)
     demos += [
         OffscreenDemoView.self
     ]
-#endif
+    #endif
 
-#if os(iOS)
+    #if os(iOS)
     demos += [
         ARKitDemoView.self
     ]
-#endif
+    #endif
     return demos
 }()
 

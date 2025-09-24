@@ -10,10 +10,9 @@ struct GLTFFilePickerView: View {
     var filteredFiles: [URL] {
         if searchText.isEmpty {
             return files
-        } else {
-            return files.filter {
-                $0.lastPathComponent.localizedCaseInsensitiveContains(searchText)
-            }
+        }
+        return files.filter {
+            $0.lastPathComponent.localizedCaseInsensitiveContains(searchText)
         }
     }
 

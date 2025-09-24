@@ -1,5 +1,5 @@
-#include <metal_stdlib>
 #include "UltraviolenceExampleShaders.h"
+#include <metal_stdlib>
 using namespace metal;
 
 namespace AxisLines {
@@ -9,37 +9,37 @@ namespace AxisLines {
         float4 color;
     };
 
-    vertex VertexOut vertex_main(uint vertexID [[vertex_id]], constant AxisLinesUniforms& uniforms [[buffer(0)]]) {
+    vertex VertexOut vertex_main(uint vertexID [[vertex_id]], constant AxisLinesUniforms &uniforms [[buffer(0)]]) {
         VertexOut out;
 
         float3 position;
         float4 color;
 
-        switch(vertexID) {
-            case 0: // X axis start
-                position = float3(-uniforms.scale, 0, 0);
-                color = float4(1, 0, 0, 1); // Red
-                break;
-            case 1: // X axis end
-                position = float3(uniforms.scale, 0, 0);
-                color = float4(1, 0, 0, 1); // Red
-                break;
-            case 2: // Y axis start
-                position = float3(0, -uniforms.scale, 0);
-                color = float4(0, 1, 0, 1); // Green
-                break;
-            case 3: // Y axis end
-                position = float3(0, uniforms.scale, 0);
-                color = float4(0, 1, 0, 1); // Green
-                break;
-            case 4: // Z axis start
-                position = float3(0, 0, -uniforms.scale);
-                color = float4(0, 0, 1, 1); // Blue
-                break;
-            case 5: // Z axis end
-                position = float3(0, 0, uniforms.scale);
-                color = float4(0, 0, 1, 1); // Blue
-                break;
+        switch (vertexID) {
+        case 0: // X axis start
+            position = float3(-uniforms.scale, 0, 0);
+            color = float4(1, 0, 0, 1); // Red
+            break;
+        case 1: // X axis end
+            position = float3(uniforms.scale, 0, 0);
+            color = float4(1, 0, 0, 1); // Red
+            break;
+        case 2: // Y axis start
+            position = float3(0, -uniforms.scale, 0);
+            color = float4(0, 1, 0, 1); // Green
+            break;
+        case 3: // Y axis end
+            position = float3(0, uniforms.scale, 0);
+            color = float4(0, 1, 0, 1); // Green
+            break;
+        case 4: // Z axis start
+            position = float3(0, 0, -uniforms.scale);
+            color = float4(0, 0, 1, 1); // Blue
+            break;
+        case 5: // Z axis end
+            position = float3(0, 0, uniforms.scale);
+            color = float4(0, 0, 1, 1); // Blue
+            break;
         }
 
         out.position = uniforms.mvpMatrix * float4(position, 1.0);
@@ -52,4 +52,5 @@ namespace AxisLines {
     fragment float4 fragment_main(VertexOut in [[stage_in]]) {
         return in.color;
     }
-}
+
+} // namespace AxisLines

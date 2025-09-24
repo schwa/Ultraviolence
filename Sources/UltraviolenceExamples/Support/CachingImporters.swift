@@ -24,7 +24,7 @@ struct CachingImportButton: View {
         .fileImporter(isPresented: $isImporting, allowedContentTypes: allowedContentTypes) { result in
             if case .success(let url) = result {
                 do {
-                    self.url = try CachingImportHelper(identifier: identifier).storeImportedFile(at: url)
+                    url = try CachingImportHelper(identifier: identifier).storeImportedFile(at: url)
                 }
                 catch {
                     print("Failed to store imported file: \(error)")
@@ -32,7 +32,7 @@ struct CachingImportButton: View {
             }
         }
         .onChange(of: identifier, initial: true) {
-            self.url = CachingImportHelper(identifier: identifier).storedURL()
+            url = CachingImportHelper(identifier: identifier).storedURL()
         }
     }
 }
@@ -46,7 +46,7 @@ struct CachingImportWell <Content>: View where Content: View {
     private var url: URL?
 
     @State
-    var isDropTargeted: Bool = false
+    private var isDropTargeted: Bool = false
 
     init(url: Binding<URL?>, identifier: String, allowedContentTypes: [UTType], content: @escaping (URL) -> Content) {
         self._url = url
@@ -62,27 +62,26 @@ struct CachingImportWell <Content>: View where Content: View {
             }
             else {
                 ContentUnavailableView("No File", systemImage: "exclamationmark.triangle")
-//                    .onDrop(of: allowedContentTypes, isTargeted: $isDropTargeted) { providers in
-//                        if let provider = providers.first {
-//                            do {
-//                                //self.url = try CachingImportHelper(identifier: identifier).storeImportedFile(at: url)
-//                            }
-//                            catch {
-//                                print("Failed to store imported file: \(error)")
-//                            }
-//                        }
-//                        return false
-//                    }
+                //                    .onDrop(of: allowedContentTypes, isTargeted: $isDropTargeted) { providers in
+                //                        if let provider = providers.first {
+                //                            do {
+                //                                //self.url = try CachingImportHelper(identifier: identifier).storeImportedFile(at: url)
+                //                            }
+                //                            catch {
+                //                                print("Failed to store imported file: \(error)")
+                //                            }
+                //                        }
+                //                        return false
+                //                    }
             }
         }
         .onChange(of: identifier, initial: true) {
-            self.url = CachingImportHelper(identifier: identifier).storedURL()
+            url = CachingImportHelper(identifier: identifier).storedURL()
         }
     }
 }
 
 struct CachingImportHelper {
-
     var identifier: String
 
     @discardableResult
@@ -101,7 +100,7 @@ struct CachingImportHelper {
             let cachesDirectory = try ensureCachesDirectory()
             let fileManager = FileManager.default
             let contents = try? fileManager.contentsOfDirectory(at: cachesDirectory, includingPropertiesForKeys: nil)
-            return contents?.first(where: { $0.lastPathComponent.starts(with: identifier) })
+            return contents?.first { $0.lastPathComponent.starts(with: identifier) }
         } catch {
             print("Failed to ensure caches directory: \(error)")
             return nil

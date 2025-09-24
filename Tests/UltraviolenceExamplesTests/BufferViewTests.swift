@@ -1,5 +1,5 @@
-import Testing
 import Metal
+import Testing
 @testable import UltraviolenceExamples
 
 @Suite("BufferView Tests")

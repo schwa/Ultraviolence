@@ -5,11 +5,11 @@ import UIKit
 #endif
 import CoreImage
 import Foundation
-import SwiftGLTF
 import GeometryLite3D
-import UltraviolenceSupport
-import UltraviolenceExampleShaders
 import MetalKit
+import SwiftGLTF
+import UltraviolenceExampleShaders
+import UltraviolenceSupport
 
 class GLTGSceneGraphGenerator {
     let container: Container
@@ -52,10 +52,10 @@ class GLTGSceneGraphGenerator {
             //            fatalError()
         }
         if let rotation = node.rotation {
-            //fatalError()
+            // fatalError()
         }
         if let scale = node.scale {
-            //fatalError()
+            // fatalError()
         }
         try node.children.map { try $0.resolve(in: document) }.map { try generateSceneGraphNode(from: $0) }.forEach {
             $0.parent = uvNode
@@ -77,12 +77,9 @@ class GLTGSceneGraphGenerator {
             .TEXCOORD_2,
             .COLOR_0,
             .JOINTS_0,
-            .WEIGHTS_0,
+            .WEIGHTS_0
         ]
         print(try semantics.filter { try primitive.attributes[$0]?.resolve(in: container.document) != nil })
-
-
-
 
         var trivialMesh = TrivialMesh()
         if let positions = try primitive.value(semantic: .POSITION, type: SIMD3<Float>.self, in: container) {
@@ -142,10 +139,9 @@ class GLTGSceneGraphGenerator {
                 let mtlTexture = try mtlTexture(for: textureInfo)
                 uvMaterial.metallic = .texture2D(mtlTexture)
                 uvMaterial.roughness = .texture2D(mtlTexture)
-
             }
         }
-        
+
         return uvMaterial
     }
 }
@@ -156,10 +152,8 @@ extension GLTGSceneGraphGenerator {
         let source = try texture.source!.resolve(in: document)
         let data = try container.data(for: source)
         let image = try CGImage.image(with: data)
-        let mtlTexture = try textureLoader.newTexture(cgImage: image, options: [:])
-        return mtlTexture
+        return try textureLoader.newTexture(cgImage: image, options: [:])
     }
-
 }
 
 extension Container {
@@ -167,12 +161,10 @@ extension Container {
         if let uri = image.uri {
             return try data(for: uri)
         }
-        else if let bufferView = try image.bufferView?.resolve(in: document) {
+        if let bufferView = try image.bufferView?.resolve(in: document) {
             return try data(for: bufferView)
         }
-        else {
-            fatalError()
-        }
+        fatalError()
     }
 }
 
@@ -190,9 +182,9 @@ extension SwiftGLTF.Mesh.Primitive {
             return nil
         }
         assert(accessor.componentType == .FLOAT)
-        let values = Array <SIMD2<Float>>(withUnsafeData: try container.data(for: accessor))
+        let values = [SIMD2<Float>](withUnsafeData: try container.data(for: accessor))
         assert(values.count == accessor.count)
-        assert(accessor.min == nil || accessor.max == nil || values.allSatisfy({ $0.within(min: SIMD2<Float>(accessor.min!), max: SIMD2<Float>(accessor.max!)) }))
+        assert(accessor.min == nil || accessor.max == nil || values.allSatisfy { $0.within(min: SIMD2<Float>(accessor.min!), max: SIMD2<Float>(accessor.max!)) })
         return values
     }
 
@@ -203,7 +195,7 @@ extension SwiftGLTF.Mesh.Primitive {
         let values: [SIMD3<Float>]
         switch accessor.componentType {
         case .FLOAT:
-            values = Array <Packed3<Float>>(withUnsafeData: try container.data(for: accessor)).map {
+            values = [Packed3<Float>](withUnsafeData: try container.data(for: accessor)).map {
                 SIMD3<Float>($0.x, $0.y, $0.z)
             }
         default:
@@ -220,9 +212,9 @@ extension SwiftGLTF.Mesh.Primitive {
             return nil
         }
         assert(accessor.componentType == .FLOAT)
-        let values = Array <SIMD4<Float>>(withUnsafeData: try container.data(for: accessor))
+        let values = [SIMD4<Float>](withUnsafeData: try container.data(for: accessor))
         assert(values.count == accessor.count)
-        assert(accessor.min == nil || accessor.max == nil || values.allSatisfy({ $0.within(min: SIMD4<Float>(accessor.min!), max: SIMD4<Float>(accessor.max!)) }))
+        assert(accessor.min == nil || accessor.max == nil || values.allSatisfy { $0.within(min: SIMD4<Float>(accessor.min!), max: SIMD4<Float>(accessor.max!)) })
         return values
     }
 
@@ -233,17 +225,17 @@ extension SwiftGLTF.Mesh.Primitive {
         switch indicesAccessor.componentType {
         case .UNSIGNED_BYTE:
             let indices = [UInt8](try container.data(for: indicesAccessor))
-            assert(indicesAccessor.min == nil || indicesAccessor.max == nil || indices.allSatisfy({ (UInt8(indicesAccessor.min![0]) ... UInt8(indicesAccessor.max![0])).contains($0) }))
+            assert(indicesAccessor.min == nil || indicesAccessor.max == nil || indices.allSatisfy { (UInt8(indicesAccessor.min![0]) ... UInt8(indicesAccessor.max![0])).contains($0) })
             assert(indices.count == indicesAccessor.count)
             return indices.map { UInt32($0) }
         case .UNSIGNED_SHORT:
-            let indices = Array <UInt16>(withUnsafeData: try container.data(for: indicesAccessor))
-            assert(indicesAccessor.min == nil || indicesAccessor.max == nil || indices.allSatisfy({ (UInt16(indicesAccessor.min![0]) ... UInt16(indicesAccessor.max![0])).contains($0) }))
+            let indices = [UInt16](withUnsafeData: try container.data(for: indicesAccessor))
+            assert(indicesAccessor.min == nil || indicesAccessor.max == nil || indices.allSatisfy { (UInt16(indicesAccessor.min![0]) ... UInt16(indicesAccessor.max![0])).contains($0) })
             assert(indices.count == indicesAccessor.count)
             return indices.map { UInt32($0) }
         case .UNSIGNED_INT:
-            let indices = Array <UInt32>(withUnsafeData: try container.data(for: indicesAccessor))
-            assert(indicesAccessor.min == nil || indicesAccessor.max == nil || indices.allSatisfy({ (UInt32(indicesAccessor.min![0]) ... UInt32(indicesAccessor.max![0])).contains($0) }))
+            let indices = [UInt32](withUnsafeData: try container.data(for: indicesAccessor))
+            assert(indicesAccessor.min == nil || indicesAccessor.max == nil || indices.allSatisfy { (UInt32(indicesAccessor.min![0]) ... UInt32(indicesAccessor.max![0])).contains($0) })
             assert(indices.count == indicesAccessor.count)
             return indices
         default:

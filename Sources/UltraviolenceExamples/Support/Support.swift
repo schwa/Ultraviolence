@@ -27,7 +27,6 @@ public extension SIMD4<Float> {
     }
 }
 
-
 extension Color {
     // TODO: Not linear
     var float4: SIMD4<Float> {
@@ -66,7 +65,6 @@ extension SIMD3<Float> {
         }
     }
 }
-
 
 public extension ClosedRange where Bound == Angle {
     var degrees: ClosedRange<Double> {
@@ -155,7 +153,6 @@ public func lookAtMatrix(eye: SIMD3<Float>, target: SIMD3<Float>, up: SIMD3<Floa
         SIMD4<Float>(-dot(right, eye), -dot(newUp, eye), -dot(forward, eye), 1) // FIXED: Negate forward dot product
     )
 }
-
 
 extension View {
     @ViewBuilder

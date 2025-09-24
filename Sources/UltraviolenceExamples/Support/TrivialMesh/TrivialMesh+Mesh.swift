@@ -1,7 +1,7 @@
-import Foundation
-import Metal
 import Collections
+import Foundation
 import GeometryLite3D
+import Metal
 
 extension Mesh {
     init(_ trivial: TrivialMesh, device: MTLDevice) {
@@ -110,5 +110,4 @@ private extension Array<UInt8> {
             self.append(contentsOf: bytes)
         }
     }
-
 }

@@ -2,7 +2,7 @@
 
 #import "Support.h"
 
-typedef UV_ENUM(int, LightType) {
+typedef UV_ENUM(int, LightType){
     kLightTypeDirectional = 0,
     kLightTypePoint = 1,
     kLightTypeSpot = 2,

@@ -1,6 +1,6 @@
-import simd
-import Metal
 import GeometryLite3D
+import Metal
+import simd
 import UltraviolenceExampleShaders
 
 extension SceneGraph {
@@ -56,4 +56,3 @@ extension SceneGraph {
         return sceneGraph
     }
 }
-

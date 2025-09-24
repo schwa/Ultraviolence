@@ -1,20 +1,19 @@
 #if os(iOS)
-import SwiftUI
 import ARKit
-import Observation
-import Ultraviolence
-import UltraviolenceSupport
-import UltraviolenceUI
 import CoreVideo
+import GeometryLite3D
 import Metal
 import MetalKit
+import Observation
+import SwiftUI
+import Ultraviolence
 import UltraviolenceExampleShaders
-import GeometryLite3D
+import UltraviolenceSupport
+import UltraviolenceUI
 
 public struct ARKitDemoView: View {
-
     @State
-    var viewModel = ARKitDemoViewModel()
+    private var viewModel = ARKitDemoViewModel()
 
     let teapot: MTKMesh
     let environmentTexture: MTLTexture
@@ -39,28 +38,27 @@ public struct ARKitDemoView: View {
 
     public var body: some View {
         ZStack {
-            RenderView { context, drawableSize in
+            RenderView { _, drawableSize in
                 try RenderPass {
                     if let currentFrame = viewModel.currentFrame, let textureY = viewModel.currentTextureY, let textureCbCr = viewModel.currentTextureCbCr {
                         let cameraTransform = currentFrame.camera.transform
                         let cameraMatrix = cameraTransform.inverse
                         let orientation = UIInterfaceOrientation.portrait
-                        let projectionMatrix = currentFrame.camera.projectionMatrix(for: orientation, viewportSize: drawableSize, zNear: 0.001, zFar: 1000)
+                        let projectionMatrix = currentFrame.camera.projectionMatrix(for: orientation, viewportSize: drawableSize, zNear: 0.001, zFar: 1_000)
                         let viewProjectionMatrix = projectionMatrix * cameraMatrix
 
                         try TextureBillboardPipeline(specifierA: .texture2D(textureY), specifierB: .texture2D(textureCbCr), colorTransformFunctionName: "colorTransformYCbCrToRGB")
 
-//                        try PBRShader {
-//                            Draw(mtkMesh: teapot)
-//                                .pbrUniforms(material: PBRMaterial.gold, modelTransform: .init(scale: [0.01, 0.01, 0.01]), cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
-//                                .pbrLighting(lights)
-//                                .pbrEnvironment(environmentTexture)
-//                                .parameter("frameUniforms", functionType: .vertex, value: context.frameUniforms)
-//                                .parameter("frameUniforms", functionType: .fragment, value: context.frameUniforms)
-//                        }
-//                        .vertexDescriptor(teapot.vertexDescriptor)
-//                        .depthCompare(function: .less, enabled: true)
-
+                        //                        try PBRShader {
+                        //                            Draw(mtkMesh: teapot)
+                        //                                .pbrUniforms(material: PBRMaterial.gold, modelTransform: .init(scale: [0.01, 0.01, 0.01]), cameraMatrix: cameraMatrix, projectionMatrix: projectionMatrix)
+                        //                                .pbrLighting(lights)
+                        //                                .pbrEnvironment(environmentTexture)
+                        //                                .parameter("frameUniforms", functionType: .vertex, value: context.frameUniforms)
+                        //                                .parameter("frameUniforms", functionType: .fragment, value: context.frameUniforms)
+                        //                        }
+                        //                        .vertexDescriptor(teapot.vertexDescriptor)
+                        //                        .depthCompare(function: .less, enabled: true)
 
                         if let anchors = viewModel.session.currentFrame?.anchors, !anchors.isEmpty {
                             try AxisAlignedWireframeBoxesRenderPipeline(mvpMatrix: viewProjectionMatrix, boxes: currentFrame.anchors.map { anchor in
@@ -68,11 +66,6 @@ public struct ARKitDemoView: View {
                                 return BoxInstance(min: position + [-0.05, -0.05, -0.05], max: position + [0.05, 0.05, 0.05], color: [1, 0, 1, 1])
                             })
                         }
-
-
-
-
-
 
                         try AxisLinesRenderPipeline(mvpMatrix: viewProjectionMatrix, scale: 10_000.0)
                     }
@@ -122,8 +115,8 @@ class ARKitDemoViewModel: NSObject {
 
         session = .init()
         let configuration = ARWorldTrackingConfiguration()
-//        configuration.environmentTexturing = .automatic
-//        configuration.wantsHDREnvironmentTextures = true
+        //        configuration.environmentTexturing = .automatic
+        //        configuration.wantsHDREnvironmentTextures = true
         configuration.planeDetection = [.horizontal, .vertical]
         configuration.sceneReconstruction = .meshWithClassification
         self.configuration = configuration
@@ -186,7 +179,7 @@ extension ARKitDemoViewModel: ARSessionDelegate {
         // Extract texture from the captured image
         let capturedImage = frame.capturedImage
         let pixelBuffer = capturedImage
-        guard let textureCache = textureCache else {
+        guard let textureCache else {
             return
         }
         // ARKit provides YCbCr format with two planes
@@ -199,7 +192,6 @@ extension ARKitDemoViewModel: ARSessionDelegate {
         var cvMetalTextureY: CVMetalTexture?
         let statusY = CVMetalTextureCacheCreateTextureFromImage(nil, textureCache, pixelBuffer, nil, .r8Unorm, widthY, heightY, 0, &cvMetalTextureY)
 
-
         // Create CbCr texture (chrominance) from plane 1
         let widthCbCr = CVPixelBufferGetWidthOfPlane(pixelBuffer, 1)
         let heightCbCr = CVPixelBufferGetHeightOfPlane(pixelBuffer, 1)
@@ -207,16 +199,15 @@ extension ARKitDemoViewModel: ARSessionDelegate {
         var cvMetalTextureCbCr: CVMetalTexture?
         let statusCbCr = CVMetalTextureCacheCreateTextureFromImage(nil, textureCache, pixelBuffer, nil, .rg8Unorm, widthCbCr, heightCbCr, 1, &cvMetalTextureCbCr)
 
-        guard statusY == kCVReturnSuccess, let cvMetalTextureY = cvMetalTextureY, statusCbCr == kCVReturnSuccess, let cvMetalTextureCbCr = cvMetalTextureCbCr else {
+        guard statusY == kCVReturnSuccess, let cvMetalTextureY, statusCbCr == kCVReturnSuccess, let cvMetalTextureCbCr else {
             return
         }
 
         currentFrame = frame
-            currentTextureY = CVMetalTextureGetTexture(cvMetalTextureY)
-            currentTextureY?.label = "AR Camera Y"
-            currentTextureCbCr = CVMetalTextureGetTexture(cvMetalTextureCbCr)
-            currentTextureCbCr?.label = "AR Camera CbCr"
-
+        currentTextureY = CVMetalTextureGetTexture(cvMetalTextureY)
+        currentTextureY?.label = "AR Camera Y"
+        currentTextureCbCr = CVMetalTextureGetTexture(cvMetalTextureCbCr)
+        currentTextureCbCr?.label = "AR Camera CbCr"
     }
 
     func session(_ session: ARSession, didAdd anchors: [ARAnchor]) {
@@ -232,32 +223,25 @@ extension ARKitDemoViewModel: ARSessionDelegate {
     }
 }
 
-
 //
-//let coachingOverlay = ARCoachingOverlayView()
-//coachingOverlay.goal = .tracking
-//coachingOverlay.activityType = .play
-//coachingOverlay.feedback = .success
+// let coachingOverlay = ARCoachingOverlayView()
+// coachingOverlay.goal = .tracking
+// coachingOverlay.activityType = .play
+// coachingOverlay.feedback = .success
 //
-//view.addSubview(coachingOverlay)
+// view.addSubview(coachingOverlay)
 
 struct ARCoachingOverlayAdaptor: View {
-
     let session: ARSession
 
     var body: some View {
         ViewAdaptor {
-            let coachingOverlay = ARCoachingOverlayView()
-            return coachingOverlay
+            ARCoachingOverlayView()
         }
         update: { (coachingOverlay: ARCoachingOverlayView) in
             coachingOverlay.session = session
         }
     }
-
 }
 
-
-
 #endif
-

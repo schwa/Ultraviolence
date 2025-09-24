@@ -1,5 +1,5 @@
-import Metal
 import Collections
+import Metal
 
 struct VertexDescriptor: Equatable, Sendable {
     struct Attribute: Equatable, Sendable {
@@ -45,10 +45,9 @@ extension VertexDescriptor: CustomDebugStringConvertible {
     }
 }
 
-
 extension VertexDescriptor.Attribute: CustomDebugStringConvertible {
     var debugDescription: String {
-        "Attribute(\(label.map { "label: \($0), " }  ?? "")semantic: \(semantic), format: \(format), offset: \(offset), bufferIndex: \(bufferIndex))"
+        "Attribute(\(label.map { "label: \($0), " } ?? "")semantic: \(semantic), format: \(format), offset: \(offset), bufferIndex: \(bufferIndex))"
     }
 }
 
@@ -80,8 +79,7 @@ extension VertexDescriptor {
 
 extension VertexDescriptor {
     func normalized() -> Self {
-        let result = normalizingOffsets().normalizingStrides()
-        return result
+        normalizingOffsets().normalizingStrides()
     }
 
     func normalizingOffsets() -> Self {
@@ -423,7 +421,6 @@ extension MTLVertexFormat: @retroactive CustomDebugStringConvertible {
     }
 }
 
-
 extension MTLVertexStepFunction: @retroactive CustomDebugStringConvertible {
     public var debugDescription: String {
         switch self {
@@ -442,4 +439,3 @@ extension MTLVertexStepFunction: @retroactive CustomDebugStringConvertible {
         }
     }
 }
-

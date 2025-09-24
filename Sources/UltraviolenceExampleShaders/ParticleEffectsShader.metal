@@ -1,5 +1,5 @@
-#include <metal_stdlib>
 #include "ParticleEffectsShader.h"
+#include <metal_stdlib>
 using namespace metal;
 
 struct ParticleVertexOut {
@@ -10,8 +10,8 @@ struct ParticleVertexOut {
 };
 
 vertex ParticleVertexOut particleEffectsVertex(
-    constant Particle* particles [[buffer(0)]],
-    constant ParticleUniforms& uniforms [[buffer(1)]],
+    constant Particle *particles [[buffer(0)]],
+    constant ParticleUniforms &uniforms [[buffer(1)]],
     uint vertexID [[vertex_id]]
 ) {
     Particle particle = particles[vertexID];
@@ -39,10 +39,7 @@ vertex ParticleVertexOut particleEffectsVertex(
     return out;
 }
 
-fragment float4 particleEffectsFragment(
-    ParticleVertexOut in [[stage_in]],
-    float2 pointCoord [[point_coord]]
-) {
+fragment float4 particleEffectsFragment(ParticleVertexOut in [[stage_in]], float2 pointCoord [[point_coord]]) {
     // Calculate distance from center of point sprite
     float2 fromCenter = pointCoord - float2(0.5);
     float dist = length(fromCenter);
@@ -61,7 +58,6 @@ fragment float4 particleEffectsFragment(
 
     return float4(in.color * intensity, 1.0);
 }
-
 
 // Better random number generator with internal state
 struct RandomGenerator {
@@ -96,25 +92,22 @@ struct RandomGenerator {
 
     // Get random float3 in [-1, 1]
     float3 direction() {
-        return float3(
-            range(-1.0, 1.0),
-            range(-1.0, 1.0),
-            range(-1.0, 1.0)
-        );
+        return float3(range(-1.0, 1.0), range(-1.0, 1.0), range(-1.0, 1.0));
     }
 };
 
 // Compute kernel for updating particles
 kernel void updateParticles(
-    device Particle* particles [[buffer(0)]],
-    constant ParticleUniforms& uniforms [[buffer(1)]],
-    device ParticleEmitterParams& emitter [[buffer(2)]],
-    constant uint& particleCount [[buffer(3)]],
+    device Particle *particles [[buffer(0)]],
+    constant ParticleUniforms &uniforms [[buffer(1)]],
+    device ParticleEmitterParams &emitter [[buffer(2)]],
+    constant uint &particleCount [[buffer(3)]],
     uint id [[thread_position_in_grid]]
 ) {
-    if (id >= particleCount) return; // Bounds check
+    if (id >= particleCount)
+        return; // Bounds check
 
-    device Particle& particle = particles[id];
+    device Particle &particle = particles[id];
     float dt = 1.0 / 60.0; // 60 FPS
 
     // Initialize RNG for this particle
@@ -145,137 +138,106 @@ kernel void updateParticles(
             particle.size = rng.range(0.5, 1.5);
 
             switch (emitter.emitterType) {
-                case 0: { // Fountain
-                    // Start at emitter position with small random offset
-                    particle.position = emitter.position;
-                    particle.position.x += rng.range(-0.1, 0.1);
-                    particle.position.z += rng.range(-0.1, 0.1);
+            case 0: { // Fountain
+                // Start at emitter position with small random offset
+                particle.position = emitter.position;
+                particle.position.x += rng.range(-0.1, 0.1);
+                particle.position.z += rng.range(-0.1, 0.1);
 
-                    // Upward velocity with random spread
-                    float angle = rng.uniform() * 6.28318;
-                    float spread = rng.range(0.0, 0.3);
-                    float speed = rng.range(6.0, 8.0);
+                // Upward velocity with random spread
+                float angle = rng.uniform() * 6.28318;
+                float spread = rng.range(0.0, 0.3);
+                float speed = rng.range(6.0, 8.0);
 
-                    particle.velocity = float3(
-                        cos(angle) * spread * speed,
-                        speed,
-                        sin(angle) * spread * speed
-                    );
+                particle.velocity = float3(cos(angle) * spread * speed, speed, sin(angle) * spread * speed);
 
-                    // Blue-ish color with variation
-                    particle.color = float3(
-                        rng.range(0.1, 0.3),
-                        rng.range(0.3, 0.5),
-                        rng.range(0.7, 1.0)
-                    );
-                    break;
+                // Blue-ish color with variation
+                particle.color = float3(rng.range(0.1, 0.3), rng.range(0.3, 0.5), rng.range(0.7, 1.0));
+                break;
+            }
+
+            case 1: { // Explosion
+                particle.position = emitter.position;
+                float3 dir = normalize(rng.direction());
+                float speed = rng.range(3.0, 10.0);
+                particle.velocity = dir * speed;
+                particle.color = float3(1.0, rng.range(0.3, 0.7), 0.0);
+                break;
+            }
+
+            case 2: { // Rain
+                particle.position = emitter.position;
+                particle.position.x += rng.range(-5.0, 5.0);
+                particle.position.z += rng.range(-5.0, 5.0);
+                particle.velocity = float3(rng.range(-0.5, 0.5), rng.range(-8.0, -10.0), rng.range(-0.5, 0.5));
+                particle.color = float3(0.5, 0.5, 1.0);
+                break;
+            }
+
+            case 3: { // Fireworks
+                particle.position = emitter.position;
+                particle.velocity = float3(rng.range(-1.0, 1.0), rng.range(8.0, 12.0), rng.range(-1.0, 1.0));
+                // Rainbow colors
+                float hue = rng.uniform();
+                if (hue < 0.33) {
+                    particle.color = float3(1, hue * 3, 0);
+                } else if (hue < 0.66) {
+                    particle.color = float3(1 - (hue - 0.33) * 3, 1, 0);
+                } else {
+                    particle.color = float3(0, 1, (hue - 0.66) * 3);
                 }
+                break;
+            }
 
-                case 1: { // Explosion
-                    particle.position = emitter.position;
-                    float3 dir = normalize(rng.direction());
-                    float speed = rng.range(3.0, 10.0);
-                    particle.velocity = dir * speed;
-                    particle.color = float3(
-                        1.0,
-                        rng.range(0.3, 0.7),
-                        0.0
-                    );
-                    break;
-                }
+            case 4: { // Tornado
+                float angle = uniforms.time * 10.0 + rng.uniform() * 6.28318;
+                float radius = rng.range(0.5, 2.0);
+                particle.position =
+                    emitter.position + float3(cos(angle) * radius, rng.range(-1.0, 1.0), sin(angle) * radius);
+                particle.velocity = float3(-sin(angle) * radius * 3.0, rng.range(1.0, 3.0), cos(angle) * radius * 3.0);
+                particle.color = float3(0.8, 0.8, 0.8);
+                break;
+            }
 
-                case 2: { // Rain
-                    particle.position = emitter.position;
-                    particle.position.x += rng.range(-5.0, 5.0);
-                    particle.position.z += rng.range(-5.0, 5.0);
-                    particle.velocity = float3(
-                        rng.range(-0.5, 0.5),
-                        rng.range(-8.0, -10.0),
-                        rng.range(-0.5, 0.5)
-                    );
-                    particle.color = float3(0.5, 0.5, 1.0);
-                    break;
-                }
+            case 5: { // Magic Portal - Doctor Strange style
+                // Create particles in a rotating ring with sparks
+                float portalRadius = 2.0;
+                float ringThickness = 0.2;
 
-                case 3: { // Fireworks
-                    particle.position = emitter.position;
-                    particle.velocity = float3(
-                        rng.range(-1.0, 1.0),
-                        rng.range(8.0, 12.0),
-                        rng.range(-1.0, 1.0)
-                    );
-                    // Rainbow colors
-                    float hue = rng.uniform();
-                    if (hue < 0.33) {
-                        particle.color = float3(1, hue * 3, 0);
-                    } else if (hue < 0.66) {
-                        particle.color = float3(1 - (hue - 0.33) * 3, 1, 0);
-                    } else {
-                        particle.color = float3(0, 1, (hue - 0.66) * 3);
-                    }
-                    break;
-                }
+                // Spawn particles along the ring circumference
+                float angle = rng.uniform() * 6.28318;
+                float radiusOffset = rng.range(-ringThickness, ringThickness);
 
-                case 4: { // Tornado
-                    float angle = uniforms.time * 10.0 + rng.uniform() * 6.28318;
-                    float radius = rng.range(0.5, 2.0);
-                    particle.position = emitter.position + float3(
-                        cos(angle) * radius,
-                        rng.range(-1.0, 1.0),
-                        sin(angle) * radius
-                    );
-                    particle.velocity = float3(
-                        -sin(angle) * radius * 3.0,
-                        rng.range(1.0, 3.0),
-                        cos(angle) * radius * 3.0
-                    );
-                    particle.color = float3(0.8, 0.8, 0.8);
-                    break;
-                }
+                // Position on the ring
+                particle.position = emitter.position + float3(
+                                                           cos(angle) * (portalRadius + radiusOffset),
+                                                           sin(angle) * (portalRadius + radiusOffset),
+                                                           rng.range(-0.1, 0.1) // Slight z variation
+                                                       );
 
-                case 5: { // Magic Portal - Doctor Strange style
-                    // Create particles in a rotating ring with sparks
-                    float portalRadius = 2.0;
-                    float ringThickness = 0.2;
+                // Velocity - particles spin around the ring and emit sparks
+                float spinSpeed = 8.0;
+                float3 tangent = float3(-sin(angle), cos(angle), 0) * spinSpeed;
 
-                    // Spawn particles along the ring circumference
-                    float angle = rng.uniform() * 6.28318;
-                    float radiusOffset = rng.range(-ringThickness, ringThickness);
+                // Add some outward/inward motion for spark effect
+                float3 radial = float3(cos(angle), sin(angle), 0) * rng.range(-1.0, 2.0);
 
-                    // Position on the ring
-                    particle.position = emitter.position + float3(
-                        cos(angle) * (portalRadius + radiusOffset),
-                        sin(angle) * (portalRadius + radiusOffset),
-                        rng.range(-0.1, 0.1)  // Slight z variation
-                    );
+                // Small random perturbation
+                float3 random = rng.direction() * 0.5;
 
-                    // Velocity - particles spin around the ring and emit sparks
-                    float spinSpeed = 8.0;
-                    float3 tangent = float3(-sin(angle), cos(angle), 0) * spinSpeed;
+                particle.velocity = tangent + radial + random;
 
-                    // Add some outward/inward motion for spark effect
-                    float3 radial = float3(cos(angle), sin(angle), 0) * rng.range(-1.0, 2.0);
+                // Orange/gold color like Doctor Strange portals
+                float heat = rng.range(0.7, 1.0);
+                particle.color = float3(1.0, heat * 0.6, heat * 0.1);
 
-                    // Small random perturbation
-                    float3 random = rng.direction() * 0.5;
+                // Vary particle size for sparkle effect
+                particle.size = rng.range(0.3, 1.2);
 
-                    particle.velocity = tangent + radial + random;
-
-                    // Orange/gold color like Doctor Strange portals
-                    float heat = rng.range(0.7, 1.0);
-                    particle.color = float3(
-                        1.0,
-                        heat * 0.6,
-                        heat * 0.1
-                    );
-
-                    // Vary particle size for sparkle effect
-                    particle.size = rng.range(0.3, 1.2);
-
-                    // Shorter life for more dynamic effect
-                    particle.life = rng.range(0.3, 0.8);
-                    break;
-                }
+                // Shorter life for more dynamic effect
+                particle.life = rng.range(0.3, 0.8);
+                break;
+            }
             }
         }
     }

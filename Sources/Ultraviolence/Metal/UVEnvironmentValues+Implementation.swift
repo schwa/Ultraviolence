@@ -41,7 +41,6 @@ public extension Element {
 }
 
 public extension Element {
-
     func depthStencilDescriptor(_ depthStencilDescriptor: MTLDepthStencilDescriptor) -> some Element {
         environment(\.depthStencilDescriptor, depthStencilDescriptor)
     }
@@ -53,10 +52,10 @@ public extension Element {
 
 public extension Element {
     func vertexDescriptor(_ vertexDescriptor: MTLVertexDescriptor?) -> some Element {
-        return environment(\.vertexDescriptor, vertexDescriptor)
+        environment(\.vertexDescriptor, vertexDescriptor)
     }
 
     func vertexDescriptor(_ vertexDescriptor: MDLVertexDescriptor) -> some Element {
-        return self.vertexDescriptor(MTKMetalVertexDescriptorFromModelIO(vertexDescriptor).orFatalError(.resourceCreationFailure("Failed to create MTLVertexDescriptor from MDLVertexDescriptor")))
+        self.vertexDescriptor(MTKMetalVertexDescriptorFromModelIO(vertexDescriptor).orFatalError(.resourceCreationFailure("Failed to create MTLVertexDescriptor from MDLVertexDescriptor")))
     }
 }

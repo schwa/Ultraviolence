@@ -47,4 +47,3 @@ extension ColorAdjustComputePipeline where T == Float {
         return try! ColorAdjustComputePipeline(inputSpecifier: inputSpecifier, inputParameters: inputParameters, outputTexture: outputTexture, colorAdjustFunction: colorAdjustFunction)
     }
 }
-

@@ -1,6 +1,6 @@
+import GeometryLite3D
 import simd
 import UltraviolenceExampleShaders
-import GeometryLite3D
 
 class SceneGraph {
     class Node: Identifiable {
@@ -8,7 +8,6 @@ class SceneGraph {
             case blinnPhong(BlinnPhongMaterial)
             case pbr(PBRMaterialNew)
         }
-
 
         var id: ObjectIdentifier {
             ObjectIdentifier(self)
@@ -43,4 +42,3 @@ class SceneGraph {
 struct Camera {
     var projection: any ProjectionProtocol
 }
-

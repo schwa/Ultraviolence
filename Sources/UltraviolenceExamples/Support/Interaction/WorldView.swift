@@ -1,8 +1,8 @@
 import GeometryLite3D
+import Panels
 import simd
 import SwiftUI
 import UltraviolenceSupport
-import Panels
 
 // TODO: this is becoming a bit of a grab bag of features, consider splitting into smaller components
 public struct WorldView<Content: View>: View {
@@ -39,7 +39,7 @@ public struct WorldView<Content: View>: View {
     public var body: some View {
         content
             .modifier(enabled: freeCameraController == .turntable, TurntableCameraController(constraint: $turntableConstraint, transform: $cameraMatrix))
-        //            .modifier(RTSControllerModifier(cameraMatrix: $cameraMatrix))
+            //            .modifier(RTSControllerModifier(cameraMatrix: $cameraMatrix))
             .toolbar {
                 Button("Inspector", systemImage: "sidebar.right") {
                     isInspectorPresented.toggle()

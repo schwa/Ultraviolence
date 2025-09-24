@@ -4,8 +4,8 @@ import MetalKit
 import simd
 import SwiftUI
 import Ultraviolence
-import UltraviolenceSupport
 import UltraviolenceExampleShaders
+import UltraviolenceSupport
 import UltraviolenceUI
 
 public struct TrivialMeshDemoView: View {
@@ -25,7 +25,7 @@ public struct TrivialMeshDemoView: View {
     private var cameraMatrix: simd_float4x4 = .init(translation: [0, 1, 5])
 
     @State
-    private var startTime: Date = Date()
+    private var startTime = Date()
 
     @State
     private var showWireframe: Bool = false
@@ -256,7 +256,7 @@ public struct TrivialMeshDemoView: View {
                         specular: .color([1, 1, 1]),
                         shininess: 64
                     )
-                ),
+                )
             ]
 
             let lights = [
