@@ -3,9 +3,7 @@ import MikkTSpace
 
 extension SMikkTSpaceContext {
     var mesh: TrivialMesh {
-        get {
-            m_pUserData!.assumingMemoryBound(to: TrivialMesh.self).pointee
-        }
+        m_pUserData!.assumingMemoryBound(to: TrivialMesh.self).pointee
     }
 }
 
@@ -32,7 +30,7 @@ extension TrivialMesh {
             let v = acos(cosTheta) / .pi
 
             // Wrap u cleanly into [0,1] in case atan2 gives -ε or 1+ε
-            u = u - floor(u)
+            u -= floor(u)
 
             return SIMD2<Float>(Float(u), Float(v))
         }

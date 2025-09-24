@@ -41,9 +41,7 @@ public struct PointCloudDemoView: View {
                 }
             }
             .metalDepthStencilPixelFormat(.depth32Float)
-            .onDrawableSizeChange {
-                drawableSize = $0
-            }
+            .onDrawableSizeChange { drawableSize = $0 }
             .onAppear {
                 generatePointCloud()
             }

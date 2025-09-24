@@ -2,6 +2,7 @@ import Collections
 import Metal
 import simd
 
+// swiftlint:disable discouraged_optional_collection
 struct TrivialMesh: Equatable, Sendable {
     var label: String?
     var indices: [Int]
@@ -34,6 +35,7 @@ struct TrivialMesh: Equatable, Sendable {
         self.colors = colors
     }
 }
+// swiftlint:enable discouraged_optional_collection
 
 extension TrivialMesh {
     func scaled(_ scale: SIMD3<Float>) -> TrivialMesh {

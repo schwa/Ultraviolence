@@ -11,8 +11,8 @@ struct GLTFFilePickerView: View {
         if searchText.isEmpty {
             return files
         }
-        return files.filter {
-            $0.lastPathComponent.localizedCaseInsensitiveContains(searchText)
+        return files.filter { file in
+            file.lastPathComponent.localizedCaseInsensitiveContains(searchText)
         }
     }
 

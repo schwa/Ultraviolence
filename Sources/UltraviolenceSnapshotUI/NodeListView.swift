@@ -16,9 +16,10 @@ struct NodeListView: View {
             node.identifier
         }
 
+        // swiftlint:disable:next discouraged_optional_collection
         var children: [Self]? {
-            let childNodes = snapshot.nodes.filter {
-                $0.parentIdentifier == node.identifier && filteredNodes.contains($0.identifier)
+            let childNodes = snapshot.nodes.filter { node in
+                node.parentIdentifier == node.identifier && filteredNodes.contains(node.identifier)
             }
 
             guard !childNodes.isEmpty else { return nil }

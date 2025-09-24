@@ -1,5 +1,7 @@
 import Foundation
 
+// swiftlint:disable discouraged_optional_collection
+
 /// A parsed representation of a Swift type name
 struct ParsedTypeName {
     /// The module/library name (if present)

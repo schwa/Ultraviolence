@@ -58,7 +58,7 @@ public struct DepthDemoView: View {
         //
         //        let sourceLibrary = try! device.makeLibrary(source: adjustSource, options: nil)
         //        colorAdjustFunction = sourceLibrary.makeFunction(name: "colorAdjustPow")!
-        fatalError()
+        fatalError("unimplemented")
     }
 
     public var body: some View {
@@ -88,21 +88,21 @@ public struct DepthDemoView: View {
                     }
                 }
             }
-            .onDrawableSizeChange {
-                drawableSize = $0
+            .onDrawableSizeChange { size in
+                drawableSize = size
 
                 let device = _MTLCreateSystemDefaultDevice()
-                let colorDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm, width: Int($0.width), height: Int($0.height), mipmapped: false)
+                let colorDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm, width: Int(size.width), height: Int(size.height), mipmapped: false)
                 colorDescriptor.usage = [.renderTarget, .shaderRead, .shaderWrite]
                 colorTexture = device.makeTexture(descriptor: colorDescriptor)
                 colorTexture?.label = "Color Texture"
 
-                let depthDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: Int($0.width), height: Int($0.height), mipmapped: false)
+                let depthDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: Int(size.width), height: Int(size.height), mipmapped: false)
                 depthDescriptor.usage = [.renderTarget, .shaderRead]
                 depthTexture = device.makeTexture(descriptor: depthDescriptor)
                 depthTexture?.label = "Depth Texture"
 
-                let adjustedDepthDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm, width: Int($0.width), height: Int($0.height), mipmapped: false)
+                let adjustedDepthDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm, width: Int(size.width), height: Int(size.height), mipmapped: false)
                 adjustedDepthDescriptor.usage = [.renderTarget, .shaderRead, .shaderWrite]
                 adjustedDepthTexture = device.makeTexture(descriptor: adjustedDepthDescriptor)
                 adjustedDepthTexture?.label = "Adjusted Depth Texture"

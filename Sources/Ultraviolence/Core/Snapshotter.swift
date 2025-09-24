@@ -63,7 +63,7 @@ internal class Snapshotter {
             encoder.outputFormatting = [] // No pretty printing for JSONL
             let data = try encoder.encode(record)
             fileHandle?.write(data)
-            fileHandle?.write("\n".data(using: .utf8)!)
+            fileHandle?.write(Data("\n".utf8))
 
             // Log progress
             if frameCounter == 1 || frameCounter % 100 == 0 {

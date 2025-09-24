@@ -71,6 +71,7 @@ struct SceneGraphEditorView: View {
 }
 
 extension SceneGraph.Node {
+    // swiftlint:disable:next discouraged_optional_collection
     var listChildren: [SceneGraph.Node]? {
         children.isEmpty ? nil : children
     }

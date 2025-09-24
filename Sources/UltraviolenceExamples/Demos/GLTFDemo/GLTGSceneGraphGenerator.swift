@@ -11,6 +11,8 @@ import SwiftGLTF
 import UltraviolenceExampleShaders
 import UltraviolenceSupport
 
+// swiftlint:disable discouraged_optional_collection
+
 class GLTGSceneGraphGenerator {
     let container: Container
     let textureLoader: MTKTextureLoader
@@ -31,9 +33,9 @@ class GLTGSceneGraphGenerator {
         try scene.nodes
             .map { try $0.resolve(in: document) }
             .map { try generateSceneGraphNode(from: $0) }
-            .forEach {
-                $0.parent = sceneGraph.root
-                sceneGraph.root.children.append($0)
+            .forEach { node in
+                node.parent = sceneGraph.root
+                sceneGraph.root.children.append(node)
             }
         return sceneGraph
     }
@@ -57,9 +59,9 @@ class GLTGSceneGraphGenerator {
         if let scale = node.scale {
             // fatalError()
         }
-        try node.children.map { try $0.resolve(in: document) }.map { try generateSceneGraphNode(from: $0) }.forEach {
-            $0.parent = uvNode
-            uvNode.children.append($0)
+        try node.children.map { try $0.resolve(in: document) }.map { try generateSceneGraphNode(from: $0) }.forEach { node in
+            node.parent = uvNode
+            uvNode.children.append(node)
         }
         return uvNode
     }
@@ -164,7 +166,7 @@ extension Container {
         if let bufferView = try image.bufferView?.resolve(in: document) {
             return try data(for: bufferView)
         }
-        fatalError()
+        fatalError("Image has neither uri nor bufferView")
     }
 }
 
@@ -195,11 +197,9 @@ extension SwiftGLTF.Mesh.Primitive {
         let values: [SIMD3<Float>]
         switch accessor.componentType {
         case .FLOAT:
-            values = [Packed3<Float>](withUnsafeData: try container.data(for: accessor)).map {
-                SIMD3<Float>($0.x, $0.y, $0.z)
-            }
+            values = [Packed3<Float>](withUnsafeData: try container.data(for: accessor)).map { SIMD3<Float>($0.x, $0.y, $0.z) }
         default:
-            fatalError()
+            fatalError("Unimplemented")
         }
 
         assert(values.count == accessor.count)
@@ -220,7 +220,7 @@ extension SwiftGLTF.Mesh.Primitive {
 
     func indices(type: UInt32.Type, in container: Container) throws -> [UInt32]? {
         guard let indicesAccessor = try indices?.resolve(in: container.document) else {
-            fatalError()
+            fatalError("Unimplemented")
         }
         switch indicesAccessor.componentType {
         case .UNSIGNED_BYTE:
@@ -239,7 +239,7 @@ extension SwiftGLTF.Mesh.Primitive {
             assert(indices.count == indicesAccessor.count)
             return indices
         default:
-            fatalError()
+            fatalError("Unimplemented")
         }
     }
 }
@@ -255,10 +255,8 @@ extension Array {
 
 extension SIMD where Scalar == Float {
     func within(min: Self, max: Self) -> Bool {
-        for n in 0 ..< scalarCount {
-            if (min[n] ... max[n]).contains(self[n]) == false {
-                return false
-            }
+        for n in 0 ..< scalarCount where (min[n] ... max[n]).contains(self[n]) == false {
+            return false
         }
         return true
     }

@@ -349,10 +349,8 @@ public struct ColorAdjustDemoView: View {
                         ForEach(0..<4) { row in
                             HStack(spacing: 4) {
                                 ForEach(0..<4) { col in
-                                    TextField("", value: Binding(
-                                        get: { matrixValues[col][row] },
-                                        set: { matrixValues[col][row] = Float($0) }
-                                    ), format: .number.precision(.fractionLength(2)))
+                                    let binding = Binding(get: { matrixValues[col][row] }, set: { matrixValues[col][row] = Float($0) })
+                                    TextField("", value: binding, format: .number.precision(.fractionLength(2)))
                                     .frame(width: 60)
                                     .textFieldStyle(RoundedBorderTextFieldStyle())
                                 }

@@ -87,8 +87,7 @@ public struct VCRDistortionPipeline: Element {
         }
 
         texture.replace(
-            region: MTLRegion(origin: MTLOrigin(x: 0, y: 0, z: 0),
-                              size: MTLSize(width: 256, height: 256, depth: 1)),
+            region: MTLRegion(origin: MTLOrigin(x: 0, y: 0, z: 0), size: MTLSize(width: 256, height: 256, depth: 1)),
             mipmapLevel: 0,
             withBytes: noiseData,
             bytesPerRow: 256

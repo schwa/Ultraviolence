@@ -24,7 +24,8 @@ struct CachingImportButton: View {
         .fileImporter(isPresented: $isImporting, allowedContentTypes: allowedContentTypes) { result in
             if case .success(let url) = result {
                 do {
-                    url = try CachingImportHelper(identifier: identifier).storeImportedFile(at: url)
+                    // swiftlint:disable:next redundant_self_in_closure
+                    self.url = try CachingImportHelper(identifier: identifier).storeImportedFile(at: url)
                 }
                 catch {
                     print("Failed to store imported file: \(error)")

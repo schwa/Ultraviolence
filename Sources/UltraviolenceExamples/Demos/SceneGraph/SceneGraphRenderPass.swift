@@ -21,7 +21,8 @@ struct SceneGraphRenderPass: Element {
         // TODO: We are generating this every frame! [FILE ME]
         let lights = sceneGraph.filter { node in
             node.light != nil
-        }.compactMap { node in
+        }
+        .compactMap { node in
             let light = node.light!
             return (node.transform.translation, light)
         }
@@ -47,8 +48,8 @@ struct SceneGraphRenderPass: Element {
     var blinnPhong: some Element {
         get throws {
             let nodesWithMeshes = try sceneGraph.filter { $0.mesh != nil }
-            let blinnPhongNodes = nodesWithMeshes.filter {
-                if case .blinnPhong = $0.material { return true }
+            let blinnPhongNodes = nodesWithMeshes.filter { node in
+                if case .blinnPhong = node.material { return true }
                 return false
             }
             return try BlinnPhongShader {
@@ -72,8 +73,8 @@ struct SceneGraphRenderPass: Element {
     var pbr: some Element {
         get throws {
             let nodesWithMeshes = try sceneGraph.filter { $0.mesh != nil }
-            let pbrNodes = nodesWithMeshes.filter {
-                if case .pbr = $0.material { return true }
+            let pbrNodes = nodesWithMeshes.filter { node in
+                if case .pbr = node.material { return true }
                 return false
             }
             return try PBRShader {

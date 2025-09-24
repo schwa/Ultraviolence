@@ -73,7 +73,7 @@ extension MTLSize: @retroactive ExpressibleByArrayLiteral {
         case 3:
             self = .init(width: elements[0], height: elements[1], depth: elements[2])
         default:
-            fatalError()
+            fatalError("Too many elements in array literal.")
         }
     }
 }

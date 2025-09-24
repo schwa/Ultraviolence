@@ -43,9 +43,7 @@ public struct DebugRenderPipeline<Content>: Element where Content: Element {
                 lightPosition: lightPosition,
                 cameraPosition: cameraPosition
             )
-            let debugShadersAmplifiedUniforms = [DebugShadersAmplifiedUniforms(
-                viewProjectionMatrix: viewProjectionMatrix
-            )]
+            let debugShadersAmplifiedUniforms = [DebugShadersAmplifiedUniforms(viewProjectionMatrix: viewProjectionMatrix)]
             return try! RenderPipeline(label: "DebugRenderPipeline", vertexShader: vertexShader, fragmentShader: fragmentShader) {
                 content
                     .parameter("uniforms", functionType: .vertex, value: debugShadersUniforms)

@@ -79,7 +79,7 @@ public extension MTKMesh {
 
     convenience init(name: String, bundle: Bundle, device: MTLDevice? = nil, allocator: MTKMeshBufferAllocator? = nil, options: Options) throws {
         guard let url = bundle.url(forResource: name, withExtension: "obj") else {
-            fatalError()
+            fatalError("Failed to find model \(name) in bundle \(bundle).")
         }
         try self.init(url: url, device: device, allocator: allocator, options: options)
     }
