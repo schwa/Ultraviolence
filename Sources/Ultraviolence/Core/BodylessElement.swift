@@ -40,7 +40,7 @@ extension BodylessElement {
     nonisolated func requiresSetup(comparedTo old: Self) -> Bool {
         // Default: use Equatable if available, otherwise assume change requires setup
         if let self = self as? any Equatable,
-           let old = old as? any Equatable {
+            let old = old as? any Equatable {
             return !isEqual(self, old)
         }
         return true

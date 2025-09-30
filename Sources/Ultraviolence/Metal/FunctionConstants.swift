@@ -21,7 +21,9 @@ public struct FunctionConstants: Equatable {
 
     private var values: [String: Value] = [:]
 
-    public init() {}
+    public init() {
+        // Empty initializer
+    }
 
     public var isEmpty: Bool {
         values.isEmpty

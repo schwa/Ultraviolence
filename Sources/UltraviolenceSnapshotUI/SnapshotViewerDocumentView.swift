@@ -1,7 +1,7 @@
 import SwiftUI
 import Ultraviolence
 
-struct SnapshotViewerDocumentView: View {
+internal struct SnapshotViewerDocumentView: View {
     @Binding var document: SnapshotViewerDocument
     @State private var selectedFrame: Int = 0
 
@@ -16,12 +16,13 @@ struct SnapshotViewerDocumentView: View {
         .toolbar {
             ToolbarItemGroup {
                 if !document.snapshots.isEmpty {
-                    Button(action: {
+                    Button {
                         if selectedFrame > 0 {
                             selectedFrame -= 1
                         }
-                    }) {
+                    } label: {
                         Image(systemName: "chevron.left")
+                            .accessibilityLabel("Previous frame")
                     }
                     .disabled(selectedFrame == 0)
                     .keyboardShortcut(.leftArrow, modifiers: [])
@@ -37,12 +38,13 @@ struct SnapshotViewerDocumentView: View {
                     .pickerStyle(.menu)
                     .frame(width: 100)
 
-                    Button(action: {
+                    Button {
                         if selectedFrame < document.snapshots.count - 1 {
                             selectedFrame += 1
                         }
-                    }) {
+                    } label: {
                         Image(systemName: "chevron.right")
+                            .accessibilityLabel("Next frame")
                     }
                     .disabled(selectedFrame == document.snapshots.count - 1)
                     .keyboardShortcut(.rightArrow, modifiers: [])

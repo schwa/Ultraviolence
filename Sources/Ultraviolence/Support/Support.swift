@@ -11,7 +11,7 @@ public extension UltraviolenceError {
 public extension Element {
     func useResource(_ resource: any MTLResource, usage: MTLResourceUsage, stages: MTLRenderStages) -> some Element {
         onWorkloadEnter { environmentValues in
-            let renderCommandEncoder = environmentValues.renderCommandEncoder.orFatalError()
+            let renderCommandEncoder = environmentValues.renderCommandEncoder.orFatalError("Missing render command encoder")
             renderCommandEncoder.useResource(resource, usage: usage, stages: stages)
         }
     }
@@ -30,7 +30,7 @@ public extension Element {
 public extension Element {
     func useComputeResource(_ resource: any MTLResource, usage: MTLResourceUsage) -> some Element {
         onWorkloadEnter { environmentValues in
-            let renderCommandEncoder = environmentValues.computeCommandEncoder.orFatalError()
+            let renderCommandEncoder = environmentValues.computeCommandEncoder.orFatalError("Missing compute command encoder")
             renderCommandEncoder.useResource(resource, usage: usage)
         }
     }

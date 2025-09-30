@@ -2,7 +2,7 @@ import SwiftUI
 import Ultraviolence
 
 /// List view showing the node hierarchy
-struct NodeListView: View {
+internal struct NodeListView: View {
     let snapshot: SystemSnapshot
     @Binding var selectedNodeID: String?
     let searchText: String
@@ -22,7 +22,9 @@ struct NodeListView: View {
                 node.parentIdentifier == node.identifier && filteredNodes.contains(node.identifier)
             }
 
-            guard !childNodes.isEmpty else { return nil }
+            guard !childNodes.isEmpty else {
+                return nil
+            }
 
             return childNodes.map { childNode in
                 Self(node: childNode, snapshot: snapshot, filteredNodes: filteredNodes)

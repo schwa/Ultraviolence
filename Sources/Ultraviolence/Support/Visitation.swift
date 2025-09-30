@@ -1,7 +1,6 @@
 // internal extension NodeGraph {
 //    @MainActor
 //    func visit(enter: (Node) throws -> Void, exit: (Node) throws -> Void) throws {
-//        // swiftlint:disable:next no_empty_block
 //        try visit({ _, _ in }, enter: enter, exit: exit)
 //    }
 //
@@ -30,7 +29,6 @@
 //
 // internal extension Node {
 //    func visit(depth: Int = 0, _ visitor: (Int, Node) throws -> Void) rethrows {
-//        // swiftlint:disable:next no_empty_block
 //        try visit(depth: depth, visitor, enter: { _ in }, exit: { _ in })
 //    }
 //

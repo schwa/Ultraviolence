@@ -7,7 +7,6 @@ import Ultraviolence
 import UniformTypeIdentifiers
 
 struct RedTriangleInline: Element {
-
     let vertexShader: VertexShader
     let fragmentShader: FragmentShader
 
@@ -15,15 +14,15 @@ struct RedTriangleInline: Element {
         let source = """
             #include <metal_stdlib>
             using namespace metal;
-            
+
             struct VertexIn {
                 float2 position [[attribute(0)]];
             };
-            
+
             struct VertexOut {
                 float4 position [[position]];
             };
-            
+
             [[vertex]] VertexOut vertex_main(
                 const VertexIn in [[stage_in]]
             ) {
@@ -31,7 +30,7 @@ struct RedTriangleInline: Element {
                 out.position = float4(in.position, 0.0, 1.0);
                 return out;
             }
-            
+
             [[fragment]] float4 fragment_main(
                 VertexOut in [[stage_in]],
                 constant float4 &color [[buffer(0)]]
@@ -45,8 +44,6 @@ struct RedTriangleInline: Element {
 
     var body: some Element {
         get throws {
-
-
             try RenderPass {
                 try RenderPipeline(vertexShader: vertexShader, fragmentShader: fragmentShader) {
                     Draw { encoder in

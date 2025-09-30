@@ -1,4 +1,4 @@
-class Node: Identifiable {
+internal class Node: Identifiable {
     weak var system: System?
     var id: StructuralIdentifier
     var parentIdentifier: StructuralIdentifier?

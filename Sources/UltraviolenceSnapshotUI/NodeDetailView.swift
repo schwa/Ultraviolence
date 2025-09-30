@@ -1,7 +1,7 @@
 import SwiftUI
 import Ultraviolence
 
-struct ExpandableSection: View {
+internal struct ExpandableSection: View {
     let content: String
     @State private var showPopover = false
 
@@ -35,12 +35,14 @@ struct ExpandableSection: View {
 }
 
 /// Detail view showing information about a selected node
-struct NodeDetailView: View {
+internal struct NodeDetailView: View {
     let node: NodeSnapshot
     let snapshot: SystemSnapshot
 
     private var parent: NodeSnapshot? {
-        guard let parentID = node.parentIdentifier else { return nil }
+        guard let parentID = node.parentIdentifier else {
+            return nil
+        }
         return snapshot.nodes.first { $0.identifier == parentID }
     }
 

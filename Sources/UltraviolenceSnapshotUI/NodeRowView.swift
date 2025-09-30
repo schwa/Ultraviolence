@@ -1,7 +1,7 @@
 import SwiftUI
 import Ultraviolence
 
-struct NodeRowView: View {
+internal struct NodeRowView: View {
     let node: NodeSnapshot
     let snapshot: SystemSnapshot
     @Binding var selectedNodeID: String?
@@ -33,6 +33,7 @@ struct NodeRowView: View {
                 .font(.system(size: 11))
                 .foregroundStyle(isDirty ? .red : .secondary)
                 .frame(width: 16)
+                .accessibilityLabel(node.elementType)
 
             VStack(alignment: .leading, spacing: 1) {
                 Text(parsedType.typeName)

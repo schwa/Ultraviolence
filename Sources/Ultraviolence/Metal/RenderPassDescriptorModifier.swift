@@ -16,8 +16,8 @@ internal struct RenderPassDescriptorModifier<Content>: Element where Content: El
     }
 
     func modifiedRenderPassDescriptor() throws -> MTLRenderPassDescriptor {
-        let renderPassDescriptor = renderPassDescriptor.orFatalError()
-        let copy = (renderPassDescriptor.copy() as? MTLRenderPassDescriptor).orFatalError()
+        let renderPassDescriptor = renderPassDescriptor.orFatalError("Missing render pass descriptor")
+        let copy = (renderPassDescriptor.copy() as? MTLRenderPassDescriptor).orFatalError("Failed to copy render pass descriptor")
         modify(copy)
         return copy
     }

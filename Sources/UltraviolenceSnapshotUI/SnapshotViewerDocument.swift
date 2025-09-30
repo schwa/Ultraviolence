@@ -4,6 +4,7 @@ import UniformTypeIdentifiers
 
 public struct SnapshotViewerDocumentScene: Scene {
     public init() {
+        // Empty initializer
     }
 
     public var body: some Scene {
@@ -13,7 +14,7 @@ public struct SnapshotViewerDocumentScene: Scene {
     }
 }
 
-nonisolated struct SnapshotViewerDocument: FileDocument {
+internal nonisolated struct SnapshotViewerDocument: FileDocument {
     struct FrameInfo: Codable {
         let number: Int
     }

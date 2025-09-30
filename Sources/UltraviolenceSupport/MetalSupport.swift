@@ -694,6 +694,7 @@ public extension MTLCommandBufferDescriptor {
 }
 
 public func _MTLCreateSystemDefaultDevice() -> MTLDevice {
+    // swiftlint:disable:next MTLCreateSystemDefaultDevice
     MTLCreateSystemDefaultDevice().orFatalError(.unexpectedError(.resourceCreationFailure("Could not create system default device.")))
 }
 
@@ -744,7 +745,7 @@ public extension MTLDevice {
         let texture = try _makeTexture(descriptor: descriptor)
         values.withUnsafeBufferPointer { buffer in
             let buffer = UnsafeRawBufferPointer(buffer)
-            let baseAddress = buffer.baseAddress.orFatalError()
+            let baseAddress = buffer.baseAddress.orFatalError("No base address for texture data")
             texture.replace(region: MTLRegionMake2D(0, 0, descriptor.width, descriptor.height), mipmapLevel: 0, withBytes: baseAddress, bytesPerRow: descriptor.width * MemoryLayout<T>.stride)
         }
         return texture

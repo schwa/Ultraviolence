@@ -15,7 +15,7 @@ extension ParameterValue: CustomDebugStringConvertible {
             return "Texture()"
         case .samplerState:
             return "SamplerState()"
-        case .buffer(let buffer, let offset):
+        case let .buffer(buffer, offset):
             return "Buffer(\(String(describing: buffer?.label)), offset: \(offset)"
         case .array:
             return "Array"
@@ -41,7 +41,7 @@ internal extension MTLRenderCommandEncoder {
         case .samplerState(let samplerState):
             setSamplerState(samplerState, index: index, functionType: functionType)
 
-        case .buffer(let buffer, let offset):
+        case let .buffer(buffer, offset):
             setBuffer(buffer, offset: offset, index: index, functionType: functionType)
 
         case .array(let array):
@@ -62,7 +62,7 @@ internal extension MTLComputeCommandEncoder {
         case .samplerState(let samplerState):
             setSamplerState(samplerState, index: index)
 
-        case .buffer(let buffer, let offset):
+        case let .buffer(buffer, offset):
             setBuffer(buffer, offset: offset, index: index)
 
         case .array(let array):

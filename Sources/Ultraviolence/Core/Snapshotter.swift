@@ -28,7 +28,9 @@ internal class Snapshotter {
 
     @MainActor
     func dumpSnapshotIfNeeded(_ system: System) {
-        guard shouldDumpSnapshots else { return }
+        guard shouldDumpSnapshots else {
+            return
+        }
 
         frameCounter += 1
 
@@ -66,7 +68,7 @@ internal class Snapshotter {
             fileHandle?.write(Data("\n".utf8))
 
             // Log progress
-            if frameCounter == 1 || frameCounter % 100 == 0 {
+            if frameCounter == 1 || frameCounter.isMultiple(of: 100) {
                 print("UV_DUMP_SNAPSHOTS: Saved frame \(frameCounter)")
             }
         } catch {

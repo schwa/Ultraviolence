@@ -11,7 +11,7 @@ internal final class StateBox<Wrapped> {
                 hasBeenConnected = true
             } else if !hasBeenConnected {
                 // Never been connected to a graph - this is a real error, else: was connected but graph is now gone (teardown) - this is OK
-                assert(false, "StateBox must be used within a System.")
+                assertionFailure("StateBox must be used within a System.")
             }
         }
         return _system

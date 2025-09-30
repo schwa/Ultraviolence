@@ -62,7 +62,6 @@ internal struct RenderViewDebugViewModifier <Root>: ViewModifier where Root: Ele
 //        ObjectIdentifier(node)
 //    }
 //    var node: Node
-//    // swiftlint:disable:next discouraged_optional_collection
 //    var children: [Self]? {
 //        node.children.isEmpty ? nil : node.children.map { Self(node: $0) }
 //    }

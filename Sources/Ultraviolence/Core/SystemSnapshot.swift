@@ -25,7 +25,9 @@ public struct SystemSnapshot: Codable, Sendable {
 
         // Create node snapshots
         self.nodes = extractedIdentifiers.compactMap { identifier in
-            guard let node = system.nodes[identifier] else { return nil }
+            guard let node = system.nodes[identifier] else {
+                return nil
+            }
             return NodeSnapshot(node: node)
         }
     }
@@ -136,7 +138,7 @@ public struct EnvironmentSnapshot: Codable, Sendable {
         let mirror = Mirror(reflecting: environmentValues)
 
         if let storageChild = mirror.children.first(where: { $0.label == "storage" }),
-           let storage = storageChild.value as? UVEnvironmentValues.Storage {
+            let storage = storageChild.value as? UVEnvironmentValues.Storage {
             // Extract values from storage
             let storageMirror = Mirror(reflecting: storage)
 

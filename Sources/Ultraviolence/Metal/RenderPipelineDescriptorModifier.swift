@@ -17,8 +17,8 @@ public struct RenderPipelineDescriptorModifier<Content>: Element where Content: 
     }
 
     func modifiedRenderPipelineDescriptor() throws -> MTLRenderPipelineDescriptor {
-        let renderPipelineDescriptor = renderPipelineDescriptor.orFatalError()
-        let copy = (renderPipelineDescriptor.copy() as? MTLRenderPipelineDescriptor).orFatalError()
+        let renderPipelineDescriptor = renderPipelineDescriptor.orFatalError("Missing render pipeline descriptor")
+        let copy = (renderPipelineDescriptor.copy() as? MTLRenderPipelineDescriptor).orFatalError("Failed to copy render pipeline descriptor")
         modify(copy)
         return copy
     }

@@ -1,7 +1,6 @@
 import Accelerate
 import CoreGraphics
 import CoreImage
-// swiftlint:disable:next duplicate_imports
 import CoreImage.CIFilterBuiltins
 import Testing
 @testable import Ultraviolence

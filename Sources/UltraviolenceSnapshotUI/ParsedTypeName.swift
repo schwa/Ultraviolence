@@ -3,7 +3,7 @@ import Foundation
 // swiftlint:disable discouraged_optional_collection
 
 /// A parsed representation of a Swift type name
-struct ParsedTypeName {
+internal struct ParsedTypeName {
     /// The module/library name (if present)
     let moduleName: String?
     /// The base type name without module prefix or generic parameters
@@ -31,7 +31,7 @@ struct ParsedTypeName {
     /// Extract generic parameters from a type string
     private static func extractGenerics(from string: String) -> (base: String, generics: [Self]?) {
         guard let genericStart = string.firstIndex(of: "<"),
-              let genericEnd = string.lastIndex(of: ">") else {
+            let genericEnd = string.lastIndex(of: ">") else {
             return (string, nil)
         }
 

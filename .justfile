@@ -22,6 +22,9 @@ coverage-percent:
         -ignore-filename-regex=".build|Tests|UltraviolenceExamples|UltraviolenceGaussianSplats|UltraviolenceSupport|UltraviolenceUI" \
         | tail -1 | grep -oE '[0-9]+\.[0-9]+%' | head -n1
 
+lint:
+    swiftlint lint --quiet
+
 format:
     swiftlint --fix --format --quiet
     fd --extension metal --extension h --exec clang-format -i {}

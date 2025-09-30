@@ -4,7 +4,7 @@ import UltraviolenceUI
 
 struct ContentView: View {
     var body: some View {
-        RenderView { context, size in
+        RenderView { _, _ in
             try RedTriangleInline()
         }
         .aspectRatio(1, contentMode: .fill)

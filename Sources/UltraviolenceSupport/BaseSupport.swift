@@ -19,6 +19,6 @@ public func unreachable(_ message: @autoclosure () -> String = String(), file: S
 
 public extension NSObject {
     func copyWithType<T>(_ type: T.Type) -> T where T: NSObject {
-        (copy() as? T).orFatalError()
+        (copy() as? T).orFatalError("Failed to copy \(type)")
     }
 }

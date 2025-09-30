@@ -66,7 +66,7 @@ internal struct Parameter {
                 let vertexIndex = reflection.binding(forType: .vertex, name: name)
                 let fragmentIndex = reflection.binding(forType: .fragment, name: name)
                 switch (vertexIndex, fragmentIndex) {
-                case (.some(let vertexIndex), .some(let fragmentIndex)):
+                case let (.some(vertexIndex), .some(fragmentIndex)):
                     preconditionFailure("Ambiguous parameter, found parameter named \(name) in both vertex (index: #\(vertexIndex)) and fragment (index: #\(fragmentIndex)) shaders.")
                 case (.some(let vertexIndex), .none):
                     encoder.setValue(value, index: vertexIndex, functionType: .vertex)

@@ -5,6 +5,7 @@ import Testing
 struct FunctionConstantsTests {
     @Test("Value enum equality")
     func valueEquality() throws {
+        // swiftlint:disable identical_operands
         #expect(FunctionConstants.Value.bool(true) == FunctionConstants.Value.bool(true))
         #expect(FunctionConstants.Value.bool(true) != FunctionConstants.Value.bool(false))
         #expect(FunctionConstants.Value.int32(42) == FunctionConstants.Value.int32(42))
@@ -12,6 +13,7 @@ struct FunctionConstantsTests {
         #expect(FunctionConstants.Value.float(3.14) == FunctionConstants.Value.float(3.14))
         #expect(FunctionConstants.Value.float2([1, 2]) == FunctionConstants.Value.float2([1, 2]))
         #expect(FunctionConstants.Value.float2([1, 2]) != FunctionConstants.Value.float2([1, 3]))
+        // swiftlint:enable identical_operands
     }
 
     @Test("Value data types")

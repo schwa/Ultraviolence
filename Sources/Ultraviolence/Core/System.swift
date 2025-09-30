@@ -192,8 +192,8 @@ private extension System {
 
             // Only mark as needing setup if the element type requires it
             if let oldBodyless = oldElement as? any BodylessElement,
-               let newBodyless = element as? any BodylessElement,
-               type(of: oldBodyless) == type(of: newBodyless) {
+                let newBodyless = element as? any BodylessElement,
+                type(of: oldBodyless) == type(of: newBodyless) {
                 existingNode.needsSetup = requiresSetupErased(old: oldBodyless, new: newBodyless)
             } else {
                 // Default to needing setup for non-BodylessElements or type changes
@@ -228,7 +228,9 @@ private extension System {
     private func requiresSetupErased(old: any BodylessElement, new: any BodylessElement) -> Bool {
         // This function handles the type erasure needed to call requiresSetup
         func helper<T: BodylessElement>(_ old: T, _ new: any BodylessElement) -> Bool {
-            guard let new = new as? T else { return true }
+            guard let new = new as? T else {
+                return true
+            }
             return new.requiresSetup(comparedTo: old)
         }
 
