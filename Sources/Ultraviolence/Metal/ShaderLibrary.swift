@@ -28,6 +28,14 @@ public struct ShaderLibrary {
         self.namespace = namespace
     }
 
+    public init(source: String, options: MTLCompileOptions? = nil, namespace: String? = nil) throws {
+        let device = _MTLCreateSystemDefaultDevice()
+
+        self.library = try device.makeLibrary(source: source, options: options)
+        self.namespace = namespace
+    }
+
+
     public func function<T>(named name: String, type: T.Type, constants: FunctionConstants = FunctionConstants()) throws -> T where T: ShaderProtocol {
         logger?.verbose?.log("Loading function '\(name)' from library \(library.label ?? "<unnamed>")")
 
