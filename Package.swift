@@ -15,6 +15,7 @@ public let package = Package(
         .library(name: "UltraviolenceUI", targets: ["UltraviolenceUI"]),
         .library(name: "UltraviolenceSupport", targets: ["UltraviolenceSupport"]),
         .library(name: "UltraviolenceSnapshotUI", targets: ["UltraviolenceSnapshotUI"]),
+        .macro(name: "UltraviolenceMacros", targets: ["UltraviolenceMacros"]),
     ],
     dependencies: [
         .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.0-latest"),
