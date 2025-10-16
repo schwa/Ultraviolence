@@ -79,6 +79,16 @@ public struct ShaderLibrary {
                 try _throw(UltraviolenceError.resourceCreationFailure("Function \(scopedNamed) is not a visible function."))
             }
             return (VisibleFunction(function) as? T).orFatalError(.resourceCreationFailure("Failed to create ComputeKernel."))
+        case is ObjectShader.Type:
+            guard function.functionType == .object else {
+                try _throw(UltraviolenceError.resourceCreationFailure("Function \(scopedNamed) is not an object function."))
+            }
+            return (ObjectShader(function) as? T).orFatalError(.resourceCreationFailure("Failed to create ObjectShader."))
+        case is MeshShader.Type:
+            guard function.functionType == .mesh else {
+                try _throw(UltraviolenceError.resourceCreationFailure("Function \(scopedNamed) is not a mesh function."))
+            }
+            return (MeshShader(function) as? T).orFatalError(.resourceCreationFailure("Failed to create MeshShader."))
         default:
             try _throw(UltraviolenceError.resourceCreationFailure("Unknown shader type \(type)."))
         }
