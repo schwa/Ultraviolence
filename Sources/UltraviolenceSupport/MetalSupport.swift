@@ -545,6 +545,40 @@ public extension MTLRenderCommandEncoder {
             setFragmentBytes(baseAddress, length: buffer.count, index: index)
         }
     }
+
+    func setObjectUnsafeBytes(of value: [some Any], index: Int) {
+        precondition(index >= 0)
+        value.withUnsafeBytes { buffer in
+            let baseAddress = buffer.baseAddress.orFatalError(.resourceCreationFailure("No base address."))
+            setObjectBytes(baseAddress, length: buffer.count, index: index)
+        }
+    }
+
+    func setObjectUnsafeBytes(of value: some Any, index: Int) {
+        precondition(index >= 0)
+        assert(isPOD(value))
+        withUnsafeBytes(of: value) { buffer in
+            let baseAddress = buffer.baseAddress.orFatalError(.resourceCreationFailure("No base address."))
+            setObjectBytes(baseAddress, length: buffer.count, index: index)
+        }
+    }
+
+    func setMeshUnsafeBytes(of value: [some Any], index: Int) {
+        precondition(index >= 0)
+        value.withUnsafeBytes { buffer in
+            let baseAddress = buffer.baseAddress.orFatalError(.resourceCreationFailure("No base address."))
+            setMeshBytes(baseAddress, length: buffer.count, index: index)
+        }
+    }
+
+    func setMeshUnsafeBytes(of value: some Any, index: Int) {
+        precondition(index >= 0)
+        assert(isPOD(value))
+        withUnsafeBytes(of: value) { buffer in
+            let baseAddress = buffer.baseAddress.orFatalError(.resourceCreationFailure("No base address."))
+            setMeshBytes(baseAddress, length: buffer.count, index: index)
+        }
+    }
 }
 
 public extension MTLRenderCommandEncoder {
@@ -556,6 +590,12 @@ public extension MTLRenderCommandEncoder {
 
         case .fragment:
             setFragmentUnsafeBytes(of: value, index: index)
+
+        case .object:
+            setObjectUnsafeBytes(of: value, index: index)
+
+        case .mesh:
+            setMeshUnsafeBytes(of: value, index: index)
 
         default:
             fatalError("Unimplemented")
@@ -572,6 +612,12 @@ public extension MTLRenderCommandEncoder {
         case .fragment:
             setFragmentUnsafeBytes(of: value, index: index)
 
+        case .object:
+            setObjectUnsafeBytes(of: value, index: index)
+
+        case .mesh:
+            setMeshUnsafeBytes(of: value, index: index)
+
         default:
             fatalError("Unimplemented")
         }
@@ -584,6 +630,12 @@ public extension MTLRenderCommandEncoder {
 
         case .fragment:
             setFragmentBuffer(buffer, offset: offset, index: index)
+
+        case .object:
+            setObjectBuffer(buffer, offset: offset, index: index)
+
+        case .mesh:
+            setMeshBuffer(buffer, offset: offset, index: index)
 
         default:
             fatalError("Unimplemented")
@@ -598,6 +650,12 @@ public extension MTLRenderCommandEncoder {
         case .fragment:
             setFragmentTexture(texture, index: index)
 
+        case .object:
+            setObjectTexture(texture, index: index)
+
+        case .mesh:
+            setMeshTexture(texture, index: index)
+
         default:
             fatalError("Unimplemented")
         }
@@ -610,6 +668,12 @@ public extension MTLRenderCommandEncoder {
 
         case .fragment:
             setFragmentSamplerState(sampler, index: index)
+
+        case .object:
+            setObjectSamplerState(sampler, index: index)
+
+        case .mesh:
+            setMeshSamplerState(sampler, index: index)
 
         default:
             fatalError("Unimplemented")

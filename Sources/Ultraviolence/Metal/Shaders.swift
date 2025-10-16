@@ -62,6 +62,28 @@ public struct FragmentShader: ShaderProtocol {
 
 // MARK: -
 
+public struct ObjectShader: ShaderProtocol {
+    public static let functionType: MTLFunctionType = .object
+    public var function: MTLFunction
+
+    public init(_ function: MTLFunction) {
+        self.function = function
+    }
+}
+
+// MARK: -
+
+public struct MeshShader: ShaderProtocol {
+    public static let functionType: MTLFunctionType = .mesh
+    public var function: MTLFunction
+
+    public init(_ function: MTLFunction) {
+        self.function = function
+    }
+}
+
+// MARK: -
+
 // TODO: Not really a "Shader". Sounds like we have a grand renaming coming. [FILE ISSUE]
 public struct VisibleFunction: ShaderProtocol {
     public static let functionType: MTLFunctionType = .visible

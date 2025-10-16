@@ -21,6 +21,12 @@ extension Reflection {
         for binding in renderPipelineReflection.vertexBindings {
             bindings[.init(functionType: .vertex, name: binding.name)] = binding.index
         }
+        for binding in renderPipelineReflection.objectBindings {
+            bindings[.init(functionType: .object, name: binding.name)] = binding.index
+        }
+        for binding in renderPipelineReflection.meshBindings {
+            bindings[.init(functionType: .mesh, name: binding.name)] = binding.index
+        }
     }
 }
 

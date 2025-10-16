@@ -62,19 +62,30 @@ internal struct Parameter {
                 if let index = reflection.binding(forType: .fragment, name: name) {
                     encoder.setValue(value, index: index, functionType: .fragment)
                 }
+            case .object:
+                if let index = reflection.binding(forType: .object, name: name) {
+                    encoder.setValue(value, index: index, functionType: .object)
+                }
+            case .mesh:
+                if let index = reflection.binding(forType: .mesh, name: name) {
+                    encoder.setValue(value, index: index, functionType: .mesh)
+                }
             case nil:
                 let vertexIndex = reflection.binding(forType: .vertex, name: name)
                 let fragmentIndex = reflection.binding(forType: .fragment, name: name)
-                switch (vertexIndex, fragmentIndex) {
-                case let (.some(vertexIndex), .some(fragmentIndex)):
-                    preconditionFailure("Ambiguous parameter, found parameter named \(name) in both vertex (index: #\(vertexIndex)) and fragment (index: #\(fragmentIndex)) shaders.")
-                case (.some(let vertexIndex), .none):
-                    encoder.setValue(value, index: vertexIndex, functionType: .vertex)
-                case (.none, .some(let fragmentIndex)):
-                    encoder.setValue(value, index: fragmentIndex, functionType: .fragment)
-                case (.none, .none):
+                let objectIndex = reflection.binding(forType: .object, name: name)
+                let meshIndex = reflection.binding(forType: .mesh, name: name)
+                let indices = [(vertexIndex, "vertex", MTLFunctionType.vertex), (fragmentIndex, "fragment", MTLFunctionType.fragment), (objectIndex, "object", MTLFunctionType.object), (meshIndex, "mesh", MTLFunctionType.mesh)].compactMap { index, name, type in index.map { ($0, name, type) } }
+                switch indices.count {
+                case 0:
                     logger?.info("Parameter \(name) not found in reflection \(reflection.debugDescription).")
                     try _throw(UltraviolenceError.missingBinding(name))
+                case 1:
+                    let (index, _, type) = indices[0]
+                    encoder.setValue(value, index: index, functionType: type)
+                default:
+                    let descriptions = indices.map { "\($0.1) (index: #\($0.0))" }.joined(separator: ", ")
+                    preconditionFailure("Ambiguous parameter, found parameter named \(name) in multiple shaders: \(descriptions).")
                 }
             default:
                 fatalError("Invalid shader type \(functionType.debugDescription).")
