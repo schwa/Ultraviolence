@@ -1,4 +1,0 @@
-force_cast:
-  severity: warning
-force_try:
-  severity: warning
